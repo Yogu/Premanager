@@ -18,7 +18,7 @@ use Premanager\QueryList\DataType;
 /**
  * A plugin
  */
-class Plugin extends Model {
+final class Plugin extends Model {
 	private $_id;
 	private $_name;
 

@@ -1,6 +1,10 @@
 <?php                      
 namespace Premanager\Models;
 
+use Premanager\IO\DataBase\DataBase;
+
+use Premanager\NameConflictException;
+
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\DateTime;
@@ -17,7 +21,7 @@ use Premanager\QueryList\QueryList;
 /**
  * A project
  */
-class Project extends Model {
+final class Project extends Model {
 	private $_id;
 	private $_name;
 	private $_title;
@@ -322,6 +326,9 @@ class Project extends Model {
 				'$name is an empty string or contains only whitespaces', 'name');    
 		if (Strings.indexOf($name, '/') !== false)
 			throw new ArgumentException('$name must not contain slashes', 'name');
+		if (!self::staticIsNameAvailable($name))
+			throw new NameConflictException('There is already a project with this '.
+				'name', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');
@@ -566,7 +573,28 @@ class Project extends Model {
 		if ($this->_keywords === null)
 			$this->load();
 		return $this->_keywords;	
-	}                        
+	}     
+
+	/**
+	 * Gets the StructureNode that is the root of this project
+	 * 
+	 * @return Premanager\Models\StructureNode
+	 */
+	public function getRootNode() {
+		if (!$this->_rootNode) {
+			$result = DataBase::query(
+				"SELECT node.id ".
+				"FROM ".DataBase::formTableName("Premanager_Nodes")." AS node ".
+				"WHERE node.parentID = '0' ".
+					"AND node.projectID = '$this->_id'");
+			if (!$result->next())
+				throw new CorruptDataException('There is no root node for the project '.
+					$this->name.' (id: '.$this->_id.')');
+					
+			$this->_rootNode = StructureNode::getByID($result->value('id'));
+		}
+		return $this->_rootNode;
+	}                   
 
 	/**
 	 * Gets the user that has created this project

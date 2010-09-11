@@ -22,7 +22,7 @@ use Premanager\QueryList\DataType;
 /**
  * A user group
  */
-class Group extends Model {
+final class Group extends Model {
 	private $_id;
 	private $_name;
 	private $_title;  

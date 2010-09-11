@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\URL;
+
 use Premanager\Module;
 use Premanager\Event;
 use Premanager\IO\Config;
@@ -56,7 +58,14 @@ class Environment extends Module {
 	 * @var Premanager\Execution\Translation
 	 */
 	private $_translation;
+	/**
+	 * @var string
+	 */
+	private $_urlPrefix;
 	
+	/**
+	 * @var array
+	 */
 	private static $_stack = array();
 	
 	// ===========================================================================  
@@ -136,6 +145,16 @@ class Environment extends Module {
 	 * @var Premanager\Execution\Translation
 	 */
 	public $translation = Module::PROPERTY_GET;
+	
+	/**
+	 * The prefix for relative urls
+	 * 
+	 * The url prefix contains protocol, host and may contain a path. Environment
+	 * properties are inserted. Example: http://en.example.com/my-project.
+	 * 
+	 * @var string
+	 */
+	public $urlPrefix = Module::PROPERTY_GET;
 	
 	// =========================================================================== 
 	
@@ -346,6 +365,21 @@ class Environment extends Module {
 			$this->_translation = new Translation($this);
 			
 		return $this->_translation;
+	}
+	
+	/**
+	 * Gets the prefix for relative urls
+	 * 
+	 * The url prefix contains protocol, host and may contain a path. Environment
+	 * properties are inserted. Example: http://en.example.com/my-project.
+	 * 
+	 * @return string
+	 */
+	public function getURLPrefix() {
+		if ($this->_urlPrefix === null)
+			$this->_urlPrefix =
+				URL::fromTemplate($this->language, $this->edition, $this->project);
+		return $this->_urlPrefix;
 	}
 
 	// ===========================================================================

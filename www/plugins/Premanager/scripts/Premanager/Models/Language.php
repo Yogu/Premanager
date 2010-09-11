@@ -18,7 +18,7 @@ use PRemanager\IO\DataBase\DataBase;
 /**
  * A language
  */
-class Language extends Model {
+final class Language extends Model {
 	private $_id;
 	private $_name;
 	private $_title;

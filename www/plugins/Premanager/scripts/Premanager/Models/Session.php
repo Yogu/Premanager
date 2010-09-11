@@ -17,7 +17,7 @@ use Premanager\QueryList\QueryList;
 /**
  * A session of a logged-in user
  */
-class Session extends Model {
+final class Session extends Model {
 	private $_id;
 	private $_user;
 	private $_userID;

@@ -31,7 +31,7 @@ use Premanager\Execution\Translation;
 /**
  * A user
  */
-class User extends Model {
+final class User extends Model {
 	private $_id;
 	private $_name;
 	private $_title;

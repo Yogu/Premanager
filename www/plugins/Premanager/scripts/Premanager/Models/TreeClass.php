@@ -16,7 +16,7 @@ use Premanager\Models\StructureNode;
 /**
  * A class for a tree of dynamic page nodes
  */
-class TreeClass extends Model {
+final class TreeClass extends Model {
 	private $_id;
 	private $_pluginID;
 	private $_plugin;

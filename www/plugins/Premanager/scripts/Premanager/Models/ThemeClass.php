@@ -15,7 +15,7 @@ use Premanager\Debug\AssertionFailedException;
 /**
  * A class for a theme
  */
-class ThemeClass extends Model {
+final class ThemeClass extends Model {
 	private $_id;
 	private $_pluginID;
 	private $_plugin;

@@ -23,7 +23,7 @@ use Premanager\QueryList\QueryList;
 /**
  * A structure node
  */
-class StructureNode extends Model {
+final class StructureNode extends Model {
 	private $_id;
 	private $_name;
 	private $_title;  
@@ -520,26 +520,7 @@ class StructureNode extends Model {
 			return $user;
 		}
 		return null;
-	}                                        
-	   
-	/**     
-	 * Gets the index of this structure node in data base using default order
-	 *
-	 * @return int
-	 */
-	public function getIndex() {            
-		$this->checkDisposed();
-			
-		$result = DataBase::query(
-			"SELECT COUNT(node.nodeID) AS count ".
-			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
-			/* translator */ 'nodeID',
-			"WHERE node.parentID = ".$this->parent->id." ".
-				"AND LOWER(translation.title) < '".
-					DataBase::escape(Strings::unitize($this->name))."' ".
-			"ORDER BY LOWER(translation.title) ASC");
-		return $result->get('count');
-	}    
+	}      
 	    
 	/**
 	 * Gets the count of subnodes
@@ -603,7 +584,11 @@ class StructureNode extends Model {
 			$list[] = $node;
 		}
 		return $list;
-	} 
+	}
+	
+	public function getPageNode() {
+		
+	}
 	
 	/**
 	 * Determines if the specified user can access this node

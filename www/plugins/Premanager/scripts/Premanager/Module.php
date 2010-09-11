@@ -98,7 +98,27 @@ class Module {
 				case self::PROPERTY_GET_SET:
 				case self::PROPERTY_GET:
 				case self::PROPERTY_SET:
-					$this->_properties[$name] = $value;
+					$readable = $value != self::PROPERTY_SET;
+					$writeable = $value != self::PROPERTY_GET;
+					
+					if ($readable) {
+						$getter = array($this, 'get'.$this->nameToUpper($name));
+						if (!is_callable($getter))
+							throw new CorruptDataException(
+								"Getter of readable property '$name' is not callable in class ".
+								get_class($this));
+					}
+			
+					
+					if ($writeable) {
+						$setter = array($this, 'set'.$this->nameToUpper($name));
+						if (!is_callable($setter))
+							throw new CorruptDataException(
+								"Setter of writeable property '$name' is not callable in class ".
+								get_class($this));
+					}
+					
+					$this->_properties[$name] = array($getter, $setter);
 					unset($this->$name);
 					break;
 			}
@@ -119,22 +139,15 @@ class Module {
 	public function __get($name) {
 		$this->checkDisposed();
 		
-		// 'name' becomes 'getName'
-		$getter = array($this, 'get'.$this->nameToUpper($name));
-		if (isset($this->_properties[$name])) { 
-			if ($this->_properties[$name] != self::PROPERTY_SET) {
-				if (\is_callable($getter))
-					return \call_user_func($getter);
-				else
-					throw new CorruptDataException(
-						"Getter of readable property '$name' is not callable in class ".
-						\get_class($this));
+		if (isset($this->_properties[$name])) {
+			if ($getter = $this->_properties[$name]->getter) {
+				return call_user_func($getter);
 			} else
 				throw new PropertyException("Property '$name' is write-only in class ".
-				\get_class($this), 'name');
+					get_class($this), 'name');
 		} else
 			throw new PropertyException("Property '$name' does not exist in class ".
-				\get_class($this), 'name');  
+				get_class($this), 'name');  
 	}
 	     
 	/**
@@ -149,22 +162,15 @@ class Module {
 	public function __set($name, $value) {
 		$this->checkDisposed();
 		
-		if (isset($this->_properties[$name])) { 
-			if ($this->_properties[$name] != self::PROPERTY_SET) {
-				// 'name' becomes 'setName'
-				$setter = array($this, 'set'.$this->nameToUpper($name));	 
-				if (\is_callable($setter))
-					\call_user_func($setter, $value);
-				else
-					throw new CorruptDataException(
-						"Setter of writeable property '$name' is not callable in class ".
-				\get_class($this));
+		if (isset($this->_properties[$name])) {
+			if ($setter = $this->_properties[$name]->setter) {
+				call_user_func($setter, $value);
 			} else
 				throw new PropertyException("Property '$name' is read-only in class ".
-				\get_class($this), 'name');
+					get_class($this), 'name');
 		} else
 			throw new PropertyException("Property '$name' does not exist in class ".
-				\get_class($this), 'name');
+				get_class($this), 'name');  
 	}
 	
 	/**

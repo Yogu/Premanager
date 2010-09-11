@@ -68,8 +68,9 @@ class URL {
 	 * @param Premanager\Models\Language|null $language
 	 * @param int|null $edition (enum Premanager\Execution\Edition)
 	 * @param Premanager\Models\Project|null $project
+	 * @return string the url
 	 */
-	public function fromTemplate($language = null, $edition = null,
+	public static function fromTemplate($language = null, $edition = null,
 		$project = null) {
 		$template = Config::getURLTemplate();
 	
