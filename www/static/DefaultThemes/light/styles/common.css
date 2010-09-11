@@ -1,0 +1,287 @@
+﻿/* ========== General ========== */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+ul,
+li {
+	list-style: none;
+}
+
+body {
+	margin: 0;
+	padding: 10px;
+	
+	background-color: #FFFFFF;
+}
+
+body > div,
+body > ul {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+}
+
+a {
+	text-decoration: none;
+	color: #1175B0;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #F86C05; 
+} 
+
+img {
+	border: none;
+}
+
+.user {
+	background: url(../images/user.png) center left no-repeat;
+	padding-left: 10px;
+}
+
+/* ========== Block Margins ========== */
+
+p,
+fieldset,
+fieldset.inputs > dl > dd,
+.info-list > dl,
+.input-errors li,
+.info-box {
+	margin: 0.5em 0;
+}
+
+p:first-child,
+fieldset:first-child,         
+fieldset.inputs > dl:first-child,
+fieldset.inputs > dl > dd:first-child,
+fieldset.inputs > dl > dt:first-child + dd,
+.info-list > dl:first-child,
+.input-errors li:first-child,
+.input-errors:first-child,
+.info-box:first-child,
+.block:first-child,
+#main-block:first-child {
+	margin-top: 0;
+}
+
+p:last-child,
+fieldset:last-child,
+fieldset.inputs > dl:last-child, 
+fieldset.inputs > dl > dd:last-child,
+.info-list > dl:last-child,
+.input-errors li:last-child,
+.input-errors:last-child,
+.info-box:last-child {
+	margin-bottom: 0;
+}
+
+/* ========== Page Layout ========== */
+
+#header{
+	float: left;
+	width: 180px;
+	height: 180px;  
+	position: absolute;
+	z-index: 1;
+}     
+
+#navigation-tree {
+	float: left;
+	width: 180px;
+	position: absolute;
+	margin-top: 290px;
+	padding-top: 10px;
+	z-index: 1;
+	
+	border-top: 1px solid #000000;
+}         
+
+body > .toolbar {
+	float: left;
+	width: 180px;  
+	position: absolute;
+	margin-top: 190px;
+	padding-top: 10px;
+	z-index: 1;
+	
+	border-top: 1px solid #000000;
+}   
+
+#sidebar {
+	float: right;  
+	width: 180px; 
+	z-index: 1;  
+	position: absolute;
+	right: 10px;
+}
+    
+#content {
+	margin-right: -200px;
+	float: left;
+	width: 100%;
+	position: relative;
+}
+
+#content:before {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 190px;
+	height: 400px;
+	width: 1px;
+	z-index: -1;  
+
+	border-left: 1px solid #000000;	
+	
+	content: '';
+}    
+
+#content:after {
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 190px;
+	height: 400px;
+	width: 1px;
+	z-index: -1;  
+
+	border-right: 1px solid #000000;
+	
+	content: '';
+}
+
+#content > * {
+	margin-left: 190px;
+	margin-right: 190px;
+	padding-left: 10px;
+	padding-right: 10px; 
+	position: relative;
+
+	border-left: 1px solid #000000;	
+	border-right: 1px solid #000000;
+}
+
+.navigation {
+	display: none;
+} 
+
+/* ========== Content Layout ========== */
+
+.block {
+	margin-top: 15px;
+}
+
+.block > dt,
+.block > table th {
+	margin-bottom: 10px;
+
+	text-align: left;
+	font-family: Georgia;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+#main-block {
+	margin-top: 20px;
+}
+
+#main-block > dt { 
+	margin-bottom: 15px;
+
+	font-size: 36px;
+}     
+
+/* ========== Sidebar Layout ========== */      
+
+#sidebar > dl {
+	margin-top: 10px;
+	padding-top: 10px;
+	
+	border-top: 1px solid #000000;
+}     
+
+#sidebar > dl:first-child {
+	margin-top: 0;
+	padding-top: 0;
+	
+	border-top: none;
+}
+
+#sidebar > dl > dt {
+	margin-bottom: 10px;
+
+	text-align: left;
+	font-family: Georgia;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+/* ========== Header ========== */
+
+#organization-title,
+#project-title {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+/* ========== Toolbar ========== */
+
+.toolbar > li > a {
+	display: block;
+	width: 100%;
+}
+
+.toolbar > li > a.active,
+.toolbar > li > a:hover {
+	background: rgba(0, 0, 0, 0.25);	
+}
+
+.toolbar > li > a,
+.toolbar > li > a:hover,
+.toolbar > li > a:focus,
+.toolbar > li > a:active {
+	color: #000000;
+	text-decoration: none;
+	outline: none;
+}        
+
+/* ========== Navigation Tree ========== */
+
+#navigation-tree > li > ul > li {
+	margin-left: 0 !important;
+}
+
+#navigation-tree > li > a {
+	margin-bottom: 5px;
+	
+	text-align: center;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+#navigation-tree li > a:hover,
+#navigation-tree li.active > a {   
+	background: rgba(0, 0, 0, 0.25);	
+}
+
+#navigation-tree li > ul > li {   
+	margin-left: 15px;
+}       
+
+#navigation-tree a{  
+	display: block;
+	padding: 2px; 
+	overflow: hidden;
+	white-space: nowrap;
+	
+ 	font-size: 11px;
+}
+                        
+#navigation-tree a,
+#navigation-tree a:hover {
+ 	color: #000000;
+ 	text-decoration: none; 
+	outline: none;
+}

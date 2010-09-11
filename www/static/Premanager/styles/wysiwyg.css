@@ -1,0 +1,139 @@
+﻿/* ========== General ========== */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+ul,
+li {
+	list-style: none;
+}
+
+body {
+	margin: 0;
+	padding: 10px;
+	cursor: text;
+	height: 100%;
+	
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;     
+	-khtml-box-sizing: border-box;
+}
+
+body,
+body > * {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;    
+	line-height: 1.5em;
+}
+   
+a {
+	text-decoration: none;
+	color: #1175B0;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #F86C05; 
+} 
+
+img {
+	border: none;
+}                                    
+
+/* ========== Block Margins ========== */
+
+p, 
+ul,
+ol,
+li {
+	margin: 1em 0;
+}
+
+p:first-child,    
+h1:first-child,
+h2:first-child,
+h3:first-child,
+ul:first-child,
+ol:first-child,
+li:first-child {
+	margin-top: 0;
+}
+
+p:last-child, 
+h1:last-child,
+h2:last-child,
+h3:last-child, 
+ul:last-child,
+ol:last-child,
+li:last-child {
+	margin-bottom: 0;
+}
+
+/* ========== Headings ========== */
+
+h1,
+h2,
+h3 {
+	margin: 17px 0;
+}
+
+h1 {
+	font-size: 22px;
+	font-weight: bold;
+	text-align: left;
+}  
+
+h2 {            
+	font-size: 18px;
+	font-weight: bold;
+	text-align: left;
+}              
+
+h3 {
+	font-size: 14px;
+	font-weight: bold;
+	text-align: left;
+}
+
+/* ========== Lists ========== */
+
+ul > *,
+ol > * {
+	list-style-position: outside; 	
+	margin-left: 20px;
+}        
+
+ol > li {
+	list-style-type: decimal;
+}
+
+ul > li {
+	list-style-type: disc;
+}    
+
+ol ul > li,
+ul ul > li {
+	list-style-type: circle;
+}
+
+ol ol ul > li,
+ol ul ul > li,
+ul ol ul > li,
+ul ul ul > li  {
+	list-style-type: square;
+}
+
+/* ========== Detail Mode ========== */
+
+body.detail-mode p:after,
+body.detail-mode h1:after,
+body.detail-mode h2:after,
+body.detail-mode h3:after,
+body.detail-mode li:after {
+	display: inline;
+	
+	content: '¶';
+}
