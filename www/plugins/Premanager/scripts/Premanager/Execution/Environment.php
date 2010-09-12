@@ -62,6 +62,26 @@ class Environment extends Module {
 	 * @var string
 	 */
 	private $_urlPrefix;
+	/**
+	 * @var bool
+	 */
+	private $_meLoading;
+	/**
+	 * @var bool
+	 */
+	private $_projectLoading;
+	/**
+	 * @var bool
+	 */
+	private $_languageLoading;
+	/**
+	 * @var bool
+	 */
+	private $_themeLoading;
+	/**
+	 * @var bool
+	 */
+	private $_editionLoading;
 	
 	/**
 	 * @var array
@@ -92,6 +112,10 @@ class Environment extends Module {
 	 *
 	 * Ths property is read-only.
 	 * 
+	 * This property contains Premanager\Models\User::getGuest() if it is accessed
+	 * while the actual value for $me is loading. Use isMeAvailable() to check
+	 * whether this is the case.
+	 * 
 	 * @var Premanager\Models\User
 	 */
 	public $me = Module::PROPERTY_GET;
@@ -100,6 +124,10 @@ class Environment extends Module {
 	 * The current project
 	 *
 	 * Ths property is read-only.
+	 * 
+	 * This property contains Premanager\Models\Project::getOrganization() if it
+	 * is accessed while the actual value for $project is loading. Use
+	 * isProjectAvailable() to check whether this is the case.
 	 * 
 	 * @var Premanager\Models\Project
 	 */
@@ -110,6 +138,10 @@ class Environment extends Module {
 	 *
 	 * Ths property is read-only.
 	 * 
+	 * This property contains Premanager\Models\Language::getDefault() if it is
+	 * accessed while the actual value for $language is loading. Use
+	 * isLanguageAvailable() to check whether this is the case.
+	 * 
 	 * @var Premanager\Models\Language
 	 */
 	public $language = Module::PROPERTY_GET;
@@ -119,6 +151,10 @@ class Environment extends Module {
 	 *
 	 * Ths property is read-only.
 	 * 
+	 * This property contains Premanager\Models\Theme::getDefault()->instance if
+	 * it is accessed while the actual value for $theme is loading. Use
+	 * isThemeAvailable() to check whether this is the case.
+	 * 
 	 * @var Premanager\Execution\Theme
 	 */
 	public $theme = Module::PROPERTY_GET;
@@ -127,6 +163,10 @@ class Environment extends Module {
 	 * The current edition(enum Premanager\Execution\Edition)
 	 *
 	 * Ths property is read-only.
+	 * 
+	 * This property contains Edition::COMMON if it is accessed while the actual
+	 * value for $edition is loading. Use isEditionAvailable() to check whether
+	 * this is the case.
 	 * 
 	 * @var int
 	 */
@@ -279,12 +319,27 @@ class Environment extends Module {
 
 	/**
 	 * Gets the logged-in user
+	 * 
+	 * This method returns Premanager\Models\User::getGuest() if it is called
+	 * while the actual value for $me is loading. Use isMeAvailable() to check
+	 * whether this is the case.  
+	 * 
 	 * @return Premanager\Models\User
 	 */
 	public function getMe() {
 		if (!$this->_me && $this->_isReal) {
-			// TODO: This value is only a placeholder; replace it by the real value
-			$this->_me = self::getLoggedInUser();
+			if ($this->_meLoading)
+				return User::getGuest();
+			else {
+				$this->_meLoading = true;
+				try {
+					$this->_me = self::getLoggedInUser();
+				} catch (\Exception $e) {
+					$this->_meLoading = false;
+					throw $e;
+				}
+				$this->_meLoading = false;
+			}
 		}
 		
 		return $this->_me;
@@ -292,12 +347,28 @@ class Environment extends Module {
 	
 	/**
 	 * Gets the current project
+	 * 
+	 * This method returns Premanager\Models\Project::getOrganization() if it is
+	 * called while the actual value for $project is currently is loading Use
+	 * isProjectAvailable() to check whether this is the case.
+	 * 
 	 * @return Premanager\Models\Project
 	 */
 	public function getProject() {
 		if (!$this->_project && $this->_isReal) {
-			// TODO: This value is only a placeholder; replace it by the real value
-			$this->_project = Project::getOrganization();
+			if ($this->_projectLoading)
+				return Project::getOrganization();
+			else {
+				$this->_projectLoading = true;
+				try {
+					// TODO: This value is only a placeholder; replace it by the real value
+					$this->_project = Project::getOrganization();
+				} catch (\Exception $e) {
+					$this->_projectLoading = false;
+					throw $e;
+				}
+				$this->_projectLoading = false;
+			}
 		}
 		
 		return $this->_project;
@@ -305,12 +376,28 @@ class Environment extends Module {
 	
 	/**
 	 * Gets the current language
+	 * 
+	 * This method returns Premanager\Models\Language::getDefault() if it is
+	 * called while the actual value for $language is loading. Use
+	 * isLanguageAvailable() to check whether this is the case.
+	 * 
 	 * @return Premanager\Models\Language
 	 */
 	public function getLanguage() {
 		if (!$this->_language && $this->_isReal) {
-			// TODO: This value is only a placeholder; replace it by the real value
-			$this->_language = Language::getDefault();
+			if ($this->_languageLoading)
+				return Language::getDefault();
+			else {
+				$this->_languageLoading = true;
+				try {
+					// TODO: This value is only a placeholder; replace it by the real value
+					$this->_language = Language::getDefault();
+				} catch (\Exception $e) {
+					$this->_languageLoading = false;
+					throw $e;
+				}
+				$this->_languageLoading = false;
+			}
 		}
 		
 		return $this->_language;
@@ -318,12 +405,28 @@ class Environment extends Module {
 	
 	/**
 	 * Gets the current theme
+	 * 
+	 * This method returns Premanager\Models\Theme::getDefault()->instance if it
+	 * is called while the actual value for $theme is loading. Use
+	 * isThemeAvailable() to check whether this is the case.
+	 * 
 	 * @return Premanager\Execution\Theme
 	 */
 	public function getTheme() {
 		if (!$this->_me && $this->_isReal) {
-			// TODO: This value is only a placeholder; replace it by the real value;
-			$this->_theme = ThemeClass::getDefault()->instance;
+			if ($this->_themeLoading)
+				return ThemeClass::getDefault()->instance;
+			else {
+				$this->_themeLoading = true;
+				try {
+					// TODO: This value is only a placeholder; replace it by the real value;
+					$this->_theme = ThemeClass::getDefault()->instance;
+				} catch (\Exception $e) {
+					$this->_themeLoading = false;
+					throw $e;
+				}
+				$this->_themeLoading = false;
+			}
 		}
 		
 		return $this->_theme;
@@ -332,12 +435,27 @@ class Environment extends Module {
 	/**
 	 * Gets the current edition (enum Premanager\Execution\Edition)
 	 * 
+	 * This method returns Premanager\Execution\edition::COMMON if it is called
+	 * while the actual value for $edition is loading. Use isEditionAvailable() to
+	 * check whether this is the case.
+	 * 
 	 * @return int
 	 */
 	public function getEdition() {
 		if (!$this->_me && $this->_isReal) {
-			// TODO: This value is only a placeholder; replace it by the real value
-			$this->_edition = self::EDITION_COMMON;
+			if ($this->_editionLoading)
+				return Edition::COMMON;
+			else {
+				$this->_editionLoading = true;
+				try {
+					// TODO: This value is only a placeholder; replace it by the real value;
+					$this->_edition = Edition::COMMON;
+				} catch (\Exception $e) {
+					$this->_editionLoading = false;
+					throw $e;
+				}
+				$this->_editionLoading = false;
+			}
 		}
 		
 		return $this->_edition;
@@ -380,6 +498,51 @@ class Environment extends Module {
 			$this->_urlPrefix =
 				URL::fromTemplate($this->language, $this->edition, $this->project);
 		return $this->_urlPrefix;
+	}
+	
+	/**
+	 * Checks if the $me property contains the correct value  
+	 *  
+	 * @return bool true, if $me is available
+	 */
+	public function isMeAvailable() {
+		return !$this->_meLoading;
+	}
+	
+	/**
+	 * Checks if the $project property contains the correct value
+	 *  
+	 * @return bool true, if $project is available
+	 */
+	public function isProjectAvailable() {
+		return !$this->_projectLoading;
+	}
+	
+	/**
+	 * Checks if the $language property contains the correct value
+	 * 
+	 * @return bool true, if $language is available
+	 */
+	public function isLanguageAvailable() {
+		return !$this->_languageLoading;
+	}
+	
+	/**
+	 * Checks if the $theme property contains the correct value
+	 * 
+	 * @return bool true, if $language is available
+	 */
+	public function isThemeAvailable() {
+		return !$this->_themeLoading;
+	}
+	
+	/**
+	 * Checks if the $edition property contains the correct value
+	 * 
+	 * @return bool true, if $edition is available
+	 */
+	public function isEditionAvailable() {
+		return !$this->_editionLoading;
 	}
 
 	// ===========================================================================
