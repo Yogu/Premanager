@@ -836,7 +836,7 @@ final class User extends Model {
 	 *
 	 * @return Premanager\DateTime
 	 */
-	public function getLastVisiblLoginTime() {
+	public function getLastVisibleLoginTime() {
 		$this->checkDisposed();
 			
 		if ($this->_lastVisibleLoginTime === null)

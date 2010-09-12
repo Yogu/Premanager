@@ -83,7 +83,7 @@ class DateTime extends Module {
 	 *
 	 * @var Premanager\TimeSpan
 	 */
-	public $time = Module::PROPERTY_GET;
+	public $timeOfDay = Module::PROPERTY_GET;
 	
 	/**
 	 * The day in the week
@@ -538,6 +538,15 @@ class DateTime extends Module {
 		
 		return new DateTime($this->_universalTimestamp +
 			$timeZone->getOffset($this->_universalTimestamp)->timestamp, $timeZone);
+	}
+	
+	/**
+	 * Gets the time zone of this date/time
+	 * 
+	 * @return Premanager\TimeZone
+	 */
+	public function getTimeZone() {
+		return $this->_timeZone;
 	}
 	
 	/**

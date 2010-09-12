@@ -650,7 +650,7 @@ final class Language extends Model {
 	 *
 	 * @return string
 	 */
-	public function getTimeDateFormat() {
+	public function getLongTimeFormat() {
 		$this->checkDisposed();
 			
 		if ($this->_longTimeFormat === null)

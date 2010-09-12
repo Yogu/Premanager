@@ -45,7 +45,7 @@ abstract class PageNode extends Module {
 	 * 
 	 * @var string
 	 */
-	public $url = Modue::PROPERTY_GET;
+	public $url = Modue::PROPERTY_GET_ACRONYM;
 	
 	/**
 	 * Creates a new page node

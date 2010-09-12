@@ -154,7 +154,7 @@ class Environment extends Module {
 	 * 
 	 * @var string
 	 */
-	public $urlPrefix = Module::PROPERTY_GET;
+	public $urlPrefix = Module::PROPERTY_GET_ACRONYM;
 	
 	// =========================================================================== 
 	
