@@ -22,13 +22,6 @@ class Page extends Module {
 	public $blocks;
 	
 	/**
-	 * The page title
-	 * 
-	 * @var string
-	 */
-	public $title;
-	
-	/**
 	 * The node that has created this page
 	 * 
 	 * @var Premanager\Execution\PageNode
