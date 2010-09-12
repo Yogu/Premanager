@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanage\Execution\Template;
+
 use Premanager\NotImplementedException;
 
 use Premanager\ArgumentException;
@@ -58,21 +60,35 @@ class StructurePageNode extends PageNode {
 		else
 			return $this->_structureNode->title;
 	}
+	
+	/**
+	 * Creates a page object that covers the data of this page node
+	 * 
+	 * @return Premanager\Execution\Page the page or null, if this page node does
+	 *   not result in a page. 
+	 */
+	public function getPage() {
+		switch ($this->_structureNode->type) {
+			case StructureNodeType::TREE:
+				return $this->getTreeNode()->getPage();
+			
+			case StructureNodeType::PANEL:
+				//TODO: create a panel page
+				throw new NotImplementedException();
+				
+			default:
+				//TODO: create a page that lists all sub-page-nodes
+		}
+	}
 
 	/**
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		switch ($this->_structureNode->type) {
-			case StructureNodeType::TREE:
-				$this->getTreeNode()->execute();
-			
-			case StructureNodeType::PANEL:
-				throw new NotImplementedException();
-				
-			default:
-				
-		}
+		if ($this->_structureNode->type == StructureNodeType::TREE)
+			$this->getTreeNode()->execute();
+		else
+			Output::select($this->getPage());
 	}
 	
 	/**
