@@ -77,7 +77,18 @@ class StructurePageNode extends PageNode {
 				throw new NotImplementedException();
 				
 			default:
-				//TODO: create a page that lists all sub-page-nodes
+				//TODO: fetch all sub nodes into $subNodes
+				$subNodes = array();
+				
+				// create list of sub-page-nodes
+				$template = new Template('Premanager', 'subPagesList');
+				$template->set('list', $subNodes);
+				
+				$block = PageBlock::createSimple($this->getStandAloneTitle(),
+					$template->get(), false, false, true);
+				$page = new Page($this);
+				$page->blocks = array(/* rows */ array(/* cols */array($block)));
+				return $page;
 		}
 	}
 

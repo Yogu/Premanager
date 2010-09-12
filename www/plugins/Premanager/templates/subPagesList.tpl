@@ -1,12 +1,8 @@
-{extends "../../Premanager/templates/main.tpl"}
-
-{block "content"}
-	{if $UserNode_list}
-		<ul class="list">
-			{$UserNode_list}
-		</ul>
-	{else}
-		<p>{string Premanager defaultPage}</p>
-	{/if}
-{/block}
-																				
+{if count($list)}
+	<ul class="list">
+		{foreach $list as $node}
+			<li><a href="{html $node->url}">{html $node->title}</a></li>
+	</ul>
+{else}
+	<p>{string Premanager defaultPage}</p>
+{/if}
