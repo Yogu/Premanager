@@ -17,6 +17,7 @@ use Premanager\Debug\AssertionFailedException;
 use Premanager\Models\User;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
+use Premanager\QueryList\DataType;
                  
 /**
  * A project
@@ -138,17 +139,6 @@ final class Project extends Model {
 	 * @var Premanager\Models\StructureNode
 	 */
 	public $rootNode = Module::PROPERTY_GET;
-	
-	/**
-	 * The index of this project in default order
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var int
-	 */
-	public $index = Module::PROPERTY_GET;   
 
 	/**
 	 * The user that has created this project
@@ -190,15 +180,13 @@ final class Project extends Model {
 
 	// ===========================================================================  
 	
-	private function __construct() {
+	protected function __construct() {
 		parent::__construct();	
 	}
 	
-	private function createFromID($id, $name = null, $title = null,
+	private static function createFromID($id, $name = null, $title = null,
 		$subTitle = null, $author = null, $copyright = null, $description = null,
 		$keywords = null) {
-		parent::__construct();
-		
 		if ($name !== null)
 			$name = \trim($name);
 		if ($title !== null)

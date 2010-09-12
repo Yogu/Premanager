@@ -19,6 +19,7 @@ use Premanager\Models\Project;
 use Premangaer\Objects\Groups;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
+use Premanager\QueryList\DataType;
 
 /**
  * A structure node
@@ -183,9 +184,9 @@ final class StructureNode extends Model {
 	 * @param Premanager\Models\TreeClass $treeClass
 	 * @param bool $hasPanel
 	 */
-	private static function createFromID($id, StructureNode $parent = false,
-		$name = null, $title = null, $noAccessRestriction = null,
-		TreeClass $treeClass = false, $hasPanel = null) {
+	private static function createFromID($id, $parent = false, $name = null,
+		$title = null, $noAccessRestriction = null, $treeClass = false,
+		$hasPanel = null) {
 		if ($name !== null)
 			$name = \trim($name);
 		if ($title !== null)
@@ -283,33 +284,6 @@ final class StructureNode extends Model {
 				'Premanager_Nodes', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
-	}     
-
-	// ===========================================================================  
-	
-	/**
-	 * Gets a structure node using its id
-	 *
-	 * Returns null if $id is not found.
-	 * 
-	 * @param int $id the id of the project
-	 * @return Premanager\Models\StructureNode
-	 */
-	public function getByID($id) {
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
-			
-		if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = new self();
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
 	}
 
 	// ===========================================================================

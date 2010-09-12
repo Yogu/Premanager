@@ -11,6 +11,9 @@ use Premanager\Types;
 use Premanager\IO\CorrputDataException;
 use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
+use Premanager\QueryList\QueryList;
+use Premanager\QueryList\DataType;
+use Premanager\QueryList\ModelDescriptor;
               
 /**
  * A class for a theme
@@ -25,6 +28,8 @@ final class ThemeClass extends Model {
 	private static $_instances = array();
 	private static $_count;
 	private static $_default;
+	private static $_descriptor;
+	private static $_queryList;
 
 	// ===========================================================================  
 
@@ -66,7 +71,7 @@ final class ThemeClass extends Model {
 
 	// ===========================================================================  
 	
-	private function __construct() {
+	protected function __construct() {
 		parent::__construct();	
 	}
 	

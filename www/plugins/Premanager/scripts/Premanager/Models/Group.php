@@ -618,28 +618,7 @@ final class Group extends Model {
 		if ($this->_editTime === null)
 			$this->load();
 		return $this->_editTime;	
-	}                                                        
-	   
-	/**     
-	 * Gets the index of this group in data base using default order
-	 *
-	 * @return int
-	 */
-	public function getIndex() {            
-		$this->checkDisposed();
-			
-		if ($this->_index === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(grp.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ".
-				/* translating */
-				"WHERE LOWER(translation.name) < '".
-					DataBase::escape(Strings::unitize($this->name))."' ".
-				"ORDER BY LOWER(translation.name) ASC");
-			$this->_index = $result->get('count');
-		}
-		return $this->_index;
-	}    
+	}      
 	
 	/**
 	 * Gets a list of members in a specified range

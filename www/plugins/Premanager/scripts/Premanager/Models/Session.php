@@ -9,10 +9,13 @@ use Premanager\InvalidOperationException;
 use Premanager\Strings;
 use Premanager\Types;
 use Premanager\IO\CorrputDataException;
+use Premanager\IO\DataBase\DataBase;
+use Premanager\Execution\Options;
 use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
+use Premanager\QueryList\DataType;
               
 /**
  * A session of a logged-in user
@@ -146,11 +149,11 @@ final class Session extends Model {
 
 	// ===========================================================================  
 	
-	private function __construct() {
+	protected function __construct() {
 		parent::__construct();	
 	}
 	
-	public function __init() { 
+	public static function __init() { 
 		// Remove outdated sessions
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager_Sessions')." ".
@@ -514,26 +517,7 @@ final class Session extends Model {
 			$this->_project = Project::getById($this->_projectID);
 		}
 		return $this->_project;
-	}                                                   
-	   
-	/**     
-	 * Gets the index of this session in data base using default order
-	 *
-	 * @return int
-	 */
-	public function getIndex() {            
-		$this->checkDisposed();
-			
-		if ($this->_index === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(session.sessionID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Session')." AS session ".
-				"WHERE session.lastRequestTime > '$this->lastRequestTime' ".
-				"ORDER BY session.lastRequestTime DESC");
-			$this->_index = $result->get('count');
-		}
-		return $this->_index;
-	}      
+	}     
 	
 	/**
 	 * Deletes and disposes this session

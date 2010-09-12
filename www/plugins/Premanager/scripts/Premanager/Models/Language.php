@@ -13,7 +13,10 @@ use Premanager\NameConflictException;
 use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
 use Premanager\IO\CorruptDataException;
-use PRemanager\IO\DataBase\DataBase;
+use Premanager\IO\DataBase\DataBase;
+use Premanager\QueryList\QueryList;
+use Premanager\QueryList\ModelDescriptor;
+use Premanager\QueryList\DataType;
            
 /**
  * A language

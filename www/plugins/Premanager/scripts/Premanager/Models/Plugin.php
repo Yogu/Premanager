@@ -186,7 +186,7 @@ final class Plugin extends Model {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => DataType::NUMBER,
 				'name' => DataType::STRING),
-				'Premanager_Plugins', array(__SELF__, 'getByID'));
+				'Premanager_Plugins', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}
@@ -216,27 +216,6 @@ final class Plugin extends Model {
 			$this->load();
 		}
 		return $this->_name;
-	}
-
-	/**
-	 * Gets the index of this plugin in data base using default order
-	 *
-	 * @return int
-	 */
-	public function getIndex() {
-		$this->checkDisposed();
-			
-		if ($this->_index === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(plugin.pluginID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
-				"WHERE LOWER(plugin.name) < '".
-			DataBase::escape(Strings::unitize($this->name)).
-					"' ".
-				"ORDER BY LOWER(plugin.name) ASC");
-			$this->_index = $result->get('count');
-		}
-		return $this->_index;
 	}
 
 	/**

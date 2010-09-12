@@ -12,6 +12,9 @@ use Premanager\Debug\Debug;
 use Premanager\Processing\TreeNode;
 use Premanager\Models\Plugin;
 use Premanager\Models\StructureNode;
+use Premanager\QueryList\ModelDescriptor;
+use Premanager\QueryList\QueryList;
+use Premanager\QueryList\DataType;
               
 /**
  * A class for a tree of dynamic page nodes
@@ -25,6 +28,8 @@ final class TreeClass extends Model {
 	
 	private static $_instances = array();
 	private static $_count;
+	private static $_descriptor;
+	private static $_queryList;
 
 	// ===========================================================================  
 
@@ -57,7 +62,7 @@ final class TreeClass extends Model {
 
 	// ===========================================================================  
 	
-	private function __construct() {
+	protected function __construct() {
 		parent::__construct();	
 	}
 	
@@ -243,34 +248,7 @@ final class TreeClass extends Model {
 		if ($this->_className === null)
 			$this->load();
 		return $this->_className;	
-	}                                                       
-	   
-	/**     
-	 * Gets the index of this tree class in data base using default order
-	 *
-	 * @return int
-	 */
-	public function getIndex() {            
-		$this->checkDisposed();
-			
-		if ($this->_index === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(tree.treeID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Trees')." AS tree ".
-				"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".	
-					"ON plugin.pluginID = tree.pluginID ".
-				"WHERE LOWER(plugin.name) < '".
-					DataBase::escape(Strings::unitize($this->plugin->name))."' (".
-					"OR (LOWER(plugin.name) = '".
-						DataBase::escape(Strings::unitize($this->plugin->name))."' ".
-						"AND LOWER(tree.className) < '".
-						DataBase::escape(Strings::unitize($this->className))."') ".
-				"ORDER BY LOWER(plugin.name) ASC, ".
-					"LOWER(tree.className) ASC ");
-			$this->_index = $result->get('count');
-		}
-		return $this->_index;
-	}      
+	}    
 
 	/**
 	 * Creates a new instance of this tree class

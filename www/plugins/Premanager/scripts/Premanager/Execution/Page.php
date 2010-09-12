@@ -79,7 +79,7 @@ class Page extends Module {
 	 * @return string
 	 */
 	public function getHTML() {
-		
+		throw new NotImplementedException();
 	}
 }
 

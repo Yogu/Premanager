@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\Execution\Options;
+
 class Request {
 	private static $_userAgent;
 	
