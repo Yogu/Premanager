@@ -5,6 +5,8 @@ use Premanager\Execution\Options;
 
 class Request {
 	private static $_userAgent;
+	private static $_ip;
+	private static $_requestURL;
 	
 	/**
 	 * Gets the client's ip address
@@ -34,6 +36,20 @@ class Request {
 	 */
 	public static function getUserAgent() {
 		return $_SERVER['HTTP_USER_AGENT'];
+	}
+	
+	/**
+	 * Gets the complete url the user requested (e.g. http://example.com/forum/)
+	 * 
+	 * @return string the request url
+	 */
+	public static function getRequestURL() {
+		if (self::$_requestURL === null) {
+			$https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+			self::$_requestURL = ($https ? 'https' : 'http').'://'.
+				$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+		}
+		return self::$_requestURL;
 	}
 	
 	/**
@@ -92,9 +108,9 @@ class Request {
 	 * @param string $name
 	 * @return string|null
 	 */
-	public static function uploadFileName($name) {
+	public static function getUploadFileName($name) {
 		return isset($_FILES[$name]) ? $_FILES[$name]['tmp_name'] : null;		
-	}  
+	}
 	
 	/**
 	 * Applies stripslashes to all items and subitems and so on of value

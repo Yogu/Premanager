@@ -45,7 +45,7 @@ class URL {
 	 */
 	public function getHost() {
 		if ($this->_host === null)
-			$this->splitIntoDomainAndPath();
+			$this->splitIntoParts();
 		return $this->_host;
 	}
 	
@@ -56,7 +56,7 @@ class URL {
 	 */
 	public function getPath() {
 		if ($this->_path === null)
-			$this->splitIntoDomainAndPath();
+			$this->splitIntoParts();
 		return $this->_path;
 	}
 	
@@ -109,7 +109,7 @@ class URL {
 		return $template;
 	}
 	
-	private function splitIntoHostnAndPath() {
+	private function splitIntoParts() {
 		// Check whether trailing slash after host misses
 		if (\preg_match('!^[a-zA-Z0-9]+:/*[a-zA-Z0-9_.-]*$!', $this->_url))
 			$this->_url .= '/';
