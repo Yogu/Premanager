@@ -70,6 +70,14 @@ abstract class PageNode extends Module {
 	}
 	
 	/**
+	 * Gets the child specified by its name
+	 * 
+	 * @param string $name the child's expected name
+	 * @return Premanager\Execution\PageNode the child node or null if not found
+	 */
+	public abstract function getChildByName($name);
+	
+	/**
 	 * Gets the name that is used in urls
 	 * 
 	 * @return string
@@ -142,6 +150,38 @@ abstract class PageNode extends Module {
 		// Root node has an empty url	
 		else
 			return '';		
+	}
+	
+	/**
+	 * Finds a page node specified by its url relative the current project's root
+	 * node's url
+	 * 
+	 * @param string $url the relative url
+	 * @param Premanager\Execution\PageNode $impact if the page node is not found,
+	 *   contains the deepmost node found
+	 * @return Premanager\Execution\PageNode the found page node or null
+	 */
+	public static function fromPath($url, &$impact = null) {
+		$path = explode('!/!', rtrim(trim($url), '/'));
+
+		// Get the root node for the current project
+		$node = new StructurePageNode(null,
+			Environment::getCurrent()->project->rootNode);
+		              
+		// Go through the path and find matching nodes 
+		foreach ($path as $name) {
+			// A name can contain special chars like ? or : and they are url-encoded.
+			$name = rawurldecode($name);
+			
+			$child = $node->getChildByName($name);
+			if ($child)
+				$node = $child;
+			else {
+				$impact = $node;
+				return null;
+			}
+		}
+		return $node;
 	}
 }
 

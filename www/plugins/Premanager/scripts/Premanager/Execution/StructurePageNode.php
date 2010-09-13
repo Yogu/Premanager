@@ -27,12 +27,31 @@ class StructurePageNode extends PageNode {
 	 * @param StructureNode $structureNode
 	 */
 	public function __construct($parent, StructureNode $structureNode) {
-		parent::__construct($parent);
 		if (!$parent && $structureNode->parent)
 			throw new ArgumentException('$parent must not be null if $structureNode '.
 				'is not a root node');
+		
+		parent::__construct($parent);
 			
 		$this->_structureNode = $structureNode;
+	}
+	
+	/**
+	 * Gets the child specified by its name
+	 * 
+	 * @param string $name the child's expected name
+	 * @return Premanager\Execution\PageNode the child node or null if not found
+	 */
+	public function getChildByName($name) {
+		if ($this->_structureNode->type == StructureNodeType::TREE)
+			return $this->getTreeNode()->getChildByName($name);
+		else {
+			$structureNode = $this->_structureNode->getChild($name);
+			if ($structureNode)
+				return new StructurePageNode($this, $structureNode);
+			else
+				return null;
+		}
 	}
 	
 	/**
