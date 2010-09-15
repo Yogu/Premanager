@@ -361,8 +361,7 @@ class Environment extends Module {
 			else {
 				$this->_projectLoading = true;
 				try {
-					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_project = Project::getOrganization();
+					$this->_project = Request::getProject();
 				} catch (\Exception $e) {
 					$this->_projectLoading = false;
 					throw $e;
@@ -390,8 +389,7 @@ class Environment extends Module {
 			else {
 				$this->_languageLoading = true;
 				try {
-					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_language = Language::getDefault();
+					$this->_language = Request::getLanguage();
 				} catch (\Exception $e) {
 					$this->_languageLoading = false;
 					throw $e;
@@ -419,7 +417,7 @@ class Environment extends Module {
 			else {
 				$this->_themeLoading = true;
 				try {
-					// TODO: This value is only a placeholder; replace it by the real value;
+					// TODO: This value is only a placeholder; replace it by the real value
 					$this->_theme = ThemeClass::getDefault()->instance;
 				} catch (\Exception $e) {
 					$this->_themeLoading = false;
@@ -448,8 +446,7 @@ class Environment extends Module {
 			else {
 				$this->_editionLoading = true;
 				try {
-					// TODO: This value is only a placeholder; replace it by the real value;
-					$this->_edition = Edition::COMMON;
+					$this->_edition = Request::getEdition();
 				} catch (\Exception $e) {
 					$this->_editionLoading = false;
 					throw $e;

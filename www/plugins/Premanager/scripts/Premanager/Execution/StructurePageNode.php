@@ -20,20 +20,27 @@ class StructurePageNode extends PageNode {
 	private $_treeNode = false;
 	
 	/**
-	 * Creates a new page node based on a structure node
+	 * Creates a new page node based on a structure node or on the root node of
+	 * the organization
 	 * 
-	 * @param Premanager\Models\PageNode|null $parent the parent node or null if
-	 *   this is a root node
-	 * @param StructureNode $structureNode
+	 * @param Premanager\Models\PageNode|null $parent the parent node or null to
+	 *   create a page node on the base of the root node of the organization
+	 * @param StructureNode $structureNode the base structure node or null to
+	 *   create a page node on the base of the root node of the organization
 	 */
-	public function __construct($parent, StructureNode $structureNode) {
-		if (!$parent && $structureNode->parent)
-			throw new ArgumentException('$parent must not be null if $structureNode '.
-				'is not a root node');
+	public function __construct($parent = null, $structureNode = null) {
+		if (!$parent)
+			$structureNode = Project::getOrganization()->rootNode;
+		else {
+			if (!($structureNode instanceof StructureNode))
+				throw new ArgumentException('$structureNode must be an a '.
+					'Premanager\Models\StructureNode', 'structureNode');
+			$this->_structureNode = $structureNode;
+		}
 		
 		parent::__construct($parent);
-			
-		$this->_structureNode = $structureNode;
+		
+		$this->_project = $structureNode->project;
 	}
 	
 	/**
@@ -103,10 +110,8 @@ class StructurePageNode extends PageNode {
 				$template = new Template('Premanager', 'subPagesList');
 				$template->set('list', $subNodes);
 				
-				$block = PageBlock::createSimple($this->getStandAloneTitle(),
-					$template->get(), false, false, true);
 				$page = new Page($this);
-				$page->blocks = array(/* rows */ array(/* cols */array($block)));
+				$page->createMainBlock($template->get());
 				return $page;
 		}
 	}

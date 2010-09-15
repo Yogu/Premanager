@@ -9,6 +9,10 @@ abstract class PageNode extends Module {
 	 * @var Premanager\Execution\PageNode
 	 */
 	private $_parent;
+	/**
+	 * @var Premanager\Models\Project
+	 */
+	protected $_project;
 	
 	/**
 	 * The parent node
@@ -16,6 +20,13 @@ abstract class PageNode extends Module {
 	 * @var Premanager\Execution\PageNode
 	 */
 	public $parent = Modue::PROPERTY_GET;
+	
+	/**
+	 * The project that owns this node
+	 * 
+	 * @var Premanager\Models\Project
+	 */
+	public $project = Modue::PROPERTY_GET;
 	
 	/**
 	 * The name that is used in urls
@@ -58,6 +69,7 @@ abstract class PageNode extends Module {
 				'Premanager\Execution\PageNode.', 'parent');
 		
 		$this->_parent = $parent;
+		$this->_project = $parent->_project;
 	}
 	
 	/**
@@ -67,6 +79,15 @@ abstract class PageNode extends Module {
 	 */
 	public function getParent() {
 		return $this->_parent;
+	}
+	
+	/**
+	 * Gets the project that owns this node
+	 * 
+	 * @var Premanager\Models\Project
+	 */
+	public function getProject() {
+		return $this->_project;
 	}
 	
 	/**
@@ -156,17 +177,19 @@ abstract class PageNode extends Module {
 	 * Finds a page node specified by its url relative the current project's root
 	 * node's url
 	 * 
-	 * @param string $url the relative url
+	 * @param string|array $url the relative url or an array of path elements
 	 * @param Premanager\Execution\PageNode $impact if the page node is not found,
 	 *   contains the deepmost node found
 	 * @return Premanager\Execution\PageNode the found page node or null
 	 */
 	public static function fromPath($url, &$impact = null) {
-		$path = explode('!/!', rtrim(trim($url), '/'));
+		if (is_array($url))
+			$path = $url;
+		else
+			$path = explode('!/!', rtrim(trim($url), '/'));
 
-		// Get the root node for the current project
-		$node = new StructurePageNode(null,
-			Environment::getCurrent()->project->rootNode);
+		// Get the root node for the organization project
+		$node = new StructurePageNode();
 		              
 		// Go through the path and find matching nodes 
 		foreach ($path as $name) {

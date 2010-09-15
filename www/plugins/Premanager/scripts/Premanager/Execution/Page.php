@@ -40,21 +40,15 @@ class Page extends Module {
 	}
 	
 	/**
-	 * Gets the value of the main block
+	 * Adds a new block in a new col in a new row. The block's title will be the
+	 * title of the assigned node, the block's body will be $content and it will
+	 * be a main block. 
 	 * 
-	 * @return string
+	 * @param string $body the content for the block's body
 	 */
-	public function getMainBlock() {
-		return $this->_mainBlock;
-	}
-	
-	/**
-	 * Sets a new value for the main block
-	 * 
-	 * @param string $value
-	 */
-	public function setMainBlock($content) {
-		$this->_mainBlock = (string) $value;
+	public function createMainBlock($body) {
+		$this->blocks[] = array(array(PageBlock::createSimple(
+			$this->_node->getTitle(), $body, false, false, true)));
 	}
 	
 	/**
