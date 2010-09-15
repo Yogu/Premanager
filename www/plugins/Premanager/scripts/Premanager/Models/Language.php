@@ -224,10 +224,9 @@ final class Language extends Model {
 			return $instance;
 		}
 
-		$id = (int) $id;
-		if ($id < 0)
-			throw new ArgumentException('$id must be a nonnegative integer value',
-				'id');
+		if (!Types::isInteger($id) || $id < 0)
+			throw new ArgumentException(
+				'$id must be a nonnegative integer value', 'id');
 		
 		$instance = new self();
 		$instance->_id = $id;
@@ -251,8 +250,7 @@ final class Language extends Model {
 	 * @return Premanager\Models\Language
 	 */
 	public static function getByID($id) {
-		$id = (int) $id;
-		if ($id < 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException(
 				'$id must be a nonnegative integer value', 'id');
 			
@@ -269,7 +267,7 @@ final class Language extends Model {
 	}
                                
 	/**
-	 * Creates a language that exists already in data base, using its name
+	 * Gets a language using its name
 	 *
 	 * Returns null if $name is not found
 	 *

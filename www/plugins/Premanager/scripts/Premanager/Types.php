@@ -6,13 +6,16 @@ namespace Premanager;
  */
 class Types {
 	/**
-	 * Checks whether the argument is an integer
+	 * Checks whether the argument is an integer or the string representation of
+	 * an integer
 	 * 
 	 * @param mixed $value
 	 * @return bool
 	 */
 	public static function isInteger($value) {
-		return \is_int($value);
+		// If a string equals its integer representation, it must equal the integer
+		// itself
+		return is_int($value) || (int)$value == $value;
 	}
 
 	/**
@@ -22,7 +25,7 @@ class Types {
 	 * @return bool
 	 */
 	public static function isNumeric($value) {
-		return \is_numeric($value);
+		return is_numeric($value);
 	}
 
 	/**
@@ -32,7 +35,7 @@ class Types {
 	 * @return bool
 	 */
 	public static function isFloat($value) {
-		return \is_float($value);
+		return is_float($value);
 	}
 
 	/**
@@ -42,7 +45,7 @@ class Types {
 	 * @return bool
 	 */
 	public static function isString($value) {
-		return \is_string($value);
+		return is_string($value);
 	}
 	
 	/**
@@ -52,7 +55,7 @@ class Types {
 	 * @return bool
 	 */
 	public static function isArray($value) {
-		return \is_array($value);
+		return is_array($value);
 	}
 	
 	/**
@@ -62,7 +65,7 @@ class Types {
 	 * @return bool
 	 */
 	public static function isBool($value) {
-		return \is_bool($value);
+		return is_bool($value);
 	}
 }
 

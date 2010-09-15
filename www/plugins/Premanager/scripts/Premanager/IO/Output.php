@@ -57,7 +57,7 @@ class Output {
 	 * 
 	 * @param string|null $location the new location or null to redirect to the
 	 *   request url
-	 * @param string $code the HTTP status code
+	 * @param string $code the HTTP status code, by default 303 See other
 	 */
 	public static function redirect($location = null, $code = 303) {
 		if ($location === null)

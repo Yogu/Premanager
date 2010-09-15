@@ -256,9 +256,7 @@ final class Group extends Model {
 	 * @return Premanager\Models\Group
 	 */
 	public static function getByID($id) {
-		$id = (int) $id;
-		
-		if ($id < 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException(
 				'$id must be a nonnegative integer value', 'id');
 			

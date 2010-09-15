@@ -1,10 +1,13 @@
 <?php
 namespace Premanager\Models;
 
+use Premanager\NotImplementedException;
+
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
 use Premanager\Module;
 use Premanager\Model;
+use Premanager\Types;
 use Premanager\ArgumentException;
 use Premanager\PageTree\TreeNode;
 use Premanager\Models\Plugin;
@@ -65,11 +68,11 @@ final class Plugin extends Model {
 			return $instance;
 		}
 
-		if (!is_int($id) || $id < 0)
-		throw new InvalidArgumentException(
-				'$id must be a nonnegative integer value');
+		if (!Types::isInteger($id) || $id < 0)
+		throw new ArgumentException('$id must be a nonnegative integer value',
+			'id');
 
-		$instance = new User();
+		$instance = new self();
 		$instance->_id = $id;
 		$instance->_name = $name;
 		self::$_instances[$id] = $instance;
@@ -86,7 +89,7 @@ final class Plugin extends Model {
 	 */
 	public static function getByID($id) {
 		if (!Types::isInteger($id) || $id < 0)
-		throw new ArgumentException(
+			throw new ArgumentException(
 				'$id must be a nonnegative integer value', 'id');
 			
 		if (\array_key_exists($id, self::$_instances)) {
@@ -217,6 +220,18 @@ final class Plugin extends Model {
 		}
 		return $this->_name;
 	}
+	
+	/**
+	 * Gets a class that initializes this plugin
+	 * 
+	 * @return Premanager\Execution\PluginInitializer
+	 */
+	public function getInitializer() {
+		$this->checkDisposed();
+		
+		//TODO implement the Plugin::getInitializer() method
+		throw new NotImplementedException();
+	}
 
 	/**
 	 * Deletes the reference to this plugin off the data base
@@ -244,12 +259,12 @@ final class Plugin extends Model {
 		$result = DataBase::query(
 			"SELECT plugin.name ".    
 			"FROM ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
-			"WHERE plugin.pluginID = '$this->_id'");
+			"WHERE plugin.id = '$this->_id'");
 
 		if (!$result->next())
 		return false;
 
-		$this->name = $result->get('name');
+		$this->_name = $result->get('name');
 
 		return true;
 	}

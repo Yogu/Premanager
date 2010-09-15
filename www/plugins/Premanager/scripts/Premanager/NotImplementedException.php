@@ -11,7 +11,8 @@ class NotImplementedException extends Exception {
 	 * @param string $message an exception message
 	 */
 	public function __construct($message = '') {
-		parent::__construct($message);
+		parent::__construct($message ? $message :
+			'This feature has not been implemented yet');;
 	}
 }
 
