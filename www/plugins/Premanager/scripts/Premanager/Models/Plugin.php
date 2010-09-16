@@ -1,8 +1,9 @@
 <?php
 namespace Premanager\Models;
 
-use Premanager\NotImplementedException;
+use Premanager\Execution\PluginInitializer;
 
+use Premanager\NotImplementedException;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
 use Premanager\Module;
@@ -14,6 +15,7 @@ use Premanager\Models\Plugin;
 use Premanager\Models\StructureNode;
 use Premanager\Debug\AssertionFailedException;
 use Premanager\IO\DataBase\DataBase;
+use Premanager\IO\CorruptDataException;
 use Premanager\QueryList\MemberInfo;
 use Premanager\QueryList\MemberKind;
 use Premanager\QueryList\DataType;
@@ -24,6 +26,8 @@ use Premanager\QueryList\DataType;
 final class Plugin extends Model {
 	private $_id;
 	private $_name;
+	private $_initializerClassName;
+	private $_initializer = false;
 
 	private static $_instances = array();
 	private static $_count;
@@ -50,6 +54,16 @@ final class Plugin extends Model {
 	 */
 	public $name = Module::PROPERTY_GET;
 
+	/**
+	 * The class that can initialize this plugin or null if there is no
+	 * initializer used
+	 *
+	 * Ths property is read-only.
+	 *
+	 * @var Premanager\Execution\PluginInitializer
+	 */
+	public $initializer = Module::PROPERTY_GET;
+
 	// ===========================================================================
 
 	protected function __construct() {
@@ -69,8 +83,8 @@ final class Plugin extends Model {
 		}
 
 		if (!Types::isInteger($id) || $id < 0)
-		throw new ArgumentException('$id must be a nonnegative integer value',
-			'id');
+			throw new ArgumentException('$id must be a nonnegative integer value',
+				'id');
 
 		$instance = new self();
 		$instance->_id = $id;
@@ -108,30 +122,44 @@ final class Plugin extends Model {
 	 * Creates a new plugin and inserts it into data base
 	 *
 	 * @param string $name the plugin name
+	 * @param string $initializerClassName the name of a class that implements
+	 *   Premanager\Execution\PluginInitializer. Can be an empty string.
 	 * @return Plugin
 	 */
-	public static function createNew($name) {
+	public static function createNew($name, $initialiizerClassName) {
 		$name = \trim($name);
 
 		if (!\preg_match('/^[A-Za-z][A-Za-z0-9]*$/', $name))
 		throw new ArgumentException('$name is not a valid plugin name', 'name');
 
 		if (!$this->isNameAvailable($name))
-		throw new ArgumentException(
+			throw new ArgumentException(
 				'There is already a plugin with this name', 'name');
+	
+		if ($initialiizerClassName) {
+			if (!\class_exists($initialiizerClassName))
+				throw new ArgumentException('The class \''.$initialiizerClassName.
+					'\' does not exist', 'initializerClassName');
+			
+			// Check if the class implements Premanager\Execution\PluginInitializer
+			$obj = new $className();
+			if (!($obj instanceof PluginInitializer))
+				throw new ArgumentException('The class '.$initialiizerClassName.' does '.
+					'not implement Premanager\Execution\PluginInitializer');
+		}
 
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager_Plugins')." ".
-			"(name) ".
-			"VALUES ('".DataBase::escape($name)."'");
+			"(name, initializerClass) ".
+			"VALUES ('".DataBase::escape($name)."', ".
+				"'".DataBase::escape($initialiizerClassName)."')");
 		$id = DataBase::insertID();
 
 		$instance = self::createFromID($id, $name);
+		$instance->_initializerClassName = $initialiizerClassName;
 
 		if (self::$_count !== null)
-		self::$_count++;
-		foreach (self::$_instances as $instance)
-		$instance::$_index = null;
+			self::$_count++;
 
 		return $instance;
 	}
@@ -222,15 +250,33 @@ final class Plugin extends Model {
 	}
 	
 	/**
-	 * Gets a class that initializes this plugin
+	 * Gets a class that can initialize this plugin or null if there is no
+	 * initializer used
 	 * 
 	 * @return Premanager\Execution\PluginInitializer
 	 */
 	public function getInitializer() {
 		$this->checkDisposed();
 		
-		//TODO implement the Plugin::getInitializer() method
-		throw new NotImplementedException();
+		if ($this->_initializer === false) {
+			if ($this->_initializerClassName === null)
+				$this->load();
+				
+			if ($this->_initializerClassName != '') {
+				if (!class_exists($this->_initializerClassName))
+					throw new CorruptDataException('The initializer class for the plugin '.
+						$this->_name.' does not exist (\''.$this->_initializerClassName.'\')');
+				$obj = new $this->_initializerClassName();
+				if (!($obj instanceof PluginInitializer))
+					throw new CorruptDataException('The initializer class for the plugin '.
+						$this->_name.' ('.$this->_initializerClassName.') does not implement '.
+							'Premanager\Execution\PluginInitializer');
+				$this->_initializer = $obj;
+			} else
+				$this->_initializer = null;
+		}
+				
+		return $this->_initializer;
 	}
 
 	/**
@@ -257,7 +303,7 @@ final class Plugin extends Model {
 
 	private function load() {
 		$result = DataBase::query(
-			"SELECT plugin.name ".    
+			"SELECT plugin.name, plugin.initializerClass ".    
 			"FROM ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
 			"WHERE plugin.id = '$this->_id'");
 
@@ -265,6 +311,7 @@ final class Plugin extends Model {
 		return false;
 
 		$this->_name = $result->get('name');
+		$this->_initializerClassName = $result->get('initializerClass');
 
 		return true;
 	}

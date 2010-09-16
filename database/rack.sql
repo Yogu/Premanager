@@ -1341,6 +1341,7 @@ INSERT INTO `rack_premanager_panelobjects` (`id`, `nodeID`, `userID`, `widgetID`
 CREATE TABLE IF NOT EXISTS `rack_premanager_plugins` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `initializerClass` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
