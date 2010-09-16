@@ -167,7 +167,7 @@ class Options extends Module {
 		if (!$this->_projectValuesLoaded &&
 			$this->_environment->isProjectAvailable())
 			$this->loadProjectOptions();
-		if (!$this->_userValuesLoaded && $this->_environment->isMeAvailable())
+		if (!$this->_userValuesLoaded && $this->_environment->isSessionAvailable())
 			$this->loadUserOptions();
 	}
 }

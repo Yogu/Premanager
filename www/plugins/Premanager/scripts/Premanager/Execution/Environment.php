@@ -65,7 +65,7 @@ class Environment extends Module {
 	/**
 	 * @var bool
 	 */
-	private $_meLoading;
+	private $_sessionLoading;
 	/**
 	 * @var bool
 	 */
@@ -113,12 +113,25 @@ class Environment extends Module {
 	 * Ths property is read-only.
 	 * 
 	 * This property contains Premanager\Models\User::getGuest() if it is accessed
-	 * while the actual value for $me is loading. Use isMeAvailable() to check
-	 * whether this is the case.
+	 * while the actual value for $me or $session is loading. Use
+	 * isSessionAvailable() to check whether this is the case.
 	 * 
 	 * @var Premanager\Models\User
 	 */
 	public $me = Module::PROPERTY_GET;
+
+	/**
+	 * The current session
+	 *
+	 * Ths property is read-only.
+	 * 
+	 * This property contains null if it is accessed while the actual value for
+	 * $session or $me is loading. Use isSessionAvailable() to check whether this
+	 * is the case.
+	 * 
+	 * @var Premanager\Models\Session
+	 */
+	public $session = Module::PROPERTY_GET;
 
 	/**
 	 * The current project
@@ -321,28 +334,42 @@ class Environment extends Module {
 	 * Gets the logged-in user
 	 * 
 	 * This method returns Premanager\Models\User::getGuest() if it is called
-	 * while the actual value for $me is loading. Use isMeAvailable() to check
-	 * whether this is the case.  
+	 * while the actual value for $me or $session is loading. Use
+	 * isSessionAvailable() to check whether this is the case.  
 	 * 
 	 * @return Premanager\Models\User
 	 */
 	public function getMe() {
-		if (!$this->_me && $this->_isReal) {
-			if ($this->_meLoading)
-				return User::getGuest();
+		return $this->session ? $this->session->user : User::getGuest();
+	}
+
+	/**
+	 * Gets the current session
+	 * 
+	 * This method returns null if it is called while the actual value for
+	 * $session is loading. Use isSessionAvailable() to check whether this is the
+	 * case.  
+	 * 
+	 * @return Premanager\Models\Session
+	 */
+	public function getSession() {
+		if (!$this->_session && $this->_isReal) {
+			if ($this->_sessionLoading)
+				return null;
 			else {
-				$this->_meLoading = true;
+				$this->_sessionLoading = true;
 				try {
-					$this->_me = self::getLoggedInUser();
+					if ($key = Request::getCookie('session'))
+						$this->_session = Session::getByKey($key);
 				} catch (\Exception $e) {
-					$this->_meLoading = false;
+					$this->_sessionLoading = false;
 					throw $e;
 				}
-				$this->_meLoading = false;
+				$this->_sessionLoading = false;
 			}
 		}
 		
-		return $this->_me;
+		return $this->_session;
 	}
 	
 	/**
@@ -498,12 +525,12 @@ class Environment extends Module {
 	}
 	
 	/**
-	 * Checks if the $me property contains the correct value  
+	 * Checks if the $session and $me properties contain the correct values  
 	 *  
-	 * @return bool true, if $me is available
+	 * @return bool true, if $session and $me are available
 	 */
-	public function isMeAvailable() {
-		return !$this->_meLoading;
+	public function isSessionAvailable() {
+		return !$this->_sessionLoading;
 	}
 	
 	/**
@@ -553,37 +580,10 @@ class Environment extends Module {
 		return $environment;
 	}
 
-	/**
-	 * Gets the logged-in user
-	 * 
-	 * This method checks for POST login / logout data and for cookies or returns
-	 * a bot or the guest
-	 * 
-	 * @return Premanager\Models\User
-	 */
-	private static function getLoggedInUser() {
-		/*
-		//TODO: Move this into a Login Page Node
-		// If user clicked login or logout button, do this
-  	if (!Config::isLoginDisabled()) {
-  		if (Request::getPOST('Premanager_Me_login')) {
-	   		$this->login();
-	  	} else if (Request::getPOST('Premanager_Me_logout'))
-	   		$this->logout();
-  	}
-  	
-  	// If we did not log in or out or the login has failed, this code is reached
-  	*/
-
-		$key = Request::getCookie('session');
-		if ($key)
-			$session = Session::getByKey($key);
-		if ($session) {
-			$session->hit();
-			return $session->user;
-		} else
-			return User::getGuest();
-	}    
+	/*
+	 * The following two methods have to be moved into the new login class as soon
+	 * as it exists
+	 */ 
 	
 	/*
 	 * Tries to login using POST data
@@ -651,21 +651,7 @@ class Environment extends Module {
 		Output::deleteCookie('session');
 		self::$loggedOut->call();
 		Output::redirect();
-	}*/
-
-	/**
-	 * Tries to log in using the sessions cookie
-	 * 
-	 * @return Premanager\Models\User the logged in user or null, if login failed
-	 */
-	private static function loginByCookie() {
-		$key = Request::getCookie('session');
-		$session = Session::getByKey($key);
-		if ($session) {
-			$session->hit();
-			return $session->user;
-		}
-	}    
+	}*/  
 }
 
 Environment::__init();
