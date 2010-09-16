@@ -199,15 +199,8 @@ class Config {
 	public static function getEmptyURLPrefix() {
 		if (self::$_urlTemplate === null)
 			self::loadFromFile();
-		if (self::$_emptyURLPrefix === null) {
-			$template = self::$_urlTemplate;
-			$template = \str_replace('{language}', '', $template);
-			$template = \str_replace('{edition}', '', $template);
-			$template = \str_replace('{project}', '', $template);
-			$template = \str_replace('..', '.', $template);            
-			$template = \str_replace('//', '/', $template);
-			self::$_emptyURLPrefix = \trim($template, "./").'/';
-		}
+		if (self::$_emptyURLPrefix === null)
+			self::$_emptyURLPrefix = URL::fromTemplateUsingStrings('', '', '');
 		return self::$_emptyURLPrefix;
 	}
 	

@@ -281,8 +281,6 @@ class URL extends Module {
 	 */
 	public static function fromTemplate($language = null, $edition = null,
 		$project = null) {
-		$template = Config::getURLTemplate();
-	
 		if ($language === null)
 			$language = Environment::getCurrent()->language;
 		else if (!($language instanceof Language))
@@ -309,13 +307,37 @@ class URL extends Module {
 				$editionString = '';		
 		}
 		
-		$template = \str_replace('{language}', $language->name, $template);
-		$template = \str_replace('{edition}', $editionString, $template);
-		$template = \str_replace('{project}', $project->name, $template);
-		$template = \str_replace('..', '.', $template);            
-		$template = \str_replace('//', '/', $template);
-		$template = \trim($template, "./").'/';
-		return $template;
+		return self::fromTemplateUsingStrings($language->name, $editionString,
+			$project->name);
+	}
+	
+	/**
+	 * Gets a url string using the url template
+	 * 
+	 * This method is identical to fromTemplate but it expects the arguments to
+	 * be strings. These strings are directly inserted into the template.
+	 * 
+	 * @param string $language the language name
+	 * @param string $edition the edition identifier
+	 * @param string $project the project name
+	 * @return string the url
+	 */
+	public static function fromTemplateUsingStrings($language, $edition,
+		$project) {
+		$template = Config::getURLTemplate();
+		
+		// first split scheme away
+		preg_match('/^([a-z][a-z0-9+.-]*)\:\/\/(.*)/i', $template, &$matches);
+		$scheme = $matches[1];
+		$template = $matches[2];
+		
+		$template = str_replace('{language}', $language, $template);
+		$template = str_replace('{edition}', $edition, $template);
+		$template = str_replace('{project}', $project, $template);
+		$template = str_replace('..', '.', $template);            
+		$template = str_replace('//', '/', $template);
+		$template = trim($template, "./").'/';
+		return $scheme.'://'.$template;
 	}
 }
 
