@@ -6,6 +6,7 @@ use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
 use Premanager\Models\StructureNodeType;
+use Premanager\IO\Output;
 
 class PageNotFoundNode extends PageNode {
 	/**
@@ -68,6 +69,13 @@ class PageNotFoundNode extends PageNode {
 		$page = new Page($this);
 		$page->createMainBlock($template->get());
 		return $page;
+	}
+
+	/**
+	 * Performs a call of this page
+	 */
+	public function execute() {
+		Output::select($this->getPage());
 	}
 	
 	/**

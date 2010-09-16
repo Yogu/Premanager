@@ -315,8 +315,8 @@ class DataBaseHelper extends Module {
 				"WHERE name.id = '$id' ".
 					"AND name.inUse = '1'");
 			while ($result->next()) {
-				$name = DataBase::escape($result->value('name'));
-				$nameID = $result->value('nameID');
+				$name = DataBase::escape($result->get('name'));
+				$nameID = $result->get('nameID');
 				
 				$isInUse = false;
 				$languageID = null;
@@ -351,7 +351,7 @@ class DataBaseHelper extends Module {
 				
 				// If language has changed, update this
 				} else if (!($flags & self::UNTRANSLATED_NAME) &&
-					$result->value('languageID') != $languageID) {
+					$result->get('languageID') != $languageID) {
 					DataBase::query(
 						"UPDATE ".DataBase::formTableName($table.'Name')." ".
 						"SET languageID = '$languageID' ".
@@ -420,7 +420,7 @@ class DataBaseHelper extends Module {
 			/* translating */
 			"WHERE item.id = '$id'");
 		while ($result->next()) {
-			self::insertName($table, $flags, $id, $result->value('name'),
+			self::insertName($table, $flags, $id, $result->get('name'),
 				$flags & self::IS_TREE ? $result-->value('parentID') : null);
 		}
 	}      
@@ -471,7 +471,7 @@ class DataBaseHelper extends Module {
 				"SET inUse = '1', ".
 					"languageID = '$lang', ".
 					"id = '$id' ".
-				"WHERE nameID = '".$result->value('nameID')."'");
+				"WHERE nameID = '".$result->get('nameID')."'");
 		} else {
 			DataBase::query(
 				"INSERT INTO ".DataBase::formTableName($table.'Name')." ".

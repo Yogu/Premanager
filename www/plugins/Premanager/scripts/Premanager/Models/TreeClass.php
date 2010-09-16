@@ -139,11 +139,11 @@ final class TreeClass extends Model {
 		
 		// Check if the class extends TreeNode
 		$class = $className;
-		while ($class != 'Premanager\PageTree\TreeNode') {
-			$class = \get_parent_class($class);
+		while ($class != 'Premanager\Execution\TreeNode') {
+			$class = get_parent_class($class);
 			if (!$class)
 				throw new ArgumentException('The class specified by $className '.
-					'does not inherit from Premanager\PageTree\TreeNode', 'className');
+					'does not inherit from Premanager\Execution\TreeNode', 'className');
 		}
 	
 		DataBase::query(

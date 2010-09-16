@@ -250,7 +250,7 @@ final class Project extends Model {
 	 * @param int $id the id of the project
 	 * @return Premanager\Models\Project
 	 */
-	public function getByID($id) {
+	public static function getByID($id) {
 		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException(
 				'$id must be a nonnegative integer value', 'id');
@@ -359,9 +359,6 @@ final class Project extends Model {
 		
 		// Insert nodes for current trees
 		foreach (TreeClass::getTreeClasses() as $treeClass) {
-			$plugin = $result->get('plugin');
-			$class = $result->get('class');
-			
 			$title = $treeClass->plugin->name . '-' . 
 				\preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->className);
 			$name = $rootNode->getAvailableName(Strings::toLower($title));
@@ -579,7 +576,7 @@ final class Project extends Model {
 				throw new CorruptDataException('There is no root node for the project '.
 					$this->name.' (id: '.$this->_id.')');
 					
-			$this->_rootNode = StructureNode::getByID($result->value('id'));
+			$this->_rootNode = StructureNode::getByID($result->get('id'));
 		}
 		return $this->_rootNode;
 	}                   
@@ -775,8 +772,8 @@ final class Project extends Model {
 				"translation.description, translation.keywords, project.createTime, ".
 				"project.creatorID, project.editTime, project.editTimes ".
 			"FROM ".DataBase::formTableName('Premanager_Projects')." AS project ",
-			/* translator */ 'projectID',
-			"WHERE project.projectID = '$this->id'");
+			/* translating */
+			"WHERE project.id = '$this->id'");
 		
 		if (!$result->next())
 			return false;

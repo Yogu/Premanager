@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\Execution\Environment;
+
 use Premanager\InvalidOperationException;
 use Premanager\ArgumentException;
 use Premanager\URL;
@@ -63,7 +65,7 @@ class Output {
 		if ($location === null)
 			$location = Request::getRequestURL();
 		elseif (!\preg_match('/^[a-zA-Z0-9-]\:/', $location))
-			$location = Config::$urlPrefix.$location;
+			$location = Environment::getCurrent()->urlPrefix.$location;
 
 		header("Location: $location", true, $code);
 		echo '<?xml version="1.0" encoding="utf-8" ?'.'>'.

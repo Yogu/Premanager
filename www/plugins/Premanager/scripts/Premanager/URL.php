@@ -104,6 +104,8 @@ class URL extends Module {
 	 * @throws Premanager\FormatException if $url is not a valid url
 	 */
 	public function __construct($url) {
+		parent::__construct();
+		
 		$this->_originalURL = $url;
 		
 		/*

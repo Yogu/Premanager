@@ -2,12 +2,11 @@
 namespace Premanager\Execution;
 
 use Premanage\Execution\Template;
-
 use Premanager\NotImplementedException;
-
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
 use Premanager\Models\StructureNodeType;
+use Premanager\Models\Project;
 
 class StructurePageNode extends PageNode {
 	/**
@@ -30,7 +29,7 @@ class StructurePageNode extends PageNode {
 	 */
 	public function __construct($parent = null, $structureNode = null) {
 		if (!$parent)
-			$structureNode = Project::getOrganization()->rootNode;
+			$this->_structureNode = Project::getOrganization()->rootNode;
 		else {
 			if (!($structureNode instanceof StructureNode))
 				throw new ArgumentException('$structureNode must be an a '.
@@ -145,7 +144,7 @@ class StructurePageNode extends PageNode {
 	private function getTreeNode() {
 		if ($this->_treeNode === false) {
 			if ($this->_structureNode->type == StructureNodeType::TREE)
-				$this->_treeNode = $this->_structureNode->tree->createInstance();
+				$this->_treeNode = $this->_structureNode->treeClass->createInstance();
 			else
 				$this->_treeNode = null;
 		}

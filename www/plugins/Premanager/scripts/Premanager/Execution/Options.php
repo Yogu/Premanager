@@ -116,8 +116,7 @@ class Options extends Module {
 				"ON optn.id = projectOption.optionID ".
 			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
 				"ON optn.pluginID = plugin.id ".
-			"WHERE projectOption.projectID = ".
-				$this->_environment->project->id);
+			"WHERE projectOption.projectID = '".$this->_environment->project->id."'");
 		while ($result->next()) {
 			$pluginName = $result->get('pluginName');
 			$optionName = $result->get('optionName');
@@ -145,8 +144,7 @@ class Options extends Module {
 				"ON optn.id = userOption.optionID ".
 			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
 				"ON optn.pluginID = plugin.id ".
-			"WHERE userOption.userID = ".
-				$this->_environment->me->id);
+			"WHERE userOption.userID = '".$this->_environment->me->id."'");
 		while ($result->next()) {
 			$pluginName = $result->get('pluginName');
 			$optionName = $result->get('optionName');

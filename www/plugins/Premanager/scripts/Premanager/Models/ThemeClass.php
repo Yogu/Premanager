@@ -133,21 +133,21 @@ final class ThemeClass extends Model {
 	 * @return Premanager\Models\ThemeClass
 	 */
 	public static function createNew(Plugin $plugin, $className) {
-		$className = \trim($className);
+		$className = trim($className);
 		
 		if (!$plugin)
 			throw new ArgumentNullException('plugin');
 			
-		if (!\class_exists($className))
+		if (!class_exists($className))
 			throw new ArgumentException('$className does not refer to an existing '.
 				'class', 'className');
 		
 		// Check if the class extends ThemeNode
 		$class = $className;
 		while ($class != 'Premanager\Execution\Theme') {
-			$class = \get_parent_class($class);
+			$class = get_parent_class($class);
 			if (!$class)
-				throw new InvalidArgumentException('The class specified by $className '.
+				throw new ArgumentException('The class specified by $className '.
 					'does not inherit from Premanager\Execution\Theme');
 		}
 	

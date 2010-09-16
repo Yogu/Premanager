@@ -218,7 +218,7 @@ final class Language extends Model {
 				$instance->_name = $name;         
 			if ($instance->_title === null)
 				$instance->_title = $title;       
-			if ($instance->_englishName === null)
+			if ($instance->_englishTitle === null)
 				$instance->_englishTitle = $englishTitle;
 
 			return $instance;
@@ -278,8 +278,8 @@ final class Language extends Model {
 		$result = DataBase::query(
 			"SELECT language.id, language.name, language.title, ".
 				"language.englishTitle ".            
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS langauge ".
-			"WHERE language.name = '".DataBase::escape(Strings::unitize($name)."'"));
+			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"WHERE language.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$language = Language::createFromID($result->get('id',
 				$result->get('name'), $result->get('title'),
@@ -880,9 +880,8 @@ final class Language extends Model {
 				"language.shortDateFormat, language.shortTimeFormat, ".
 				"language.createTime, language.editTime, language.creatorID, ".
 				"language.editorID ".
-			"FROM ".DataBase::formTableName('Premanager_Projects')." AS project ",
-			/* translator */ 'projectID',
-			"WHERE project.projectID = '$this->id'");
+			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"WHERE language.id = '$this->id'");
 		
 		if (!$result->next())
 			return false;

@@ -19,21 +19,21 @@ abstract class PageNode extends Module {
 	 * 
 	 * @var Premanager\Execution\PageNode
 	 */
-	public $parent = Modue::PROPERTY_GET;
+	public $parent = Module::PROPERTY_GET;
 	
 	/**
 	 * The project that owns this node
 	 * 
 	 * @var Premanager\Models\Project
 	 */
-	public $project = Modue::PROPERTY_GET;
+	public $project = Module::PROPERTY_GET;
 	
 	/**
 	 * The name that is used in urls
 	 * 
 	 * @var string
 	 */
-	public $name = Modue::PROPERTY_GET;
+	public $name = Module::PROPERTY_GET;
 	
 	/**
 	 * The displayed title that is used when the titles of the parent nodes are
@@ -41,7 +41,7 @@ abstract class PageNode extends Module {
 	 * 
 	 * @var string
 	 */
-	public $title = Modue::PROPERTY_GET;
+	public $title = Module::PROPERTY_GET;
 	
 	/**
 	 * The title that is used in a context where the titles of the parent nodes
@@ -49,14 +49,14 @@ abstract class PageNode extends Module {
 	 * 
 	 * @var string
 	 */
-	public $standAloneTitle = Modue::PROPERTY_GET;
+	public $standAloneTitle = Module::PROPERTY_GET;
 	
 	/**
 	 * The url of this page relative to Environment::getCurrent()->urlPrefix
 	 * 
 	 * @var string
 	 */
-	public $url = Modue::PROPERTY_GET_ACRONYM;
+	public $url = Module::PROPERTY_GET_ACRONYM;
 	
 	/**
 	 * Creates a new page node
@@ -64,6 +64,8 @@ abstract class PageNode extends Module {
 	 * @param Premanager\Execution\ParentNode|null $parent
 	 */
 	public function __construct($parent) {
+		parent::__construct();
+		
 		if ($parent != null && !($parent instanceof PageNode))
 			throw new ArgumentException('$parent must either be null or a '.
 				'Premanager\Execution\PageNode.', 'parent');

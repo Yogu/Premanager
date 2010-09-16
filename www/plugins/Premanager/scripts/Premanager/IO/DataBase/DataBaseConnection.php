@@ -179,7 +179,7 @@ class DataBaseConnection extends Module {
 	 * @return string
 	 */
 	public function escape($str) {
-		return \mysql_escape_string($str, $this->_link);
+		return \mysql_real_escape_string($str, $this->_link);
 	}
 	
 	/**

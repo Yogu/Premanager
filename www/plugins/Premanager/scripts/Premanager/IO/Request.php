@@ -11,6 +11,7 @@ use Premanager\NotImplementedException;
 use Premanager\Execution\Options;
 use Premanager\Execution\Translation;
 use Premanager\Execution\PageNode;
+use Premanager\FormatException;
 
 class Request {
 	private static $_userAgent;
@@ -21,6 +22,7 @@ class Request {
 	private static $_project;
 	private static $_language;
 	private static $_edition;
+	private static $_isValidated;
 	
 	/**
 	 * Gets the complete url the user requested (e.g. http://example.com/forum/)
@@ -34,167 +36,6 @@ class Request {
 				$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
 		}
 		return self::$_requestURL;
-	}
-	
-	/**
-	 * Gets the project that contains the requested page
-	 * 
-	 * @return Premanager\Models\Project
-	 */
-	public static function getProject() {
-		throw new NotImplementedException();
-	}
-	
-	/**
-	 * Getst the requested page node
-	 * 
-	 * @return Premanager\Execution\PageNode
-	 */
-	public static function getPageNode() {
-		throw new NotImplementedException();
-	}
-	
-	/**
-	 * Tries to find out which ressource the visitor wants to access, gets the url
-	 * for that ressource and redirects to it if unlike the actual request url.
-	 * 
-	 * Redirecting means instantly finishing the output and terminating the
-	 * script. Make sure that this method has been called before critical code.
-	 */
-	public static function validateURL() {
-		if (!self::$_isValidated) {
-			// Don't call this method twice!
-			self::$_isValidated = true;
-			
-			try {
-				$trunkURL = new URL(Config::getEmptyURLPrefix());
-			} catch (FormatException $e) {
-				throw new CorruptDataException('The url prefix is not a valid url: '.
-					Config::getEmptyURLPrefix());
-			}
-			
-			// The request url might not be a valid url...
-			try {
-				$requestURL = new URL(slef::getRequestURL());
-			} catch (FormatException $e) {
-				Output::selectInputError(Translation::defaultGet('Premanager',
-					'invalidRequestURI'));
-			}
-			
-			// We can't use the URL class here because the template contains
-			// characters ({ and }) that are now allowed in a url
-			preg_match('/[^:]+\:\/\/(?P<host>[^/]+)(?<path>.*)/i',
-				Config::getURLTemplate(), &$matches);
-			$templateHost = $matches['host'];
-			$templatePath = $matches['path'];
-				
-			// Goes through all elements and checks if they match to any available
-			// template.
-			// Returns the index of the element after the last used one
-			$walker = function($elements, $templates, $trunkElements, $breakOnFailure,
-				&$language, &$edition) {
-				if (count($elements) > count($trunkElements))
-					array_splice(&$elements, -count($trunkElements));
-				if (count($templates) > count($trunkElements))
-					array_splice(&$templates, -count($trunkElements));
-				
-				foreach ($elements as $elementKey => $element) {
-					foreach ($templates as $templateKey => $template) {
-						// Check if the lement matches the template. Test the strongest
-						// defined template at first.
-						$ok = false;
-						switch ($template) {
-							case '{edition}':
-								switch ($element) {
-									case 'mobile':
-										$edition = Edition::MOBILE;
-										$ok = true;
-									case 'print':
-										$edition = Edition::PRINTABLE;
-										$ok = true;
-								}
-								break;
-								
-							case '{language}':
-								$lang = Language::getByName($element);
-								if ($lang) {
-									$language = $lan;
-									$ok = true;
-								}
-								break;
-						}
-						
-						// If the element matches the template, 
-						if ($ok) {
-							unset($templates[$templateKey]);
-							break;
-						}
-					}
-					
-					if ($breakOnFailure && !$ok)
-						return $elementKey;
-				}
-				return count($elements);
-			};
-			
-			// requestURL - emptyURLPrefix = significant data
-			// urlTemplate - emptyURLPrefix = template for the data
-			
-			$edition = Edition::COMMON;
-			
-			// Domain part
-			$trunkElements = explode('.', $trunkURL->host);
-			$elements = explode('.', $requestURL->host);
-			$templates = explode('.', $templateHost);
-			call_user_func($walker, $elements, $templates, $trunkElements, false,
-				&$language, &$edition);
-			
-			// Path part
-			$trunkElements = explode('/', trim($trunkURL->path, '/'));
-			$elements = explode('/', trim($requestURL->path, '/'));
-			$templates = explode('/', trim($templatePath, '/'));
-			$pathElementIndex = call_user_func($walker, $elements, $templates,
-				$trunkElements, true, &$language, &$edition);
-				
-			if (!$language) {
-				foreach (parseHTTPLanguageHeader() as $code) {
-					if ($lang = Language::getByName($code)) {
-						$language = $lang;
-						break;
-					}
-				}
-				
-				if (!$language)
-					$language = Language::getDefault();
-			}
-				
-			self::$_language = $language;
-			self::$_edition = $edition;
-			
-			// Find the path to the page node
-			array_splice($elements, 0, $pathElementIndex);
-			
-			self::$_relativeRequestURL = implode('/', $elements);
-			
-			if (!$node = PageNode::fromPath($elements, &$impact)) {
-				$node = new PageNotFoundNode($impact,
-					Strings::substring(self::$_relativeRequestURL,
-						Strings::length($impact->url)));
-			}
-			self::$_pageNode = $node;
-			self::$_project = $node->project;
-			
-			// Compare the url of the page node to the request url
-			$calculatedURL =
-				Environment::getCurrent()->urlPrefix.self::$_pageNode->url;
-			if ($calculatedURL != self::getRequestURL())
-				Output::redirect($calculatedURL, 301 /* moved permanently */);
-	
-			//TODO to bemoved into a separate method
-			/*// Check wehater Client::$referer is in a subfolder of Config::$urlTrunk
-			Client::$refererIsInternal = preg_match('![a-zA-Z0-9]*:/*[a-zA-Z0-9_.-]*'.
-				Config::$urlTrunk.'.*!', Client::$referer);*/
-		}
 	}
 	
 	/**
@@ -214,7 +55,7 @@ class Request {
 	 * 
 	 * @return Premanager\Models\Project
 	 */
-	public static function getPageNode() {
+	public static function getProject() {
 		if (self::$_project === null) {
 			self::validateURL();
 		}
@@ -333,6 +174,149 @@ class Request {
 	 */
 	public static function getUploadFileName($name) {
 		return isset($_FILES[$name]) ? $_FILES[$name]['tmp_name'] : null;		
+	}
+	
+	/**
+	 * Tries to find out which ressource the visitor wants to access, gets the url
+	 * for that ressource and redirects to it if unlike the actual request url.
+	 * 
+	 * Redirecting means instantly finishing the output and terminating the
+	 * script. Make sure that this method has been called before critical code.
+	 */
+	public static function validateURL() {
+		if (!self::$_isValidated) {
+			// Don't call this method twice!
+			self::$_isValidated = true;
+			
+			try {
+				$trunkURL = new URL(Config::getEmptyURLPrefix());
+			} catch (FormatException $e) {
+				throw new CorruptDataException('The url prefix is not a valid url: '.
+					Config::getEmptyURLPrefix());
+			}
+			
+			// The request url might not be a valid url...
+			try {
+				$requestURL = new URL(self::getRequestURL());
+			} catch (FormatException $e) {
+				Output::selectInputError(Translation::defaultGet('Premanager',
+					'invalidRequestURI'));
+			}
+			
+			// We can't use the URL class here because the template contains
+			// characters ({ and }) that are now allowed in a url
+			preg_match('/[^:]+\:\/\/(?P<host>[^\/]+)(?<path>.*)/i',
+				Config::getURLTemplate(), &$matches);
+			$templateHost = $matches['host'];
+			$templatePath = $matches['path'];
+				
+			// Goes through all elements and checks if they match to any available
+			// template.
+			// Returns the index of the element after the last used one
+			$walker = function($elements, $templates, $trunkElements, $breakOnFailure,
+				&$language, &$edition) {
+				if (count($elements) > count($trunkElements))
+					array_splice(&$elements, -count($trunkElements));
+				if (count($templates) > count($trunkElements))
+					array_splice(&$templates, -count($trunkElements));
+				
+				foreach ($elements as $elementKey => $element) {
+					foreach ($templates as $templateKey => $template) {
+						// Check if the lement matches the template. Test the strongest
+						// defined template at first.
+						$ok = false;
+						switch ($template) {
+							case '{edition}':
+								switch ($element) {
+									case 'mobile':
+										$edition = Edition::MOBILE;
+										$ok = true;
+									case 'print':
+										$edition = Edition::PRINTABLE;
+										$ok = true;
+								}
+								break;
+								
+							case '{language}':
+								$lang = Language::getByName($element);
+								if ($lang) {
+									$language = $lan;
+									$ok = true;
+								}
+								break;
+						}
+						
+						// If the element matches the template, 
+						if ($ok) {
+							unset($templates[$templateKey]);
+							break;
+						}
+					}
+					
+					if ($breakOnFailure && !$ok)
+						return $elementKey;
+				}
+				return count($elements);
+			};
+			
+			// requestURL - emptyURLPrefix = significant data
+			// urlTemplate - emptyURLPrefix = template for the data
+			
+			$edition = Edition::COMMON;
+			
+			// Domain part
+			$trunkElements = explode('.', $trunkURL->host);
+			$elements = explode('.', $requestURL->host);
+			$templates = explode('.', $templateHost);
+			call_user_func($walker, $elements, $templates, $trunkElements, false,
+				&$language, &$edition);
+			
+			// Path part
+			$trunkElements = explode('/', trim($trunkURL->path, '/'));
+			$elements = explode('/', trim($requestURL->path, '/'));
+			$templates = explode('/', trim($templatePath, '/'));
+			$pathElementIndex = call_user_func($walker, $elements, $templates,
+				$trunkElements, true, &$language, &$edition);
+
+			if (!$language) {
+				foreach (self::parseHTTPLanguageHeader() as $code) {
+					if ($lang = Language::getByName($code)) {
+						$language = $lang;
+						break;
+					}
+				}
+				
+				if (!$language)
+					$language = Language::getDefault();
+			}
+				
+			self::$_language = $language;
+			self::$_edition = $edition;
+			
+			// Find the path to the page node
+			array_splice($elements, 0, $pathElementIndex);
+			
+			self::$_relativeRequestURL = implode('/', $elements);
+			
+			if (!$node = PageNode::fromPath($elements, &$impact)) {
+				$node = new PageNotFoundNode($impact,
+					Strings::substring(self::$_relativeRequestURL,
+						Strings::length($impact->url)));
+			}
+			self::$_pageNode = $node;
+			self::$_project = $node->project;
+			
+			// Compare the url of the page node to the request url
+			$calculatedURL =
+				Environment::getCurrent()->urlPrefix.self::$_pageNode->url;
+			if ($calculatedURL != self::getRequestURL())
+				Output::redirect($calculatedURL, 301 /* moved permanently */);
+	
+			//TODO to bemoved into a separate method
+			/*// Check wehater Client::$referer is in a subfolder of Config::$urlTrunk
+			Client::$refererIsInternal = preg_match('![a-zA-Z0-9]*:/*[a-zA-Z0-9_.-]*'.
+				Config::$urlTrunk.'.*!', Client::$referer);*/
+		}
 	}
 	
 	/**

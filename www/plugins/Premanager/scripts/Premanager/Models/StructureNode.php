@@ -20,6 +20,7 @@ use Premangaer\Objects\Groups;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
 use Premanager\QueryList\DataType;
+use Premanager\IO\DataBase\DataBase;
 
 /**
  * A structure node
@@ -129,7 +130,7 @@ final class StructureNode extends Model {
 	 * 
 	 * @var Premanager\Models\TreeClass
 	 */
-	public $tree = Module::PROPERTY_GET; 
+	public $treeClass = Module::PROPERTY_GET; 
 
 	/**
 	 * The user that has created this group
@@ -391,7 +392,7 @@ final class StructureNode extends Model {
 		if ($this->_hasPanel === null || $this->_treeID === null)
 			$this->load();
 		return $this->_hasPanel ? StructureNodeType::PANEL :
-			$this->_treeID ? StructureNodeType::TREE : StructureNodeType::SIMPLE;
+			($this->_treeID ? StructureNodeType::TREE : StructureNodeType::SIMPLE);
 	}
 
 	/**
@@ -483,14 +484,14 @@ final class StructureNode extends Model {
 		$this->checkDisposed();
 				
 		$result = DataBase::query(
-			"SELECT name.nodeID ".            
+			"SELECT name.id ".            
 			"FROM ".DataBase::formTableName('Premanager_NodesName')." AS name ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Nodes')." AS node".
-				"ON name.nodeID = node.nodeID ".
-			"WHERE node.parentID = 'this->id' ". 
-				"AND name.name = '".DataBase::escape(Strings::unitize($name)."'"));
+			"INNER JOIN ".DataBase::formTableName('Premanager_Nodes')." AS node ".
+				"ON name.id = node.id ".
+			"WHERE node.parentID = '$this->id' ". 
+				"AND name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
-			$user = self::createFromID($result->get('nodeID'), $this);
+			$user = self::createFromID($result->get('id'), $this);
 			return $user;
 		}
 		return null;
@@ -506,7 +507,7 @@ final class StructureNode extends Model {
 			
 		if ($this->_childCount === null) {
 			$result = DataBase::query(
-				"SELECT COUNT(node.nodeID) AS count ".
+				"SELECT COUNT(node.id) AS count ".
 				"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
 				"WHERE node.parentID = ".$this->_id);
 			$this->_childCount = $result->get('count');
@@ -543,15 +544,15 @@ final class StructureNode extends Model {
 	
 		$list = array();
 		$result = DataBase::query(
-			"SELECT node.nodeID, node.treeID, node.noAccessRestriction, ".
+			"SELECT node.id, node.treeID, node.noAccessRestriction, ".
 				"node.hasPanel, translation.name, translation.title ".
 			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ",
-			/* translator */ 'nodeID',
+			/* translating */
 			"ORDER BY LOWER(translation.title) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
 		$list = '';
 		while ($result->next()) {
-			$node = self::createFromID($result->get('nodeID'), $this,
+			$node = self::createFromID($result->get('id'), $this,
 				$result->get('name'), $result->get('title'),
 				$result->get('noAccessRestriction'), $result->get('tree'),
 				$result->get('hasPanel'));
@@ -641,11 +642,12 @@ final class StructureNode extends Model {
 	
 		$list = array();
 		$result = DataBase::query(
-			"SELECT group.groupID, translation.name, translation.title, group.color ".
-			"FROM ".DataBase::formTableName('Premanager_Groups')." AS group ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_NodeGroup')." AS nodeGroup ".
-				"ON nodeGroup.groupID = group.groupID ",
-			/* translator */ 'groupID', 
+			"SELECT grp.id, translation.name, translation.title, grp.color ".
+			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ".
+			"INNER JOIN ".DataBase::formTableName('Premanager_NodeGroup')." ".
+				"AS nodeGroup ".
+				"ON nodeGroup.groupID = group.id ",
+			/* translating */ 
 			"WHERE nodeGroup.nodeID = '$this->_id' ".
 			"ORDER BY LOWER(translation.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
@@ -1124,8 +1126,8 @@ final class StructureNode extends Model {
 				"node.hasPanel, node.treeID, translation.name, translation.title, ". 
 				"node.creatorID, node.editorID, node.createTime, node.editTime ".    
 			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ",
-			/* translator */ 'nodeID',
-			"WHERE node.nodeID = '$this->_id'");
+			/* translating */
+			"WHERE node.id = '$this->_id'");
 		
 		if (!$result->next())
 			return false;

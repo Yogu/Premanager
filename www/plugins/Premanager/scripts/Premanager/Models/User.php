@@ -970,10 +970,10 @@ final class User extends Model {
 		$result = DataBase::query(
 			"SELECT grp.id ".
 			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ",
-			/* translator */ 'groupID',
+			/* translating */
 			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup').
 				" AS userGroup ".
-				"ON userGroup.groupID = grp.groupID ".
+				"ON userGroup.groupID = grp.id ".
 				"AND userGroup.userID = '$this->_id' ". 
 			"ORDER BY LOWER(translation.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
@@ -1604,7 +1604,7 @@ final class User extends Model {
 			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup').
 				" AS userGroup ".
 				"ON userGroup.groupID = grp.id ",
-			/* translator */ 'groupID',
+			/* translating */
 			"WHERE userGroup.userID = '$this->_id' ".
 			"ORDER BY grp.priority DESC ".
 			"LIMIT 0,1");
