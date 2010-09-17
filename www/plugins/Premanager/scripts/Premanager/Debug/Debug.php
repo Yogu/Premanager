@@ -19,14 +19,12 @@ class Debug {
 	 * Adds a string to the log
 	 * 
 	 * @param string $message the message to log
+	 * @param int $indirectCallDepth the count of methods in call stack to be
+	 *   excluded from stored call stack
 	 * @see getLog()
 	 */
-	public static function log($message) {
-		self::$_log[] = new LogItem($message);
-		
-		//TODO: remove this line when log works
-		//var_dump($message);
-		echo "<b>Log:</b> $message<br />\n";
+	public static function log($message, $indirectCallDepth = 0) {
+		self::$_log[] = new LogItem($message, $indirectCallDepth+1);
 	}
 	
 	/**
@@ -35,6 +33,6 @@ class Debug {
 	 * @return array
 	 */
 	public static function getLog() {
-		return $this->_log;
+		return self::$_log;
 	}
 }

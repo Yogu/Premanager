@@ -75,7 +75,8 @@ class DataBaseConnection extends Module {
 	 *   query, otherwise null
 	 */
 	public function query($query, $rightPart = null) {
-		return $this->internalQuery($query, $rightPart, $rightPart !== null, false);
+		return $this->internalQuery($query, $rightPart, $rightPart !== null, false,
+			0);
 	}
 	
 	/**
@@ -89,11 +90,15 @@ class DataBaseConnection extends Module {
 	 * 
 	 * @param string $query the query to execute
 	 * @param string $rightPart the query part after the translating part
+	 * @param int $indirectCallDepth the count of methods in call stack to be
+	 *   excluded from stored call stack
 	 * @return Premanager\IO\DataBase\DataBaseResult the result if it is a WHERE
 	 *   query, otherwise null
 	 */
-	public function queryAndLog($query, $rightPart = null) {
-		return $this->internalQuery($query, $rightPart, $rightPart !== null, true);
+	public function queryAndLog($query, $rightPart = null,
+		$indirectCallDepth = 0) {
+		return $this->internalQuery($query, $rightPart, $rightPart !== null, true,
+			$indirectCallDepth+1);
 	}
 	
 	/**
@@ -118,7 +123,8 @@ class DataBaseConnection extends Module {
 		return \mysql_error($this->_link);
 	}
 	
-	private function internalQuery($query, $rest, $doTranslate, $doLog) {
+	private function internalQuery($query, $rest, $doTranslate, $doLog,
+		$indirectCallDepth) {
 		$this->_queryCount++;
 		
 		$query = trim($query);
@@ -159,7 +165,7 @@ class DataBaseConnection extends Module {
 		}
 
 		if ($doLog)
-			Debug::log($query);           
+			Debug::log($query, $indirectCallDepth+1);           
 		
 		$mysqlResult = @\mysql_query($query, $this->_link);
 		if ($mysqlResult === false)
