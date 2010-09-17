@@ -285,7 +285,7 @@ class Config {
 		// URL
 		self::$_urlTemplate = $ini['URL']['Template'];
 		self::$_staticURLPrefix = rtrim($ini['URL']['StaticPrefix'], '/').'/';
-		self::$_useWWW = $ini['URL']['UseWWW'];  
+		self::$_useWWW = $ini['URL']['UseWWW'] == 'true';  
 		
 		// Security
 		self::$_securityCode = \hash('sha256',
@@ -293,6 +293,6 @@ class Config {
 			$ini['Security']['Code']);
 			
 		// PHP
-		self::$_varDumpReturnsHTML = $ini['PHP']['VarDumpReturnsHTML'];    
+		self::$_varDumpReturnsHTML = $ini['PHP']['VarDumpReturnsHTML'] == 'true';    
 	}
 }
