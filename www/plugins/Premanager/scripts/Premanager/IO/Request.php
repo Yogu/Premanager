@@ -18,6 +18,7 @@ class Request {
 	private static $_ip;
 	private static $_requestURL;
 	private static $_relativeRequestURL;
+	private static $_isRefererInternal;
 	private static $_pageNode;
 	private static $_project;
 	private static $_language;
@@ -123,6 +124,16 @@ class Request {
 	 */
 	public static function getReferer() {
 		return $_SERVER['HTTP_REFERER'];
+	}
+	
+	public static function isRefererInternal() {
+		if (self::$_isRefererInternal === null) {
+			// Check wehater the referer is in a subfolder of Config::$urlTrunk
+			self::$_isRefererInternal = preg_match('/[a-zA-Z0-9+.-]*\:\/\/'.
+				'[a-zA-Z0-9.-]*'.str_replace('/', '\/', Config::getEmptyURLPrefix()).
+				'.*/', self::getReferer());
+		}
+		return self::$_isRefererInternal;
 	}
 	
 	/**
@@ -231,9 +242,11 @@ class Request {
 									case 'mobile':
 										$edition = Edition::MOBILE;
 										$ok = true;
+										break;
 									case 'print':
 										$edition = Edition::PRINTABLE;
 										$ok = true;
+										break;
 								}
 								break;
 								
@@ -309,13 +322,8 @@ class Request {
 			// Compare the url of the page node to the request url
 			$calculatedURL =
 				Environment::getCurrent()->urlPrefix.self::$_pageNode->url;
-			if ($calculatedURL != self::getRequestURL())
+			if ($calculatedURL != self::getRequestURL()) 
 				Output::redirect($calculatedURL, 301 /* moved permanently */);
-	
-			//TODO to bemoved into a separate method
-			/*// Check wehater Client::$referer is in a subfolder of Config::$urlTrunk
-			Client::$refererIsInternal = preg_match('![a-zA-Z0-9]*:/*[a-zA-Z0-9_.-]*'.
-				Config::$urlTrunk.'.*!', Client::$referer);*/
 		}
 	}
 	
