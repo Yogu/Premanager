@@ -1,9 +1,11 @@
 <?php
 namespace Premanager\IO\DataBase;
 
+use Premanager\Execution\Theme;
+use Premanager\ArgumentException;
 use Premanager\Module;
 
-class DataBaseResult extends Module {
+class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 	private $_resource;
 	private $_row;
 	private $_nextCalled = false;
@@ -14,7 +16,7 @@ class DataBaseResult extends Module {
 	 * 
 	 * @var int
 	 */
-	public $rowCount = Module::PROPERTY_GET; 
+	public $rowCount = Module::PROPERTY_GET;
 	
 	/**
 	 * Creates a new DataBaseResult linked to a data base result ressource
@@ -68,8 +70,70 @@ class DataBaseResult extends Module {
    		$this->next(); 
 		if ($this->_eof)
 			return null;
+		else {
+			if (isset($this->_row[$fieldName]))
+				return $this->_row[$fieldName];
+			else
+				throw new ArgumentException('The specified field does not exist');
+		}
+	}
+	
+	/**
+	 * Gets the count of fields of the current row
+	 * 
+	 * @return int the count of fields
+	 */
+	public function getFieldCount() {
+ 		if (!$this->_nextCalled) 
+   		$this->next(); 
+		if ($this->_eof)
+			return null;
 		else
-			return $this->_row[$fieldName];
+			return count($this->_row);
+	}
+	
+	/**
+	 * Gets the count of fields in the current row
+	 * 
+	 * @return int the count of fields
+	 */
+	public function count() {
+		// This method is needed to implement the Countable interface
+		return $this->getFieldCount();
+	}
+	
+	/**
+	 * Checks whether the field specified by its name exists in the current row
+	 * 
+	 * @param mixed $offset
+	 * @return bool true if the field exists, false if it does not exist or this
+	 *   result is empty
+	 */
+	public function offsetExists($offset) {
+ 		if (!$this->_nextCalled) 
+   		$this->next(); 
+		if ($this->_eof)
+			return false;
+		else
+			return isset($this->_row[$offset]);;
+	}
+	
+	/**
+	 * Gets the a value of a field in the current row specified by its field name
+	 * 
+	 * @param mixed $offset
+	 * @return mixed
+	 */
+	public function offsetGet($offset) {
+		return $this->get($offset);
+	}
+	
+	public function offsetSet($offset, $value) {
+		throw new InvalidOperationException('A DataBaseResult can not be changed');
+	}
+	
+	public function offsetUnset($offset) {
+		throw new InvalidOperationException('A DataBaseResult can not be changed');
 	}
 }
 
