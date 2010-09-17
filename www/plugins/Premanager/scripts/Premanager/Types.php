@@ -15,7 +15,7 @@ class Types {
 	public static function isInteger($value) {
 		// If a string equals its integer representation, it must equal the integer
 		// itself
-		return is_int($value) || (int)$value == $value;
+		return is_int($value) || (string)(int)$value == $value;
 	}
 
 	/**
