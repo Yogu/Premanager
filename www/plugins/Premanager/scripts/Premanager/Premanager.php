@@ -1,14 +1,13 @@
 <?php
 namespace Premanager;
 
+use Premanager\Debug\Debug;
+
 use Premanager\IO\Request;
-
-use Premanager\IO\Config;
-
+use Premanager\IO\Config;;
+use Premanager\IO\Output;
 use Premanager\Execution\PageNode;
-
 use Premanager\Execution\StructurePageNode;
-
 use Premanager\QueryList\QueryOperation;
 use Premanager\QueryList\QueryExpression;
 use Premanager\Module;
@@ -41,6 +40,9 @@ class Premanager extends Module {
 			
 		// Execute the request
 		Request::getPageNode()->execute();
+		
+		// Output headers and content
+		Output::finish();
 	}
 }
 

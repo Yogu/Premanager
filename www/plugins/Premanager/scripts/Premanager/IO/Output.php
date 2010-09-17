@@ -1,8 +1,8 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\Execution\Page;
 use Premanager\Execution\Environment;
-
 use Premanager\InvalidOperationException;
 use Premanager\ArgumentException;
 use Premanager\URL;
@@ -10,6 +10,10 @@ use Premanager\TimeSpan;
 use Premanager\DateTime;
 
 class Output {
+	private static $_statusCode;
+	private static $_page;
+	private static $_finished;
+	
 	/**
 	 * Sends a cookie
 	 * 
@@ -37,7 +41,7 @@ class Output {
 				'Premanager\TimeSpan', 'expire');
 
 		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
-		if (!\setcookie($prefix.$name, $value,
+		if (!setcookie($prefix.$name, $value,
 			$expirationTime, '/'.$url->path, $serverName)) {
 			throw new InvalidOperationException('Page output has already started');
 		}
@@ -64,7 +68,7 @@ class Output {
 	public static function redirect($location = null, $code = 303) {
 		if ($location === null)
 			$location = Request::getRequestURL();
-		elseif (!\preg_match('/^[a-zA-Z0-9-]\:/', $location))
+		elseif (preg_match('/^[a-zA-Z0-9+.-]\:/', $location) === false)
 			$location = Environment::getCurrent()->urlPrefix.$location;
 
 		header("Location: $location", true, $code);
@@ -73,13 +77,45 @@ class Output {
 			'"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
 			'<html xmlns="http://www.w3.org/1999/xhtml"><head>'.
 			'<title>Redirection</title><meta http-equiv="refresh" '.
-			'content="0;url='.\htmlspecialchars($location).'" />'.
+			'content="0;url='.htmlspecialchars($location).'" />'.
 			'<script type="text/javascript">document.location=\''.
-			\addslashes($location).'\';'.
+			addslashes($location).'\';'.
 			'</script></head><body><h1>Redirection</h1>'.
-			'<p>You have been redirected to <a href="'.\htmlspecialchars($location).
-			'">'.\htmlspecialchars($location).'</a>.</p></body></html>';
+			'<p>You have been redirected to <a href="'.htmlspecialchars($location).
+			'">'.htmlspecialchars($location).'</a>.</p></body></html>';
 		exit;
+	}
+	
+	public static function select($object, $statusCode = StatusCode::OK) {
+		if ($object instanceof Page) {
+			self::$_page = $object;
+			self::$_statusCode = $statusCode;
+		}
+	}
+	
+	public static function finish() {
+		if (!self::$_finished) {
+			// Headers
+			switch (self::$_statusCode) {
+				case StatusCode::NOT_FOUND:
+					$statusHeader = '404 Not Found';
+					break;
+				case StatusCode::FORBIDDEN:
+					$statusHeader = '403 Forbidden';
+					break;
+				default;
+					$statusHeader = '200 OK';	
+			}
+			
+			header('HTTP/1.1 '.$statusHeader);
+			
+			if (self::$_page) {
+				header('Content-Type: text/html; charset=UTF-8');
+				echo self::$_page->getHTML(); 
+			} else
+				throw new InvalidOperationException('The output can not be finished '.
+					'because no resource has been selected');
+		}
 	}
 }
 
