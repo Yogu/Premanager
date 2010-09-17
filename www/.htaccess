@@ -1,5 +1,5 @@
-ErrorDocument 404 http://rack.localhost/
-ErrorDocument 403 http://rack.localhost/
+ErrorDocument 404 http://de.premanager.localhost/
+ErrorDocument 403 http://de.premanager.localhost/
 
 RewriteEngine On
 RewriteRule !^static index.php [NE,L]

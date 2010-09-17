@@ -767,10 +767,10 @@ final class Project extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT project.projectID, project.name, translation.title, ".
-				"translation.subTitle, translation.author, translation.copyright, ".
-				"translation.description, translation.keywords, project.createTime, ".
-				"project.creatorID, project.editTime, project.editTimes ".
+			"SELECT project.name, translation.title, translation.subTitle, ".
+				"translation.author, translation.copyright, translation.description, ".
+				"translation.keywords, project.createTime, project.creatorID, ".
+				"project.editorID, project.editTime, project.editTimes ".
 			"FROM ".DataBase::formTableName('Premanager_Projects')." AS project ",
 			/* translating */
 			"WHERE project.id = '$this->id'");

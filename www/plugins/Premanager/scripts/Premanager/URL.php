@@ -277,23 +277,15 @@ class URL extends Module {
 	 * If a paramter is null it is replaced by the environment property
 	 * 
 	 * @param Premanager\Models\Language|null $language
-	 * @param int|null $edition (enum Premanager\Execution\Edition)
-	 * @param Premanager\Models\Project|null $project
+	 * @param int|null $edition (enum Premanager\Execution\Edition
 	 * @return string the url
 	 */
-	public static function fromTemplate($language = null, $edition = null,
-		$project = null) {
+	public static function fromTemplate($language = null, $edition = null) {
 		if ($language === null)
 			$language = Environment::getCurrent()->language;
 		else if (!($language instanceof Language))
 			throw new ArgumentException('$language must be null or a '.
 				'Premanager\Models\Language', 'language');
-			
-		if ($project === null)
-			$project = Environment::getCurrent()->project;
-		else if (!($project instanceof Project))
-			throw new ArgumentException('$project must be null or a '.
-				'Premanager\Models\Project', 'project');
 			
 		if ($edition === null)
 			$edition = Environment::getCurrent()->edition;
@@ -309,8 +301,7 @@ class URL extends Module {
 				$editionString = '';		
 		}
 		
-		return self::fromTemplateUsingStrings($language->name, $editionString,
-			$project->name);
+		return self::fromTemplateUsingStrings($language->name, $editionString);
 	}
 	
 	/**
@@ -321,11 +312,9 @@ class URL extends Module {
 	 * 
 	 * @param string $language the language name
 	 * @param string $edition the edition identifier
-	 * @param string $project the project name
 	 * @return string the url
 	 */
-	public static function fromTemplateUsingStrings($language, $edition,
-		$project) {
+	public static function fromTemplateUsingStrings($language, $edition) {
 		$template = Config::getURLTemplate();
 		
 		// first split scheme away
@@ -335,7 +324,6 @@ class URL extends Module {
 		
 		$template = str_replace('{language}', $language, $template);
 		$template = str_replace('{edition}', $edition, $template);
-		$template = str_replace('{project}', $project, $template);
 		$template = str_replace('..', '.', $template);            
 		$template = str_replace('//', '/', $template);
 		$template = trim($template, "./").'/';

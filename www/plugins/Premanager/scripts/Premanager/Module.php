@@ -2,8 +2,6 @@
 namespace Premanager;
 
 use Premanager\IO\CorruptDataException;
-use Premanager\DisposedException;
-use Premanager\PropertyException;
                    
 /**
  * The super class for all objects with properties or events 
@@ -247,7 +245,7 @@ class Module {
 					get_class($this), 'name');
 		} else
 			throw new PropertyException("Property '$name' does not exist in class ".
-				get_class($this), 'name');  
+				get_class($this), 'name');
 	}
 	
 	/**

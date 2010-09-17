@@ -947,7 +947,7 @@ final class User extends Model {
 		$this->checkDisposed();
 		
 		//TODO: implement this with QueryList (problem: queries do not support 
-		// a CONTIANS operator jet)
+		// a CONTIANS operator yet)
 			
 		$start = $start ? $start : 0;
 		$count = $count ? $count : 0;

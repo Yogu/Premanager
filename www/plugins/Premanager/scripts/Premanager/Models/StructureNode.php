@@ -391,8 +391,13 @@ final class StructureNode extends Model {
 			
 		if ($this->_hasPanel === null || $this->_treeID === null)
 			$this->load();
-		return $this->_hasPanel ? StructureNodeType::PANEL :
-			($this->_treeID ? StructureNodeType::TREE : StructureNodeType::SIMPLE);
+		
+		if ($this->_hasPanel)
+			return StructureNodeType::PANEL;
+		else if ($this->_treeID)
+			return StructureNodeType::TREE;
+		else
+			return StructureNodeType::SIMPLE;
 	}
 
 	/**
@@ -528,7 +533,7 @@ final class StructureNode extends Model {
 		$start = $start ? $start : 0;
 		$count = $count ? $count : 0;
 		
-		if (($start !== null && $count == null) ||
+		if (($start !== null && $count === null) ||
 			($count !== null && $start === null))
 			throw new ArgumentException('Either both $start and $count must '.
 				'be specified or none of them');
@@ -550,7 +555,6 @@ final class StructureNode extends Model {
 			/* translating */
 			"ORDER BY LOWER(translation.title) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = '';
 		while ($result->next()) {
 			$node = self::createFromID($result->get('id'), $this,
 				$result->get('name'), $result->get('title'),

@@ -145,7 +145,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			
 			// Request all items beginning at the index of the last item received and
 			// evaluated
-			$result = DataBase::queryAndLog(
+			$result = DataBase::query(
 				$this->getQueryBase().
 				"LIMIT ".$this->_queryItemIndex.", ".self::MAX_LONG);
 			while ($result->next()) {

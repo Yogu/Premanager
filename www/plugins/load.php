@@ -4,8 +4,6 @@
 function autoload($className) {
 	static $paths;
 	
-	echo '<b>Class:</b> '.$className.'<br />';
-	
 	// Collect all sub-folders of "plugins" (the directory of this file)
 	// Each plugin directory contains a folder called "scripts" which contains
 	// a common namespace structure.
