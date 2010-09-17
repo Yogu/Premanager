@@ -1,11 +1,18 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\Debug\Debug;
+
+use Premanager\Models\StructureNode;
+
+use Premanager\URL;
+use Premanager\Models\Project;
+use Premanager\Module;
+use Premanager\IO\Config;
+
 /**
  * Defines a common page that can be outputted
  */
-use Premanager\Module;
-
 class Page extends Module {
 	/**
 	 * @var Premanager\Execution\PageNode
@@ -66,7 +73,30 @@ class Page extends Module {
 	 * @return string
 	 */
 	public function getHTML() {
-		throw new NotImplementedException();
+		$template = new Template('Premanager', 'page');
+		
+		// Get list of node, parent of node, parent of parent of node ...
+		$hierarchy = array();
+		for ($node = $this->_node; $node != null; $node = $node->parent) {
+			$hierarchy[] = $node;
+		}
+		
+		$template->set('node', $this->_node);
+		$template->set('project', $this->_node->project);
+		$template->set('projectNode', $projectNode);
+		$template->set('isIndexPage',
+			$node instanceof StructureNode && $node->isProjectNode());
+		$template->set('hierarchy', $hierarchy);
+		$template->set('blocks', $this->blocks);
+		$template->set('environment', Environment::getCurrent());
+		$template->set('organization', Project::getOrganization());
+		$template->set('canonicalURLPrefix',
+			URL::fromTemplate(Environment::getCurrent()->language, Edition::COMMON));
+		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
+		if (Config::isDebugMode())
+			$template->set('log', Debug::getLog());
+		
+		return $template->get();
 	}
 }
 

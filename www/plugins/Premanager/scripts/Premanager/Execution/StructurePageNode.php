@@ -1,12 +1,17 @@
 <?php
 namespace Premanager\Execution;
 
-use Premanage\Execution\Template;
+use Premanager\Debug\Debug;
+
+use Premanager\IO\Output;
+
+use Premanager\Execution\Template;
 use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
 use Premanager\Models\StructureNodeType;
 use Premanager\Models\Project;
+use Premanager\Module;
 
 class StructurePageNode extends PageNode {
 	/**
@@ -17,6 +22,17 @@ class StructurePageNode extends PageNode {
 	 * @var Premanager\Execution\TreeNode
 	 */
 	private $_treeNode = false;
+	/**
+	 * @vqr bool
+	 */
+	private $_isProjectNode;
+	
+	/**
+	 * The base structure node
+	 * 
+	 * @var Premanager\Models\StructureNode
+	 */
+	public $structureNode = Module::PROPERTY_GET;
 	
 	/**
 	 * Creates a new page node based on a structure node or on the root node of
@@ -28,18 +44,23 @@ class StructurePageNode extends PageNode {
 	 *   create a page node on the base of the root node of the organization
 	 */
 	public function __construct($parent = null, $structureNode = null) {
-		if (!$parent)
+		if (!$parent) {
 			$this->_structureNode = Project::getOrganization()->rootNode;
-		else {
+			$this->_isProjectNode = true;
+		} else {
 			if (!($structureNode instanceof StructureNode))
 				throw new ArgumentException('$structureNode must be an a '.
 					'Premanager\Models\StructureNode', 'structureNode');
 			$this->_structureNode = $structureNode;
+			
+			// If the parent is the organization node, this must be a project node
+			$this->_isProjectNode =
+				$structureNode->project->getRootNode() == $structureNode;
 		}
 		
 		parent::__construct($parent);
 		
-		$this->_project = $structureNode->project;
+		$this->_project = $this->_structureNode->project;
 	}
 	
 	/**
@@ -76,7 +97,10 @@ class StructurePageNode extends PageNode {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_structureNode->title;
+		if ($this->_isProjectNode)
+			return $this->_project->title;
+		else
+			return $this->_structureNode->title;
 	}
 	
 	public function getStandAloneTitle() {
@@ -102,8 +126,10 @@ class StructurePageNode extends PageNode {
 				throw new NotImplementedException();
 				
 			default:
-				//TODO: fetch all sub nodes into $subNodes
 				$subNodes = array();
+				foreach ($this->_structureNode->getChildren() as $structureNode) {
+					$subNodes[] = new StructurePageNode($this, $structureNode);
+				}
 				
 				// create list of sub-page-nodes
 				$template = new Template('Premanager', 'subPagesList');
@@ -134,6 +160,19 @@ class StructurePageNode extends PageNode {
 		return $other instanceof StructurePageNode &&
 			$other->_structureNode == $this->_structureNode; 
 	}	    
+	
+	/**
+	 * Gets the base structure node
+	 * 
+	 * @return Premanager\Models\StructureNode
+	 */
+	public function getStructureNode() {
+		return $this->_structureNode;
+	}
+	
+	public function isProjectNode() {
+		return $this->_isProjectNode;
+	}
 	
 	/**
 	 * Gets the embedded tree page node

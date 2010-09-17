@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Debug\Debug;
+
 use Premanager\ArgumentException;
 use Premanager\Module;
 
@@ -59,6 +61,14 @@ abstract class PageNode extends Module {
 	public $url = Module::PROPERTY_GET_ACRONYM;
 	
 	/**
+	 * The url of this page relative to Environment::getCurrent()->urlPrefix,
+	 * including a query part if exists
+	 * 
+	 * @var string
+	 */
+	public $fullURL = Module::PROPERTY_GET;
+	
+	/**
 	 * Creates a new page node
 	 * 
 	 * @param Premanager\Execution\ParentNode|null $parent
@@ -71,7 +81,7 @@ abstract class PageNode extends Module {
 				'Premanager\Execution\PageNode.', 'parent');
 		
 		$this->_parent = $parent;
-		$this->_project = $parent->_project;
+		$this->_project = $parent ? $parent->_project : null;
 	}
 	
 	/**
@@ -176,6 +186,28 @@ abstract class PageNode extends Module {
 	}
 	
 	/**
+	 * Gets the url of this page relative to Environment::getCurrent()->urlPrefix,
+	 * including a query part if exists
+	 * 
+	 * @return string
+	 */
+	public function getFullURL() {
+		$url = $this->getURL();
+		if ($query = $this->getURLQuery())
+			$url .= '?'.$query;
+		return $url;
+	}
+	
+	/**
+	 * Gets the query part of this page, without the question mark
+	 * 
+	 * @return string
+	 */
+	public function getURLQuery() {
+		
+	}
+	
+	/**
 	 * Finds a page node specified by its url relative the current project's root
 	 * node's url
 	 * 
@@ -196,7 +228,9 @@ abstract class PageNode extends Module {
 		// Go through the path and find matching nodes 
 		foreach ($path as $name) {
 			// A name can contain special chars like ? or : and they are url-encoded.
-			$name = rawurldecode($name);
+			$name = trim(rawurldecode($name));
+			if (!$name)
+				continue;
 			
 			$child = $node->getChildByName($name);
 			if ($child)

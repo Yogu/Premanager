@@ -1,7 +1,10 @@
 <?php
 namespace Premanager\Execution;
 
-use Premanage\Execution\Template;
+use Premanager\IO\Request;
+
+use Premanager\IO\StatusCode;
+use Premanager\Execution\Template;
 use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
@@ -63,8 +66,11 @@ class PageNotFoundNode extends PageNode {
 	 *   not result in a page. 
 	 */
 	public function getPage() {
-		$template = new Template('Premanager', 'pageNotFound');
+		$template = new Template('Premanager', 'notFound');
 		$template->set('urlRest', $this->_urlRest);
+		$template->set('deepmostExistingNode', $this->parent);
+		$template->set('refererExists', Request::getReferer() != '');
+		$template->set('refererIsInternal', (bool) Request::isRefererInternal());
 		
 		$page = new Page($this);
 		$page->createMainBlock($template->get());
@@ -75,7 +81,7 @@ class PageNotFoundNode extends PageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		Output::select($this->getPage());
+		Output::select($this->getPage(), StatusCode::NOT_FOUND);
 	}
 	
 	/**

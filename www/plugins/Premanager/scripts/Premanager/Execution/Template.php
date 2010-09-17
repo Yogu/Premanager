@@ -1,5 +1,7 @@
 <?php
-namespace Premanage\Execution;
+namespace Premanager\Execution;
+
+use Premanager\IO\Directory;
 
 use Premanager\Module;
 use Premanager\IO\FileNotFoundException;
@@ -53,16 +55,18 @@ class Template extends Module {
 		
 		$this->_path = Config::getPluginPath().'/'.$pluginName.'/templates/'.
 			$templateName.'.tpl';
-		if (File::exists($this->_path))
-			throw new FileNotFoundException('The template file does not exist',
+		if (!File::exists($this->_path))
+			throw new FileNotFoundException('The template file does not exist '.
+				'(Plugin: '.$pluginName.'; Template: '.$templateName.')',
 				$this->_path);
 		
 		require_once(Config::getPluginPath().
 			'/Premanager/thirdparty/dwoo/dwooAutoload.php');
 				
-		$this->_dwoo = new Dwoo();
-		$this->data = new Dwoo_Data();  
-		$this->dwoo->setCompileDir(Config::$cachePath.'Premanager/dwoo');
+		$this->_dwoo = new \Dwoo();
+		$this->_data = new \Dwoo_Data();
+		Directory::createDirectory(Config::getCachePath().'Premanager/dwoo');
+		$this->_dwoo->setCompileDir(Config::getCachePath().'Premanager/dwoo');
 		
 		// Select the compiler for this template
 		$enableCompressing = !Config::isDebugMode() && !$disableCompressor;
@@ -72,8 +76,8 @@ class Template extends Module {
 			$this->_compiler =& self::$_compilerWithoutCompressor;
 			
 		// If that kind of compiler has not been used before, create it
-		if (!$this->_comiler) {
-			$this->_compiler = new Dwoo_Compiler();
+		if (!$this->_compiler) {
+			$this->_compiler = new \Dwoo_Compiler();
 			
 			if ($enableCompressing)
 				$this->_compiler->addPreProcessor('compress', true);
@@ -103,7 +107,7 @@ class Template extends Module {
 	 * @return string the rendered template content
 	 */
 	public function get() {
-		$tpl = new Dwoo_Template_File($this->_path); 
+		$tpl = new \Dwoo_Template_File($this->_path); 
 		return $this->_dwoo->get($tpl, $this->_data, $this->_compiler);
 	}
 }
