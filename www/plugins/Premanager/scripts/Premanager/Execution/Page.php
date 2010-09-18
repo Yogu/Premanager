@@ -59,6 +59,24 @@ class Page extends Module {
 	}
 	
 	/**
+	 * Adds the block in a new col in a new row which is placed at the end
+	 * 
+	 * @param Premanager\Execution\PageBlock $block the block to append
+	 */
+	public function appendBlock(PageBlock $block) {
+		$this->blocks[] = array(array($block));
+	}
+	
+	/**
+	 * Adds the block in a new col in a new row which is placed at the beginning
+	 * 
+	 * @param Premanager\Execution\PageBlock $block the block to insert
+	 */
+	public function insertBlock(PageBlock $block) {
+		array_splice(&$this->blocks[], 0, 0, array(array(array($block))));
+	}
+	
+	/**
 	 * Gets the node that has created this page
 	 * 
 	 * @return Premanager\Execution\PageNode
