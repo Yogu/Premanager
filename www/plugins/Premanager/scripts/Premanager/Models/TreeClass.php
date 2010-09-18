@@ -1,6 +1,9 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\Execution\PageNode;
+use Premanager\Execution\StructurePageNode;
+use Premanager\IO\CorruptDataException;
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\Types;
@@ -15,6 +18,7 @@ use Premanager\Models\StructureNode;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
 use Premanager\QueryList\DataType;
+use Premanager\IO\DataBase\DataBase;
               
 /**
  * A class for a tree of dynamic page nodes
@@ -24,7 +28,6 @@ final class TreeClass extends Model {
 	private $_pluginID;
 	private $_plugin;
 	private $_className;
-	private $_index;
 	
 	private static $_instances = array();
 	private static $_count;
@@ -83,7 +86,7 @@ final class TreeClass extends Model {
 			throw new ArgumentException('$id must be a nonnegative integer value',
 				'id');
 				
-		$instance = new User();
+		$instance = new self();
 		$instance->_id = $id;
 		$instance->_pluginID = $pluginID;
 		$instance->_className = $className;
@@ -139,11 +142,11 @@ final class TreeClass extends Model {
 		
 		// Check if the class extends TreeNode
 		$class = $className;
-		while ($class != 'Premanager\Execution\TreeNode') {
+		while ($class != 'Premanager\Execution\PageNode') {
 			$class = get_parent_class($class);
 			if (!$class)
 				throw new ArgumentException('The class specified by $className '.
-					'does not inherit from Premanager\Execution\TreeNode', 'className');
+					'does not inherit from Premanager\Execution\PageNode', 'className');
 		}
 	
 		DataBase::query(
@@ -198,11 +201,7 @@ final class TreeClass extends Model {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => DataType::NUMBER,
 				'plugin' => Plugin::getDescriptor(),
-				'className' => DataType::STRING,
-				'creator' => User::getDescriptor(),
-				'createTime' => DataType::DATE_TIME,
-				'editor' => User::getDescriptor(),
-				'editTime' => DataType::DATE_TIME),
+				'className' => DataType::STRING),
 				'Premanager_Trees', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
@@ -253,10 +252,20 @@ final class TreeClass extends Model {
 	/**
 	 * Creates a new instance of this tree class
 	 * 
-	 * @return Tree
+	 * @param Premanager\Execution\StructurePageNode $owner the page node that
+	 *   embeds the instance 
+	 * @return Premanager\Execution\PageNode
 	 */
-	public function createInstance()  {
-		return new $this->className();
+	public function createInstance(StructurePageNode $owner)  {
+		if (!class_exists($this->className))
+			throw new CorruptDataException('The class of tree class '.$this->_id.
+				' ('.$this->className.') does not exist');
+		$instance = new $this->className($owner);
+		if (!($instance instanceof PageNode))
+			throw new CorruptDataException('The class of tree class '.$this->_id.
+				' ('.$this->className.') does not inherit from '.
+				'Premanager\Execution\PageNode');
+		return $instance;
 	}   
 	
 	/**
@@ -267,15 +276,15 @@ final class TreeClass extends Model {
 			
 		// Delete nodes
 		$result = DataBase::query(
-			"SELECT node.nodeID ".
+			"SELECT node.id ".
 			"FROM ".DataBase::formTableName('Premanger_Nodes')." AS node ".
 			"WHERE node.treeID = '$this->_id'");
 		// Change node type to SIMPLE because otherwise we could not delete 
 		// them
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanger_Nodes')." ".
-			"SET treeID = 0 ".
-			"WHERE node.treeID = '$this->_id'");
+			"SET id = 0 ".
+			"WHERE treeID = '$this->_id'");
 		while ($result->next()) {
 			$node = StructureNode::getFromID($result->get('nodeID'));
 			$node->delete();
@@ -283,12 +292,10 @@ final class TreeClass extends Model {
 			
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanger_Trees')." ".
-			"WHERE tree.treeID = '$this->_id'");
+			"WHERE tree.id = '$this->_id'");
 			
 		if (self::$_count !== null)
 			self::$_count--;	
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;		
 	
 		$this->_id = null;
 	}           
@@ -297,15 +304,15 @@ final class TreeClass extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT tree.pluginID, tree.className ".    
-			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
-			"WHERE tree.treeID = '$this->_id'");
+			"SELECT tree.pluginID, tree.class ".    
+			"FROM ".DataBase::formTableName('Premanager_Trees')." AS tree ".
+			"WHERE tree.id = '$this->_id'");
 		
 		if (!$result->next())
 			return false;
 		
 		$this->_pluginID = $result->get('pluginID');
-		$this->_className = $result->get('className');
+		$this->_className = $result->get('class');
 		
 		return true;
 	}      

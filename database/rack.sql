@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. September 2010 um 00:46
+-- Erstellungszeit: 19. September 2010 um 00:57
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.1
 
@@ -960,7 +960,7 @@ INSERT INTO `rack_premanager_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `rack_premanager_nodes`
 --
 -- Erzeugt am: 01. Juli 2010 um 15:00
--- Aktualisiert am: 30. Juli 2010 um 13:51
+-- Aktualisiert am: 18. September 2010 um 01:05
 -- Letzter Check am: 30. Juli 2010 um 13:51
 --
 
@@ -1015,7 +1015,7 @@ INSERT INTO `rack_premanager_nodes` (`id`, `parentID`, `projectID`, `treeID`, `n
 (82, 93, 0, 3, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:43', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2010-06-09 22:31:27'),
 (81, 93, 0, 2, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:51', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:11'),
 (80, 93, 0, 1, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:34', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:05'),
-(79, 0, 0, 0, 1, 1, '2010-06-09 20:21:34', '2010-06-09 20:21:34', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-07-01 15:51:13'),
+(79, 0, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:21:34', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-09-18 00:52:12'),
 (84, 93, 0, 11, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:05', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:17'),
 (92, 79, 0, 0, 0, 0, '2010-06-09 20:30:08', '2010-06-09 20:30:08', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:30:12'),
 (93, 79, 0, 0, 1, 0, '2010-06-09 20:30:44', '2010-06-09 20:30:44', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-07-01 15:50:04'),
@@ -1333,9 +1333,8 @@ INSERT INTO `rack_premanager_panelobjects` (`id`, `nodeID`, `userID`, `widgetID`
 --
 -- Tabellenstruktur für Tabelle `rack_premanager_plugins`
 --
--- Erzeugt am: 13. Februar 2010 um 21:18
--- Aktualisiert am: 30. Juni 2010 um 18:18
--- Letzter Check am: 30. Juni 2010 um 18:18
+-- Erzeugt am: 16. September 2010 um 21:46
+-- Aktualisiert am: 16. September 2010 um 21:46
 --
 
 CREATE TABLE IF NOT EXISTS `rack_premanager_plugins` (
@@ -1350,12 +1349,12 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_plugins` (
 -- Daten für Tabelle `rack_premanager_plugins`
 --
 
-INSERT INTO `rack_premanager_plugins` (`id`, `name`, `timestamp`) VALUES
-(0, 'Premanager', '2010-02-17 21:49:23'),
-(2, 'Blog', '2010-02-17 21:29:49'),
-(4, 'DefaultThemes', '2010-06-11 18:13:39'),
-(5, 'Creativity', '2010-03-31 22:24:55'),
-(6, 'Wiki', '2010-04-01 15:50:51');
+INSERT INTO `rack_premanager_plugins` (`id`, `name`, `initializerClass`, `timestamp`) VALUES
+(0, 'Premanager', '', '2010-02-17 21:49:23'),
+(2, 'Blog', '', '2010-02-17 21:29:49'),
+(4, 'DefaultThemes', '', '2010-06-11 18:13:39'),
+(5, 'Creativity', '', '2010-03-31 22:24:55'),
+(6, 'Wiki', '', '2010-04-01 15:50:51');
 
 -- --------------------------------------------------------
 
@@ -1622,7 +1621,7 @@ INSERT INTO `rack_premanager_rightstranslation` (`id`, `languageID`, `title`, `d
 -- Tabellenstruktur für Tabelle `rack_premanager_sessions`
 --
 -- Erzeugt am: 18. Juni 2010 um 23:58
--- Aktualisiert am: 30. Juli 2010 um 13:51
+-- Aktualisiert am: 12. September 2010 um 19:43
 -- Letzter Check am: 30. Juli 2010 um 13:51
 --
 
@@ -1657,8 +1656,6 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
 -- Daten für Tabelle `rack_premanager_sessions`
 --
 
-INSERT INTO `rack_premanager_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `cookie`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `timestamp`) VALUES
-(817, 0, '2010-07-09 16:15:20', '2010-07-09 16:15:20', '9a2c3989f800f828591949d2f4dc191c279f3221296193ecc3e66db844ae2b5e', '127.0.0.1', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 0, 0, 0, 1, '2010-07-09 18:14:56');
 
 -- --------------------------------------------------------
 
@@ -3116,7 +3113,7 @@ INSERT INTO `rack_premanager_themes` (`id`, `pluginID`, `isDefault`, `class`, `t
 -- Tabellenstruktur für Tabelle `rack_premanager_trees`
 --
 -- Erzeugt am: 31. März 2010 um 18:33
--- Aktualisiert am: 04. Juli 2010 um 12:49
+-- Aktualisiert am: 18. September 2010 um 19:56
 -- Letzter Check am: 06. Juni 2010 um 00:33
 --
 
@@ -3140,7 +3137,7 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_trees` (
 --
 
 INSERT INTO `rack_premanager_trees` (`id`, `pluginID`, `class`, `timestamp`) VALUES
-(1, 0, 'Users', '2010-06-18 23:51:51'),
+(1, 0, 'Premanager\\Pages\\UsersPage', '2010-09-18 19:56:35'),
 (2, 0, 'Groups', '2010-06-18 23:51:51'),
 (3, 0, 'Viewonline', '2010-06-18 23:51:51'),
 (4, 0, 'LoginForm', '2010-06-18 23:51:51'),

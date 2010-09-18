@@ -322,7 +322,7 @@ class Request {
 			// Compare the url of the page node to the request url
 			$calculatedURL =
 				Environment::getCurrent()->urlPrefix.self::$_pageNode->url;
-			if ($calculatedURL != self::getRequestURL()) 
+			if ($calculatedURL != self::getRequestURL())
 				Output::redirect($calculatedURL, 301 /* moved permanently */);
 		}
 	}

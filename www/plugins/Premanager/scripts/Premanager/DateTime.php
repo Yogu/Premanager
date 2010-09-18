@@ -1,6 +1,8 @@
 <?php
 namespace Premanager;
 
+use Premanager\Execution\Translation;
+
 use Premanager\TimeSpan;
 
 /**
@@ -202,14 +204,14 @@ class DateTime extends Module {
 				$timeZone = $arg1;
 			}
 			if ($arg0 === null) {
-				$timestamp = \time();
+				$timestamp = time();
 			} else if ($arg0 instanceof TimeZone) {
 				$timeZone = $arg0;
-				$timestamp = \time();
+				$timestamp = time();
 			} else if (Types::isInteger($arg0)) {
 				$timestamp = $arg0;
 			} else {
-				$str = $arg0;
+				$str = (string) $arg0;
 			}
 		}
 		
@@ -217,7 +219,7 @@ class DateTime extends Module {
 			$timeZone = TimeZone::getUTC();
 		
 		if (!$timestamp) {
-			if ($str) {
+			if ($str !== null) {
 				$components = \preg_split('/[^0-9]/', $str);
 				if (Arrays::count($components) != 3 && Arrays::count($components) != 6)
 					throw new FormatException('$arg0 does not contain exactly 3 or 6 '.
@@ -493,7 +495,7 @@ class DateTime extends Module {
 	 * @return Premanager\DateTime the result
 	 */
 	public function add(TimeSpan $value) { 
-		return new DateTime(date_add($this->_timestamp, $value->getTimestamp()));
+		return new DateTime($this->_timestamp + $value->timestamp);
 	}
 	
 	/**
@@ -507,9 +509,9 @@ class DateTime extends Module {
 	 */
 	public function subtract($value) { 
 		if ($value instanceof TimeSpan)
-			return new DateTime(date_add($this->_timestamp, -$value->getTimestamp()));
+			return new DateTime($this->_timestamp -$value->timestamp);
 		else if ($value instanceof DataTime)
-			return new TimeSpan(date_add($this->_timestamp, -$value->_timestamp));
+			return new TimeSpan($this->_timestamp -$value->_timestamp);
 		else
 			throw new ArgumentException('$value must be a date/time or time stamp',
 				'value');
@@ -571,7 +573,7 @@ class DateTime extends Module {
 	public function compareTo(DateTime $other) {
 		if ($this->_timestamp < $other->_timestamp)
 			return -1;
-		else if ($this->_time == $other->_timestamp)
+		else if ($this->_timestamp == $other->_timestamp)
 			return 0;
 		else
 			return 1;
@@ -591,47 +593,47 @@ class DateTime extends Module {
 
 		if (!$localizer)
 			$localizer = array(
-				'Monday'	=> Translation::get('Premanager', 'dateMonday'),
-				'Tuesday'	=> Translation::get('Premanager', 'dateTuesday'),
-				'Wednesday'	=> Translation::get('Premanager', 'dateWednesday'),
-				'Thursday'	=> Translation::get('Premanager', 'dateThursday'),
-				'Friday'	=> Translation::get('Premanager', 'dateFriday'),
-				'Saturday'	=> Translation::get('Premanager', 'dateSaturday'),  
-				'Sunday'	=> Translation::get('Premanager', 'dateSunday'),
+				'Monday'	=> Translation::defaultGet('Premanager', 'dateMonday'),
+				'Tuesday'	=> Translation::defaultGet('Premanager', 'dateTuesday'),
+				'Wednesday'	=> Translation::defaultGet('Premanager', 'dateWednesday'),
+				'Thursday'	=> Translation::defaultGet('Premanager', 'dateThursday'),
+				'Friday'	=> Translation::defaultGet('Premanager', 'dateFriday'),
+				'Saturday'	=> Translation::defaultGet('Premanager', 'dateSaturday'),  
+				'Sunday'	=> Translation::defaultGet('Premanager', 'dateSunday'),
 				
-				'Mon'	=> Translation::get('Premanager', 'dateMon'),
-				'Tue'	=> Translation::get('Premanager', 'dateTue'),
-				'Wed'	=> Translation::get('Premanager', 'dateWed'),
-				'Thu'	=> Translation::get('Premanager', 'dateThu'),
-				'Fri'	=> Translation::get('Premanager', 'dateFri'),
-				'Sat'	=> Translation::get('Premanager', 'dateSat'),  
-				'Sun'	=> Translation::get('Premanager', 'dateSun'),
+				'Mon'	=> Translation::defaultGet('Premanager', 'dateMon'),
+				'Tue'	=> Translation::defaultGet('Premanager', 'dateTue'),
+				'Wed'	=> Translation::defaultGet('Premanager', 'dateWed'),
+				'Thu'	=> Translation::defaultGet('Premanager', 'dateThu'),
+				'Fri'	=> Translation::defaultGet('Premanager', 'dateFri'),
+				'Sat'	=> Translation::defaultGet('Premanager', 'dateSat'),  
+				'Sun'	=> Translation::defaultGet('Premanager', 'dateSun'),
 				
-				'January' => Translation::get('Premanager', 'dateJanuary'),
-				'February' => Translation::get('Premanager', 'dateFebruary'),
-				'March' => Translation::get('Premanager', 'dateMarch'),
-				'April' => Translation::get('Premanager', 'dateApril'),
-				'May' => Translation::get('Premanager', 'dateMay'),
-				'June' => Translation::get('Premanager', 'dateJune'),
-				'July' => Translation::get('Premanager', 'dateJuly'),
-				'August' => Translation::get('Premanager', 'dateAugust'),
-				'September' => Translation::get('Premanager', 'dateSeptember'),
-				'October' => Translation::get('Premanager', 'dateOctober'),
-				'November' => Translation::get('Premanager', 'dateNovember'),
-				'December' => Translation::get('Premanager', 'dateDecember'),  
+				'January' => Translation::defaultGet('Premanager', 'dateJanuary'),
+				'February' => Translation::defaultGet('Premanager', 'dateFebruary'),
+				'March' => Translation::defaultGet('Premanager', 'dateMarch'),
+				'April' => Translation::defaultGet('Premanager', 'dateApril'),
+				'May' => Translation::defaultGet('Premanager', 'dateMay'),
+				'June' => Translation::defaultGet('Premanager', 'dateJune'),
+				'July' => Translation::defaultGet('Premanager', 'dateJuly'),
+				'August' => Translation::defaultGet('Premanager', 'dateAugust'),
+				'September' => Translation::defaultGet('Premanager', 'dateSeptember'),
+				'October' => Translation::defaultGet('Premanager', 'dateOctober'),
+				'November' => Translation::defaultGet('Premanager', 'dateNovember'),
+				'December' => Translation::defaultGet('Premanager', 'dateDecember'),  
 				
-				'Jan' => Translation::get('Premanager', 'dateJan'),
-				'Feb' => Translation::get('Premanager', 'dateFeb'),
-				'Mar' => Translation::get('Premanager', 'dateMar'),
-				'Apr' => Translation::get('Premanager', 'dateApr'),
-				'MayShort' => Translation::get('Premanager', 'dateMayShort'),
-				'Jun' => Translation::get('Premanager', 'dateJun'),
-				'Jul' => Translation::get('Premanager', 'dateJul'),
-				'Aug' => Translation::get('Premanager', 'dateAug'),
-				'Sep' => Translation::get('Premanager', 'dateSep'),
-				'Oct' => Translation::get('Premanager', 'dateOct'),
-				'Nov' => Translation::get('Premanager', 'dateNov'),
-				'Dec' => Translation::get('Premanager', 'dateDec'));
+				'Jan' => Translation::defaultGet('Premanager', 'dateJan'),
+				'Feb' => Translation::defaultGet('Premanager', 'dateFeb'),
+				'Mar' => Translation::defaultGet('Premanager', 'dateMar'),
+				'Apr' => Translation::defaultGet('Premanager', 'dateApr'),
+				'MayShort' => Translation::defaultGet('Premanager', 'dateMayShort'),
+				'Jun' => Translation::defaultGet('Premanager', 'dateJun'),
+				'Jul' => Translation::defaultGet('Premanager', 'dateJul'),
+				'Aug' => Translation::defaultGet('Premanager', 'dateAug'),
+				'Sep' => Translation::defaultGet('Premanager', 'dateSep'),
+				'Oct' => Translation::defaultGet('Premanager', 'dateOct'),
+				'Nov' => Translation::defaultGet('Premanager', 'dateNov'),
+				'Dec' => Translation::defaultGet('Premanager', 'dateDec'));
 			
 		switch ($format) {
 			case DateTimeFormat::LONG_RELATIVE:
@@ -692,7 +694,7 @@ class DateTime extends Module {
 		}
 		
 		if (!$midnight)
-			$midnight = DateTime::getNow()->day;
+			$midnight = DateTime::getNow()->date;
 			
 		// Use short representation (with YESTERDAY, TODAY or TOMORROW instead
 		// of the part embedded in |), if this date/time is in the correct range
@@ -701,11 +703,11 @@ class DateTime extends Module {
 			$this->compareTo($midnight->add(TimeSpan::fromDays(2))) <= 0)
 		{
 			if ($this->compareTo($midnight->add(TimeSpan::fromDays(1))) > 0) {
-				$day = Translation::get('Premanager', 'tomorrow');
+				$day = Translation::defaultGet('Premanager', 'tomorrow');
 			} else if ($this->compareTo($midnight) > 0) {
-				$day = Translation::get('Premanager', 'today');
+				$day = Translation::defaultGet('Premanager', 'today');
 			} else {
-				$day = Translation::get('Premanager', 'yesterday');
+				$day = Translation::defaultGet('Premanager', 'yesterday');
 			}
 			
 			// Return the day component followed by the short time component (the
@@ -719,6 +721,10 @@ class DateTime extends Module {
 		// Format and localize    
 		return strtr(date($dateFormatCache[$format]['longFormat'],
 			$this->_timestamp), $dateFormatCache[$format]['localizer']);
+	}
+	
+	public function __tostring() {
+		return date('Y-m-d H:i:s', $this->_timestamp);
 	}
 
 	/**

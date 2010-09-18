@@ -236,24 +236,35 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * 
 	 * @param int $index the start index of the range
 	 * @param int $count the count of items in the range
+	 * @param bool $weakRangeCheck true if the range check should not throw an
+	 *   exception on error but simply adjust the range
 	 * @return array an array of objects
 	 */
-	public function getRange($index, $count) {
+	public function getRange($index, $count, $weakRangeCheck = false) {
 		if ($index === null)
 			throw new ArgumentNullException('index');
-		if (!is_int($index))
-			throw new ArgumentException('index must be an integer', 'index');
-		if ($index < 0)
-			throw new ArgumentOutOfRangeException('index', $index,
-				'$index must not be negative');
-			
 		if ($count === null)
 			throw new ArgumentNullException('count');
+			
+		if (!is_int($index))
+			throw new ArgumentException('index must be an integer', 'index');
 		if (!is_int($count))
 			throw new ArgumentException('count must be an integer', 'count');
-		if ($count < 0)
-			throw new ArgumentOutOfRangeException('count', $count,
-				'$count must not be negative');
+			
+		if ($index < 0) {
+			if ($weakRangeCheck)
+				$index = 0;
+			else
+				throw new ArgumentOutOfRangeException('index', $index,
+					'$index must not be negative');
+		}
+		if ($count < 0) {
+			if ($weakRangeCheck)
+				$count = 0;
+			else
+				throw new ArgumentOutOfRangeException('count', $count,
+					'$count must not be negative');
+		}
 			
 		if ($count == 0)
 			return array();
@@ -291,16 +302,26 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 				$this->_count = $currentCount;
 			}
 		}
-		 
-		if ($lastIndex < $currentCount)
-			return array_slice($this->_items, $index, $count);
-		else if ($index >= $currentCount)
-			throw new ArgumentOutOfRangeException('index', $index,
-				'$index must be smaller than the count ('.$this->_count.')');
-		else
-			throw new ArgumentOutOfRangeException('count', $count,
-				'$count must be smaller than the difference between actual count ('.
-				$this->_count.') and $index ('.$index.')');
+		
+		if ($index >= $currentCount) {
+			if ($weakRangeCheck) {
+				$index = $currentCount-1;		
+				$lastIndex = $index + $count - 1;
+			} else
+				throw new ArgumentOutOfRangeException('index', $index,
+					'$index must be smaller than the count ('.$this->_count.')');
+		}
+		
+		if ($lastIndex >= $currentCount) {
+			if ($weakRangeCheck)
+				$count = $this->_count - $index;
+			else
+				throw new ArgumentOutOfRangeException('count', $count,
+					'$count must not be larger than the difference between actual count '.
+					'('.$this->_count.') and $index ('.$index.')');
+		}
+		
+		return array_slice($this->_items, $index, $count);
 	}
 	
 	/**
@@ -379,17 +400,56 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * Gets an EQUAL expression
 	 *
 	 * @param mixed $operand0 the first operand
-	 * @param unknown_type the second operand
+	 * @param mixed the second operand
 	 * @return Premanager\QueryList\QueryExpression
 	 */
 	public function exprEqual($operand0, $operand1) {
 		if (!($operand0 instanceof QueryExpression))
 			$operand0 = new QueryExpression($this->_modelType, $operand0);
 		if (!($operand1 instanceof QueryExpression))
-			$operand1 = new QueryExpression($this->_modelType, $operand1);
+			$operand1 = new QueryExpression($this->_modelType, $operand1);	
 			
 		return new QueryExpression($this->_modelType, QueryOperation::EQUAL,
 			$operand0, $operand1);
+	}
+	
+	/**
+	 * Gets an UNEQUAL expression
+	 *
+	 * @param mixed $operand0 the first operand
+	 * @param mixed the second operand
+	 * @return Premanager\QueryList\QueryExpression
+	 */
+	public function exprUnequal($operand0, $operand1) {
+		if (!($operand0 instanceof QueryExpression))
+			$operand0 = new QueryExpression($this->_modelType, $operand0);
+		if (!($operand1 instanceof QueryExpression))
+			$operand1 = new QueryExpression($this->_modelType, $operand1);	
+			
+		return new QueryExpression($this->_modelType, QueryOperation::UNEQUAL,
+			$operand0, $operand1);
+	}
+	
+	/**
+	 * Gets an expression
+	 *
+	 * @param int operation enum Premanager\QueryList\QueryOperation 
+	 * @param mixed $operand0 the first operand
+	 * @param mixed $operand1 the second operand
+	 * @param mixed $operand2 the third operand
+	 * @return Premanager\QueryList\QueryExpression
+	 */
+	public function expr($operation, $operand0, $operand1 = null,
+		$operand2 = null) {
+		if ($operand0 != null && !($operand0 instanceof QueryExpression))
+			$operand0 = new QueryExpression($this->_modelType, $operand0);
+		if ($operand1 != null && !($operand1 instanceof QueryExpression))
+			$operand1 = new QueryExpression($this->_modelType, $operand1);
+		if ($operand2 != null && !($operand2 instanceof QueryExpression))
+			$operand2 = new QueryExpression($this->_modelType, $operand2);
+			
+		return new QueryExpression($this->_modelType, $operation,
+			$operand0, $operand1, $operand2);
 	}
 	
 	/**

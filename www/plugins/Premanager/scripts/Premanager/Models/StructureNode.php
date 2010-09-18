@@ -1,6 +1,10 @@
 <?php                 
 namespace Premanager\Models;
 
+use Premanager\QueryList\QueryOperation;
+
+use Premanager\QueryList\QueryExpression;
+
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\DateTime;
@@ -45,6 +49,7 @@ final class StructureNode extends Model {
 	private $_editTime; 
 	private $_authorizedGroupsCount;
 	private $_childCount;
+	private $_children;
 	
 	private static $_instances = array();
 	private static $_descriptor;
@@ -207,27 +212,27 @@ final class StructureNode extends Model {
 			if ($instance->_title === null)
 				$instance->_title = $title;
 			if ($instance->_noAccessRestriction === null)
-				$instance->_noAccessRestriction = $noAccessRestriction;
+				$instance->_noAccessRestriction = (bool) $noAccessRestriction;
 			if ($instance->_treeClass === false)
 				$instance->_treeClass = $tree;
 			if ($instance->_hasPanel === null)
-				$instance->_hasPanel = $hasPanel;
+				$instance->_hasPanel = (bool) $hasPanel;
 
 			return $instance;	
 		}
-                                                              
+
 		if (!Types::isInteger($id) || $id <= 0)
 			throw new ArgumentException(
 				'$id must be a positive integer value', 'id'); 
 
 		$instance = new self();
-		$instance->_id = $id;
+		$instance->_id = (int) $id;
 		$instance->_parent = $parent;
 		$instance->_name = $name;
 		$instance->_title = $title;
-		$instance->_noAccessRestriction = $noAccessRestriction;
+		$instance->_noAccessRestriction = (bool) $noAccessRestriction;
 		$instance->_treeClass = $treeClass;
-		$instance->_hasPanel = $hasPanel;
+		$instance->_hasPanel = (bool) $hasPanel;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -337,7 +342,10 @@ final class StructureNode extends Model {
 		if ($this->_parent === false) {
 			if ($this->_parentID === null)
 				$this->load();
-			$this->_parent = StructureNode::createFromID($this->_parentID);
+			if ($this->_parentID)
+				$this->_parent = StructureNode::createFromID($this->_parentID);
+			else
+				$this->_parent = null;
 		}
 		return $this->_parent;
 	} 
@@ -521,48 +529,24 @@ final class StructureNode extends Model {
 	}  
 	
 	/**
-	 * Gets a list of child nodes in a specified range
-	 *
-	 * @param int $start index of first node
-	 * @param int $count count of nodes to return
-	 * @return array
+	 * Gets a list of child nodes
+	 * 
+	 * @return Premanager\QueryList\QueryList
 	 */
-	public function getChildren($start = null, $count = null) {
+	public function getChildren() {
 		$this->checkDisposed();
-			
-		$start = $start ? $start : 0;
-		$count = $count ? $count : 0;
 		
-		if (($start !== null && $count === null) ||
-			($count !== null && $start === null))
-			throw new ArgumentException('Either both $start and $count must '.
-				'be specified or none of them');
-				
-		if ($start === null || $count === null) {
-			if (!is_int($start) || $start < 0)
-				throw new ArgumentException(
-					'$start must be a positive integer value or null', 'start');
-			if (!is_int($count) || $count < 0)
-				throw new ArgumentException(
-					'$count must be a positive integer value or null', 'count');		
-		}  
-	
-		$list = array();
-		$result = DataBase::query(
-			"SELECT node.id, node.treeID, node.noAccessRestriction, ".
-				"node.hasPanel, translation.name, translation.title ".
-			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ",
-			/* translating */
-			"ORDER BY LOWER(translation.title) ASC ".
-			($start !== null ? "LIMIT $start, $count" : ''));
-		while ($result->next()) {
-			$node = self::createFromID($result->get('id'), $this,
-				$result->get('name'), $result->get('title'),
-				$result->get('noAccessRestriction'), $result->get('tree'),
-				$result->get('hasPanel'));
-			$list[] = $node;
+		if (!$this->_children) {
+			$l = self::getStructureNodes();
+			$this->_children =
+				$l->filter($l->exprAnd(
+					$l->expr(QueryOperation::NOT,
+						$l->expr(QueryOperation::IS_NULL, $l->exprMember('parent'))),
+					$l->exprEqual(
+						$l->exprMember($l->exprMember('parent'), 'id'),
+						$this->_id)));
 		}
-		return $list;
+		return $this->_children;
 	}
 	
 	public function getPageNode() {
@@ -1138,13 +1122,13 @@ final class StructureNode extends Model {
 		
 		$this->_name = $result->get('name');
 		$this->_title = $result->get('title');
-		$this->_parentID = $result->get('parentID');
-		$this->_projectID = $result->get('projectID');
-		$this->_noAccessRestriction = $result->get('noAccessRestriction');
-		$this->_hasPanel = $result->get('hasPanel');
-		$this->_treeID = $result->get('treeID');
-		$this->_creatorID = $result->get('creatorID');
-		$this->_editorID = $result->get('editorID');
+		$this->_parentID = (int) $result->get('parentID');
+		$this->_projectID = (int) $result->get('projectID');
+		$this->_noAccessRestriction = (bool) $result->get('noAccessRestriction');
+		$this->_hasPanel = (bool) $result->get('hasPanel');
+		$this->_treeID = (int) $result->get('treeID');
+		$this->_creatorID = (int) $result->get('creatorID');
+		$this->_editorID = (int) $result->get('editorID');
 		$this->_createTime = new DateTime($result->get('createTime'));
 		$this->_editTime = new DateTime($result->get('editTime'));
 		

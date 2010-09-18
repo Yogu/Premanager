@@ -65,8 +65,8 @@ class Template extends Module {
 				
 		$this->_dwoo = new \Dwoo();
 		$this->_data = new \Dwoo_Data();
-		Directory::createDirectory(Config::getCachePath().'Premanager/dwoo');
-		$this->_dwoo->setCompileDir(Config::getCachePath().'Premanager/dwoo');
+		Directory::createDirectory(Config::getCachePath().'/Premanager/dwoo');
+		$this->_dwoo->setCompileDir(Config::getCachePath().'/Premanager/dwoo');
 		
 		// Select the compiler for this template
 		$enableCompressing = !Config::isDebugMode() && !$disableCompressor;

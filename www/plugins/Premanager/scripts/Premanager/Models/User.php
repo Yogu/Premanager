@@ -48,9 +48,9 @@ final class User extends Model {
 	private $_unconfirmedEmailKey;
 	private $_registrationTime;
 	private $_registrationIP;
-	private $_lastLoginTime;
+	private $_lastLoginTime = false;
 	private $_lastLoginIP;
-	private $_lastVisibleLoginTime;       
+	private $_lastVisibleLoginTime = false;       
 	private $_hasSecondaryPassword;
 	private $_secondaryPasswordStartTime = false;
 	private $_secondaryPasswordExpirationTime = false;
@@ -207,7 +207,7 @@ final class User extends Model {
 	public $unconfirmedEmailKey = Module::PROPERTY_GET;             
 	 
 	/**
-	 * Provides the time this user has been registered
+	 * The time this user has been registered
 	 *
 	 * Ths property is read-only.
 	 * 
@@ -216,7 +216,7 @@ final class User extends Model {
 	public $registrationTime = Module::PROPERTY_GET;                  
 	 
 	/**
-	 * Provides the ip address from that this user has been registered
+	 * The ip address from that this user has been registered
 	 *
 	 * Ths property is read-only.
 	 * 
@@ -225,18 +225,18 @@ final class User extends Model {
 	public $registrationIP = Module::PROPERTY_GET;                 
 	 
 	/**
-	 * Provides the time this user has been logged in the last time (hidden or
+	 * The date/time this user has been logged in the last time (hidden or
 	 * visible)
 	 *
 	 * Ths property is read-only.
 	 * 
-	 * @var string
+	 * @var Premanager\DateTime the last login time or null
 	 */    
 	public $lastLoginTime = Module::PROPERTY_GET;      
 	 
 	/**
-	 * Provides the ip address from that this user has been logged in the last
-	 * time (hidden or visible)
+	 * The ip address from that this user has been logged in the last time
+	 * (hidden or visible)
 	 *
 	 * Ths property is read-only.
 	 * 
@@ -245,12 +245,12 @@ final class User extends Model {
 	public $lastLoginIP = Module::PROPERTY_GET;         
 	 
 	/**
-	 * Provides the time this user has been logged in the last time without
+	 * The date/time this user has been logged in the last time without
 	 * selecting the "hidden" option
 	 *
 	 * Ths property is read-only.
 	 * 
-	 * @var string
+	 * @var Premanager\DateTime the last login time or null
 	 */    
 	public $lastVisibleLoginTime = Module::PROPERTY_GET;      
 	 
@@ -802,15 +802,15 @@ final class User extends Model {
 	}                      
 
 	/**
-	 * Gets timestamp this user has logged in the last time
+	 * Gets date/time this user has logged in the last time
 	 * (whatever hidden or visible)
 	 *
-	 * @return int
+	 * @return Premanager\DateTime the last login time or null
 	 */
 	public function getLastLoginTime() {
 		$this->checkDisposed();
 			
-		if ($this->_lastLoginTime === null)
+		if ($this->_lastLoginTime === false)
 			$this->load();
 		return $this->_lastLoginTime;	
 	}                         
@@ -833,12 +833,12 @@ final class User extends Model {
 	 * Gets the date/time this user has logged in the last time without hiding
 	 * itself
 	 *
-	 * @return Premanager\DateTime
+	 * @return Premanager\DateTime or null
 	 */
 	public function getLastVisibleLoginTime() {
 		$this->checkDisposed();
 			
-		if ($this->_lastVisibleLoginTime === null)
+		if ($this->_lastVisibleLoginTime === false)
 			$this->load();
 		return $this->_lastVisibleLoginTime;	
 	}                          
@@ -1706,10 +1706,11 @@ final class User extends Model {
 		$this->_registrationTime =
 			new DateTime($result->get('registrationTime'));           
 		$this->_registrationIP = $result->get('registrationIP');               
-		$this->_lastLoginTime = new DateTime($result->get('lastLoginTime'));                 
+		$this->_lastLoginTime = $result->get('lastLoginTime') ?
+			new DateTime($result->get('lastLoginTime')) : null;                 
 		$this->_lastLoginIP = $result->get('lastLoginIP');                     
-		$this->_lastVisibleLoginTime =
-			new DateTime($result->get('lastVisibleLoginTime'));   
+		$this->_lastVisibleLoginTime = $result->get('lastVisibleLoginTime') ? 
+			new DateTime($result->get('lastVisibleLoginTime')) : null;   
 		$this->_hasSecondaryPassword = $result->get('hasSecondaryPassword');  
 		if ($this->_hasSecondaryPassword) {
 			$this->_secondaryPasswordStartTime =

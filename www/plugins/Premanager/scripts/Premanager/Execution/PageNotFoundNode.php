@@ -26,7 +26,7 @@ class PageNotFoundNode extends PageNode {
 	 */
 	public function __construct($parent, $urlRest) {
 		parent::__construct($parent);
-		$this->_urlRest = $urlRest;
+		$this->_urlRest = ltrim($urlRest, '/');
 	}
 	
 	/**

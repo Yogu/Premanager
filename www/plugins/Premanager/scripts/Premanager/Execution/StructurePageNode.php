@@ -170,8 +170,23 @@ class StructurePageNode extends PageNode {
 		return $this->_structureNode;
 	}
 	
+	/**
+	 * Checks if this is the root node of a project
+	 * 
+	 * @return bool true, if this is the root node of a project
+	 */
 	public function isProjectNode() {
 		return $this->_isProjectNode;
+	}
+	
+	/**
+	 * Gets an array of names and values of the query ('page' => 7 for '?page=7')
+	 * 
+	 * @return array
+	 */
+	public function getURLQuery() {
+		if ($this->_structureNode->type == StructureNodeType::TREE)
+			return $this->getTreeNode()->getURLQuery();
 	}
 	
 	/**
@@ -183,7 +198,8 @@ class StructurePageNode extends PageNode {
 	private function getTreeNode() {
 		if ($this->_treeNode === false) {
 			if ($this->_structureNode->type == StructureNodeType::TREE)
-				$this->_treeNode = $this->_structureNode->treeClass->createInstance();
+				$this->_treeNode =
+					$this->_structureNode->treeClass->createInstance($this);
 			else
 				$this->_treeNode = null;
 		}
