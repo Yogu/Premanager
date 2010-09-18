@@ -164,4 +164,13 @@ class QueryOperation {
 	 * @var int
 	 */
 	const CONDITIONAL = 17;
+	
+	/**
+	 * Tests an expression to be null
+	 * 
+	 * - IS_NULL(TYPE0) (TYPE0 is a various type):
+	 *   Returns true if the operator is null, false otherwise 
+	 * @var int
+	 */
+	const IS_NULL = 18;
 }

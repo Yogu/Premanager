@@ -138,10 +138,11 @@ class QueryExpression extends Module {
 			switch ($operation) {
 				case QueryOperation::MEMBER:
 					if (!$operand1 || !($operand1 instanceof MemberInfo))
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException('Invalid operands the MEMBER operator');
 					if ($operand0) {
-						if (!($operand0 instanceof ModelDescriptor))
-							throw new ArgumentException('Invalid operands for this operator');
+						if (!($operand0->type instanceof ModelDescriptor))
+							throw new ArgumentException(
+								'Invalid operands for the MEMBER operator');
 						if ($operand1->modelDescriptor != $operand0->type)
 							throw new ArgumentException('The member is none of the '.
 								'operand\'s model', 'operand1');
@@ -156,15 +157,17 @@ class QueryExpression extends Module {
 					break;
 					
 				case QueryOperation::NOT:
-					if (!$operand0 || $operand0->type != DataType::BOOL)
-						throw new ArgumentException('Invalid operands for this operator');
+					if (!$operand0 || $operand0->type != DataType::BOOLEAN)
+						throw new ArgumentException(
+							'Invalid operands for the NOT operator');
 					$this->_operand0 = $operand0;
 					$this->_type = DataType::BOOLEAN;
 					break;
 					
 				case QueryOperation::NEGATE:
 					if (!$operand0 || $operand0->type != DataType::NUMBER)
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the NEGATE operator');
 					$this->_operand0 = $operand0;
 					$this->_type = DataType::NUMBER;
 					break;
@@ -177,7 +180,8 @@ class QueryExpression extends Module {
 						!($operand1 instanceof QueryExpression) ||
 						$operand0->type != DataType::NUMBER || 
 						$operand1->type != DataType::NUMBER)
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the arithmetic operator');
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_type = DataType::NUMBER;
@@ -190,7 +194,8 @@ class QueryExpression extends Module {
 						$operand1->type != DataType::NUMBER) &&
 						($operand0->type != DataType::STRING || 
 						$operand1->type != DataType::STRING)))
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the arithmetic operator');
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_type = DataType::NUMBER;
@@ -206,7 +211,8 @@ class QueryExpression extends Module {
 						!($operand1->type == DataType::NUMBER) ||
 						($operand0->type != DataType::DATE_TIME || 
 						$operand1->type != DataType::DATE_TIME))
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the comparing operator');
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_type = DataType::BOOLEAN;
@@ -217,7 +223,8 @@ class QueryExpression extends Module {
 					if (!$operand0 || !$operand1 ||
 						!($operand1 instanceof QueryExpression) ||
 						$operand0->type != $operand1->type)
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the equality testing operator');
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_type = DataType::BOOLEAN;
@@ -229,7 +236,8 @@ class QueryExpression extends Module {
 						!($operand1 instanceof QueryExpression) ||
 						$operand0->type != DataType::BOOLEAN ||
 						$operand1->type != DataType::BOOLEAN)
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the logical operator');
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_type = DataType::BOOLEAN;
@@ -240,11 +248,20 @@ class QueryExpression extends Module {
 						!($operand1 instanceof QueryExpression) ||
 						$operand0->type != DataType::BOOLEAN ||
 						$operand1->type != $operand2->type)
-						throw new ArgumentException('Invalid operands for this operator');
+						throw new ArgumentException(
+							'Invalid operands for the CONDITIONAL operator');
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_operand2 = $operand2;
 					$this->_type = $operand1->type;
+					break;
+					
+				case QueryOperation::IS_NULL:		
+					if (!$operand0)
+						throw new ArgumentException(
+							'Invalid operands for the IS_NULL operator');
+					$this->_operand0 = $operand0;
+					$this->_type = DataType::BOOLEAN;
 					break;
 					
 				case QueryOperation::NONE:
@@ -335,113 +352,122 @@ class QueryExpression extends Module {
 				return $this->_value;
 
 			case QueryOperation::MEMBER:
-				return $this->_memberInfo->getValue(
-					$this->_operand0 ? $this->_operand0 : $object);
+				return $this->_memberInfo->getValue($this->_operand0 ?
+					$this->_operand0->evaluate($object, $queryEvaluated) : $object);
 					
 			case QueryOperation::NOT:
-				return !$this->_operand0->evaluate($object);
+				return !$this->_operand0->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::NEGATE:
-				return -$this->_operand0->evaluate($object);
+				return -$this->_operand0->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::MULTIPLY:
-				return $this->_operand0->evaluate($object) *
-				  $this->_operand1->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) *
+				  $this->_operand1->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::DIVIDE:
-				return $this->_operand0->evaluate($object) /
-				  $this->_operand1->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) /
+				  $this->_operand1->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::MODULUS:
-				return $this->_operand0->evaluate($object) %
-				  $this->_operand1->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) %
+				  $this->_operand1->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::ADD:
 				switch ($this->_operand0->type) {
 					case DataType::NUMBER:
-						return $this->_operand0->evaluate($object) +
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) +
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::STRING:
-						return $this->_operand0->evaluate($object) .
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) .
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 				}
 					
 			case QueryOperation::SUBTRACT:
-				return $this->_operand0->evaluate($object) -
-				  $this->_operand1->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) -
+				  $this->_operand1->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::LESS:
 				switch ($this->_operand0->type) {
 					case DataType::NUMBER:
-						return $this->_operand0->evaluate($object) <
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) <
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
-						return $this->_operand0->evaluate($object)->compareTo(
-						  $this->_operand1->evaluate($object)) < 0;
+						return $this->_operand0->evaluate($object,
+							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
+							$queryEvaluated), $queryEvaluated) < 0;
 				}
 					
 			case QueryOperation::GREATER:
 				switch ($this->_operand0->type) {
 					case DataType::NUMBER:
-						return $this->_operand0->evaluate($object) >
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) >
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
-						return $this->_operand0->evaluate($object)->compareTo(
-						  $this->_operand1->evaluate($object)) > 0;
+						return $this->_operand0->evaluate($object, 
+							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
+							$queryEvaluated), $queryEvaluated) > 0;
 				}
 					
 			case QueryOperation::LESS_EQUAL:
 				switch ($this->_operand0->type) {
 					case DataType::NUMBER:
-						return $this->_operand0->evaluate($object) <=
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) <=
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
-						return $this->_operand0->evaluate($object)->compareTo(
-						  $this->_operand1->evaluate($object)) <= 0;
+						return $this->_operand0->evaluate($object,
+							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
+							$queryEvaluated), $queryEvaluated) <= 0;
 				}
 					
 			case QueryOperation::GREATER_EQUAL:
 				switch ($this->_operand0->type) {
 					case DataType::NUMBER:
-						return $this->_operand0->evaluate($object) >=
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) >=
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
-						return $this->_operand0->evaluate($object)->compareTo(
-						  $this->_operand1->evaluate($object)) >= 0;
+						return $this->_operand0->evaluate($object,
+							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
+							$queryEvaluated), $queryEvaluated) >= 0;
 				}
 					
 			case QueryOperation::EQUAL:
 				switch ($this->_operand0->type) {
 					case DataType::DATE_TIME:
-						return $this->_operand0->evaluate($object)->equals(
-						  $this->_operand1->evaluate($object));
+						return $this->_operand0->evaluate($object, $queryEvaluated)->equals(
+						  $this->_operand1->evaluate($object, $queryEvaluated),
+						  $queryEvaluated);
 					default:
-						return $this->_operand0->evaluate($object) ==
-						  $this->_operand1->evaluate($object);
+						return $this->_operand0->evaluate($object, $queryEvaluated) ==
+						  $this->_operand1->evaluate($object, $queryEvaluated);
 				}
 					
 			case QueryOperation::UNEQUAL:
 				switch ($this->_operand0->type) {
 					case DataType::DATE_TIME:
-						return !$this->_operand0->evaluate($object)->equals(
-						  $this->_operand1->evaluate($object));
+						return !$this->_operand0->evaluate($object,
+							$queryEvaluated)->equals($this->_operand1->evaluate($object,
+							$queryEvaluated), $queryEvaluated);
 					default:
 						return $this->_operand0->evaluate($object) !=
 						  $this->_operand1->evaluate($object);
 				}
 
 			case QueryOperation::LOGICAL_AND:
-				return $this->_operand0->evaluate($object) &&
-					$this->_operand1->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) &&
+					$this->_operand1->evaluate($object, $queryEvaluated);
 
 			case QueryOperation::LOGICAL_OR:
-				return $this->_operand0->evaluate($object) ||
-					$this->_operand1->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) ||
+					$this->_operand1->evaluate($object, $queryEvaluated);
 
 			case QueryOperation::CONDITIONAL:
-				return $this->_operand0->evaluate($object) ?
-					$this->_operand1->evaluate($object) :
-					$this->_operand2->evaluate($object);
+				return $this->_operand0->evaluate($object, $queryEvaluated) ?
+					$this->_operand1->evaluate($object, $queryEvaluated) :
+					$this->_operand2->evaluate($object, $queryEvaluated);
+
+			case QueryOperation::IS_NULL:
+				return $this->_operand0->evaluate($object, $queryEvaluated) === null;
 		}
 	}
 }
