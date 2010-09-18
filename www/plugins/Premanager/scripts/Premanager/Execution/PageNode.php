@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\DateTime;
+
 use Premanager\Debug\Debug;
 
 use Premanager\ArgumentException;
@@ -169,9 +171,8 @@ abstract class PageNode extends Module {
 	public function getURL() {
 		// If there are two parents, one of them is _not_ root
 		if ($this->parent && $this->parent->parent) {
-			$name = $this->name;;
-			if ($name)
-				return $this->parent->url.'/'.rawurlencode($this->name);
+			if ($name = $this->name)
+				return $this->parent->url.'/'.rawurlencode($name);
 			else
 				return $this->parent->url;
 		}
@@ -193,18 +194,35 @@ abstract class PageNode extends Module {
 	 */
 	public function getFullURL() {
 		$url = $this->getURL();
-		if ($query = $this->getURLQuery())
+		if ($query = $this->getQueryString())
 			$url .= '?'.$query;
 		return $url;
 	}
 	
 	/**
-	 * Gets the query part of this page, without the question mark
+	 * Gets an array of names and values of the query ('page' => 7 for '?page=7')
 	 * 
-	 * @return string
+	 * @return array
 	 */
 	public function getURLQuery() {
-		
+		return array();
+	}
+	
+	/**
+	 * Gets the query part of the url using the getURLQuery function (without the
+	 * question mark)
+	 * 
+	 * @return string the query string
+	 */
+	public function getQueryString() {
+		$query = $this->getURLQuery();
+		$queryString = '';
+		foreach ($query as $name => $value) {
+			if ($queryString)
+				$queryString .= '&';
+			$queryString .= rawurlencode($name).'='.rawurlencode($value);
+		}
+		return $queryString;
 	}
 	
 	/**
