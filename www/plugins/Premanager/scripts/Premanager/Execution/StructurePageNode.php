@@ -2,9 +2,7 @@
 namespace Premanager\Execution;
 
 use Premanager\Debug\Debug;
-
 use Premanager\IO\Output;
-
 use Premanager\Execution\Template;
 use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
@@ -19,10 +17,6 @@ class StructurePageNode extends PageNode {
 	 */
 	private $_structureNode;
 	/**
-	 * @var Premanager\Execution\TreeNode
-	 */
-	private $_treeNode = false;
-	/**
 	 * @vqr bool
 	 */
 	private $_isProjectNode;
@@ -36,7 +30,7 @@ class StructurePageNode extends PageNode {
 	
 	/**
 	 * Creates a new page node based on a structure node or on the root node of
-	 * the organization
+	 * the organization. The structure node must not be a TREE node
 	 * 
 	 * @param Premanager\Models\PageNode|null $parent the parent node or null to
 	 *   create a page node on the base of the root node of the organization
@@ -51,6 +45,9 @@ class StructurePageNode extends PageNode {
 			if (!($structureNode instanceof StructureNode))
 				throw new ArgumentException('$structureNode must be an a '.
 					'Premanager\Models\StructureNode', 'structureNode');
+			if ($structureNode->type == StructureNodeType::TREE)
+				throw new ArgumentException('$structureNode must not be a TREE node',
+					'structureNode');
 			$this->_structureNode = $structureNode;
 			
 			// If the parent is the organization node, this must be a project node
@@ -70,15 +67,30 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($this->_structureNode->type == StructureNodeType::TREE)
-			return $this->getTreeNode()->getChildByName($name);
-		else {
-			$structureNode = $this->_structureNode->getChild($name);
-			if ($structureNode)
-				return new StructurePageNode($this, $structureNode);
-			else
-				return null;
-		}
+		$structureNode = $this->_structureNode->getChild($name);
+		if ($structureNode) {
+			return $this->getChildByStructureNode($structureNode);
+		} else
+			return null;
+	}
+	
+	/**
+	 * Creates a PageNode that shows the contents of the speicified structure node
+	 * 
+	 * @param Premanager\Models\StructureNode $structureNode the structure node
+	 * @return Premanager\Execution\PageNode the page node
+	 */
+	public function getChildByStructureNode(StructureNode $structureNode) {
+		if ($this->_structureNode != $structureNode->parent)
+			throw new ArgumentException('The passed structure node is not a child '.
+				'of the structure ndoe this page node represents', 'structureNode');
+		
+		// If the child is a TREE node, the embedded node is used, not the
+		// structure page node
+		if ($structureNode->type == StructureNodeType::TREE)
+			return $structureNode->treeClass->createInstance($this);
+		else
+			return new StructurePageNode($this, $structureNode);
 	}
 	
 	/**
@@ -104,10 +116,7 @@ class StructurePageNode extends PageNode {
 	}
 	
 	public function getStandAloneTitle() {
-		if ($this->_structureNode->type == StructureNodeType::TREE)
-			return $this->getTreeNode()->standAloneTitle;
-		else
-			return $this->_structureNode->title;
+		return $this->_structureNode->title;
 	}
 	
 	/**
@@ -118,9 +127,6 @@ class StructurePageNode extends PageNode {
 	 */
 	public function getPage() {
 		switch ($this->_structureNode->type) {
-			case StructureNodeType::TREE:
-				return $this->getTreeNode()->getPage();
-			
 			case StructureNodeType::PANEL:
 				//TODO: create a panel page
 				throw new NotImplementedException();
@@ -128,7 +134,7 @@ class StructurePageNode extends PageNode {
 			default:
 				$subNodes = array();
 				foreach ($this->_structureNode->getChildren() as $structureNode) {
-					$subNodes[] = new StructurePageNode($this, $structureNode);
+					$subNodes[] = $this->getChildByStructureNode($structureNode);
 				}
 				
 				// create list of sub-page-nodes
@@ -145,10 +151,7 @@ class StructurePageNode extends PageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		if ($this->_structureNode->type == StructureNodeType::TREE)
-			$this->getTreeNode()->execute();
-		else
-			Output::select($this->getPage());
+		Output::select($this->getPage());
 	}
 	
 	/**
@@ -185,27 +188,7 @@ class StructurePageNode extends PageNode {
 	 * @return array
 	 */
 	public function getURLQuery() {
-		if ($this->_structureNode->type == StructureNodeType::TREE)
-			return $this->getTreeNode()->getURLQuery();
-		else
-			return array();
-	}
-	
-	/**
-	 * Gets the embedded tree page node
-	 * 
-	 * @return Premanager\Execution\TreeNode the embedded tree page node or null
-	 *   if the structure node's type is not TREE
-	 */
-	private function getTreeNode() {
-		if ($this->_treeNode === false) {
-			if ($this->_structureNode->type == StructureNodeType::TREE)
-				$this->_treeNode =
-					$this->_structureNode->treeClass->createInstance($this);
-			else
-				$this->_treeNode = null;
-		}
-		return $this->_treeNode;
+		return array();
 	}
 }
 
