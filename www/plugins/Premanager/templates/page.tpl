@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>{html $project->title}{if !$isIndexPage}{string Premanager titleDivider}{html $node->standAloneTitle}{elseif $project->subTitle}{string Premanager titleDivider}{$project->subTitle}{/if}</title>
+		<title>{html $project->title}{if !$isIndexPage}{string Premanager titleDivider}{html $node->standAloneTitle}{elseif $project->subTitle}{string Premanager titleDivider}{html $project->subTitle}{/if}</title>
 		<base href="{html $environment->urlPrefix}" />
 				
 		<meta name="copyright" content="{html $organization->copyright}" />
@@ -20,14 +20,14 @@
 		<meta http-equiv="Content-Script-Type" content="text/javascript" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 		
-		<link rel="canonical" title="{string Premanager canonical}" href="{$canonicalURLPrefix}{$node->fullURL}" />
+		<link rel="canonical" title="{string Premanager canonical}" href="{html $canonicalURLPrefix}{html $node->fullURL}" />
 		<link rel="top" title="{string Premanager home}" href="./" />
 		<link rel="start" title="{string Premanager home}" href="./" />
 		{if $node->parent} 
-			<link rel="up" title="{string Premanager up}" href="./{$node->parent->url}" />
+			<link rel="up" title="{string Premanager up}" href="./{html $node->parent->url}" />
 		{/if}
 		     		
-		<link rel="shortcut icon" title="Shortcut Icon" href="{$staticURLPrefix}Premanager/images/icon-16x16.png" />
+		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
 		{foreach $environment->style->getStylesheets() as stylesheet}
 			<link rel="stylesheet" type="text/css" href="{html $stylesheet->url}"{if $stylesheet->media != 'all'} media="{html $stylesheet->media}"{/if} />
