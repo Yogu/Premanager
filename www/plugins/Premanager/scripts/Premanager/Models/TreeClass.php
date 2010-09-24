@@ -253,13 +253,16 @@ final class TreeClass extends Model {
 	 * Creates a new instance of this tree class
 	 * 
 	 * @param Premanager\Execution\StructurePageNode $parent the parent page node
+	 * @param Premanager\Models\StructureNode the structure node that embeds this
+	 *   tree class
 	 * @return Premanager\Execution\PageNode
 	 */
-	public function createInstance(StructurePageNode $parent)  {
+	public function createInstance(StructurePageNode $parent,
+		StructureNode $structureNode)  {
 		if (!class_exists($this->className))
 			throw new CorruptDataException('The class of tree class '.$this->_id.
 				' ('.$this->className.') does not exist');
-		$instance = new $this->className($parent, $parent->structureNode);
+		$instance = new $this->className($parent, $structureNode);
 		if (!($instance instanceof PageNode))
 			throw new CorruptDataException('The class of tree class '.$this->_id.
 				' ('.$this->className.') does not inherit from '.

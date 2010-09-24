@@ -88,7 +88,7 @@ class StructurePageNode extends PageNode {
 		// If the child is a TREE node, the embedded node is used, not the
 		// structure page node
 		if ($structureNode->type == StructureNodeType::TREE)
-			return $structureNode->treeClass->createInstance($this);
+			return $structureNode->treeClass->createInstance($this, $structureNode);
 		else
 			return new StructurePageNode($this, $structureNode);
 	}
