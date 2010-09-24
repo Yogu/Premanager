@@ -187,6 +187,8 @@ class StructurePageNode extends PageNode {
 	public function getURLQuery() {
 		if ($this->_structureNode->type == StructureNodeType::TREE)
 			return $this->getTreeNode()->getURLQuery();
+		else
+			return array();
 	}
 	
 	/**
