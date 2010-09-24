@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 19. September 2010 um 00:57
+-- Erstellungszeit: 24. September 2010 um 23:07
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.1
 
@@ -3076,14 +3076,14 @@ INSERT INTO `rack_premanager_stringstranslation` (`id`, `languageID`, `value`, `
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_themes`
+-- Tabellenstruktur für Tabelle `rack_premanager_styles`
 --
 -- Erzeugt am: 04. März 2010 um 20:08
--- Aktualisiert am: 12. Juni 2010 um 14:40
+-- Aktualisiert am: 24. September 2010 um 22:49
 -- Letzter Check am: 12. Juni 2010 um 00:36
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_themes` (
+CREATE TABLE IF NOT EXISTS `rack_premanager_styles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `isDefault` tinyint(1) NOT NULL,
@@ -3094,18 +3094,17 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_themes` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_themes`:
+-- RELATIONEN DER TABELLE `rack_premanager_styles`:
 --   `pluginID`
 --       `rack_premanager_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_themes`
+-- Daten für Tabelle `rack_premanager_styles`
 --
 
-INSERT INTO `rack_premanager_themes` (`id`, `pluginID`, `isDefault`, `class`, `timestamp`) VALUES
-(1, 4, 1, 'ClassicTheme', '2010-06-12 14:29:14'),
-(2, 4, 0, 'LightTheme', '2010-06-12 14:29:14');
+INSERT INTO `rack_premanager_styles` (`id`, `pluginID`, `isDefault`, `class`, `timestamp`) VALUES
+(1, 0, 1, 'Premanager\\Styles\\ClassicStyle', '2010-09-24 23:06:07');
 
 -- --------------------------------------------------------
 

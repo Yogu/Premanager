@@ -1,7 +1,6 @@
 <?php
 namespace Premanager\IO\DataBase;
 
-use Premanager\Execution\Theme;
 use Premanager\ArgumentException;
 use Premanager\Module;
 

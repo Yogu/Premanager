@@ -29,6 +29,10 @@
 		     		
 		<link rel="shortcut icon" title="Shortcut Icon" href="{$staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
+		{foreach $environment->style->getStylesheets() as stylesheet}
+			<link rel="stylesheet" type="text/css" href="{html $stylesheet->url}"{if $stylesheet->media != 'all'} media="{html $stylesheet->media}"{/if} />
+		{/foreach}
+		
 		{*
 		TODO: move this code to somewhere it is used
 		{if $List_pageCount > 1}

@@ -26,7 +26,9 @@ class UsersPage extends TreeListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		return null;
+		$user = User::getByName($name);
+		if ($user)
+			return new UserPage($this->parent, $user);
 	}
 	
 	/**

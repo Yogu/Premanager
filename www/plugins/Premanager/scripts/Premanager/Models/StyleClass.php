@@ -1,6 +1,8 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\IO\DataBase\DataBase;
+
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\ArgumentException;
@@ -16,9 +18,9 @@ use Premanager\QueryList\DataType;
 use Premanager\QueryList\ModelDescriptor;
               
 /**
- * A class for a theme
+ * A class for a style
  */
-final class ThemeClass extends Model {
+final class StyleClass extends Model {
 	private $_id;
 	private $_pluginID;
 	private $_plugin;
@@ -34,7 +36,7 @@ final class ThemeClass extends Model {
 	// ===========================================================================  
 
 	/**
-	 * The id of this theme class
+	 * The id of this style class
 	 *
 	 * Ths property is read-only.
 	 * 
@@ -43,7 +45,7 @@ final class ThemeClass extends Model {
 	public $id = Module::PROPERTY_GET;
    
 	/**
-	 * The plugin that has registered this theme class
+	 * The plugin that has registered this style class
 	 *
 	 * Ths property is read-only.
 	 * 
@@ -52,7 +54,7 @@ final class ThemeClass extends Model {
 	public $plugin = Module::PROPERTY_GET;
 	
 	/**
-	 * The class name of this theme
+	 * The class name of this style
 	 *
 	 * Ths property is read-only.
 	 * 
@@ -61,11 +63,11 @@ final class ThemeClass extends Model {
 	public $className = Module::PROPERTY_GET;    
 	
 	/**
-	 * An instance of this theme class
+	 * An instance of this style class
 	 *
 	 * Ths property is read-only.
 	 * 
-	 * @var Premanager\Execution\Theme
+	 * @var Premanager\Execution\Style
 	 */
 	public $instance = Module::PROPERTY_GET;    
 
@@ -103,10 +105,10 @@ final class ThemeClass extends Model {
 	// ===========================================================================
 	
 	/**
-	 * Gets a theme class using its id
+	 * Gets a style class using its id
 	 * 
-	 * @param int $id the id of the theme class
-	 * @return Premanager\Models\ThemeClass
+	 * @param int $id the id of the style class
+	 * @return Premanager\Models\StyleClass
 	 */
 	public static function getByID($id) {
 		if (!Types::isInteger($id) || $id < 0)
@@ -126,11 +128,11 @@ final class ThemeClass extends Model {
 	}
 	
 	/**
-	 * Creates a new theme class and inserts it into data base
+	 * Creates a new style class and inserts it into data base
 	 *
-	 * @param Plugin $plugin the plugin that registers this theme class             
-	 * @param string $className the class name for the theme 
-	 * @return Premanager\Models\ThemeClass
+	 * @param Plugin $plugin the plugin that registers this style class             
+	 * @param string $className the class name for the style 
+	 * @return Premanager\Models\StyleClass
 	 */
 	public static function createNew(Plugin $plugin, $className) {
 		$className = trim($className);
@@ -142,17 +144,17 @@ final class ThemeClass extends Model {
 			throw new ArgumentException('$className does not refer to an existing '.
 				'class', 'className');
 		
-		// Check if the class extends ThemeNode
+		// Check if the class extends Premanager\Execution\Style
 		$class = $className;
-		while ($class != 'Premanager\Execution\Theme') {
+		while ($class != 'Premanager\Execution\Style') {
 			$class = get_parent_class($class);
 			if (!$class)
 				throw new ArgumentException('The class specified by $className '.
-					'does not inherit from Premanager\Execution\Theme');
+					'does not inherit from Premanager\Execution\Style');
 		}
 	
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_Themes')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager_Styles')." ".
 			"(pluginID, class) ".
 			"VALUES ('$plugin->id', '".DataBase::escape($className)."'");
 		$id = DataBase::insertID();
@@ -166,70 +168,70 @@ final class ThemeClass extends Model {
 	}        
 	    
 	/**
-	 * Gets the count of themes
+	 * Gets the count of styles
 	 *
 	 * @return int
 	 */
 	public static function getCount() {
 		if (self::$_count === null) {
 			$result = DataBase::query(
-				"SELECT COUNT(theme.themeID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Themes')." AS theme");
+				"SELECT COUNT(style.id) AS count ".
+				"FROM ".DataBase::formTableName('Premanager_Styles')." AS style");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
 	}  
 
 	/**
-	 * Gets the default theme class
+	 * Gets the default style class
 	 * 
-	 * @return Premanager\Models\ThemeClass
+	 * @return Premanager\Models\StyleClass
 	 */
 	public static function getDefault() {
-		if (self::_defaul === null) {
-			$result = DatabBase::query(
-				"SELECT theme.themeID, theme.pluginID, theme.class ".
-				"FROM ".DataBase::formTableName('Premanager_Themes')." AS theme ".
-				"WHERE theme.isDefault = '1'");
+		if (self::$_default === null) {
+			$result = DataBase::query(
+				"SELECT style.id, style.pluginID, style.class ".
+				"FROM ".DataBase::formTableName('Premanager_Styles')." AS style ".
+				"WHERE style.isDefault = '1'");
 			if ($result->next()) {
-				self::$_default = self::createFromID($result->get('themeID'),
+				self::$_default = self::createFromID($result->get('id'),
 					$result->get('pluginID'), $result->get('class'));
 			} else
-				throw new CorruptDataException('No default theme found');
+				throw new CorruptDataException('No default style found');
 		}
-		return self::_default;
+		return self::$_default;
 	}
 	
 	/**
-	 * Sets the default theme class
+	 * Sets the default style class
 	 * 
-	 * @param Premanager\Models\ThemeClass $theme the new default theme class
+	 * @param Premanager\Models\StyleClass $style the new default style class
 	 */
-	public static function setDefault(ThemeClass $theme) {
-		if (!$theme)
-			throw new ArgumentNullException('theme');
+	public static function setDefault(StyleClass $style) {
+		if (!$style)
+			throw new ArgumentNullException('style');
 		
-		// Remove former default theme
+		// Remove former default style
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Themes')." AS theme ".
-			"SET theme.isDefault = '0' ".
-			"WHERE theme.isDefault = '1'");
+			"UPDATE ".DataBase::formTableName('Premanager_Styles')." AS style ".
+			"SET style.isDefault = '0' ".
+			"WHERE style.isDefault = '1'");
 		
-		// Set the new default theme
+		// Set the new default style
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Themes')." AS theme ".
-			"SET theme.isDefault = '1' ".
-			"WHERE theme.themeID = '$theme->id'");
+			"UPDATE ".DataBase::formTableName('Premanager_Styles')." AS style ".
+			"SET style.isDefault = '1' ".
+			"WHERE style.id = '$style->id'");
 		
-		self::$_default = $theme;
+		self::$_default = $style;
 	}
 
 	/**
-	 * Gets a list of theme classes
+	 * Gets a list of style classes
 	 * 
 	 * @return Premanager\QueryList\QueryList
 	 */
-	public static function getThemeClasses() {
+	public static function getStyleClasses() {
 		if (!self::$_queryList)
 			self::$_queryList = new QueryList(self::getDescriptor());
 		return self::$_queryList;
@@ -245,12 +247,8 @@ final class ThemeClass extends Model {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => DataType::NUMBER,
 				'plugin' => Plugin::getDescriptor(),
-				'className' => DataType::STRING,
-				'creator' => User::getDescriptor(),
-				'createTime' => DataType::DATE_TIME,
-				'editor' => User::getDescriptor(),
-				'editTime' => DataType::DATE_TIME),
-				'Premanager_Themes', array(__CLASS__, 'getByID'));
+				'className' => DataType::STRING),
+				'Premanager_Styles', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}      
@@ -258,7 +256,7 @@ final class ThemeClass extends Model {
 	// ===========================================================================
 	
 	/**
-	 * Gets the id of this theme class
+	 * Gets the id of this style class
 	 *
 	 * @return int
 	 */
@@ -269,7 +267,7 @@ final class ThemeClass extends Model {
 	}
 
 	/**
-	 * Gets the plugin that has registered this theme class
+	 * Gets the plugin that has registered this style class
 	 *
 	 * @return Premanager\Models\Plugin
 	 */
@@ -285,7 +283,7 @@ final class ThemeClass extends Model {
 	}        
 
 	/**
-	 * Gets the class name for this theme
+	 * Gets the class name for this style
 	 *
 	 * @return string
 	 */
@@ -298,9 +296,9 @@ final class ThemeClass extends Model {
 	}        
 
 	/**
-	 * Creates an instance of this theme class
+	 * Creates an instance of this style class
 	 * 
-	 * @return Premanager\Models\Theme
+	 * @return Premanager\Models\Style
 	 */
 	public function getInstance()  {
 		if ($this->_instance === null)
@@ -309,30 +307,30 @@ final class ThemeClass extends Model {
 	}   
 	
 	/**
-	 * Deletes and disposes this theme class
+	 * Deletes and disposes this style class
 	 * 
-	 * If this theme was the default theme, any other theme will get the new
-	 * default theme.
+	 * If this style was the default style, any other style will get the new
+	 * default style.
 	 * 
-	 * Throws a Premanager\InvalidOperationException if this is the last theme
-	 * because there must be at least one theme
+	 * Throws a Premanager\InvalidOperationException if this is the last style
+	 * because there must be at least one style
 	 */
 	public function delete() {         
 		$this->checkDisposed();
 		
-		// Check if this is the last theme
+		// Check if this is the last style
 		if (self::getCount() == 1)
-			throw new InvalidOperationException('Last theme can not be deleted');
+			throw new InvalidOperationException('Last style can not be deleted');
 			
-		// If this was the default theme, select another default theme
+		// If this was the default style, select another default style
 		if (self::getDefault() == $this) {
-			$arr = self::getThemeClasses(0, 1);
+			$arr = self::getStyleClasses(0, 1);
 			self::setDefault($arr[0]);
 		}
 			
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanger_Themes')." ".
-			"WHERE theme.themeID = '$this->_id'");
+			"DELETE FROM ".DataBase::formTableName('Premanager_Styles')." ".
+			"WHERE style.id = '$this->_id'");
 			
 		unset(self::$_instances[$this->_id]);
 		if (self::$_count !== null)
@@ -343,9 +341,9 @@ final class ThemeClass extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT theme.pluginID, theme.className ".    
-			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
-			"WHERE theme.themeID = '$this->_id'");
+			"SELECT style.pluginID, style.className ".    
+			"FROM ".DataBase::formTableName('Premanager_Styles')." AS style ".
+			"WHERE style.id = '$this->_id'");
 		if (!$result->next())
 			return false;
 		

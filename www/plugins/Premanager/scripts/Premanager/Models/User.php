@@ -399,11 +399,11 @@ final class User extends Model {
 	 */
 	public static function getByName($name) {
 		$result = DataBase::query(
-			"SELECT name.userID ".            
+			"SELECT name.id ".            
 			"FROM ".DataBase::formTableName('Premanager_UsersName')." AS name ".
-			"WHERE name.name = '".DataBase::escape(Strings::unitize($name)."'"));
+			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
-			$user = self::createFromID($result->get('userID'));
+			$user = self::createFromID($result->get('id'));
 			return $user;
 		}
 		return null;

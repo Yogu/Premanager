@@ -10,9 +10,9 @@ use Premanager\IO\Request;
 use Premanager\Models\User;
 use Premanager\Models\Project;
 use Premanager\Models\Language;
-use Premanager\Models\ThemeClass;
+use Premanager\Models\StyleClass;
 use Premanager\Models\Session;
-use Premanager\Execution\Theme;
+use Premanager\Execution\Style;
 
 /**
  * A collection of environment properties
@@ -31,9 +31,9 @@ class Environment extends Module {
 	 */
 	private $_language;
 	/**
-	 * @var Premanager\Execution\Theme
+	 * @var Premanager\Execution\Style
 	 */
-	private $_theme;
+	private $_style;
 	/**
 	 * @var int
 	 */
@@ -77,7 +77,7 @@ class Environment extends Module {
 	/**
 	 * @var bool
 	 */
-	private $_themeLoading;
+	private $_styleLoading;
 	/**
 	 * @var bool
 	 */
@@ -160,17 +160,17 @@ class Environment extends Module {
 	public $language = Module::PROPERTY_GET;
 
 	/**
-	 * The current theme
+	 * The current style
 	 *
 	 * Ths property is read-only.
 	 * 
-	 * This property contains Premanager\Models\Theme::getDefault()->instance if
-	 * it is accessed while the actual value for $theme is loading. Use
-	 * isThemeAvailable() to check whether this is the case.
+	 * This property contains Premanager\Models\Style::getDefault()->instance if
+	 * it is accessed while the actual value for $style is loading. Use
+	 * isStyleAvailable() to check whether this is the case.
 	 * 
-	 * @var Premanager\Execution\Theme
+	 * @var Premanager\Execution\Style
 	 */
-	public $theme = Module::PROPERTY_GET;
+	public $style = Module::PROPERTY_GET;
 
 	/**
 	 * The current edition(enum Premanager\Execution\Edition)
@@ -254,11 +254,11 @@ class Environment extends Module {
 	 * @param Premanager\Models\Project $project the current project, or
 	 *   Premanager\Models\Project::getOrganization()
 	 * @param Premanager\Models\Language $language the current language
-	 * @param Premanager\Execution\Theme $theme the current theme
+	 * @param Premanager\Execution\Style $style the current style
 	 * @param int $edition enum Premanager\Execution\Edition
 	 */
 	public function create(User $me, Project $project, Language $language,
-		Theme $theme, $edition) {
+		Style $style, $edition) {
 		$instance = new self();
 		switch ($edition) {
 			case Edition::COMMON:
@@ -273,7 +273,7 @@ class Environment extends Module {
 		$instance->_me = $me;
 		$instance->_project = $project;
 		$instance->_language = $language;
-		$instance->_theme = $theme;
+		$instance->_style = $style;
 		$instance->_edition = $edition;		
 	}
 	
@@ -429,32 +429,32 @@ class Environment extends Module {
 	}
 	
 	/**
-	 * Gets the current theme
+	 * Gets the current style
 	 * 
-	 * This method returns Premanager\Models\Theme::getDefault()->instance if it
-	 * is called while the actual value for $theme is loading. Use
-	 * isThemeAvailable() to check whether this is the case.
+	 * This method returns Premanager\Models\Style::getDefault()->instance if it
+	 * is called while the actual value for $style is loading. Use
+	 * isStyleAvailable() to check whether this is the case.
 	 * 
-	 * @return Premanager\Execution\Theme
+	 * @return Premanager\Execution\Style
 	 */
-	public function getTheme() {
+	public function getStyle() {
 		if (!$this->_me && $this->_isReal) {
-			if ($this->_themeLoading)
-				return ThemeClass::getDefault()->instance;
+			if ($this->_styleLoading)
+				return StyleClass::getDefault()->instance;
 			else {
-				$this->_themeLoading = true;
+				$this->_styleLoading = true;
 				try {
 					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_theme = ThemeClass::getDefault()->instance;
+					$this->_style = StyleClass::getDefault()->instance;
 				} catch (\Exception $e) {
-					$this->_themeLoading = false;
+					$this->_styleLoading = false;
 					throw $e;
 				}
-				$this->_themeLoading = false;
+				$this->_styleLoading = false;
 			}
 		}
 		
-		return $this->_theme;
+		return $this->_style;
 	}
 	
 	/**
@@ -552,12 +552,12 @@ class Environment extends Module {
 	}
 	
 	/**
-	 * Checks if the $theme property contains the correct value
+	 * Checks if the $style property contains the correct value
 	 * 
 	 * @return bool true, if $language is available
 	 */
-	public function isThemeAvailable() {
-		return !$this->_themeLoading;
+	public function isStyleAvailable() {
+		return !$this->_styleLoading;
 	}
 	
 	/**
