@@ -1706,10 +1706,12 @@ final class User extends Model {
 		$this->_registrationTime =
 			new DateTime($result->get('registrationTime'));           
 		$this->_registrationIP = $result->get('registrationIP');               
-		$this->_lastLoginTime = $result->get('lastLoginTime') ?
+		$this->_lastLoginTime =
+			$result->get('lastLoginTime') != '0000-00-00 00:00:00' ?
 			new DateTime($result->get('lastLoginTime')) : null;                 
 		$this->_lastLoginIP = $result->get('lastLoginIP');                     
-		$this->_lastVisibleLoginTime = $result->get('lastVisibleLoginTime') ? 
+		$this->_lastVisibleLoginTime =
+			$result->get('lastVisibleLoginTime') != '0000-00-00 00:00:00' ? 
 			new DateTime($result->get('lastVisibleLoginTime')) : null;   
 		$this->_hasSecondaryPassword = $result->get('hasSecondaryPassword');  
 		if ($this->_hasSecondaryPassword) {
