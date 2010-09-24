@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 24. September 2010 um 23:07
+-- Erstellungszeit: 24. September 2010 um 23:55
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.1
 
@@ -960,7 +960,7 @@ INSERT INTO `rack_premanager_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `rack_premanager_nodes`
 --
 -- Erzeugt am: 01. Juli 2010 um 15:00
--- Aktualisiert am: 18. September 2010 um 01:05
+-- Aktualisiert am: 24. September 2010 um 23:49
 -- Letzter Check am: 30. Juli 2010 um 13:51
 --
 
@@ -1007,9 +1007,6 @@ INSERT INTO `rack_premanager_nodes` (`id`, `parentID`, `projectID`, `treeID`, `n
 (90, 94, 0, 12, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:22', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:32:04'),
 (89, 93, 0, 10, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:15', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:22'),
 (88, 92, 0, 9, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:27', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:27'),
-(87, 79, 0, 8, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:57', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:29:57'),
-(86, 79, 0, 7, 0, 0, '2010-06-09 20:21:34', '2010-06-09 20:32:24', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-26 21:19:45'),
-(85, 79, 0, 6, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:31:35', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:35'),
 (97, 108, 17, 2, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:25', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:25'),
 (83, 93, 0, 4, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:58', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:55'),
 (82, 93, 0, 3, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:43', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2010-06-09 22:31:27'),
@@ -1029,9 +1026,6 @@ INSERT INTO `rack_premanager_nodes` (`id`, `parentID`, `projectID`, `treeID`, `n
 (106, 109, 17, 12, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:23:56', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:23:56'),
 (105, 108, 17, 10, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:46', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:46'),
 (104, 110, 17, 9, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:14', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:14'),
-(103, 95, 17, 8, 1, 0, '2010-06-09 20:34:29', '2010-06-09 20:34:29', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:34:29'),
-(102, 95, 17, 7, 0, 0, '2010-06-09 20:34:29', '2010-06-11 22:23:24', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:23:29'),
-(101, 95, 17, 6, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:23:12', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:23:12'),
 (100, 108, 17, 11, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:38', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:38'),
 (99, 108, 17, 4, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:31', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:31'),
 (98, 108, 17, 3, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:57', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:57'),
@@ -1044,7 +1038,7 @@ INSERT INTO `rack_premanager_nodes` (`id`, `parentID`, `projectID`, `treeID`, `n
 -- Tabellenstruktur für Tabelle `rack_premanager_nodesname`
 --
 -- Erzeugt am: 21. April 2010 um 20:48
--- Aktualisiert am: 30. Juli 2010 um 13:51
+-- Aktualisiert am: 24. September 2010 um 23:49
 -- Letzter Check am: 30. Juli 2010 um 13:51
 --
 
@@ -1075,19 +1069,13 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_nodesname` (
 --
 
 INSERT INTO `rack_premanager_nodesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
-(272, 101, 'blog-articles', 1, 0, '2010-06-12 00:23:12'),
-(266, 86, 'info', 1, 1, '2010-06-09 22:32:24'),
 (289, 96, 'base-users', 1, 0, '2010-06-12 00:24:51'),
 (264, 94, 'mein-konto', 1, 1, '2010-06-09 22:31:46'),
 (256, 93, 'mitglieder', 1, 1, '2010-06-09 22:30:44'),
 (282, 97, 'base-groups', 1, 0, '2010-06-12 00:24:25'),
 (290, 98, 'base-viewonline', 1, 0, '2010-06-12 00:24:57'),
-(263, 85, 'blog', 1, 1, '2010-06-09 22:31:35'),
 (257, 83, 'anmeldung', 1, 1, '2010-06-09 22:30:55'),
 (260, 84, 'passwort-vergessen', 1, 1, '2010-06-09 22:31:17'),
-(236, 85, 'blog-articles', 1, 0, '2010-06-09 22:31:35'),
-(237, 86, 'creativity-creativepage', 1, 0, '2010-06-09 22:32:24'),
-(238, 87, 'wiki-wiki', 1, 0, '2010-06-09 22:29:57'),
 (254, 88, 'struktur', 1, 1, '2010-06-09 22:30:27'),
 (261, 89, 'registrierung', 1, 1, '2010-06-09 22:31:22'),
 (265, 90, 'anmeldungsdaten', 1, 1, '2010-06-09 22:32:04'),
@@ -1101,19 +1089,13 @@ INSERT INTO `rack_premanager_nodesname` (`nameID`, `id`, `name`, `languageID`, `
 (221, 69, 'base-viewonline', 1, 1, '2010-06-09 22:09:41'),
 (222, 70, 'base-loginform', 1, 1, '2010-06-09 22:09:41'),
 (223, 71, 'base-passwordlost', 1, 1, '2010-06-09 22:09:41'),
-(224, 72, 'blog-articles', 1, 1, '2010-06-09 22:09:41'),
-(225, 73, 'creativity-creativepage', 1, 1, '2010-06-09 22:09:41'),
-(226, 74, 'wiki-wiki', 1, 1, '2010-06-09 22:09:41'),
 (227, 75, 'base-structure', 1, 1, '2010-06-09 22:09:41'),
 (228, 76, 'base-register', 1, 1, '2010-06-09 22:09:41'),
 (229, 77, 'base-registrationdata', 1, 1, '2010-06-09 22:09:41'),
 (230, 78, 'base-projects', 1, 1, '2010-06-09 22:09:41'),
 (258, 80, 'benutzer', 1, 1, '2010-06-09 22:31:05'),
 (262, 82, 'wer-ist-online', 1, 1, '2010-06-09 22:31:27'),
-(252, 87, 'wiki', 1, 1, '2010-06-09 22:29:57'),
 (253, 92, 'admin', 1, 1, '2010-06-09 22:30:08'),
-(273, 102, 'creativity-creativepage', 1, 0, '2010-06-12 00:23:24'),
-(274, 103, 'wiki-wiki', 1, 1, '2010-06-09 22:34:29'),
 (288, 104, 'base-structure', 1, 0, '2010-06-12 00:24:14'),
 (285, 105, 'base-register', 1, 0, '2010-06-12 00:24:46'),
 (286, 106, 'base-registrationdata', 1, 0, '2010-06-12 00:23:56'),
@@ -1121,8 +1103,6 @@ INSERT INTO `rack_premanager_nodesname` (`nameID`, `id`, `name`, `languageID`, `
 (279, 108, 'mitglieder', 1, 1, '2010-06-12 00:21:32'),
 (280, 109, 'mein-konto', 1, 1, '2010-06-12 00:21:41'),
 (281, 110, 'admin', 1, 1, '2010-06-12 00:21:55'),
-(291, 101, 'blog', 1, 1, '2010-06-12 00:23:12'),
-(292, 102, 'temporary-page-123', 1, 1, '2010-06-12 00:23:24'),
 (293, 106, 'anmeldungsdaten', 1, 1, '2010-06-12 00:23:56'),
 (294, 107, 'projekte', 1, 1, '2010-06-12 00:24:06'),
 (295, 104, 'struktur', 1, 1, '2010-06-12 00:24:14'),
@@ -1140,7 +1120,7 @@ INSERT INTO `rack_premanager_nodesname` (`nameID`, `id`, `name`, `languageID`, `
 -- Tabellenstruktur für Tabelle `rack_premanager_nodestranslation`
 --
 -- Erzeugt am: 29. März 2010 um 19:37
--- Aktualisiert am: 30. Juli 2010 um 13:51
+-- Aktualisiert am: 24. September 2010 um 23:49
 -- Letzter Check am: 30. Juli 2010 um 13:51
 --
 
@@ -1166,8 +1146,6 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_nodestranslation` (
 --
 
 INSERT INTO `rack_premanager_nodestranslation` (`id`, `languageID`, `name`, `title`, `timestamp`) VALUES
-(102, 1, 'temporary-page-123', 'Creativity.CreativePage', '2010-06-12 00:23:24'),
-(101, 1, 'blog', 'Blog', '2010-06-12 00:23:12'),
 (100, 1, 'passwort-vergessen', 'Passwort vergessen', '2010-06-12 00:24:38'),
 (99, 1, 'anmeldung', 'Anmeldung', '2010-06-12 00:24:31'),
 (98, 1, 'wer-ist-online', 'Wer ist online?', '2010-06-12 00:24:57'),
@@ -1180,24 +1158,18 @@ INSERT INTO `rack_premanager_nodestranslation` (`id`, `languageID`, `name`, `tit
 (96, 1, 'benutzer', 'Benutzerliste', '2010-06-12 00:24:51'),
 (13, 3, 'oublié-mot-de-passe', 'oublié mot de passe', '2010-04-21 22:19:17'),
 (95, 1, '', 'Startseite', '2010-06-09 22:34:29'),
-(87, 1, 'wiki', 'Wiki', '2010-06-09 22:29:57'),
 (88, 1, 'struktur', 'Struktur', '2010-06-09 22:29:27'),
 (86, 1, 'info', 'Informationen', '2010-06-09 22:32:24'),
 (94, 1, 'mein-konto', 'Mein Konto', '2010-06-09 22:31:46'),
 (84, 1, 'passwort-vergessen', 'Passwort vergessen', '2010-06-09 22:29:05'),
-(85, 1, 'blog', 'Blog', '2010-06-09 22:31:35'),
 (82, 1, 'wer-ist-online', 'Wer ist online?', '2010-06-09 22:29:43'),
 (83, 1, 'anmeldung', 'Anmeldung', '2010-06-09 22:28:58'),
 (81, 1, 'gruppen', 'Gruppen', '2010-06-09 22:28:51'),
 (80, 1, 'benutzer', 'Benutzerliste', '2010-06-09 22:29:34'),
-(103, 1, 'wiki-wiki', 'Wiki.Wiki', '2010-06-09 22:34:29'),
 (79, 1, '', 'Startseite', '2010-06-09 22:21:34'),
 (50, 1, '', 'Startseite', '2010-06-09 22:05:54'),
 (51, 1, '0', 'Base.Users', '2010-06-09 22:05:54'),
 (59, 1, '0', 'Base.Structure', '2010-06-09 22:05:54'),
-(58, 1, '0', 'Wiki.Wiki', '2010-06-09 22:05:54'),
-(57, 1, '0', 'Creativity.CreativePage', '2010-06-09 22:05:54'),
-(56, 1, '0', 'Blog.Articles', '2010-06-09 22:05:54'),
 (55, 1, '0', 'Base.PasswordLost', '2010-06-09 22:05:54'),
 (54, 1, '0', 'Base.LoginForm', '2010-06-09 22:05:54'),
 (53, 1, '0', 'Base.Viewonline', '2010-06-09 22:05:54'),
@@ -1214,9 +1186,6 @@ INSERT INTO `rack_premanager_nodestranslation` (`id`, `languageID`, `name`, `tit
 (69, 1, 'base-viewonline', 'Base.Viewonline', '2010-06-09 22:09:41'),
 (70, 1, 'base-loginform', 'Base.LoginForm', '2010-06-09 22:09:41'),
 (71, 1, 'base-passwordlost', 'Base.PasswordLost', '2010-06-09 22:09:41'),
-(72, 1, 'blog-articles', 'Blog.Articles', '2010-06-09 22:09:41'),
-(73, 1, 'creativity-creativepage', 'Creativity.CreativePage', '2010-06-09 22:09:41'),
-(74, 1, 'wiki-wiki', 'Wiki.Wiki', '2010-06-09 22:09:41'),
 (75, 1, 'base-structure', 'Base.Structure', '2010-06-09 22:09:41'),
 (76, 1, 'base-register', 'Base.Register', '2010-06-09 22:09:41'),
 (77, 1, 'base-registrationdata', 'Base.RegistrationData', '2010-06-09 22:09:41'),
@@ -3079,7 +3048,7 @@ INSERT INTO `rack_premanager_stringstranslation` (`id`, `languageID`, `value`, `
 -- Tabellenstruktur für Tabelle `rack_premanager_styles`
 --
 -- Erzeugt am: 04. März 2010 um 20:08
--- Aktualisiert am: 24. September 2010 um 22:49
+-- Aktualisiert am: 24. September 2010 um 23:19
 -- Letzter Check am: 12. Juni 2010 um 00:36
 --
 
@@ -3112,7 +3081,7 @@ INSERT INTO `rack_premanager_styles` (`id`, `pluginID`, `isDefault`, `class`, `t
 -- Tabellenstruktur für Tabelle `rack_premanager_trees`
 --
 -- Erzeugt am: 31. März 2010 um 18:33
--- Aktualisiert am: 18. September 2010 um 19:56
+-- Aktualisiert am: 24. September 2010 um 23:49
 -- Letzter Check am: 06. Juni 2010 um 00:33
 --
 
@@ -3141,9 +3110,6 @@ INSERT INTO `rack_premanager_trees` (`id`, `pluginID`, `class`, `timestamp`) VAL
 (3, 0, 'Viewonline', '2010-06-18 23:51:51'),
 (4, 0, 'LoginForm', '2010-06-18 23:51:51'),
 (11, 0, 'PasswordLost', '2010-06-18 23:51:51'),
-(6, 2, 'Articles', '2010-03-31 22:00:47'),
-(7, 5, 'CreativePage', '2010-03-31 22:25:17'),
-(8, 6, 'Wiki', '2010-04-01 15:51:17'),
 (9, 0, 'StructureNode', '2010-07-04 12:23:37'),
 (10, 0, 'Register', '2010-06-18 23:51:51'),
 (12, 0, 'RegistrationData', '2010-06-18 23:51:51'),
