@@ -1,4 +1,4 @@
-﻿/* ========== General ========== */
+/* ========== General ========== */
 * {
 	margin: 0;
 	padding: 0;
@@ -1196,18 +1196,45 @@ label > input[type=checkbox] {
 /* ========== Editor ========== */
 
 .editor {
-	padding-top: 20px;
+	padding-top: 23px;
 	position: relative;
+	
+	background: -moz-linear-gradient(center top , #DEEFFF, #EFF7FF 17px, #DCEEFF 17px, #DCEEFF) repeat scroll 0 0 transparent;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
 }
 
-.editor > li > input,
-.editor > li > label {
+.editor > li > input {
 	position: absolute;
 	top: 0;	
+	left: -100000px;
 }
 
 .editor > li > label {
-	padding-left: 20px;
+	display: block;
+	position: absolute;
+	left: 3px;
+	top: 3px;
+	width: 138px;
+	height: 14px;
+	text-align: center;
+	padding: 3px;
+	
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	
+	font-weight: bold;
+	
+	cursor: pointer;
+}
+
+.editor > li > label:hover {
+	background: rgba(0, 0, 0, 0.2);
+}
+
+.editor > li > input:checked + label,
+.editor > li > input:checked + label:hover {
+	background: rgba(0, 0, 0, 0.4);
 }
 
 .editor > li > textarea {
@@ -1218,19 +1245,16 @@ label > input[type=checkbox] {
 	display: block;
 }
 
-.editor > li + li > input,
 .editor > li + li > label {
-	left: 100px;
+	left: 153px;
 }             
 
-.editor > li + li + li > input,
 .editor > li + li + li > label {
-	left: 200px;
+	left: 303px;
 }             
 
-.editor > li + li + li + li > input,
 .editor > li + li + li + li > label {
-	left: 300px;
+	left: 453px;
 }
 
 /* ========== Wysiwyg ========== */
