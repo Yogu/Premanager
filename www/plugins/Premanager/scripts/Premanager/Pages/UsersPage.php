@@ -87,7 +87,7 @@ class UsersPage extends ListPageNode {
 		$list = User::getUsers()->getRange($this->startIndex, $this->itemsPerPage,
 			true);
 		
-		$page = new Page($this->parent);
+		$page = new Page($this);
 		$page->createMainBlock(Translation::defaultGet('Premanager',
 			count($list) ? 'userListMessage' : 'userListEmpty'));
 		
