@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 24. September 2010 um 23:55
+-- Erstellungszeit: 26. September 2010 um 01:02
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.1
 
@@ -1589,9 +1589,9 @@ INSERT INTO `rack_premanager_rightstranslation` (`id`, `languageID`, `title`, `d
 --
 -- Tabellenstruktur für Tabelle `rack_premanager_sessions`
 --
--- Erzeugt am: 18. Juni 2010 um 23:58
--- Aktualisiert am: 12. September 2010 um 19:43
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 26. September 2010 um 00:15
+-- Aktualisiert am: 26. September 2010 um 00:38
+-- Letzter Check am: 26. September 2010 um 00:15
 --
 
 CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
@@ -1599,7 +1599,7 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
   `userID` int(10) unsigned NOT NULL,
   `startTime` datetime NOT NULL,
   `lastRequestTime` datetime NOT NULL,
-  `cookie` char(64) COLLATE utf8_bin NOT NULL,
+  `key` char(64) COLLATE utf8_bin NOT NULL,
   `ip` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   `userAgent` text COLLATE utf8_bin NOT NULL,
   `secondaryPasswordUsed` tinyint(1) NOT NULL DEFAULT '0',
@@ -1611,7 +1611,7 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=818 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=836 ;
 
 --
 -- RELATIONEN DER TABELLE `rack_premanager_sessions`:
@@ -1625,6 +1625,8 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
 -- Daten für Tabelle `rack_premanager_sessions`
 --
 
+INSERT INTO `rack_premanager_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `timestamp`) VALUES
+(835, 2, '2010-09-25 22:56:48', '2010-09-25 23:00:28', 'de876f0caaf3f916d544a19ddab138745bd0c25aede8498030a038b1b0819bd8', '127.0.0.1', 'Mozilla/5.0 (Windows NT 5.1; rv:2.0b6) Gecko/20100101 Firefox/4.0b6', 0, 0, 0, 0, '2010-09-26 01:00:04');
 
 -- --------------------------------------------------------
 
@@ -3081,7 +3083,7 @@ INSERT INTO `rack_premanager_styles` (`id`, `pluginID`, `isDefault`, `class`, `t
 -- Tabellenstruktur für Tabelle `rack_premanager_trees`
 --
 -- Erzeugt am: 31. März 2010 um 18:33
--- Aktualisiert am: 24. September 2010 um 23:49
+-- Aktualisiert am: 25. September 2010 um 22:38
 -- Letzter Check am: 06. Juni 2010 um 00:33
 --
 
@@ -3108,7 +3110,7 @@ INSERT INTO `rack_premanager_trees` (`id`, `pluginID`, `class`, `timestamp`) VAL
 (1, 0, 'Premanager\\Pages\\UsersPage', '2010-09-18 19:56:35'),
 (2, 0, 'Groups', '2010-06-18 23:51:51'),
 (3, 0, 'Viewonline', '2010-06-18 23:51:51'),
-(4, 0, 'LoginForm', '2010-06-18 23:51:51'),
+(4, 0, 'Premanager\\Pages\\LoginPage', '2010-09-25 22:09:29'),
 (11, 0, 'PasswordLost', '2010-06-18 23:51:51'),
 (9, 0, 'StructureNode', '2010-07-04 12:23:37'),
 (10, 0, 'Register', '2010-06-18 23:51:51'),
@@ -3193,7 +3195,7 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_useroptions` (
 -- Tabellenstruktur für Tabelle `rack_premanager_users`
 --
 -- Erzeugt am: 27. Juni 2010 um 20:46
--- Aktualisiert am: 08. Juli 2010 um 23:00
+-- Aktualisiert am: 26. September 2010 um 00:38
 -- Letzter Check am: 30. Juni 2010 um 18:18
 --
 
@@ -3233,7 +3235,7 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_users` (
 
 INSERT INTO `rack_premanager_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `isBot`, `botIdentifier`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
 (0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 1, 'image/png', '2010-06-27 22:03:06'),
-(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2010-07-08 20:58:33', '2010-07-08 20:58:33', '127.0.0.1', '60dab04a956bb1250eab2232348a1e28cbc30edabdd35c51c8c43cdd6efec1e7', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '127.0.0.1', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, '', 0, 1, 'image/png', '2010-07-08 22:58:09'),
+(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2010-07-08 20:58:33', '2010-07-08 20:58:33', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, '', 0, 1, 'image/png', '2010-09-26 00:13:02'),
 (70, 'Marc', '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:56:40', '2010-06-11 22:56:40', '93.192.60.138', '92f50201d5d704933e7ec802d7b5425e0a7a831af3bf5eff77e7c745e02f1913', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '000000', 'starwarsfan32@web.de', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 0, '', '2010-07-04 00:12:19');
 
 -- --------------------------------------------------------
