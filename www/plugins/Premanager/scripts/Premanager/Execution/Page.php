@@ -2,9 +2,7 @@
 namespace Premanager\Execution;
 
 use Premanager\Debug\Debug;
-
 use Premanager\Models\StructureNode;
-
 use Premanager\URL;
 use Premanager\Models\Project;
 use Premanager\Module;
@@ -102,8 +100,8 @@ class Page extends Module {
 		$template->set('node', $this->_node);
 		$template->set('project', $this->_node->project);
 		$template->set('projectNode', $projectNode);
-		$template->set('isIndexPage',
-			$node instanceof StructureNode && $node->isProjectNode());
+		$template->set('isIndexPage', $this->_node instanceof StructurePageNode &&
+			$this->_node->isProjectNode());
 		$template->set('hierarchy', $hierarchy);
 		$template->set('blocks', $this->blocks);
 		$template->set('environment', Environment::getCurrent());
