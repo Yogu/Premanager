@@ -110,7 +110,9 @@ abstract class PageNode extends Module {
 	 * @param string $name the child's expected name
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
-	public abstract function getChildByName($name);
+	public function getChildByName($name) {
+		
+	}
 	
 	/**
 	 * Gets the name that is used in urls
