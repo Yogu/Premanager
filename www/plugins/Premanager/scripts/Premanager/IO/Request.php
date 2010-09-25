@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\Debug\Debug;
+
 use Premanager\Execution\PageNotFoundNode;
 use Premanager\Models\Language;
 use Premanager\Execution\Edition;
@@ -24,6 +26,7 @@ class Request {
 	private static $_language;
 	private static $_edition;
 	private static $_isValidated;
+	private static $_postValidated;
 	
 	/**
 	 * Gets the complete url the user requested (e.g. http://example.com/forum/)
@@ -156,7 +159,21 @@ class Request {
 	 * @return string
 	 */
 	public static function getPOST($name) {
-		$value = \array_key_exists($name, $_POST) ? $_POST[$name] : null;
+		if (self::$_postValidated === null) {
+			if (!Environment::getCurrent()->session)
+				self::$_postValidated = true;
+			else {
+				// pretend post data to be validated for accessing the validator
+				self::$_postValidated = true;
+				$validator = self::getPOST('postValidator');
+				self::$_postValidated =
+					$validator == Environment::getCurrent()->session->key;
+			}
+		}
+		if (!self::$_postValidated )
+			return null;
+		
+		$value = array_key_exists($name, $_POST) ? $_POST[$name] : null;
 		if (\function_exists('get_magic_quotes_gpc') && \get_magic_quotes_gpc())
 			$value = $this->deepStripslashes($value);
 		return $value;	
