@@ -88,23 +88,6 @@ class Environment extends Module {
 	 */
 	private static $_stack = array();
 	
-	// ===========================================================================  
-	
-	/**
-	 * Specifies that a user could not log in because the user is disabled
-	 */
-	const LOGIN_FAILED_REASON_STATUS = 0x00;
-	
-	/**
-	 * Specifies that the user name is invalid
-	 */
-	const LOGIN_FAILED_REASON_USER = 0x01;
-	
-	/**
-	 * Specifies that the password is wrong
-	 */
-	const LOGIN_FAILED_REASON_PASSWORD = 0x02;
-	
 	// =========================================================================== 
 
 	/**
@@ -209,37 +192,6 @@ class Environment extends Module {
 	 */
 	public $urlPrefix = Module::PROPERTY_GET_ACRONYM;
 	
-	// =========================================================================== 
-	
-	/**
-	 * The user has logged in successfully
-	 * 
-	 * Parameters:
-	 *   Premanager\Models\User $user the user who logged in
-	 *   
-	 * @var Premanager\Event
-	 */
-	public static $loginSuccessful;
-	
-	/**
-	 * The user tried to log in but the login failed
-	 * 
-	 * Parameters:
-	 *   int $reason a Premanager\Execution\Environment::LOGIN_FAILED_REASON_*
-	 *     value
-	 *   Premanager\Models\User $user the user who logged in
-	 *   
-	 * @var Premanager\Event
-	 */
-	public static $loginFailed;
-	
-	/**
-	 * The user logged out
-	 *   
-	 * @var Premanager\Event
-	 */
-	public static $loggedOut;
-	
 	// ===========================================================================
 	
 	protected function __construct() {
@@ -286,10 +238,6 @@ class Environment extends Module {
 		// Insert a placeholder for the real environment which is replaced the first
 		// time the real environment is needed by getCurrent()
 		self::$_stack[] = null;
-		
-		self::$loginSuccessful = new Event(__CLASS__);
-		self::$loginFailed = new Event(__CLASS__);
-		self::$loggedOut = new Event(__CLASS__);
 	}
 	
 	/**
@@ -579,79 +527,6 @@ class Environment extends Module {
 		$environment->_isReal = true;
 		return $environment;
 	}
-
-	/*
-	 * The following two methods have to be moved into the new login class as soon
-	 * as it exists
-	 */ 
-	
-	/*
-	 * Tries to login using POST data
-	 * 
-	 * If login is successful, redirects and exits the script. If login fails,
-	 * exits method commonly
-	 */
-	/*
-	private static function login() {  
- 		// If there is already a session started, remove this session later
-		$oldCookie = DataBase::escape(Request::getCookie('session'));
-
-		$userName = Request::gestPOST('Premanager_Me_user');
-		$password = Request::gestPOST('Premanager_Me_password');
-		$hidden = Request::gestPOST('Premanager_Me_hidden');
-		$user = User::getByName($userName);
-		if ($user) {
-			if ($user->status == User::STATUS_ENABLED) {
-				if ($user && $user->checkPassword($password, &$isSecondaryPassword)) {
-					// If there is a session of this user, delete it		
-					$session = Session::getByUser($user);
-					if ($session)
-						$session->delete();
-					
-					// Delete old session
-					$session = Session::getByKey($key);
-					if ($session)
-						$session->delete();
-						
-					// Create new session
-					$session = Session::createNew($user, $hidden, $isSecondaryPassword);
-					
-					// Set session cookie
-					Output::setCookkie('session', $session->key);
-					
-					self::$loginSuccessful($this, array('user' => $user));
-					
-					// Redirect to drop POST data
-					Output::redirect();
-				} else {
-					self::$loginFailed->call($this,
-						array('reason' => self::LOGIN_FAILED_REASON_PASSWORD,
-							'user' => $user));
-				}
-			} else {
-				self::$loginFailed->call($this,
-					array('reason' => self::LOGIN_FAILED_REASON_STATUS, 'user' => $user));
-			}
-		} else {
-			self::$loginFailed->call($this,
-				array('reason' => self::LOGIN_FAILED_REASON_USER, 'user' => null));
-		}
-	}
-	*/
-
-	/*
-	 * Deletes the session specified by cookie and removes the cookie. Afterwards,
-	 * redirects to the current page to drop POST data
-	 */
-	/*private static function logout() {
-		$key = Request::getCookie('session');
-		$session = Session::getByKey($key);
-		if ($session)
-			$session->delete();
-		Output::deleteCookie('session');
-		self::$loggedOut->call();
-		Output::redirect();
-	}*/  
 }
 
 Environment::__init();
