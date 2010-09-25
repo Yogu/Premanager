@@ -112,6 +112,8 @@ class LoginPage extends TreePageNode {
 			$page->createMainBlock($text);
 			$page->appendBlock(PageBlock::createSimple(Translation::defaultGet(
 				'Premanager', 'loginFailedRetryLogin'), $template->get()));
+		} else if (Request::getPOST('Premanager_LoginPage_logout')) {
+			self::logout();
 		} else {
 			$page->createMainBlock($template->get());
 		}
