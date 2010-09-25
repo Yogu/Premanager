@@ -1,6 +1,8 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\IO\Config;
+
 use Premanager\IO\DataBase\DataBaseHelper;
 
 use Premanager\NameConflictException;
@@ -56,6 +58,7 @@ final class User extends Model {
 	private $_secondaryPasswordExpirationTime = false;
 	private $_secondaryPasswordStartIP;
 	private $_groupCount;
+	private $_rights;
 	
 	private static $_instances = array();
 	private static $_count;
@@ -1650,7 +1653,7 @@ final class User extends Model {
 	 * @param string $password the plain password
 	 * @return string the ecnoded password 
 	 */
-	private function encodePassword($password) {      
+	private function encodePassword($password) {
 		return \hash('sha256',
 			Config::getSecurityCode().
 			'89c54dcc6124c96115f3c0733ff8072299e7305f7a36902ea5f5cfee0f7939a6'.
@@ -1740,7 +1743,7 @@ final class User extends Model {
 			"SELECT rght.name, plugin.name AS pluginName ".
 			"FROM ".DataBase::formTableName('Premanager_Rights')." AS rght ". 
 			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
-				"ON plugin.pluginID = rght.pluginID ". 
+				"ON plugin.id = rght.pluginID ". 
 			"INNER JOIN ".DataBase::formTableName('Premanager_GroupRight').
 				" AS groupRight ".
 				"ON groupRight.rightID = rght.id ".

@@ -38,16 +38,6 @@ class UserPage extends PageNode {
 	}
 	
 	/**
-	 * Gets the child specified by its name
-	 * 
-	 * @param string $name the child's expected name
-	 * @return Premanager\Execution\PageNode the child node or null if not found
-	 */
-	public function getChildByName($name) {
-		return null;
-	}
-	
-	/**
 	 * Gets the name that is used in urls
 	 * 
 	 * @return string

@@ -68,16 +68,6 @@ class UsersPage extends ListPageNode {
 	}
 	
 	/**
-	 * Gets the title that is used in a context where the titles of the parent
-	 * nodes are not displayed
-	 * 
-	 * @return string
-	 */
-	public function getStandAloneTitle() {
-		return Translation::defaultGet('Premanager', 'users');
-	}
-	
-	/**
 	 * Creates a page object that covers the data of this page node
 	 * 
 	 * @return Premanager\Execution\Page the page or null, if this page node does

@@ -53,7 +53,7 @@ class Page extends Module {
 	 */
 	public function createMainBlock($body) {
 		$this->blocks[] = array(array(PageBlock::createSimple(
-			$this->_node->getTitle(), $body, false, false, true)));
+			$this->_node->standAloneTitle, $body, false, false, true)));
 	}
 	
 	/**

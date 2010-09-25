@@ -1,6 +1,11 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\DateTime;
+
+use Premanager\Execution\Environment;
+use Premanager\IO\Request;
+use Premanager\IO\Config;
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\ArgumentException;
@@ -34,7 +39,6 @@ final class Session extends Model {
 	private $_isFirstRequest;
 	private $_project;
 	private $_projectID;
-	private $_index;
 	
 	private static $_instances = array();
 	private static $_count;
@@ -113,7 +117,7 @@ final class Session extends Model {
 	 * 
 	 * @var bool
 	 */
-	public $seconaryPasswordUsed = Module::PROPERTY_GET;
+	public $secondaryPasswordUsed = Module::PROPERTY_GET;
 	
 	/**
 	 * Specifies whether ths session should be hidden from other visitors
@@ -166,7 +170,7 @@ final class Session extends Model {
 		$secondaryPasswordUsed = null, $hidden = null, $isFirstRequest = null,
 		$projectID = null) {
 		
-		if (array_lastRequestTime_exists($id, self::$_instances)) {
+		if (array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
 			if ($instance->_userID === null)
 				$instance->_userID = $userID;
@@ -248,11 +252,11 @@ final class Session extends Model {
 			throw new ArgumentNullException('user');
 		
 		$result = DataBase::query(
-			"SELECT session.sessionID ".            
+			"SELECT session.id ".            
 			"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session ".
 			"WHERE session.userID = '$user->id'");
 		if ($result->next()) {
-			return self::createFromID($result->get('sessionID'));
+			return self::createFromID($result->get('id'));
 		}
 		return null;
 	}
@@ -265,11 +269,11 @@ final class Session extends Model {
 	 */
 	public static function getByKey($key) {
 		$result = DataBase::query(
-			"SELECT session.sessionID ".            
+			"SELECT session.id ".            
 			"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session ".
 			"WHERE session.key = '".DataBase::escape($key)."'");
 		if ($result->next()) {
-			return self::createFromID($result->get('sessionID'));
+			return self::createFromID($result->get('id'));
 		}
 		return null;
 	}
@@ -293,29 +297,29 @@ final class Session extends Model {
 				'user');
 			
 		$hidden = !!$hidden;
-		$secondaryPassowordUsed = !! $secondaryPassowordUsed;
+		$secondaryPassowordUsed = !!$secondaryPassowordUsed;
 	
-		$key = self::formSessionCookie($user);
+		$key = self::formKey($user);
 		$ip = Request::getIP();
 		$userAgent = Request::getUserAgent();
 		$projectID = Environment::getCurrent()->project->id;
+		$_secondaryPassowordUsed = $secondaryPassowordUsed ? '1' : '0';
+		$_hidden = $hidden ? '1' : '0';
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager_Sessions')." ".
-			"(userID, startTime, lastRequestTime, cookie, ip, userAgent, ".
+			"(userID, startTime, lastRequestTime, `key`, ip, userAgent, ".
 				"secondaryPasswordUsed, hidden, projectID, isFirstRequest) ".
 			"VALUES ('$user->id', NOW(), NOW(), '".DataBase::escape($key)."', ".
 				"'".DataBase::escape($ip)."', '".DataBase::escape($userAgent)."', ".
-				"'$secondaryPasswordUsed', '$hidden', '$projectID', '1'");
-		$id = DataBase::insertID();
+				"'$_secondaryPassowordUsed', '$_hidden', '$projectID', '1')");
+		$id = DataBase::getInsertID();
 		
 		$instance = self::createFromID($id, $user->id, $key, new DateTime(), 
 			new DateTime(), $ip, $userAgent, $secondaryPasswordUsed, $hidden, true,
 			$projectID);
 
 		if (self::$_count !== null)
-			self::$_count++;
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;	
+			self::$_count++;	
 		
 		return $instance;
 	}        
@@ -526,13 +530,11 @@ final class Session extends Model {
 		$this->checkDisposed();
 		
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanger_Sessions').
-			"WHERE sessionID = '$this->_id'");
+			"DELETE FROM ".DataBase::formTableName('Premanager_Sessions')." ".
+			"WHERE id = '$this->_id'");
 
 		if (self::$_count !== null)
-			self::$_count--;	
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;
+			self::$_count--;
 		unset(self::$_instances[$this->_id]);
 			
 		$this->dispose();
@@ -549,10 +551,10 @@ final class Session extends Model {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager_Sessions')." ".
 			"SET lastRequestTime = NOW(), ".
-				"isFirstRequest = '0' ".
+				"isFirstRequest = '0', ".
 				"projectID = '$project->id'");	
 		
-		$this->_lastRequestTime = time();
+		$this->_lastRequestTime = new DateTime();
 		$this->_isFirstRequest = false;
 		$this->_project = $project;
 		$this->_projectID = $project->id;
@@ -562,18 +564,18 @@ final class Session extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT session.userID, session.cookie, ".
+			"SELECT session.userID, session.key, ".
 				"session.startTime AS startTime, session.lastRequestTime, ".
 				"session.ip, session.userAgent, session.secondaryPasswordUsed, ".
 				"session.hidden, session.isFirstRequest, session.projectID ".
 			"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session ".
-			"WHERE session.sessionID = '$this->_id'");
+			"WHERE session.id = '$this->_id'");
 		
 		if (!$result->next())
 			return false;
 		
 		$this->_userID = $result->get('userID');
-		$this->_key = $result->get('cookie');
+		$this->_key = $result->get('key');
 		$this->_startTime = new DateTime($result->get('startTime'));
 		$this->_lastRequestTime = new DateTime($result->get('lastRequestTime'));
 		$this->_ip = $result->get('ip');
@@ -587,19 +589,19 @@ final class Session extends Model {
 	}
 
 	// Returns the cookie value
-	private static function formSessionCookie(User $user)  {
+	private static function formKey(User $user)  {
 		if (!$user)
 			throw new ArgumentNullException('user');
-		if (!$user->id == 0)
+		if ($user->id == 0)
 			throw new ArgumentException('$user is a guest', 'user'); 
 
 		return hash('sha256',
 			'ffa919513b2481678d3b3f54976d5f26f4785577a67fd1e5a2efa688c043c007'.
-			Config::$securltyCode.
+			Config::getSecurityCode().
 			hash('sha256',
 				'758e75425237cebe36a282b543a14567de6bb5ae80203c77d6d1bdaf19e675a7'.
 				$user->name.Config::getSecurityCode().$user->id).Request::getIP().
-			\time()); 
+			time()); 
 	}       
 }
 

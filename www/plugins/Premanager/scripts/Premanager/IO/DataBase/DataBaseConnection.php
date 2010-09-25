@@ -106,8 +106,8 @@ class DataBaseConnection extends Module {
 	 * 
 	 * @return int
 	 */
-	public static function getInsertID() {
-		return \mysql_insert_id($this->_link);
+	public function getInsertID() {
+		return mysql_insert_id($this->_link);
 	}
 	
 	/**

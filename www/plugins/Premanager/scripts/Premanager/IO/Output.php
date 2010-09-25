@@ -1,6 +1,10 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\Debug\Debug;
+
+use Premanager\Execution\Options;
+
 use Premanager\Execution\Page;
 use Premanager\Execution\Environment;
 use Premanager\InvalidOperationException;
@@ -42,7 +46,7 @@ class Output {
 
 		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
 		if (!setcookie($prefix.$name, $value,
-			$expirationTime, '/'.$url->path, $serverName)) {
+			$expirationTime, $url->path, $serverName)) {
 			throw new InvalidOperationException('Page output has already started');
 		}
 		$_COOKIE[$prefix.$name] = $value;
@@ -55,7 +59,7 @@ class Output {
 	 */
 	public static function deleteCookie($name) {
 		// Cookie expires yesterday
-		Premanager::setCookie($name, '', new TimeSpan(-1, 0, 0, 0));
+		self::setCookie($name, '', new TimeSpan(-1, 0, 0, 0));
 	} 
 
 	/**

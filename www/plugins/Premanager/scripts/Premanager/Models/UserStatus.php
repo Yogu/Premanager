@@ -8,17 +8,17 @@ class UserStatus {
 	/**
 	 * Specifies that a user can log in
 	 */
-	const DISABLED = 0x00;
+	const DISABLED = 0;
 	
 	/**
 	 * Specifies that a user can not log in
 	 */
-	const ENABLED = 0x01;
+	const ENABLED = 1;
 	
 	/**
 	 * Specifies that a user can not log in until its email is confirmed
 	 */
-	const WAIT_FOR_EMAIL = 0x02;
+	const WAIT_FOR_EMAIL = 2;
 }
 
 ?>
