@@ -138,16 +138,6 @@ abstract class PageNode extends Module {
 	public function getStandAloneTitle() {
 		return $this->getTitle();
 	}
-	
-	/**
-	 * Creates a page object that covers the data of this page node
-	 * 
-	 * @return Premanager\Execution\Page the page or null, if this page node does
-	 *   not result in a page. 
-	 */
-	public function getPage() {
-		return null;
-	}
 
 	/**
 	 * Performs a call of this page

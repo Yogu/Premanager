@@ -58,14 +58,11 @@ class PageNotFoundNode extends PageNode {
 	public function getTitle() {
 		return Translation::defaultGet('Premanager', 'pageNotFound');
 	}
-	
+
 	/**
-	 * Creates a page object that covers the data of this page node
-	 * 
-	 * @return Premanager\Execution\Page the page or null, if this page node does
-	 *   not result in a page. 
+	 * Performs a call of this page
 	 */
-	public function getPage() {
+	public function execute() {
 		$template = new Template('Premanager', 'notFound');
 		$template->set('urlRest', $this->_urlRest);
 		$template->set('deepmostExistingNode', $this->parent);
@@ -74,14 +71,7 @@ class PageNotFoundNode extends PageNode {
 		
 		$page = new Page($this);
 		$page->createMainBlock($template->get());
-		return $page;
-	}
-
-	/**
-	 * Performs a call of this page
-	 */
-	public function execute() {
-		Output::select($this->getPage(), StatusCode::NOT_FOUND);
+		Output::select($page, StatusCode::NOT_FOUND);
 	}
 	
 	/**

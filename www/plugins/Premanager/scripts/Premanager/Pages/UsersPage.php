@@ -66,14 +66,11 @@ class UsersPage extends ListPageNode {
 	public function getTitle() {
 		return $this->_structureNode->title;
 	}
-	
+
 	/**
-	 * Creates a page object that covers the data of this page node
-	 * 
-	 * @return Premanager\Execution\Page the page or null, if this page node does
-	 *   not result in a page. 
+	 * Performs a call of this page
 	 */
-	public function getPage() {
+	public function execute() {
 		$list = User::getUsers()->getRange($this->startIndex, $this->itemsPerPage,
 			true);
 		
@@ -90,14 +87,7 @@ class UsersPage extends ListPageNode {
 		$body = $template->get();
 		
 		$page->appendBlock(PageBlock::createTable($head, $body));
-		return $page;
-	}
-
-	/**
-	 * Performs a call of this page
-	 */
-	public function execute() {
-		Output::select($this->getPage());
+		Output::select($page);
 	}
 	
 	/**

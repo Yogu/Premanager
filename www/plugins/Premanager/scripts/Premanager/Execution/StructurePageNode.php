@@ -118,14 +118,11 @@ class StructurePageNode extends PageNode {
 	public function getStandAloneTitle() {
 		return $this->_structureNode->title;
 	}
-	
+
 	/**
-	 * Creates a page object that covers the data of this page node
-	 * 
-	 * @return Premanager\Execution\Page the page or null, if this page node does
-	 *   not result in a page. 
+	 * Performs a call of this page
 	 */
-	public function getPage() {
+	public function execute() {
 		switch ($this->_structureNode->type) {
 			case StructureNodeType::PANEL:
 				//TODO: create a panel page
@@ -143,15 +140,8 @@ class StructurePageNode extends PageNode {
 				
 				$page = new Page($this);
 				$page->createMainBlock($template->get());
-				return $page;
+				Output::select($page);
 		}
-	}
-
-	/**
-	 * Performs a call of this page
-	 */
-	public function execute() {
-		Output::select($this->getPage());
 	}
 	
 	/**

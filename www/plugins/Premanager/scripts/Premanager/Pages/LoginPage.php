@@ -67,14 +67,11 @@ class LoginPage extends TreePageNode {
 	}
 	
 	// =========================================================================== 
-	
+
 	/**
-	 * Creates a page object that covers the data of this page node
-	 * 
-	 * @return Premanager\Execution\Page the page or null, if this page node does
-	 *   not result in a page. 
+	 * Performs a call of this page
 	 */
-	public function getPage() {
+	public function execute() {
 		$template = new Template('Premanager', 'loginForm');
 		//TODO: get the urls for password lost and register
 		//$template->set('passwordLostURL', Environment::getCurrent()->project->)
@@ -117,14 +114,7 @@ class LoginPage extends TreePageNode {
 		} else {
 			$page->createMainBlock($template->get());
 		}
-		return $page;
-	}
-
-	/**
-	 * Performs a call of this page
-	 */
-	public function execute() {
-		Output::select($this->getPage());
+		Output::select($page);
 	}
 	
 	// =========================================================================== 

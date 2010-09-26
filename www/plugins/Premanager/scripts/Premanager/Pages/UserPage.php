@@ -55,14 +55,11 @@ class UserPage extends PageNode {
 	public function getTitle() {
 		return $this->_user->name;
 	}
-	
+
 	/**
-	 * Creates a page object that covers the data of this page node
-	 * 
-	 * @return Premanager\Execution\Page the page or null, if this page node does
-	 *   not result in a page. 
+	 * Performs a call of this page
 	 */
-	public function getPage() {		
+	public function execute() {
 		$page = new Page($this);
 		
 		$template = new Template('Premanager', 'userView');
@@ -71,14 +68,7 @@ class UserPage extends PageNode {
 		
 		$page->createMainBlock($template->get());
 		
-		return $page;
-	}
-
-	/**
-	 * Performs a call of this page
-	 */
-	public function execute() {
-		Output::select($this->getPage());
+		Output::select($page);
 	} 
 }
 
