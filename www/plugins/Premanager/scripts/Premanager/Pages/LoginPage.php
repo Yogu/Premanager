@@ -111,6 +111,10 @@ class LoginPage extends TreePageNode {
 				'Premanager', 'loginFailedRetryLogin'), $template->get()));
 		} else if (Request::getPOST('Premanager_LoginPage_logout')) {
 			self::logout();
+		} else  if (Environment::getCurrent()->session) {
+			$template = new Template('Premanager', 'logout');
+			$template->set('environment', Environment::getCurrent());
+			$page->createMainBlock($template->get());
 		} else {
 			$page->createMainBlock($template->get());
 		}
