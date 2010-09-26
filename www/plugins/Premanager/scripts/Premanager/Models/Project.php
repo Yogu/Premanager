@@ -742,7 +742,7 @@ final class Project extends Model {
 		$this->_copyright = $copyright;
 		$this->_description = $description;
 		$this->_keywords = $keywords;
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 		$this->_editorID = $this->_editor->id;
 		$this->_editTime = new DateTime();
 	}     

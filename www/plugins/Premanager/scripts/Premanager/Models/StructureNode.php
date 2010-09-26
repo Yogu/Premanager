@@ -775,7 +775,7 @@ final class StructureNode extends Model {
 		$this->_hasPanel = $hasPanel;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 	}     
 	
 	/**
@@ -843,7 +843,7 @@ final class StructureNode extends Model {
 		$this->_parent = $parent;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 	}
 	
 	/**
@@ -871,7 +871,7 @@ final class StructureNode extends Model {
 		$this->_noAccessRestriction = $noAccessRestriction;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 	}   
 	
 	/**
@@ -923,7 +923,7 @@ final class StructureNode extends Model {
 		$this->_hasPanel = $hasPanel;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 	}     
 
 	/**
@@ -983,9 +983,9 @@ final class StructureNode extends Model {
 		);
 		
 		$instance = self::createFromID($id, $name, $title, $parent);
-		$instance->_creator = Environment::getCurrent()->me;
+		$instance->_creator = Environment::getCurrent()->user;
 		$instance->_createTime = new DateTime();
-		$instance->_editor = Environment::getCurrent()->me;
+		$instance->_editor = Environment::getCurrent()->user;
 		$instance->_editTime = new DateTime();
 
 		// Now parent node contains one child more

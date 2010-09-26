@@ -44,7 +44,7 @@ class DataBaseHelper extends Module {
 	 */
 	public static function insert($table, $flags, $name,
 		array $values, array $translatedValues, $parentID = null) {
-		$me = Environment::getCurrent()->me->id;
+		$user = Environment::getCurrent()->user->id;
 		$ip = Request::getIP();
 		$lang = Environment::getCurrent()->language->id;   
 		
@@ -59,13 +59,13 @@ class DataBaseHelper extends Module {
 		// Extend value array
 		if ($flags & self::CREATOR_FIELDS) {
 			$values['createTime!'] = 'NOW()';
-			$values['creatorID'] = $me;
+			$values['creatorID'] = $user;
 			$values['creatorIP'] = $ip;
 		}
 		
 		if ($flags & self::EDITOR_FIELDS) {  
 			$values['editTime!'] = 'NOW()';
-			$values['editorID'] = $me;
+			$values['editorID'] = $user;
 			$values['editorIP'] = $ip;
 			$values['editTimes'] = 0;
 		}
@@ -191,7 +191,7 @@ class DataBaseHelper extends Module {
 	public static function update($table, $flags, $id, $name,
 		array $values, array $translatedValues, $parentID = null,
 		$isNameInUseCallback = null) {
-		$me = Environment::getCurrent()->me->id;
+		$user = Environment::getCurrent()->user->id;
 		$ip = Request::getIP();
 		$lang = Environment::getCurrent()->language->id;
 		
@@ -209,7 +209,7 @@ class DataBaseHelper extends Module {
 		// Extend value array		
 		if ($flags & self::EDITOR_FIELDS) {  
 			$values['editTime!'] = 'NOW()';
-			$values['editorID'] = $me;
+			$values['editorID'] = $user;
 			$values['editorIP'] = $ip;
 			$values['editTimes!'] = 'editTimes + 1';
 		}       

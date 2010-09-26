@@ -77,8 +77,8 @@ class LoginPage extends TreePageNode {
 		//$template->set('passwordLostURL', Environment::getCurrent()->project->)
 		//$template->set('registerURL', Environment::getCurrent()->project->)
 		$template->set('canRegister',
-			Environment::getCurrent()->me->hasRight('Premanager', 'register') ||
-			Environment::getCurrent()->me->hasRight('Premanager',
+			Environment::getCurrent()->user->hasRight('Premanager', 'register') ||
+			Environment::getCurrent()->user->hasRight('Premanager',
 				'registerWithoutEmail'));
 		$page = new Page($this);
 			

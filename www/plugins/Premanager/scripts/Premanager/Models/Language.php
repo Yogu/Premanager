@@ -796,7 +796,7 @@ final class Language extends Model {
 		$this->_title = $title;	
 		$this->_englishTitle = $englishTitle;
 		
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 		$this->_editorID = $this->_editor->id;
 		$this->_editTime = new DateTime();
 	}           
@@ -846,7 +846,7 @@ final class Language extends Model {
 		$this->_longDateFormat = $longDateFormat;
 		$this->_longTimeFormat = $longTimeFormat;
 		
-		$this->_editor = Environment::getCurrent()->me;
+		$this->_editor = Environment::getCurrent()->user;
 		$this->_editorID = $this->_editor->id;
 		$this->_editTime = new DateTime();
 	}   

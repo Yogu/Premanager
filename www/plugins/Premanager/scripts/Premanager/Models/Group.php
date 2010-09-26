@@ -348,9 +348,9 @@ final class Group extends Model {
 		
 		$group = self::createFromID($id, $name, $title, $color, $priority,
 			$autoJoin, $isLocked);
-		$group->_creator = Premanager::$me;
+		$group->_creator = Premanager::$user;
 		$group->_createTime = new DateTime();
-		$group->_editor = Premanager::$me;
+		$group->_editor = Premanager::$user;
 		$group->_editTime = new DateTime();
 
 		if (self::$_count !== null)
@@ -751,7 +751,7 @@ final class Group extends Model {
 		$this->_isLocked = $isLocked;  
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Premanager::$me;
+		$this->_editor = Premanager::$user;
 	}     
 	
 	/**
@@ -778,7 +778,7 @@ final class Group extends Model {
 		$this->_isLocked = $isLocked;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Premanager::$me;
+		$this->_editor = Premanager::$user;
 	}   
 	   
 	/**

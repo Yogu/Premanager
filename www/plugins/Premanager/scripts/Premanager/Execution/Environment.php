@@ -21,7 +21,7 @@ class Environment extends Module {
 	/**
 	 * @var Premanager\Models\User
 	 */
-	private $_me;
+	private $_user;
 	/**
 	 * @var Premanager\Models\Project
 	 */
@@ -96,12 +96,12 @@ class Environment extends Module {
 	 * Ths property is read-only.
 	 * 
 	 * This property contains Premanager\Models\User::getGuest() if it is accessed
-	 * while the actual value for $me or $session is loading. Use
+	 * while the actual value for $user or $session is loading. Use
 	 * isSessionAvailable() to check whether this is the case.
 	 * 
 	 * @var Premanager\Models\User
 	 */
-	public $me = Module::PROPERTY_GET;
+	public $user = Module::PROPERTY_GET;
 
 	/**
 	 * The current session
@@ -109,7 +109,7 @@ class Environment extends Module {
 	 * Ths property is read-only.
 	 * 
 	 * This property contains null if it is accessed while the actual value for
-	 * $session or $me is loading. Use isSessionAvailable() to check whether this
+	 * $session or $user is loading. Use isSessionAvailable() to check whether this
 	 * is the case.
 	 * 
 	 * @var Premanager\Models\Session
@@ -201,7 +201,7 @@ class Environment extends Module {
 	/**
 	 * Creates a new environment and initializes its properties
 	 * 
-	 * @param Premanager\Models\User $me the logged-in user, or
+	 * @param Premanager\Models\User $user the logged-in user, or
 	 *   Premanager\Models\User::getGuest()
 	 * @param Premanager\Models\Project $project the current project, or
 	 *   Premanager\Models\Project::getOrganization()
@@ -209,7 +209,7 @@ class Environment extends Module {
 	 * @param Premanager\Execution\Style $style the current style
 	 * @param int $edition enum Premanager\Execution\Edition
 	 */
-	public function create(User $me, Project $project, Language $language,
+	public function create(User $user, Project $project, Language $language,
 		Style $style, $edition) {
 		$instance = new self();
 		switch ($edition) {
@@ -222,7 +222,7 @@ class Environment extends Module {
 					'Premanager\Execution\Edition');
 		}
 
-		$instance->_me = $me;
+		$instance->_user = $user;
 		$instance->_project = $project;
 		$instance->_language = $language;
 		$instance->_style = $style;
@@ -282,12 +282,12 @@ class Environment extends Module {
 	 * Gets the logged-in user
 	 * 
 	 * This method returns Premanager\Models\User::getGuest() if it is called
-	 * while the actual value for $me or $session is loading. Use
+	 * while the actual value for $user or $session is loading. Use
 	 * isSessionAvailable() to check whether this is the case.  
 	 * 
 	 * @return Premanager\Models\User
 	 */
-	public function getMe() {
+	public function getUser() {
 		return $this->session ? $this->session->user : User::getGuest();
 	}
 
@@ -386,7 +386,7 @@ class Environment extends Module {
 	 * @return Premanager\Execution\Style
 	 */
 	public function getStyle() {
-		if (!$this->_me && $this->_isReal) {
+		if (!$this->_user && $this->_isReal) {
 			if ($this->_styleLoading)
 				return StyleClass::getDefault()->instance;
 			else {
@@ -415,7 +415,7 @@ class Environment extends Module {
 	 * @return int
 	 */
 	public function getEdition() {
-		if (!$this->_me && $this->_isReal) {
+		if (!$this->_user && $this->_isReal) {
 			if ($this->_editionLoading)
 				return Edition::COMMON;
 			else {
@@ -473,9 +473,9 @@ class Environment extends Module {
 	}
 	
 	/**
-	 * Checks if the $session and $me properties contain the correct values  
+	 * Checks if the $session and $user properties contain the correct values  
 	 *  
-	 * @return bool true, if $session and $me are available
+	 * @return bool true, if $session and $user are available
 	 */
 	public function isSessionAvailable() {
 		return !$this->_sessionLoading;
