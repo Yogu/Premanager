@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\QueryList;
 
+use Premanager\Model;
+
 use Premanager\QueryList\QueryOperation;
 use Premanager\QueryList\QueryExpression;
 use Premanager\Module;
@@ -322,6 +324,20 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		}
 		
 		return array_slice($this->_items, $index, $count);
+	}
+	
+	/**
+	 * Finds an item in this list and gets its index
+	 * 
+	 * @param Premanager\Model $item the item to find
+	 * @return int the index of the item or -1 if it is not in this list
+	 */
+	public function indexOf(Model $item) {
+		foreach ($this as $index => $o) {
+			if ($o == $item)
+				return $index;
+		}
+		return -1;
 	}
 	
 	/**
