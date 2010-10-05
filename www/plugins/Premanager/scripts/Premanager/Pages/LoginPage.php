@@ -72,26 +72,30 @@ class LoginPage extends TreePageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		$template = new Template('Premanager', 'loginForm');
-		//TODO: get the urls for password lost and register
-		//$template->set('passwordLostURL', Environment::getCurrent()->project->)
-		//$template->set('registerURL', Environment::getCurrent()->project->)
-		$template->set('canRegister',
+		// helpers
+		$canRegister = 
 			Environment::getCurrent()->user->hasRight('Premanager', 'register') ||
-			Environment::getCurrent()->user->hasRight('Premanager',
-				'registerWithoutEmail'));
+			Environment::getCurrent()->user->hasRight('Premanager', 
+				'registerWithoutEmail');
+		$referer = Request::isRefererInternal() ? Request::getReferer() : ''; 
+		
+		$template = new Template('Premanager', 'loginForm');
+		$template->set('canRegister', $canRegister);
+		$template->set('referer', $referer);
 		$page = new Page($this);
 			
-		if (Request::getPOST('Premanager_LoginPage_login')) {
+		if (Request::getPOST('login')) {
 			switch (self::login(&$user)) {
 				case LoginFailedReason::USER:
 				case LoginFailedReason::PASSWORD:
+					// Show the reason message and a login form
 					$template2 = new Template('Premanager', 'loginFailedMessage');
 					//TODO: set the password lost url
 					//$template->set('passwordLostURL', '???');
 					$text = $template2->get();
 					break;
 				case LoginFailedReason::STATUS:
+					// Show the reason message and a login form
 					switch ($user->status) {
 						case UserStatus::DISABLED:
 							$text = Translation::defaultGet('Premanager',
@@ -103,19 +107,35 @@ class LoginPage extends TreePageNode {
 							break;
 					}
 					break;
+					
+				case LoginFailedReason::SUCCESSFUL:
+					// Show a link to the referer
+					$template = new Template('Premanager', 'loginSuccessful');
+					$template->set('referer', Request::getPOST('referer'));
+					$page->createMainBlock($template->get());
+					Output::select($page);
+					return;
 			}
 			
 			$template->set('hidePasswordLostHint', true);
 			$page->createMainBlock($text);
 			$page->appendBlock(PageBlock::createSimple(Translation::defaultGet(
 				'Premanager', 'loginFailedRetryLogin'), $template->get()));
-		} else if (Request::getPOST('Premanager_LoginPage_logout')) {
+		} else if (Request::getPOST('logout')) {
+			// Logout and show a link to the referer
 			self::logout();
+			$template = new Template('Premanager', 'logoutSuccessful');
+			$template->set('referer', Request::getPOST('referer'));
+			$page->createMainBlock($template->get());
+			Output::select($page);
 		} else  if (Environment::getCurrent()->session) {
+			// Show a logout button
 			$template = new Template('Premanager', 'logout');
 			$template->set('environment', Environment::getCurrent());
+			$template->set('referer', $referer);
 			$page->createMainBlock($template->get());
 		} else {
+			// Show the login form
 			$page->createMainBlock($template->get());
 		}
 		Output::select($page);
@@ -126,18 +146,17 @@ class LoginPage extends TreePageNode {
 	/**
 	 * Tries to login using POST data
 	 * 
-	 * If login is successful, redirects and exits the script. If login fails,
-	 * exits method commonly
-	 * 
 	 * @param Premanager\Models\User $user
+	 * @return int (enum Premanager\Pages\LoginFailedReason)
 	 */
 	private static function login(&$user = null) {  
  		// If there is already a session started, remove this session later
-		$oldCookie = DataBase::escape(Request::getCookie('session'));
+		$oldSession =
+			Session::getByKey(DataBase::escape(Request::getCookie('session')));
 
-		$userName = Request::getPOST('Premanager_LoginPage_user');
-		$password = Request::getPOST('Premanager_LoginPage_password');
-		$hidden = (bool) Request::getPOST('Premanager_LoginPage_hidden');
+		$userName = Request::getPOST('user');
+		$password = Request::getPOST('password');
+		$hidden = (bool) Request::getPOST('hidden');
 		$user = User::getByName($userName);
 		if ($user) {
 			if ($user->status == UserStatus::ENABLED) {
@@ -148,9 +167,8 @@ class LoginPage extends TreePageNode {
 						$session->delete();
 					
 					// Delete old session
-					$session = Session::getByKey($key);
-					if ($session)
-						$session->delete();
+					if ($oldSession)
+						$oldSession->delete();
 						
 					// Create new session
 					$session = Session::createNew($user, $hidden, $isSecondaryPassword);
@@ -160,8 +178,7 @@ class LoginPage extends TreePageNode {
 					
 					self::$loginSuccessful->call($this, array('user' => $user));
 					
-					// Redirect to drop POST data
-					Output::redirect();
+					return LoginFailedReason::SUCCESSFUL;
 				} else {
 					self::$loginFailed->call($this,
 						array('reason' => LoginFailedReason::PASSWORD, 'user' => $user));
@@ -190,7 +207,6 @@ class LoginPage extends TreePageNode {
 			$session->delete();
 		Output::deleteCookie('session');
 		self::$loggedOut->call();
-		Output::redirect();
 	}  
 }
 

@@ -129,11 +129,18 @@ class Request {
 		return $_SERVER['HTTP_REFERER'];
 	}
 	
+	/**
+	 * Checks whether the visitor was referred from an internal page
+	 * 
+	 * @return bool true if the visitor was referred from an internal page
+	 */ 
 	public static function isRefererInternal() {
 		if (self::$_isRefererInternal === null) {
+			$prefix = new URL(Config::getEmptyURLPrefix());
+			$prefix = $prefix->host.$prefix->path;
 			// Check wehater the referer is in a subfolder of Config::$urlTrunk
 			self::$_isRefererInternal = preg_match('/[a-zA-Z0-9+.-]*\:\/\/'.
-				'[a-zA-Z0-9.-]*'.str_replace('/', '\/', Config::getEmptyURLPrefix()).
+				'[a-zA-Z0-9.-]*'.str_replace('/', '\/', $prefix).
 				'.*/', self::getReferer());
 		}
 		return self::$_isRefererInternal;
