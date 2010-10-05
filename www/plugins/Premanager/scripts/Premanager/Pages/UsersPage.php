@@ -49,6 +49,28 @@ class UsersPage extends ListPageNode {
 	}
 	
 	/**
+	 * Gets an array of all child page nodes
+	 * 
+	 * @param int $count the number of items the array should contain at most or
+	 *   -1 if all available items should be contained
+	 * @param Premanager\Execution\PageNode $referenceNode the page node that
+	 *   should be always in the array
+	 * @return array an array of the child Premanager\Execution\PageNode's
+	 */
+	public function getChildren($count = -1, PageNode $referenceNode = null) {
+		$referenceModel = $referenceNode instanceof UserPage ?
+			$referenceNode->getUser() : null;
+		$users = $this->getChildrenHelper(User::getUsers(), $referenceModel,
+			$count);
+			
+		$list = array();
+		foreach ($users as $user) {
+			$list[] = new UserPage($this, $user);
+		}
+		return $list;
+	}
+	
+	/**
 	 * Gets the name that is used in urls
 	 * 
 	 * @return string

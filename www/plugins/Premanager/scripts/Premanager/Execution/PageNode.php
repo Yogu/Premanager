@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Model;
+
+use Premanager\QueryList\QueryList;
+
 use Premanager\DateTime;
 
 use Premanager\Debug\Debug;
@@ -112,6 +116,50 @@ abstract class PageNode extends Module {
 	 */
 	public function getChildByName($name) {
 		
+	}
+	
+	/**
+	 * Gets an array of all child page nodes
+	 * 
+	 * @param int $count the number of items the array should contain at most or
+	 *   -1 if all available items should be contained
+	 * @param Premanager\Execution\PageNode $referenceNode the page node that
+	 *   should be always in the array
+	 * @return array an array of the child Premanager\Execution\PageNode's
+	 */
+	public function getChildren($count = -1, PageNode $referenceNode = null) {
+		return array();
+	}
+	
+	/**
+	 * Gets an array of the models to be included for the result of getChildren()
+	 * 
+	 * @param int $count the count parameter of getChildren
+	 * @param Premanager\QueryList\QueryList $list the list that contains the
+	 *   models of the child page nodes 
+	 * @param Premanager\Model $model the model of this page node
+	 * @return array an array of models to be included
+	 */
+	protected function getChildrenHelper(QueryList $list, $model, $count) {
+		if ($model !== null && !($model instanceof Model))
+			throw new ArgumentException('$model must either be null or a '.
+				'Premanager\Model.', 'model');
+		
+		// If the reference node is specified and used (not all items should be
+		// contained in the array), find the structure node of the reference node in
+		// the list and use this index as center
+		$startIndex = 0;
+		if ($model && $count >= 0) {
+			$index = $list->indexOf($model);
+			if ($index >= 0)
+				$startIndex = max($index - floor(($count-1) / 2), 0); 		
+		}
+		
+		// If not all items should be contained, select the speicified range
+		if ($count >= 0)
+			return $list->getRange($startIndex, $count, true);
+		else
+			return $list->getAll();
 	}
 	
 	/**

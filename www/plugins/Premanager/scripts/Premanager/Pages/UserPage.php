@@ -24,6 +24,8 @@ class UserPage extends PageNode {
 	 * @var Premanager\Models\User
 	 */
 	private $_user;
+
+	// ===========================================================================
 	
 	/**
 	 * Creates a new page node
@@ -69,7 +71,18 @@ class UserPage extends PageNode {
 		$page->createMainBlock($template->get());
 		
 		Output::select($page);
-	} 
+	}
+
+	// ===========================================================================
+
+	/**
+	 * Gets the user represented by this page
+	 * 
+	 * @return Premanager\Models\User the user represented by this page
+	 */
+	public function getUser() {
+		return $this->_user;
+	}
 }
 
 ?>
