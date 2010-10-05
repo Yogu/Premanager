@@ -1,7 +1,8 @@
 <?php
 
-function Dwoo_Plugin_htmlstring(Dwoo $dwoo, $plugin, $string, $params = null)
+function Dwoo_Plugin_htmlstring(Dwoo $dwoo, $plugin, $string, $params = array())
 {
-  return htmlspecialchars(Strings::get($plugin, $string, $params));
+  return htmlspecialchars(Premanager\Execution\Translation::defaultGet($plugin,
+  	$string,$params === null ? array() : $params));
 }
 ?>
