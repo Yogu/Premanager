@@ -81,8 +81,8 @@ class PageNotFoundNode extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof PageNotFoundNode &&
-			((!$other->_parent && !$this->_parent) ||
-			($other->parent->equals($this->_parent) &&
+			((!$other->parent && !$this->parent) ||
+			($other->parent->equals($this->parent) &&
 			$other->_urlRest == $this->_urlRest));
 	}	      
 	

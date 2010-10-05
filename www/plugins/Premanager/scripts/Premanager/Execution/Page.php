@@ -97,12 +97,32 @@ class Page extends Module {
 			$hierarchy[] = $node;
 		}
 		
+		// Create the html navigation tree
+		$node = new $this->_node;
+		$prev = null;
+		$navigationTree = array();
+		while ($node) {
+			//TODO: replace constant count (5) by option value
+			$children = $node->getChildren(5, $prev);
+			for ($i = 0; $i < count($children); $i++) {
+				if ($children[$i]->equals($node))
+					$children[$i] = array($children[$i], $navigationTree);
+				else
+					$children[$i] = array($children[$i]);
+			}
+			$navigationTree = $children;
+			$prev = $node; 
+			$node = $node->parent;
+		}
+		$navigationTree = array($this->_node, $navigationTree);
+		
 		$template->set('node', $this->_node);
 		$template->set('project', $this->_node->project);
 		$template->set('projectNode', $projectNode);
 		$template->set('isIndexPage', $this->_node instanceof StructurePageNode &&
 			$this->_node->isProjectNode());
 		$template->set('hierarchy', $hierarchy);
+		$template->set('navigationTree', $navigationTree);
 		$template->set('blocks', $this->blocks);
 		$template->set('environment', Environment::getCurrent());
 		$template->set('organization', Project::getOrganization());

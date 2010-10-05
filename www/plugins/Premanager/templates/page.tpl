@@ -147,7 +147,7 @@
 		</div>
 
 		<ul id="navigation-tree">
-			<li>dummy</li>		
+			{include file='navigationItem.tpl' node=$navigationTree activeNode=$node}		
 		</ul>
 		
 		{if $sidebar}
