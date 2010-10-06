@@ -2,10 +2,9 @@
 namespace Premanager\QueryList;
 
 use Premanager\ArgumentNullException;
-
 use Premanager\ArgumentException;
-
 use Premanager\Module;
+use Premanager\Types;
 
 /**
  * Provides information about a member of a model
@@ -60,9 +59,9 @@ class MemberInfo extends Module{
 		
 		if (!is_string($name))
 			throw new ArgumentException('$name must be a string', 'name');
-		if (!is_int($kind))
+		if (!Types::isInteger($kind))
 			throw new ArgumentException('$kind must be an integer', 'kind');
-		if (!is_int($type) && !$type instanceof ModelDescriptor)
+		if (!Types::isInteger($type) && !$type instanceof ModelDescriptor)
 			throw new ArgumentException('$type must be an integer or a model ',
 				'type');
 		$this->_modelDescriptor = $modelDescriptor;

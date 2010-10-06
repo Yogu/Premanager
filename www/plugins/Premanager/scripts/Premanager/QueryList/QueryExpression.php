@@ -3,6 +3,7 @@ namespace Premanager\QueryList;
 
 use Premanager\InvalidOperationException;
 use Premanager\Module;
+use Premanager\Types;
 use Premanager\Model;
 use Premanager\QueryList\DataType;
 use Premanager\ArgumentException;
@@ -110,7 +111,7 @@ class QueryExpression extends Module {
 	  
 		// No operand specified, so $operation contains a constant
 		if (\func_num_args() <= 2) {
-			if (is_int($operation) || is_float($operation))
+			if (Types::isInteger($operation) || is_float($operation))
 				$this->_type = DataType::NUMBER;
 			else if (is_bool($operation))
 				$this->_type = DataType::BOOLEAN;

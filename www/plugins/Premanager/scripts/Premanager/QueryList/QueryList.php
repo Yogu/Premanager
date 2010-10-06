@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\QueryList;
 
+use Premanager\Types;
+
+use Premanager\Execution\Template;
+
 use Premanager\Model;
 
 use Premanager\QueryList\QueryOperation;
@@ -189,7 +193,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	public function getByIndex($index) {
 		if ($index === null)
 			throw new ArgumentNullException('index');
-		if (!is_int($index))
+		if (!Types::isInteger($index))
 			throw new ArgumentException('index must be an integer', 'index');
 		if ($index < 0)
 			throw new ArgumentOutOfRangeException('index', $index,
@@ -248,9 +252,9 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		if ($count === null)
 			throw new ArgumentNullException('count');
 			
-		if (!is_int($index))
+		if (!Types::isInteger($index))
 			throw new ArgumentException('index must be an integer', 'index');
-		if (!is_int($count))
+		if (!Types::isInteger($count))
 			throw new ArgumentException('count must be an integer', 'count');
 			
 		if ($index < 0) {
@@ -387,7 +391,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @return bool
 	 */
 	public function offsetExists($offset) {
-		return \is_int($offset) && $offset >= 0 && $offset < $this->count;
+		return \Types::isInteger($offset) && $offset >= 0 && $offset < $this->count;
 	}
 	
 	/**

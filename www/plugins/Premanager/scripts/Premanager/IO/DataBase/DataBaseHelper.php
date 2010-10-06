@@ -49,7 +49,7 @@ class DataBaseHelper extends Module {
 		$lang = Environment::getCurrent()->language->id;   
 		
 		if (($flags & self::IS_TREE)) {
-			if (!is_int($parentID) || $parentID < 0)
+			if (!Types::isInteger($parentID) || $parentID < 0)
 				throw new ArgumentException('$parentID must be a nonnegative integer '.
 					'value if $flags contains IS_TREE');
 		}
@@ -151,7 +151,7 @@ class DataBaseHelper extends Module {
 	 * @return int id of created item
 	 */
 	public static function delete($table, $flags, $id) {
-		if (!is_int($id) || $id < 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
 		
 		DataBase::query(
@@ -195,11 +195,11 @@ class DataBaseHelper extends Module {
 		$ip = Request::getIP();
 		$lang = Environment::getCurrent()->language->id;
 		
-		if (!is_int($id) || $id < 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new rgumentException('$id must be a positive integer value', 'id');
 		
 		if (($flags & self::IS_TREE)) {
-			if (!is_int($parentID) || $parentID < 0)
+			if (!Types::isInteger($parentID) || $parentID < 0)
 				throw new InvalidArgumentException('$flags contains IS_TREE, but '.
 					'parentID is not an nonnegative integer');
 		}
@@ -377,13 +377,13 @@ class DataBaseHelper extends Module {
 		$id = null, $parentID = null) {
 		
 		if (($flags & self::IGNORE_THIS)) {
-			if (!is_int($id) || $id < 0)
+			if (!Types::isInteger($id) || $id < 0)
 				throw new ArgumentException(
 					'$flags contains IGNORE_THIS, but $id is not a nonnegative integer');
 		}
 		
 		if (($flags & self::IS_TREE)) {
-			if (!is_int($parentID) || $parentID < 0)
+			if (!Types::isInteger($parentID) || $parentID < 0)
 				throw new ArgumentException('$flags contains IS_TREE, but $parentID '.
 					'is not a nonnegative integer');
 		}
@@ -409,7 +409,7 @@ class DataBaseHelper extends Module {
 	 * @param int $id id of item whose items should be updated
 	 */
 	public static function rebuildNameTable($table, $flags, $id) {    
-		if (!is_int($id) || $id < 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
 				
 		$result = DataBase::query(
@@ -443,11 +443,11 @@ class DataBaseHelper extends Module {
 		$lang = Environment::getCurrent()->language->id;
 		$name = DataBase::escape(unitize($name));
 		
-		if (!is_int($id) || $id < 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
 		
 		if ($flags & self::IS_TREE) {
-			if (!is_int($parentID) || $parentID < 0)
+			if (!Types::isInteger($parentID) || $parentID < 0)
 				throw new ArgumentException('$parentID must be a positive integer '.
 					'value if $flags contains IS_TREE');
 					

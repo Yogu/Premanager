@@ -961,10 +961,10 @@ final class User extends Model {
 				'be specified or none of them');
 				
 		if ($start === null || $count === null) {
-			if (!is_int($start) || $start < 0)
+			if (!Types::isInteger($start) || $start < 0)
 				throw new ArgumentException(
 					'$start must be a positive integer value or null');
-			if (!is_int($count) || $count < 0)
+			if (!Types::isInteger($count) || $count < 0)
 				throw new ArgumentException(
 					'$count must be a positive integer value or null');		
 		}  
