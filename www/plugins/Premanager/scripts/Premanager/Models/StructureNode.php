@@ -421,8 +421,12 @@ final class StructureNode extends Model {
 		if ($this->_treeClass === false) {
 			if ($this->_treeID === null)
 				$this->load();
-			$this->_treeClass =
-				$this->_treeID ? TreeClass::getByID($this->_treeID) : null;
+			if ($this->_treeID) {
+				if (!$this->_treeClass = TreeClass::getByID($this->_treeID))
+					throw new CorruptDataException('Tree class '.$this->_treeID.' which '.
+						'is assigned to structure node '.$this->_id.' does not exist');
+			} else
+				$this->_treeClass = null;
 		}
 		return $this->_treeClass;
 	}
@@ -547,10 +551,6 @@ final class StructureNode extends Model {
 						$this->_id)));
 		}
 		return $this->_children;
-	}
-	
-	public function getPageNode() {
-		
 	}
 	
 	/**

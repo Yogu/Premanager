@@ -98,23 +98,22 @@ class Page extends Module {
 		}
 		
 		// Create the html navigation tree
-		$node = new $this->_node;
+		$node = $this->_node;
 		$prev = null;
 		$navigationTree = array();
 		while ($node) {
 			//TODO: replace constant count (5) by option value
 			$children = $node->getChildren(5, $prev);
 			for ($i = 0; $i < count($children); $i++) {
-				if ($children[$i]->equals($node))
-					$children[$i] = array($children[$i], $navigationTree);
+				if ($prev && $children[$i]->equals($prev))
+					$children[$i] = $navigationTree;
 				else
 					$children[$i] = array($children[$i]);
 			}
-			$navigationTree = $children;
+			$navigationTree = array($node, $children);
 			$prev = $node; 
 			$node = $node->parent;
 		}
-		$navigationTree = array($this->_node, $navigationTree);
 		
 		$template->set('node', $this->_node);
 		$template->set('project', $this->_node->project);

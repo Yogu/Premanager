@@ -91,7 +91,7 @@ class StructurePageNode extends PageNode {
 			
 		$list = array();
 		foreach ($structureNodes as $structureNode) {
-			$list[] = new StructurePageNode($this, $structureNode);
+			$list[] = $this->getChildByStructureNode($structureNode);
 		}
 		return $list;
 	}
