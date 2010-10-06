@@ -217,11 +217,15 @@ body > .toolbar > li > span.disabled {
 
 /* ========== Content - Sidebar - Navigation Tree ========== */
 
-#content.with-sidebar {
-	margin-right: -200px;
+#content.with-sidebar,
+#content.with-navigation-tree {
 	width: 100%;
 	float: left;
-}   
+}
+
+#content.with-sidebar {
+	margin-right: -200px;	
+}
 
 #sidebar {
 	float: right;
