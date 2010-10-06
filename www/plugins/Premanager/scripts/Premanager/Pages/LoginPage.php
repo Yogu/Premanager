@@ -112,6 +112,7 @@ class LoginPage extends TreePageNode {
 					// Show a link to the referer
 					$template = new Template('Premanager', 'loginSuccessful');
 					$template->set('referer', Request::getPOST('referer'));
+					$template->set('environment', Environment::getCurrent());
 					$page->createMainBlock($template->get());
 					Output::select($page);
 					return;
