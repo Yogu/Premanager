@@ -83,6 +83,7 @@ class LoginPage extends TreePageNode {
 		$template->set('canRegister', $canRegister);
 		$template->set('referer', $referer);
 		$page = new Page($this);
+		$page->title = Translation::defaultGet('Premanager', 'theLogin');;
 			
 		if (Request::getPOST('login')) {
 			switch (self::login(&$user)) {
@@ -90,6 +91,7 @@ class LoginPage extends TreePageNode {
 				case LoginFailedReason::PASSWORD:
 					// Show the reason message and a login form
 					$template2 = new Template('Premanager', 'loginFailedMessage');
+					$page->title = Translation::defaultGet('Premanager', 'loginFailed');
 					//TODO: set the password lost url
 					//$template->set('passwordLostURL', '???');
 					$text = $template2->get();
@@ -127,6 +129,7 @@ class LoginPage extends TreePageNode {
 			self::logout();
 			$template = new Template('Premanager', 'logoutSuccessful');
 			$template->set('referer', Request::getPOST('referer'));
+			$page->title = Translation::defaultGet('Premanager', 'theLogout');
 			$page->createMainBlock($template->get());
 			Output::select($page);
 		} else  if (Environment::getCurrent()->session) {
@@ -134,6 +137,7 @@ class LoginPage extends TreePageNode {
 			$template = new Template('Premanager', 'logout');
 			$template->set('environment', Environment::getCurrent());
 			$template->set('referer', $referer);
+			$page->title = Translation::defaultGet('Premanager', 'theLogout');
 			$page->createMainBlock($template->get());
 		} else {
 			// Show the login form

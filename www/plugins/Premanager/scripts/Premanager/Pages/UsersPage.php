@@ -62,6 +62,7 @@ class UsersPage extends TreeListPageNode {
 			true);
 		
 		$page = new Page($this);
+		$page->title = Translation::defaultGet('Premanager', 'users');
 		$page->createMainBlock(Translation::defaultGet('Premanager',
 			count($list) ? 'userListMessage' : 'userListEmpty'));
 		
@@ -69,7 +70,7 @@ class UsersPage extends TreeListPageNode {
 		$head = $template->get();
 		
 		$template = new Template('Premanager', 'userListBody');
-		$template->set('users', User::getUsers());
+		$template->set('users', $list);
 		$template->set('node', $this);
 		$body = $template->get();
 		

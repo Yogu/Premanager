@@ -136,10 +136,6 @@ class StructurePageNode extends PageNode {
 		else
 			return $this->_structureNode->title;
 	}
-	
-	public function getStandAloneTitle() {
-		return $this->_structureNode->title;
-	}
 
 	/**
 	 * Performs a call of this page

@@ -27,7 +27,23 @@ class Page extends Module {
 	public $blocks;
 	
 	/**
+	 * The page title (may differ from the page node title)
+	 * 
+	 * This title is displayed in the browser's title bar and in the heading of
+	 * the main block, if exists.
+	 * 
+	 * Has to be set before calling createMainBlock().
+	 * 
+	 * The default value is the page node title.
+	 * 
+	 * @var string
+	 */
+	public $title;
+	
+	/**
 	 * The node that has created this page
+	 * 
+	 * This property is read-only.
 	 * 
 	 * @var Premanager\Execution\PageNode
 	 */
@@ -42,18 +58,21 @@ class Page extends Module {
 	public function __construct(PageNode $node) {
 		parent::__construct();
 		$this->_node = $node;
+		$this->title = $node->title;
 	}
 	
 	/**
-	 * Adds a new block in a new col in a new row. The block's title will be the
-	 * title of the assigned node, the block's body will be $content and it will
-	 * be a main block. 
+	 * Adds a new block in a new col in a new row. The value of the $title
+	 * property is used for the block's title, the block's body will be $content
+	 * and it will be a main block.
+	 * 
+	 * $title has to be set before calling this method
 	 * 
 	 * @param string $body the content for the block's body
 	 */
 	public function createMainBlock($body) {
 		$this->blocks[] = array(array(PageBlock::createSimple(
-			$this->_node->standAloneTitle, $body, false, false, true)));
+			$this->title, $body, false, false, true)));
 	}
 	
 	/**
@@ -116,6 +135,7 @@ class Page extends Module {
 		}
 		
 		$template->set('node', $this->_node);
+		$template->set('title', $this->title);
 		$template->set('project', $this->_node->project);
 		$template->set('projectNode', $projectNode);
 		$template->set('isIndexPage', $this->_node instanceof StructurePageNode &&

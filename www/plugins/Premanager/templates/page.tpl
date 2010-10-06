@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>{html $project->title}{if !$isIndexPage}{string Premanager titleDivider}{html $node->standAloneTitle}{elseif $project->subTitle}{string Premanager titleDivider}{html $project->subTitle}{/if}</title>
+		<title>{html $project->title}{if !$isIndexPage}{string Premanager titleDivider}{html $title}{elseif $project->subTitle}{string Premanager titleDivider}{html $project->subTitle}{/if}</title>
 		<base href="{html $environment->urlPrefix}" />
 				
 		<meta name="copyright" content="{html $organization->copyright}" />

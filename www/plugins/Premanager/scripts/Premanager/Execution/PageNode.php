@@ -52,14 +52,6 @@ abstract class PageNode extends Module {
 	public $title = Module::PROPERTY_GET;
 	
 	/**
-	 * The title that is used in a context where the titles of the parent nodes
-	 * are not displayed
-	 * 
-	 * @var string
-	 */
-	public $standAloneTitle = Module::PROPERTY_GET;
-	
-	/**
 	 * The url of this page relative to Environment::getCurrent()->urlPrefix
 	 * 
 	 * @var string
@@ -176,16 +168,6 @@ abstract class PageNode extends Module {
 	 * @return string
 	 */
 	public abstract function getTitle();
-	
-	/**
-	 * Gets the title that is used in a context where the titles of the parent
-	 * nodes are not displayed
-	 * 
-	 * @return string
-	 */
-	public function getStandAloneTitle() {
-		return $this->getTitle();
-	}
 
 	/**
 	 * Performs a call of this page
