@@ -284,7 +284,7 @@ final class Group extends Model {
 		$result = DataBase::query(
 			"SELECT name.id ".            
 			"FROM ".DataBase::formTableName('Premanager_GroupsName')." AS name ".
-			"WHERE name.name = '".DataBase::escape(Strings::unitize($name)."'"));
+			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$user = self::createFromID($result->get('id'));
 			return $user;
@@ -486,8 +486,9 @@ final class Group extends Model {
 			
 		if ($this->_text === null) {
 			$result = DataBase::query(
-				"SELECT grp.text ".
-				"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ".
+				"SELECT translation.text ".
+				"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ",
+				/* translating */
 				"WHERE grp.id = '$this->_id'");
 			$this->_text = $result->get('text');
 		}
@@ -647,6 +648,10 @@ final class Group extends Model {
 		$result = DataBase::query(
 			"SELECT user.userID ".
 			"FROM ".DataBase::formTableName('Premanager_Users')." AS user ".
+			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup')." ".
+				"AS userGroup ".
+				"ON userGroup.groupID = '$this->id' ".
+				"AND userGroup.userID = user.userID ".
 			"ORDER BY LOWER(user.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
 		$list = '';
@@ -668,7 +673,7 @@ final class Group extends Model {
 	public function getMemberCount() {
 		$result = DataBase::query(
 			"SELECT COUNT(userGroup.userID) AS count ".
-			"FROM ".DataBase::formTableName('Premanager_UsersGroup')." AS userGroup ".
+			"FROM ".DataBase::formTableName('Premanager_UserGroup')." AS userGroup ".
 			"WHERE userGroup.groupID = '$this->_id'");
 		return $result->get('count');
 	}   

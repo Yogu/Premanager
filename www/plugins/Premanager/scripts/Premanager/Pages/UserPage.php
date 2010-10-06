@@ -17,7 +17,7 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that shows a list of all users
+ * A page that shows a user profile
  */
 class UserPage extends PageNode {
 	/**

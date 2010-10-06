@@ -61,7 +61,7 @@ abstract class TreePageNode extends PageNode {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof TreePagePage &&
+		return $other instanceof TreePageNode &&
 			$other->_structureNode == $this->_structureNode; 
 	}	   
 	
