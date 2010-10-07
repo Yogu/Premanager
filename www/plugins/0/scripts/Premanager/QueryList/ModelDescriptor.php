@@ -19,6 +19,10 @@ class ModelDescriptor extends Module {
 	/**
 	 * @var string
 	 */
+	private $_pluginName;
+	/**
+	 * @var string
+	 */
 	private $_table;
 	/**
 	 * @var callback
@@ -30,6 +34,13 @@ class ModelDescriptor extends Module {
 	 * @var string
 	 */
 	public $className = Module::PROPERTY_GET;
+	
+	/**
+	 * The name of the plugin that contains the models
+	 * 
+	 * @var string
+	 */
+	public $pluginName = Module::PROPERTY_GET;
 	
 	/**
 	 * The name of the model's table
@@ -47,8 +58,8 @@ class ModelDescriptor extends Module {
 	 * @param string $table the name of the table that contains this models
 	 * @param callback $getByIDCallback a callback that gets an instance by its id
 	 */
-	public function __construct($className, array $properties, $table = null,
-		$getByIDCallback = null) {
+	public function __construct($className, array $properties, $pluginName,
+		$table = null, $getByIDCallback = null) {
 		parent::__construct();
 			
 		if ($getByIDCallback != null && !\is_callable($getByIDCallback))
@@ -56,6 +67,7 @@ class ModelDescriptor extends Module {
 				'callback or null', 'getByIDCallback');
 			
 		$this->_className = $className;
+		$this->_pluginName = $pluginName;
 		$this->_table = $table;
 		$this->_getByIDCallback = $getByIDCallback;
 		foreach ($properties as $name => $type) {
@@ -85,6 +97,15 @@ class ModelDescriptor extends Module {
 	 */
 	public function getClassName() {
 		return $this->_className;
+	}
+	
+	/**
+	 * Gets the name of the plugin containing the models
+	 * 
+	 * @return string
+	 */
+	public function getPluginName() {
+		return $this->_pluginName;
 	}
 	
 	/**

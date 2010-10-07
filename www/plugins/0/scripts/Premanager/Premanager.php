@@ -1,8 +1,8 @@
 <?php
 namespace Premanager;
 
+use Premanager\InvalidOperationException;
 use Premanager\Debug\Debug;
-
 use Premanager\IO\Request;
 use Premanager\IO\Config;;
 use Premanager\IO\Output;
@@ -16,8 +16,22 @@ use Premanager\Models\Group;
 use Premanager\Models\Plugin;
 use Premanager\Execution\Environment;
 
+/**
+ * The starter class for the Premanager site
+ */
 class Premanager extends Module {
-	public static function __init() {
+	private static $_isRunning = false;
+	
+	/**
+	 * Starts Premanager and outputs the requested page
+	 * 
+	 * @throws InvalidOperationException Premanager is already running (see
+	 *   isRunning())
+	 */
+	public static function run() {
+		if (self::$_isRunning)
+			throw new InvalidOperationException('Premanager is already running');
+		
 		// Call the primary init routines of all plugins, e.g. to assign event
 		// handlers
 		foreach (Plugin::getPlugins() as $plugin) {
@@ -44,8 +58,15 @@ class Premanager extends Module {
 		// Output headers and content
 		Output::finish();
 	}
+	
+	/**
+	 * Checks whether Premanager has already been started
+	 * 
+	 * @return bool true, if Premanager is running
+	 */
+	public static function isRunning() {
+		return self::$_isRunning;
+	}
 }
-
-Premanager::__init();
 
 ?>

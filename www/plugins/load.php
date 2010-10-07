@@ -45,6 +45,6 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 set_error_handler("exception_error_handler", (E_ALL | E_STRICT) & ~E_NOTICE);
 
 // Run Premanager
-require_once("Premanager/scripts/Premanager/Premanager.php");
+Premanager\Premanager::run();
 
 ?>

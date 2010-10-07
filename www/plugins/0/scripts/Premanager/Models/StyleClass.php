@@ -154,7 +154,7 @@ final class StyleClass extends Model {
 		}
 	
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_Styles')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'Styles')." ".
 			"(pluginID, class) ".
 			"VALUES ('$plugin->id', '".DataBase::escape($className)."'");
 		$id = DataBase::insertID();
@@ -176,7 +176,7 @@ final class StyleClass extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(style.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Styles')." AS style");
+				"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -191,7 +191,7 @@ final class StyleClass extends Model {
 		if (self::$_default === null) {
 			$result = DataBase::query(
 				"SELECT style.id, style.pluginID, style.class ".
-				"FROM ".DataBase::formTableName('Premanager_Styles')." AS style ".
+				"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 				"WHERE style.isDefault = '1'");
 			if ($result->next()) {
 				self::$_default = self::createFromID($result->get('id'),
@@ -213,13 +213,13 @@ final class StyleClass extends Model {
 		
 		// Remove former default style
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Styles')." AS style ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 			"SET style.isDefault = '0' ".
 			"WHERE style.isDefault = '1'");
 		
 		// Set the new default style
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Styles')." AS style ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 			"SET style.isDefault = '1' ".
 			"WHERE style.id = '$style->id'");
 		
@@ -248,7 +248,7 @@ final class StyleClass extends Model {
 				'id' => DataType::NUMBER,
 				'plugin' => Plugin::getDescriptor(),
 				'className' => DataType::STRING),
-				'Premanager_Styles', array(__CLASS__, 'getByID'));
+				'Premanager', 'Styles', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}      
@@ -329,7 +329,7 @@ final class StyleClass extends Model {
 		}
 			
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_Styles')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'Styles')." ".
 			"WHERE style.id = '$this->_id'");
 			
 		unset(self::$_instances[$this->_id]);
@@ -342,7 +342,7 @@ final class StyleClass extends Model {
 	private function load() {
 		$result = DataBase::query(
 			"SELECT style.pluginID, style.className ".    
-			"FROM ".DataBase::formTableName('Premanager_Styles')." AS style ".
+			"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 			"WHERE style.id = '$this->_id'");
 		if (!$result->next())
 			return false;

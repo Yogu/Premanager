@@ -278,7 +278,7 @@ final class Language extends Model {
 		$result = DataBase::query(
 			"SELECT language.id, language.name, language.title, ".
 				"language.englishTitle ".            
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"WHERE language.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$language = Language::createFromID($result->get('id',
@@ -322,7 +322,7 @@ final class Language extends Model {
 				'contains only whitespaces', 'englishTitle');  
 	
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_Languages')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'Languages')." ".
 			"(name, title, englishTitle) ".
 			"VALUES ('".DataBase::escape($name)."', '".DataBase::escape($title)."', ".
 				"'".DataBase::escape($englishTitle)."')");
@@ -339,7 +339,7 @@ final class Language extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(language.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Languages')." AS language");
+				"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -374,7 +374,7 @@ final class Language extends Model {
 		$result = DataBase::query(
 			"SELECT language.id, language.name, language.title, ".
 				"language.englishTitle ".
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"ORDER BY LOWER(language.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
 		$list = '';
@@ -398,7 +398,7 @@ final class Language extends Model {
 	public static function staticIsNameAvailable($name) { 
 		$result = DataBase::query(
 			"SELECT language.id ".
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"WHERE language.name = '".DataBase::escape(Strings::unitize($name)."'"));
 		return !$result->next();
 	}
@@ -413,7 +413,7 @@ final class Language extends Model {
 			$result = DataBase::query(
 				"SELECT language.id, language.name, language.title, ".
 					"language.englishTitle ".            
-				"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+				"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 				"WHERE language.isDefault = '1'");
 			if ($result->next()) {
 				self::$_default = Language::createFromID($result->get('id',
@@ -439,13 +439,13 @@ final class Language extends Model {
 		
 		// Remove former default language
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Language')." AS language ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Language')." AS language ".
 			"SET language.isDefault = '0' ".
 			"WHERE language.isDefault = '1'");
 		
 		// Set the new default language
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"SET language.isDefault = '1' ".
 			"WHERE language.id = '$langauge->id'");
 		
@@ -462,7 +462,7 @@ final class Language extends Model {
 			$result = DataBase::query(
 				"SELECT language.id, language.name, language.title, ".
 					"language.englishTitle ".            
-				"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+				"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 				"WHERE language.isInternational = '1'");
 			if ($result->next()) {
 				self::$_internationalLanguage =
@@ -489,13 +489,13 @@ final class Language extends Model {
 		
 		// Remove former international language
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Language')." AS language ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Language')." AS language ".
 			"SET language.isInternational = '0' ".
 			"WHERE language.isInternational = '1'");
 		
 		// Set the new intenrational language
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"SET language.isInternational = '1' ".
 			"WHERE language.id = '$langauge->id'");
 		
@@ -524,7 +524,7 @@ final class Language extends Model {
 				'createTime' => DataType::DATE_TIME,
 				'editor' => User::getDescriptor(),
 				'editTime' => DataType::DATE_TIME),
-				'Premanager_Languages', array(__CLASS__, 'getByID'));
+				'Premanager', 'Languages', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}
@@ -786,7 +786,7 @@ final class Language extends Model {
 				'contains only whitespaces', 'englishTitle');  
 		
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Languages')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." ".
 			"SET name = '".DataBase::escape($name)."', ".
 				"title = '".DataBase::escape($title)."', ".
 				"englishTitle = '".DataBase::escape($englishTitle)."' ".
@@ -834,7 +834,7 @@ final class Language extends Model {
 				'contains only whitespaces', 'longTimeFormat');         
 			
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Languages')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." ".
 			"SET shortDateFormat = '".DataBase::escape($shortDateFormat)."', ".
 				"shortTimeFormat = '".DataBase::escape($shortTimeFormat)."', ".
 				"longDateFormat = '".DataBase::escape($longDateFormat)."', ".   
@@ -865,7 +865,7 @@ final class Language extends Model {
 			 	
 		$result = DataBase::query(
 			"SELECT language.id ".
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"WHERE language.name = '".DataBase::escape(Strings::unitize($name)."' ").
 				"AND language.id != '$this->id'");
 		return !$result->next();
@@ -880,7 +880,7 @@ final class Language extends Model {
 				"language.shortDateFormat, language.shortTimeFormat, ".
 				"language.createTime, language.editTime, language.creatorID, ".
 				"language.editorID ".
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language ".
+			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"WHERE language.id = '$this->id'");
 		
 		if (!$result->next())

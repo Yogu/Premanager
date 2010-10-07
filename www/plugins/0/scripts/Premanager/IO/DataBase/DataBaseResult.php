@@ -53,6 +53,7 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 		if ($this->_eof)
 			return false;
 			
+			
  		$this->_nextCalled = true;
 		$this->_eof = !($this->_row = \mysql_fetch_array($this->_resource));
 		return (!$this->_eof);				
@@ -70,10 +71,13 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 		if ($this->_eof)
 			return null;
 		else {
-			if (isset($this->_row[$fieldName]))
+			// Don't use isset() here because mysql NULL values are replaced by the
+			// php NULL (which would be ingored by isset())
+			if (array_key_exists($fieldName, $this->_row))
 				return $this->_row[$fieldName];
 			else
-				throw new ArgumentException('The specified field does not exist');
+				throw new ArgumentException(
+					'The specified field ('.$fieldName.') does not exist');
 		}
 	}
 	
@@ -114,7 +118,9 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 		if ($this->_eof)
 			return false;
 		else
-			return isset($this->_row[$offset]);;
+			// Don't use isset() here because mysql NULL values are replaced by the
+			// php NULL (which would be ingored by isset())
+			return array_key_exists($offset, $this->_row);;
 	}
 	
 	/**

@@ -521,10 +521,11 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	private function getQueryBase() {
 		if ($this->_queryBase === null) {
 			$condition = $this->_filter ? $this->_filter->getQuery() : '';
-			
+
 			$this->_queryBase =
 				"SELECT item.id ".
-				"FROM ".DataBase::formTableName($this->_modelType->table)." AS item ".
+				"FROM ".DataBase::formTableName(
+					$this->_modelType->pluginName, $this->_modelType->table)." AS item ".
 				($condition ? "WHERE $condition " : "");
 		}
 		return $this->_queryBase;

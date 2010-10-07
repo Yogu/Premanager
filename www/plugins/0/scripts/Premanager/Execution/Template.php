@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Models\Plugin;
+
 use Premanager\IO\Directory;
 
 use Premanager\Module;
@@ -53,20 +55,22 @@ class Template extends Module {
 		$disableCompressor = false) {
 		parent::__construct();
 		
-		$this->_path = Config::getPluginPath().'/'.$pluginName.'/templates/'.
+		$pluginID = Plugin::getIDFromName($pluginName);
+		$this->_path = Config::getPluginPath().'/'.$pluginID.'/templates/'.
 			$templateName.'.tpl';
 		if (!File::exists($this->_path))
 			throw new FileNotFoundException('The template file does not exist '.
-				'(Plugin: '.$pluginName.'; Template: '.$templateName.')',
-				$this->_path);
+				'(Plugin: '.$pluginName.' ('.$pluginID.'); Template: '.$templateName.
+				')', $this->_path);
 		
-		require_once(Config::getPluginPath().
-			'/Premanager/thirdparty/dwoo/dwooAutoload.php');
+		require_once(Config::getPluginPathOf('Premanager').
+			'/thirdparty/dwoo/dwooAutoload.php');
 				
 		$this->_dwoo = new \Dwoo();
 		$this->_data = new \Dwoo_Data();
-		Directory::createDirectory(Config::getCachePath().'/Premanager/dwoo');
-		$this->_dwoo->setCompileDir(Config::getCachePath().'/Premanager/dwoo');
+		$dwooPath = Config::getCachePathOf('Premanager').'/dwoo';
+		Directory::createDirectory($dwooPath);
+		$this->_dwoo->setCompileDir($dwooPath);
 		
 		// Select the compiler for this template
 		$enableCompressing = !Config::isDebugMode() && !$disableCompressor;

@@ -287,7 +287,7 @@ final class StructureNode extends Model {
 				'createTime' => DataType::DATE_TIME,
 				'editor' => User::getDescriptor(),
 				'editTime' => DataType::DATE_TIME),
-				'Premanager_Nodes', array(__CLASS__, 'getByID'));
+				'Premanager', 'Nodes', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}
@@ -502,8 +502,8 @@ final class StructureNode extends Model {
 				
 		$result = DataBase::query(
 			"SELECT name.id ".            
-			"FROM ".DataBase::formTableName('Premanager_NodesName')." AS name ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Nodes')." AS node ".
+			"FROM ".DataBase::formTableName('Premanager', 'NodesName')." AS name ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 				"ON name.id = node.id ".
 			"WHERE node.parentID = '$this->id' ". 
 				"AND name.name = '".DataBase::escape(Strings::unitize($name))."'");
@@ -525,7 +525,7 @@ final class StructureNode extends Model {
 		if ($this->_childCount === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(node.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
+				"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 				"WHERE node.parentID = ".$this->_id);
 			$this->_childCount = $result->get('count');
 		}
@@ -572,11 +572,11 @@ final class StructureNode extends Model {
 			// of which the user is a member and which has access permission
 			$result = DataBase::query(
 				"SELECT group.groupID ".
-				"FROM ".DataBase::formTableName('Premanager_Groups')." AS group ".
-				"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup')." AS userGroup ".
+				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS group ".
+				"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." AS userGroup ".
 					"ON userGroup.userID = '$user->id' ".
 					"AND userGroup.groupID = group.groupID ".
-				"INNER JOIN ".DataBase::formTableName('Premanager_NodeGroup')." AS nodeGroup ".
+				"INNER JOIN ".DataBase::formTableName('Premanager', 'NodeGroup')." AS nodeGroup ".
 					"ON nodeGroup.groupID = group.groupID ".
 					"AND nodeGroup.nodeID = '$this->_id'");
 			return $result->next();
@@ -594,7 +594,7 @@ final class StructureNode extends Model {
 		if ($this->_authorizedGroupsCount === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(node.nodeID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
+				"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 				"WHERE node.parentID = ".$this->_id);
 			$this->_authorizedGroupsCount = $result->get('count');
 		}
@@ -631,8 +631,8 @@ final class StructureNode extends Model {
 		$list = array();
 		$result = DataBase::query(
 			"SELECT grp.id, translation.name, translation.title, grp.color ".
-			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_NodeGroup')." ".
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 				"AS nodeGroup ".
 				"ON nodeGroup.groupID = group.id ",
 			/* translating */ 
@@ -665,7 +665,7 @@ final class StructureNode extends Model {
 		// If this group does already have the access right, just add 0 to 0
 		// (do "nothing")
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_NodeGroup')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"(nodeID, groupID) ".
 			"VALUES ('$this->_id', '$group->id') ".
 			"ON DUPLICATE KEY UPDATE 0+0");
@@ -688,7 +688,7 @@ final class StructureNode extends Model {
 			throw new ArgumentNullException('group');
 
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_NodeGroup')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"WHERE nodeID = '$this->_id' ".
 				"AND groupID = '$group->id'");   
 			
@@ -817,7 +817,7 @@ final class StructureNode extends Model {
 		// All names have to be deleted because otherwise they would be moved to the
 		// new parent, too
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_NodesName')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodesName')." ".
 			"WHERE nodeID = '$this->_id'");
 			
 		// Re-insert up-to-date names
@@ -1023,7 +1023,7 @@ final class StructureNode extends Model {
 			    
 		// Delete group permissions
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_NodeGroup')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"WHERE nodeID = '$this->_id'");
 		
 		if ($this->parent && $this->parent->_childCount !== null)
@@ -1084,7 +1084,7 @@ final class StructureNode extends Model {
 
 		$result = DataBase::query(
 			"SELECT name.name ".
-			"FROM ".DataBase::formTableName('Premanger_NodesName')." AS name ".
+			"FROM ".DataBase::formTableName('Premanger', 'NodesName')." AS name ".
 			"WHERE name.nodeID = '$this->_id' ".
 				"AND name.inUse = '1'");
 		while ($result->next()) {
@@ -1113,7 +1113,7 @@ final class StructureNode extends Model {
 			"SELECT node.parentID, node.projectID, node.noAccessRestriction, ".
 				"node.hasPanel, node.treeID, translation.name, translation.title, ". 
 				"node.creatorID, node.editorID, node.createTime, node.editTime ".    
-			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ",
+			"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ",
 			/* translating */
 			"WHERE node.id = '$this->_id'");
 		

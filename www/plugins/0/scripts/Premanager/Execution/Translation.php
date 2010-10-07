@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Debug\Debug;
+
 use Premanager\Module;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\ArgumentException;
@@ -215,8 +217,9 @@ class Translation extends Module {
 			$result = DataBase::query(
 				"SELECT string.name AS stringName, plugin.name AS pluginName, ".
 					"translation.value ".
-				"FROM ".DataBase::formTableName('Premanager_Strings')." AS string ".
-				"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." plugin ".
+				"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
+				"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins').
+					" plugin ".
 					"ON plugin.id = string.pluginID ",
 				/* translating */
 				'');

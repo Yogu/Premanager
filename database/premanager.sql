@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 26. September 2010 um 01:02
+-- Erstellungszeit: 07. Oktober 2010 um 22:04
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.1
 
@@ -16,265 +16,19 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Datenbank: `rack`
+-- Datenbank: `premanager`
 --
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_blog_articles`
+-- Tabellenstruktur für Tabelle `premanager_0_groupright`
 --
--- Erzeugt am: 11. Juni 2010 um 19:18
--- Aktualisiert am: 19. Juni 2010 um 12:18
--- Letzter Check am: 12. Juni 2010 um 00:36
---
-
-CREATE TABLE IF NOT EXISTS `rack_blog_articles` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `createTime` datetime NOT NULL,
-  `editTime` datetime NOT NULL,
-  `editTimes` int(10) unsigned NOT NULL,
-  `creatorID` int(10) unsigned NOT NULL,
-  `creatorIP` varchar(255) COLLATE utf8_bin NOT NULL,
-  `editorID` int(10) unsigned NOT NULL,
-  `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `createTime` (`createTime`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
-
---
--- RELATIONEN DER TABELLE `rack_blog_articles`:
---   `creatorID`
---       `rack_premanager_users` -> `id`
---   `editorID`
---       `rack_premanager_users` -> `id`
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
---
--- Daten für Tabelle `rack_blog_articles`
---
-
-INSERT INTO `rack_blog_articles` (`id`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
-(1, '2010-06-11 17:20:47', '2010-06-18 17:55:39', 15, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 19:55:39'),
-(2, '2010-06-11 22:31:56', '2010-06-18 17:42:18', 11, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 19:42:18'),
-(4, '2010-06-12 13:30:32', '2010-06-18 17:29:48', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 19:29:48'),
-(6, '2010-06-18 18:06:01', '2010-06-18 18:06:34', 2, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 20:06:34'),
-(7, '2010-06-19 10:04:34', '2010-06-19 10:05:03', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-19 12:05:03');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rack_blog_articlesname`
---
--- Erzeugt am: 11. Juni 2010 um 19:18
--- Aktualisiert am: 19. Juni 2010 um 12:04
--- Letzter Check am: 12. Juni 2010 um 00:36
---
-
-CREATE TABLE IF NOT EXISTS `rack_blog_articlesname` (
-  `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id` int(10) unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `languageID` int(10) unsigned NOT NULL,
-  `inUse` tinyint(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`nameID`),
-  UNIQUE KEY `name` (`name`),
-  KEY `articleID` (`id`),
-  KEY `langaugeID` (`languageID`),
-  KEY `inUse` (`inUse`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
-
---
--- RELATIONEN DER TABELLE `rack_blog_articlesname`:
---   `id`
---       `rack_blog_articles` -> `id`
---   `languageID`
---       `rack_premanager_languages` -> `id`
---
-
---
--- Daten für Tabelle `rack_blog_articlesname`
---
-
-INSERT INTO `rack_blog_articlesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
-(1, 1, 'blog-funktion-im-aufbau', 1, 1, '2010-06-11 19:20:47'),
-(2, 2, 'und-so-gehts', 1, 1, '2010-06-12 00:31:56'),
-(4, 4, 'der-erste-wysiwyg-artikel', 1, 1, '2010-06-12 15:30:32'),
-(6, 6, 'premanager-markup-language-integriert', 1, 1, '2010-06-18 20:06:01'),
-(7, 7, 'ein-test', 1, 1, '2010-06-19 12:04:34');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rack_blog_articlestranslation`
---
--- Erzeugt am: 11. Juni 2010 um 19:17
--- Aktualisiert am: 19. Juni 2010 um 12:04
--- Letzter Check am: 12. Juni 2010 um 00:36
---
-
-CREATE TABLE IF NOT EXISTS `rack_blog_articlestranslation` (
-  `id` int(10) unsigned NOT NULL,
-  `languageID` int(10) unsigned NOT NULL,
-  `publishedRevisionID` int(10) unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `title` varchar(255) COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`,`languageID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- RELATIONEN DER TABELLE `rack_blog_articlestranslation`:
---   `id`
---       `rack_Blog_articles` -> `articleID`
---   `languageID`
---       `rack_premanager_languages` -> `id`
---   `publishedRevisionID`
---       `rack_blog_revisions` -> `id`
---
-
---
--- Daten für Tabelle `rack_blog_articlestranslation`
---
-
-INSERT INTO `rack_blog_articlestranslation` (`id`, `languageID`, `publishedRevisionID`, `name`, `title`, `timestamp`) VALUES
-(1, 1, 3, 'blog-funktion-im-aufbau', 'Blog-Funktion im Aufbau', '2010-06-12 00:16:43'),
-(2, 1, 11, 'und-so-gehts', 'Und so geht''s', '2010-06-18 19:42:18'),
-(4, 1, 0, 'der-erste-wysiwyg-artikel', 'Der Erste Wysiwyg-Artikel', '2010-06-12 15:30:32'),
-(6, 1, 13, 'premanager-markup-language-integriert', 'Premanager Markup Language integriert', '2010-06-18 20:06:34'),
-(7, 1, 0, 'ein-test', 'Ein Test', '2010-06-19 12:04:34');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rack_blog_revisions`
---
--- Erzeugt am: 11. Juni 2010 um 19:18
--- Aktualisiert am: 19. Juni 2010 um 12:05
--- Letzter Check am: 12. Juni 2010 um 14:33
---
-
-CREATE TABLE IF NOT EXISTS `rack_blog_revisions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `articleID` int(10) unsigned NOT NULL,
-  `revision` int(10) unsigned NOT NULL,
-  `languageID` int(10) unsigned NOT NULL,
-  `createTime` datetime NOT NULL,
-  `creatorID` int(10) unsigned NOT NULL,
-  `creatorIP` varchar(255) COLLATE utf8_bin NOT NULL,
-  `text` text COLLATE utf8_bin NOT NULL,
-  `summary` text COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `articleRevisionLanguage` (`articleID`,`revision`,`languageID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
-
---
--- RELATIONEN DER TABELLE `rack_blog_revisions`:
---   `articleID`
---       `rack_blog_articles` -> `id`
---   `creatorID`
---       `rack_premanager_users` -> `id`
---   `languageID`
---       `rack_premanager_languages` -> `id`
---
-
---
--- Daten für Tabelle `rack_blog_revisions`
---
-
-INSERT INTO `rack_blog_revisions` (`id`, `articleID`, `revision`, `languageID`, `createTime`, `creatorID`, `creatorIP`, `text`, `summary`, `timestamp`) VALUES
-(1, 1, 1, 1, '2010-06-11 17:20:47', 2, '127.0.0.1', 'Heyho!\r\n\r\nDie Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n\r\nGrüße', 'Der Artikel wurde erstellt', '2010-06-11 19:20:47'),
-(2, 1, 2, 1, '2010-06-11 20:25:16', 2, '127.0.0.1', 'Heyho!\r\n\r\nDie Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n\r\nGrüße\r\n\r\nPS: Jetzt kommt auch noch das Bearbeiten! :-)', 'Hinweis zur Bearbeitungs-Funktion hinzugefügt', '2010-06-11 22:25:16'),
-(3, 1, 3, 1, '2010-06-11 20:26:37', 2, '127.0.0.1', 'Heyho!\r\n\r\nDie Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n\r\nGrüße\r\n\r\nPS: Jetzt kommt auch noch das Bearbeiten! :-)\r\n\r\nPPS: Die Bearbeitungs-Funktion klappt sogar.', 'Information zur Funktionstüchtigkeit der Bearbeitungs-Funktion', '2010-06-11 22:26:37'),
-(4, 2, 1, 1, '2010-06-11 22:31:56', 2, '127.0.0.1', 'Hallo,\r\n\r\nich möchte hier kurz erklären, wie der Blog im allgemeinen Funktioniert.\r\n\r\nÜber die Schaltfläche "Verfassen" in der Blogübersicht kannst du einen neuen Artikel erstellen. Artikel haben einen Titel und einen Text; und beides kann übersetzt werden.\r\n\r\nSchickst du das Formular ab, ist der Artikel vorerst nur für Redakteure sichtbar. Über die Schaltfläche "Bearbeiten" kann er verändert werden. Das besondere: Die alte Version bleibt bestehen. Mit dem Knopf "Versionen" siehst du eine Liste aller Versionen. Durch Anklicken des Datums wird die jeweilige Version angezeigt.\r\n\r\nUm den Artikel Gästen sichtbar zu machen, muss eine Version veröffentlicht werden. Um das tun zu können, muss man Moderator sein. Dann findet sich in der Versionsansicht eine Schaltfläche zum Veröffentlichen einer bestimmten Version (fahre mit der Maus über den Listeneintrag, um den Button sichtbar zu machen [muss man hier häufig tun]). Außerdem kann in der Artikelansicht die aktuelle Version veröffentlicht werden (Knopf ganz oben).\r\n\r\nWenn eine Version veröffentlicht wurde, ist es möglich, weitere, nicht veröffentlichte, Versionen zu erstellen, hier und da etwas rumzubasteln. Veröffentlicht werden diese Änderungen wie oben beschrieben.\r\n\r\nMöchte man irgendwann einen veröffentlichten Artikel ganz aus dem Netz nehmen, sodass er nur noch für Redakteure sichtbar ist, verwendet man die Schaltfäche "Verstecken". Das ist keine Zauberei; die Funktion gibt einfach an, dass keine Version mehr öffentlich ist. Und deshalb wird der Artikel für Gäste gar nicht angezeigt.\r\n\r\nDas war''s soweit, Funktionen folgen :-)\r\n\r\nDanke für''s Lesen und Weiterbilden,\r\nJan', 'Der Artikel wurde erstellt', '2010-06-12 00:31:56'),
-(7, 1, 4, 1, '2010-06-12 13:01:42', 2, '127.0.0.1', '<p>\r\n	Heyho!\r\n</p>\r\n<p>\r\n	Die Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n</p>\r\n<p>\r\n	Grüße\r\n</p>\r\n<p>\r\n	PS: Jetzt kommt auch noch das Bearbeiten! :-)\r\n</p>\r\n<p>\r\n	PPS: Die Bearbeitungs-Funktion klappt sogar.\r\n</p>\r\n<p>\r\n	PPPS: Jetzt mit Wysiwyg-Editor :-)\r\n</p>', 'An XML-Format angepasst', '2010-06-12 15:01:42'),
-(8, 4, 1, 1, '2010-06-12 13:30:32', 2, '127.0.0.1', '<p>\r\n	Hallo!\r\n</p>\r\n<p>\r\n	Ich schreibe hier gerade meinen ersten Wysiwyg-Artikel. Das heißt, ich benutze einen Editor, in dem ich formatieren kann, wie man es von Textverarbeitungsprogrammen wie Microsoft Word oder OpenOffice.org Writer gewöhnt ist.\r\n</p>\r\n<p>\r\n	Nachfolgend die bisherigen Formatierungsmöglichkeiten:\r\n</p>\r\n<ul>\r\n	<li>\r\n		<p>\r\n			Überschriften\r\n		</p>\r\n	</li>\r\n	<li>\r\n		<p>\r\n			Listen\r\n		</p>\r\n	</li>\r\n	<li>\r\n		<p>\r\n			Links\r\n		</p>\r\n	</li>\r\n</ul>\r\n<h2>\r\n	Überschriften\r\n</h2>\r\n<p>\r\n	Es gibt drei Typen von Überschriften, in drei verschiedenen Größen.\r\n</p>\r\n<h2>\r\n	Listen\r\n</h2>\r\n<p>\r\n	Du kannst zwischen Aufzählungen (mit Punkten) und nummerierten Listen (mit Zahlen) wählen.\r\n</p>\r\n<h2>\r\n	Links\r\n</h2>\r\n<p>\r\n	Bisher sind nur Verweise auf externe Seiten möglich. Beispiel: \r\n	<a href="http://www.juvenile-studios.de">\r\n		 Juvenile Studios\r\n	</a>\r\n</p>\r\n<p>\r\n	Das war''s soweit, weitere Funktionen folgen.\r\n</p>\r\n<p>\r\n	Grüße,\r\n	<br />\r\n	Jan\r\n</p>', 'Der Artikel wurde erstellt', '2010-06-12 15:30:32'),
-(12, 1, 5, 1, '2010-06-18 17:55:39', 2, '127.0.0.1', '<p>Heyho!</p>\r\n<p>Die Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.</p>\r\n<p>Grüße</p>\r\n<p>PS: Jetzt kommt auch noch das Bearbeiten! :-)</p>\r\n<p>PPS: Die Bearbeitungs-Funktion klappt sogar.</p>\r\n<p>PPPS: Jetzt mit Wysiwyg-Editor :-)</p>', 'Erneut abgeschickt', '2010-06-18 19:55:39'),
-(10, 4, 2, 1, '2010-06-18 17:29:48', 2, '127.0.0.1', '<p>Hallo!</p>\r\n<p>Ich schreibe hier gerade meinen ersten Wysiwyg-Artikel. Das heißt, ich benutze einen Editor, in dem ich formatieren kann, wie man es von Textverarbeitungsprogrammen wie Microsoft Word oder OpenOffice.org Writer gewöhnt ist.</p>\r\n<p>Nachfolgend die bisherigen Formatierungsmöglichkeiten:</p>\r\n<ul>\r\n	<li>\r\n		<p>Überschriften</p>\r\n	</li>\r\n	<li>\r\n		<p>Listen</p>\r\n	</li>\r\n	<li>\r\n		<p>Links</p>\r\n	</li>\r\n</ul>\r\n<h2>\r\nÜberschriften</h2>\r\n<p>Es gibt drei Typen von Überschriften, in drei verschiedenen Größen.</p>\r\n<h2>\r\nListen</h2>\r\n<p>Du kannst zwischen Aufzählungen (mit Punkten) und nummerierten Listen (mit Zahlen) wählen.</p>\r\n<h2>\r\nLinks</h2>\r\n<p>Bisher sind nur Verweise auf externe Seiten möglich. Beispiel: <a href="http://www.juvenile-studios.de"> Juvenile Studios</a></p>\r\n<p>Das war''s soweit, weitere Funktionen folgen.</p>\r\n<p>Grüße, <br /> Jan</p>', 'Erneut abgeschickt', '2010-06-18 19:29:48'),
-(11, 2, 2, 1, '2010-06-18 17:42:06', 2, '127.0.0.1', '<p>Hallo,</p>\r\n<p>ich möchte hier kurz erklären, wie der Blog im allgemeinen Funktioniert.</p>\r\n<p>Über die Schaltfläche &quot;Verfassen&quot; in der Blogübersicht kannst du einen neuen Artikel erstellen. Artikel haben einen Titel und einen Text; und beides kann übersetzt werden.</p>\r\n<p>Schickst du das Formular ab, ist der Artikel vorerst nur für Redakteure sichtbar. Über die Schaltfläche &quot;Bearbeiten&quot; kann er verändert werden. Das besondere: Die alte Version bleibt bestehen. Mit dem Knopf &quot;Versionen&quot; siehst du eine Liste aller Versionen. Durch Anklicken des Datums wird die jeweilige Version angezeigt.</p>\r\n<p>Um den Artikel Gästen sichtbar zu machen, muss eine Version veröffentlicht werden. Um das tun zu können, muss man Moderator sein. Dann findet sich in der Versionsansicht eine Schaltfläche zum Veröffentlichen einer bestimmten Version (fahre mit der Maus über den Listeneintrag, um den Button sichtbar zu machen [muss man hier häufig tun]). Außerdem kann in der Artikelansicht die aktuelle Version veröffentlicht werden (Knopf ganz oben).</p>\r\n<p>Wenn eine Version veröffentlicht wurde, ist es möglich, weitere, nicht veröffentlichte, Versionen zu erstellen, hier und da etwas rumzubasteln. Veröffentlicht werden diese Änderungen wie oben beschrieben.</p>\r\n<p>Möchte man irgendwann einen veröffentlichten Artikel ganz aus dem Netz nehmen, sodass er nur noch für Redakteure sichtbar ist, verwendet man die Schaltfäche &quot;Verstecken&quot;. Das ist keine Zauberei; die Funktion gibt einfach an, dass keine Version mehr öffentlich ist. Und deshalb wird der Artikel für Gäste gar nicht angezeigt.</p>\r\n<p>Das war''s soweit, Funktionen folgen :-)</p>\r\n<p>Danke für''s Lesen und Weiterbilden,<br />Jan</p>', 'Konvertiert in PML', '2010-06-18 19:42:06'),
-(13, 6, 1, 1, '2010-06-18 18:06:01', 2, '127.0.0.1', '<p>Hallo,</p>\r\n<p>soeben habe ich den aktuellen Stand der Premanager Markup Language eingebaut. Dabei handelt es sich um eine auf <a href="http://de.wikipedia.org/wiki/Extensible_Markup_Language">XML</a> basierende Sprache, in der formatierte Texte gespeichert werden. Im <a href="http://letsrack.juvenile-studios.de/de/blog/der-erste-wysiwyg-artikel">WYSIWYG-Editor</a> war sie schon in Verwendung, jetzt aber wird sie vollends unterstützt, denn der im PML-Format gespeicherte Text wird nun  beim Anzeigen  in <a href="http://de.wikipedia.org/wiki/Hypertext_Markup_Language">HTML</a>-Code umgewandelt, den jeder Browser versteht.</p>\r\n<p>Grüße,<br />Jan</p>', 'Der Artikel wurde erstellt', '2010-06-18 20:06:01'),
-(14, 7, 1, 1, '2010-06-19 10:04:34', 2, '127.0.0.1', 'Ohne Javascript', 'Der Artikel wurde erstellt', '2010-06-19 12:04:34'),
-(15, 7, 2, 1, '2010-06-19 10:05:03', 2, '127.0.0.1', 'Ohne Javascript<p><p>a</p></p>', '', '2010-06-19 12:05:03');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rack_creativity_creativepages`
---
--- Erzeugt am: 31. März 2010 um 22:48
--- Aktualisiert am: 31. März 2010 um 22:53
--- Letzter Check am: 06. Juni 2010 um 00:33
---
-
-CREATE TABLE IF NOT EXISTS `rack_creativity_creativepages` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `nodeID` int(10) unsigned NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nodeID` (`nodeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
-
---
--- RELATIONEN DER TABELLE `rack_creativity_creativepages`:
---   `nodeID`
---       `rack_premanager_nodes` -> `id`
---
-
---
--- Daten für Tabelle `rack_creativity_creativepages`
---
-
-INSERT INTO `rack_creativity_creativepages` (`id`, `nodeID`, `timestamp`) VALUES
-(1, 0, '2010-03-31 22:53:40');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rack_creativity_creativepagestranslation`
---
--- Erzeugt am: 31. März 2010 um 22:50
--- Aktualisiert am: 06. Juni 2010 um 00:33
--- Letzter Check am: 06. Juni 2010 um 00:33
---
-
-CREATE TABLE IF NOT EXISTS `rack_creativity_creativepagestranslation` (
-  `id` int(10) unsigned NOT NULL,
-  `languageID` int(10) unsigned NOT NULL,
-  `text` text COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`,`languageID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- RELATIONEN DER TABELLE `rack_creativity_creativepagestranslation`:
---   `id`
---       `rack_creativity_creativepages` -> `id`
---   `languageID`
---       `rack_premanager_languages` -> `id`
---
-
---
--- Daten für Tabelle `rack_creativity_creativepagestranslation`
---
-
-INSERT INTO `rack_creativity_creativepagestranslation` (`id`, `languageID`, `text`, `timestamp`) VALUES
-(1, 1, '<p>Herzlich Willkommen bei <b>Rack</b>, dem momentanen Entwicklungsstand der Organisationssoftware <b>Premanager</b>!</p>\r\n\r\n<p>Da die Navigation gerade noch in Arbeit ist, sind die einzelnen Kategorien noch nicht richtig verlinkt. Benutze deshalb die folgende Liste, um diese Website zu erkunden.</p>\r\n\r\n<ul>\r\n<li><p><a href="./mitglieder/benutzer">Benutzerliste</a></p></li>\r\n<li><p><a href="./mitglieder/gruppen">Gruppenliste</a></p></li>\r\n<li><p><a href="./mitglieder/wer-ist-online">Wer ist online?</a></p></li>\r\n<li><p><a href="./anmeldung">Anmeldeformular</a></p></li>\r\n<li><p><a href="./blog">Blog</a></p></li>\r\n<li><p><a href="./admin/struktur">Seitenstruktur</a></p></li>\r\n</ul>\r\n\r\n<p>Du kannst auch jederzeit auf Englisch umschalten, indem du das <i>de</i> in der Adresszeile durch ein <i>en</i> austauschst.</p>\r\n\r\n<p>Genauso ist es möglich, ein Projekt auszuwählen: Füge dafür <i>/zwei-gesichter</i> direkt nach dem Servernamen ein.</p>\r\n\r\n<p>Ich wünsche dir viel Spaß beim Erkunden der bisherigen Funktionen von Premanager 1.0. Wenn du noch fragen hast, kontaktiere mich bitte <a href="mailto:info@yogularm.de">E-Mail</a>. Danke!</p>', '2010-05-23 00:49:56'),
-(1, 2, '<p>Welcome to <b>Rack</b>, the current development snapshot of organization software <b>Premanager</b>!</p>\r\n\r\n<p>Because the navigation is still in progress, you can use the following list to reach some more content.</p>\r\n\r\n<ul>\r\n<li><p><a href="./members/users">User List</a></p></li>\r\n<li><p><a href="./members/groups">Group List</a></p></li>\r\n<li><p><a href="./members/who-is-online">Who is online?</a></p></li>\r\n<li><p><a href="./login">Login</a></p></li>\r\n<li><p><a href="./blog">Blog</a></p></li>\r\n<li><p><a href="./admin/structure">Structure</a></p></li>\r\n</ul>\r\n\r\n<p>You can always switch to German by replacing <i>en</i> in address bar by <i>de</i>.</p>\r\n\r\n<p>It is also possible to select a project: Insert <i>/zwei-gesichter</i> directly after server name.</p>\r\n\r\n<p>Happy discovering new features of Premanager 1.0. Feel free to contact my via <a href="mailto:info@yogularm.de">e-mail</a>. Thank you!</p>', '2010-05-23 00:50:10');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rack_premanager_groupright`
---
--- Erzeugt am: 25. April 2010 um 17:24
--- Aktualisiert am: 30. Juni 2010 um 18:18
--- Letzter Check am: 30. Juni 2010 um 18:18
---
-
-CREATE TABLE IF NOT EXISTS `rack_premanager_groupright` (
+CREATE TABLE IF NOT EXISTS `premanager_0_groupright` (
   `groupID` int(10) unsigned NOT NULL,
   `rightID` int(10) unsigned NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -282,18 +36,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_groupright` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_groupright`:
+-- RELATIONEN DER TABELLE `premanager_0_groupright`:
 --   `groupID`
---       `rack_premanager_groups` -> `id`
+--       `premanager_0_groups` -> `id`
 --   `rightID`
---       `rack_premanager_rights` -> `id`
+--       `premanager_0_rights` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_groupright`
+-- Daten für Tabelle `premanager_0_groupright`
 --
 
-INSERT INTO `rack_premanager_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
+INSERT INTO `premanager_0_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
 (6, 1, '2010-06-27 14:37:27'),
 (2, 16, '2010-06-26 21:26:48'),
 (6, 11, '2010-06-27 14:37:27'),
@@ -319,14 +73,14 @@ INSERT INTO `rack_premanager_groupright` (`groupID`, `rightID`, `timestamp`) VAL
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_groups`
+-- Tabellenstruktur für Tabelle `premanager_0_groups`
 --
--- Erzeugt am: 29. April 2010 um 16:03
--- Aktualisiert am: 04. Juli 2010 um 12:49
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_groups` (
+CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `color` char(6) COLLATE utf8_bin NOT NULL,
   `priority` int(10) unsigned NOT NULL,
@@ -346,18 +100,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_groups` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_groups`:
+-- RELATIONEN DER TABELLE `premanager_0_groups`:
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_groups`
+-- Daten für Tabelle `premanager_0_groups`
 --
 
-INSERT INTO `rack_premanager_groups` (`id`, `color`, `priority`, `autoJoin`, `isLocked`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
+INSERT INTO `premanager_0_groups` (`id`, `color`, `priority`, `autoJoin`, `isLocked`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
 (1, '5C5C5C', 0, 0, 0, '2010-02-14 00:41:15', '2010-04-24 15:10:06', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:45'),
 (2, '000000', 1, 1, 0, '2010-02-14 00:42:55', '2010-04-24 01:18:01', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:37'),
 (3, '006600', 10, 0, 1, '2010-03-05 23:55:33', '2010-04-24 01:16:54', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-04-29 16:45:54'),
@@ -368,14 +122,14 @@ INSERT INTO `rack_premanager_groups` (`id`, `color`, `priority`, `autoJoin`, `is
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_groupsname`
+-- Tabellenstruktur für Tabelle `premanager_0_groupsname`
 --
--- Erzeugt am: 24. April 2010 um 00:45
--- Aktualisiert am: 12. Juni 2010 um 00:36
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_groupsname` (
+CREATE TABLE IF NOT EXISTS `premanager_0_groupsname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -390,18 +144,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_groupsname` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=22 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_groupsname`:
+-- RELATIONEN DER TABELLE `premanager_0_groupsname`:
 --   `id`
---       `rack_premanager_groups` -> `id`
+--       `premanager_0_groups` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_groupsname`
+-- Daten für Tabelle `premanager_0_groupsname`
 --
 
-INSERT INTO `rack_premanager_groupsname` (`nameID`, `id`, `name`, `inUse`, `languageID`, `timestamp`) VALUES
+INSERT INTO `premanager_0_groupsname` (`nameID`, `id`, `name`, `inUse`, `languageID`, `timestamp`) VALUES
 (1, 1, 'gäste', 1, 1, '2010-04-24 01:16:11'),
 (2, 1, 'guests', 1, 2, '2010-04-24 01:16:11'),
 (3, 2, 'registrierte benutzer', 1, 1, '2010-04-24 01:18:01'),
@@ -420,14 +174,13 @@ INSERT INTO `rack_premanager_groupsname` (`nameID`, `id`, `name`, `inUse`, `lang
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_groupstranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_groupstranslation`
 --
--- Erzeugt am: 14. Februar 2010 um 20:09
--- Aktualisiert am: 12. Juni 2010 um 00:36
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_groupstranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_groupstranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -438,18 +191,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_groupstranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_groupstranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_groupstranslation`:
 --   `id`
---       `rack_premanager_groups` -> `id`
+--       `premanager_0_groups` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_groupstranslation`
+-- Daten für Tabelle `premanager_0_groupstranslation`
 --
 
-INSERT INTO `rack_premanager_groupstranslation` (`id`, `languageID`, `name`, `text`, `title`, `timestamp`) VALUES
+INSERT INTO `premanager_0_groupstranslation` (`id`, `languageID`, `name`, `text`, `title`, `timestamp`) VALUES
 (1, 1, 'Gäste', 'Gäste sind nicht angemeldete Besucher dieser Seite', 'Gast', '2010-02-14 20:08:18'),
 (1, 2, 'Guests', 'Guests are visitors who have not logged in', 'Guest', '2010-03-08 21:06:51'),
 (2, 1, 'Registrierte Benutzer', 'Diese Gruppe fasst alle Mitglieder zusammen, die sich registriert haben und sich somit mit ihrem geheimen Passwort anmelden können. Die Mitgliedschaft in dieser Gruppe verleiht keine besonderen Rechte. Lediglich Funktionen, die das Benutzerkonto selbst betreffen, werden dadurch freigeschaltet.', 'Registrierter Benutzer', '2010-02-14 20:09:52'),
@@ -467,13 +220,14 @@ INSERT INTO `rack_premanager_groupstranslation` (`id`, `languageID`, `name`, `te
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_languages`
+-- Tabellenstruktur für Tabelle `premanager_0_languages`
 --
--- Erzeugt am: 09. Juli 2010 um 23:15
--- Aktualisiert am: 09. Juli 2010 um 23:15
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_languages` (
+CREATE TABLE IF NOT EXISTS `premanager_0_languages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `title` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -502,18 +256,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_languages` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_languages`:
+-- RELATIONEN DER TABELLE `premanager_0_languages`:
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_languages`
+-- Daten für Tabelle `premanager_0_languages`
 --
 
-INSERT INTO `rack_premanager_languages` (`id`, `name`, `title`, `englishTitle`, `isDefault`, `isInternational`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `shortDateTimeFormat`, `shortDateFormat`, `shortTimeFormat`, `longDateTimeFormat`, `longDateFormat`, `longTimeFormat`, `order`, `timestamp`) VALUES
+INSERT INTO `premanager_0_languages` (`id`, `name`, `title`, `englishTitle`, `isDefault`, `isInternational`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `shortDateTimeFormat`, `shortDateFormat`, `shortTimeFormat`, `longDateTimeFormat`, `longDateFormat`, `longTimeFormat`, `order`, `timestamp`) VALUES
 (1, 'de', 'Deutsch', 'German', 1, 0, '2010-02-13 18:23:49', '2010-02-13 18:23:49', 0, 0, '127.0.0.1', 0, '127.0.0.1', 'j.m.Y H:i', 'j.m.Y', 'H:i', '|l, j. F Y|, H:i', '|l, j. F Y|', 'H:i', 0, '2010-03-05 23:06:50'),
 (2, 'en', 'English', 'English', 0, 1, '2010-02-13 21:57:46', '2010-02-13 21:57:46', 0, 2, '127.0.0.1', 2, '127.0.0.1', 'm/d/Y H:i', 'm/d/Y', 'H:i', '|F n, Y|, h:i a', '|F n, Y|', 'h:i a', 1, '2010-04-10 22:00:16'),
 (3, 'fr', 'Français', 'French', 0, 0, '2010-04-07 23:08:47', '2010-04-07 23:08:47', 0, 2, '127.0.0.1', 2, '127.0.0.1', 'j-m-Y', 'j-m-Y H:i', 'H:i', 'l j F Y H:i', 'l j F Y', 'H:i', 2, '2010-04-10 22:00:19');
@@ -521,13 +275,14 @@ INSERT INTO `rack_premanager_languages` (`id`, `name`, `title`, `englishTitle`, 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_log`
+-- Tabellenstruktur für Tabelle `premanager_0_log`
 --
--- Erzeugt am: 12. Juni 2010 um 00:36
--- Aktualisiert am: 04. Juli 2010 um 17:09
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_log` (
+CREATE TABLE IF NOT EXISTS `premanager_0_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `url` varchar(255) COLLATE utf8_bin NOT NULL,
   `referer` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -544,16 +299,16 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_log` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=299 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_log`:
+-- RELATIONEN DER TABELLE `premanager_0_log`:
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_log`
+-- Daten für Tabelle `premanager_0_log`
 --
 
-INSERT INTO `rack_premanager_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
+INSERT INTO `premanager_0_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
 (1, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Blog\\scripts\\Article.php on line 125 and defined', 'warning', '2010-06-12 11:54:00', 2, '127.0.0.1', '2010-06-12 13:54:00'),
 (2, 'http://de.rack.localhost/blog/ein-neuer-blog?delete', 'http://de.rack.localhost/blog/ein-neuer-blog?delete', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Errorneous query (Query: DELETE FROM rack_premanager_revisions WHERE articleID = ''3''; Mysql Error: Table ''rack.rack_premanager_revisions'' doesn''t exist)', 'error', '2010-06-12 12:32:56', 2, '127.0.0.1', '2010-06-12 14:32:56'),
 (3, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Uncaught exception (Class: Dwoo_Compilation_Exception; Message: Compilation error at line 47 in &quot;file:D:\\Programmierung\\webspace\\own\\rack\\plugins/Blog/templates/articleAdd.tpl&quot; : Parse error in &quot;staticURLPrefix=escape({$Config_staticURLPrefix})};&lt;/script&gt;\r\n		&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticPrefix}Premanager/scripts/prototype.js&quot;&gt;&lt;/script&gt;\r\n		&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticPrefix}Premanager/scripts/tools.js&quot;&gt;&lt;/script&gt;\r\n		&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticPrefix}Premanager/scripts/window.js&quot;&gt;&lt;/script&gt;\r\n			&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticURLPrefix}Premanager/scripts/wysiwyg.js&quot;&gt;&lt;/script&gt;\r\n	&lt;/head&gt;\r\n	\r\n	&lt;body lang=&quot;{$Lang_code}&quot;&gt;\r\n		&lt;div id=&quot;header&quot;&gt;\r\n			&lt;div id=&quot;organization-title&quot;&gt;\r\n				&lt;span class=&quot;text&quot;&gt;&lt;a href=&quot;http://{urlTemplate(null, null, '''')}&quot;&gt;{html $Org_title}&lt;/a&gt;&lt;/span&gt;\r\n			&lt;/div&gt;\r\n			\r\n			{if $Prj_id != 0}\r\n				&lt;div id=&quot;project-title&quot;&gt;\r\n					&lt;span class=&quot;text&quot;&gt;&lt;a href=&quot;./&quot;&gt;{html $Prj_title}&lt;/a&gt;&lt;/span&gt;\r\n				&lt;/div&gt;\r\n			{/if}\r\n		&lt;/div&gt;\r\n\r\n		&lt;div class=&quot;navigation&quot;&gt;\r\n			&lt;ul class=&quot;location&quot;&gt;\r\n				&lt;li&gt;&lt;a href=&quot;http://{urlTemplate(null, null, '''')}&quot;&gt;{html $Org_title}&lt;/a&gt;&lt;/li&gt;\r\n				{if $Prj_id != 0}\r\n					&lt;li&gt;&lt;a href=&quot;./&quot;&gt;{html $Prj_title}&lt;/a&gt;&lt;/li&gt;\r\n				{/if}\r\n				{$Premanager_navigationList}\r\n			&lt;/ul&gt;\r\n			\r\n			{if $List_pageCount &gt; 1}\r\n				&lt;div class=&quot;pagination&quot;&gt;\r\n					{if $List_page &gt; 1}\r\n						&lt;a href=&quot;./{if $List_page-1 &gt; 1}{$List_baseURL}{$List_page-1}{else}{$List_firstPageURL}{/if}&quot; class=&quot;page-back&quot;&gt;{string Premanager pageBack}&lt;/a&gt;\r\n					{/if}\r\n					\r\n					&lt;span class=&quot;pages&quot;&gt;\r\n						{if $List_page &gt; 1}&lt;a href=&quot;./{$List_firstPageURL}&quot;&gt;1&lt;/a&gt;{/if}\r\n						{if $List_page &gt; 2}&lt;a href=&quot;./{$List_baseURL}2&quot;&gt;2&lt;/a&gt;{/if}\r\n						{if $List_page &gt; 3}&lt;a href=&quot;./{$List_baseURL}3&quot;&gt;3&lt;/a&gt;{/if}\r\n						\r\n						{if $List_page &gt; 5}&lt;span class=&quot;gap&quot;&gt;{string Premanager literalGap}&lt;/span&gt;{/if}\r\n\r\n            {if $List_page &gt; 5 &amp;&amp; $List_page == $List_pageCount}&lt;a href=&quot;./{$List_baseURL}{$List_page-2}&quot;&gt;{$List_page-2}&lt;/a&gt;{/if} \r\n						{if $List_page &gt; 4}&lt;a href=&quot;./{$List_baseURL}{$List_page-1}&quot;&gt;{$List_page-1}&lt;/a&gt;{/if}\r\n						\r\n						&lt;span class=&quot;current&quot;&gt;{$List_page}&lt;/span&gt;\r\n						\r\n						{if $List_page &lt; $List_pageCount-3}&lt;a href=&quot;./{$List_baseURL}{$List_page+1}&quot;&gt;{$List_page+1}{/if}\r\n						\r\n						{if $List_page &lt; $List_pageCount-4}{string Premanager literalGap}&lt;/span&gt;{/if}\r\n						\r\n						{if $List_page &lt; $List_pageCount-2}&lt;a href=&quot;./{$List_baseURL}{$List_pageCount-2}&quot;&gt;{$List_pageCount-2}&lt;/a&gt;{/if}\r\n						{if $List_page &lt; $List_pageCount-1}&lt;a href=&quot;./{$List_baseURL}{$List_pageCount-1}&quot;&gt;{$List_pageCount-1}&lt;/a&gt;{/if}\r\n						{if $List_page &lt; $List_pageCount}&lt;a href=&quot;./{$List_baseURL}{$List_pageCount}&quot;&gt;{$List_pageCount}&lt;/a&gt;{/if}\r\n					&lt;/span&gt;\r\n\r\n					{if $List_page &lt; $List_pageCount}\r\n						&lt;a href=&quot;./{$List_baseURL}{$List_page+1}&quot; class=&quot;page-forward&quot;&gt;{string Premanager pageForward}&lt;/a&gt;\r\n					{/if}\r\n				&lt;/div&gt;			\r\n			{/if}\r\n		&lt;/div&gt;\r\n		\r\n			&lt;ul class=&quot;toolbar&quot;&gt;\r\n		&lt;li&gt;&lt;a href=&quot;{$Client_internalRequestURL}?add&quot; class=&quot;tool-add-article active&quot; title=&quot;{string Blog addArticleDescription}&quot;&gt;{string Blog addArticle}&lt;/a&gt;&lt;/li&gt;\r\n	&lt;/ul&gt;	\r\n\r\n		&lt;div id=&quot;content&quot;{if $Premanager_sidebar &amp;&amp; $Premanager_navigationTree} class=&quot;with-sidebar with-navigation-tree&quot;{elseif $Premanager_sidebar} class=&quot;with-sidebar&quot;{elseif $Premanager_navigationTree} class=&quot;with-navigation-tree&quot;{/if}&gt;\r\n			{$Premanager_globalArea}\r\n		\r\n			{if $Premanager_debug &amp;&amp; $Premanager_log}\r\n				&lt;dl class=&quot;block&quot; id=&quot;log&quot;&gt;\r\n					&lt;dt&gt;Log&lt;/dt&gt;\r\n					&lt;dd&gt;\r\n						&lt;ul class=&quot;list&quot;&gt;{$Premanager_log}&lt;/ul&gt;\r\n					&lt;/dd&gt;\r\n				&lt;/dl&gt;\r\n			{/if}\r\n		                 \r\n			{$Premanager_beforeContent}     \r\n			\r\n		\r\n			&lt;dl class=&quot;block&quot; id=&quot;main-block&quot;&gt;\r\n				&lt;dt&gt;{html $Nde_standAloneTitle}&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n						&lt;form action=&quot;{html $Client_requestURL}&quot; method=&quot;post&quot;&gt;\r\n		{if $Blog_Article_inputErrors}\r\n			&lt;ul class=&quot;input-errors&quot;&gt;\r\n				{$Blog_Article_inputErrors}	\r\n			&lt;/ul&gt;\r\n		{/if}   \r\n	\r\n		&lt;fieldset class=&quot;inputs&quot;&gt;\r\n			&lt;dl&gt;\r\n				&lt;dt&gt;&lt;label for=&quot;Blog_Article_title&quot;&gt;{string Premanager label array(label=string(Blog articleTitle))}&lt;/label&gt;&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n					&lt;input type=&quot;text&quot; name=&quot;Blog_Article_title&quot; id=&quot;Blog_Article_title&quot; value=&quot;{html $Blog_Article_formTitle}&quot; class=&quot;fullsize{if $Blog_Article_title_incorrect} error{/if}&quot; /&gt;\r\n					&lt;p&gt;{string Blog articleTitleDescription}&lt;/p&gt;\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;\r\n			       \r\n			&lt;dl&gt;\r\n				&lt;dt&gt;&lt;label for=&quot;Blog_Article_title&quot;&gt;{string Premanager label array(label=string(Blog articleText))}&lt;/label&gt;&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n					&lt;textarea id=&quot;Blog_Article_text&quot; name=&quot;Blog_Article_text&quot; class=&quot;wysiwyg fullsize{if $Blog_Article_text_incorrect} error{/if}&quot; cols=&quot;80&quot; rows=&quot;5&quot; &gt;{html $Blog_Article_text}&lt;/textarea&gt;\r\n					&lt;p&gt;{string Blog articleTextDescription}&lt;/p&gt;\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;     \r\n			\r\n			&lt;dl&gt;\r\n				&lt;dt&gt;&lt;label for=&quot;Blog_Article_summary&quot;&gt;{string Premanager label array(label=string(Blog summaryLabel))}&lt;/label&gt;&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n					&lt;input type=&quot;text&quot; name=&quot;Blog_Article_summary&quot; id=&quot;Blog_Article_summary&quot; value=&quot;{html $Blog_Article_summary}&quot; class=&quot;fullsize{if $Blog_Article_summary_incorrect} error{/if}&quot; /&gt;\r\n					&lt;p&gt;{if $Blog_Article_mode == ''add''}{string Blog summaryCreatedDescription}{else}{string Blog summaryDescription}{/if}&lt;/p&gt;\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;\r\n		&lt;/fieldset&gt;\r\n		\r\n		&lt;fieldset class=&quot;buttons&quot;&gt;\r\n			&lt;input type=&quot;submit&quot; name=&quot;Blog_Article_submit&quot; class=&quot;main&quot; value=&quot;{string Premanager submitButton}&quot; /&gt;\r\n			&lt;input type=&quot;submit&quot; name=&quot;Blog_Article_preview&quot; value=&quot;{string Premanager previewButton}&quot; /&gt;\r\n		&lt;/fieldset&gt;\r\n	&lt;/form&gt;				\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;\r\n			\r\n					\r\n			{$Premanager_afterContent}		\r\n		&lt;/div&gt;\r\n		\r\n		{if $Premanager_navigationTree}\r\n			&lt;ul id=&quot;navigation-tree&quot;&gt;\r\n				{$Premanager_navigationTree}		\r\n			&lt;/ul&gt;\r\n		{/if}\r\n		\r\n		{if $Premanager_sidebar}\r\n			&lt;div id=&quot;sidebar&quot;&gt;\r\n				{$Premanager_sidebar}\r\n			&lt;/div&gt;\r\n		{/if} \r\n	&lt;/body&gt;\r\n&lt;/html&gt;\r\n&quot;; File: D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\thirdparty\\dwoo\\Dwoo\\Compiler.php:1403)', 'error', '2010-06-12 12:56:02', 2, '127.0.0.1', '2010-06-12 14:56:02'),
@@ -655,7 +410,7 @@ INSERT INTO `rack_premanager_log` (`id`, `url`, `referer`, `userAgent`, `text`, 
 (99, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
 (100, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''minOccours'' is not allowed.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
 (101, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''maxOccours'' is not allowed.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15');
-INSERT INTO `rack_premanager_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
+INSERT INTO `premanager_0_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
 (102, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
 (103, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
 (104, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''type'': The value ''xsd:string'' of simple type ''xs:QName'' has no corresponding namespace declaration in scope.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
@@ -770,7 +525,7 @@ INSERT INTO `rack_premanager_log` (`id`, `url`, `referer`, `userAgent`, `text`, 
 (213, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:36', 2, '127.0.0.1', '2010-06-27 19:54:12'),
 (214, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-27 17:54:36', 2, '127.0.0.1', '2010-06-27 19:54:12'),
 (215, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:05', 2, '127.0.0.1', '2010-06-27 19:54:41');
-INSERT INTO `rack_premanager_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
+INSERT INTO `premanager_0_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
 (216, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:05', 2, '127.0.0.1', '2010-06-27 19:54:41'),
 (217, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:09', 2, '127.0.0.1', '2010-06-27 19:54:45'),
 (218, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:09', 2, '127.0.0.1', '2010-06-27 19:54:45'),
@@ -858,44 +613,43 @@ INSERT INTO `rack_premanager_log` (`id`, `url`, `referer`, `userAgent`, `text`, 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_markuplanguages`
+-- Tabellenstruktur für Tabelle `premanager_0_markuplanguages`
 --
--- Erzeugt am: 20. Juni 2010 um 16:49
--- Aktualisiert am: 20. Juni 2010 um 20:04
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_markuplanguages` (
+CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `class` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_markuplanguages`:
+-- RELATIONEN DER TABELLE `premanager_0_markuplanguages`:
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_markuplanguages`
+-- Daten für Tabelle `premanager_0_markuplanguages`
 --
 
-INSERT INTO `rack_premanager_markuplanguages` (`id`, `pluginID`, `class`, `timestamp`) VALUES
-(1, 0, 'PlainText', '2010-06-20 20:04:13');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_markuplanguagestranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_markuplanguagestranslation`
 --
--- Erzeugt am: 20. Juni 2010 um 16:52
--- Aktualisiert am: 20. Juni 2010 um 20:04
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_markuplanguagestranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguagestranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -904,31 +658,28 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_markuplanguagestranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_markuplanguagestranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_markuplanguagestranslation`:
 --   `id`
---       `rack_premanager_markuplanguages` -> `id`
+--       `premanager_0_markuplanguages` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_markuplanguagestranslation`
+-- Daten für Tabelle `premanager_0_markuplanguagestranslation`
 --
 
-INSERT INTO `rack_premanager_markuplanguagestranslation` (`id`, `languageID`, `title`, `timestamp`) VALUES
-(1, 1, 'Reintext', '2010-06-20 20:04:26');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_nodegroup`
+-- Tabellenstruktur für Tabelle `premanager_0_nodegroup`
 --
--- Erzeugt am: 28. Mai 2010 um 20:09
--- Aktualisiert am: 30. Juni 2010 um 18:18
--- Letzter Check am: 30. Juni 2010 um 18:18
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_nodegroup` (
+CREATE TABLE IF NOT EXISTS `premanager_0_nodegroup` (
   `nodeID` int(10) unsigned NOT NULL,
   `groupID` int(10) unsigned NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -936,18 +687,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_nodegroup` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_nodegroup`:
+-- RELATIONEN DER TABELLE `premanager_0_nodegroup`:
 --   `groupID`
---       `rack_premanager_groups` -> `id`
+--       `premanager_0_groups` -> `id`
 --   `nodeID`
---       `rack_premanager_nodes` -> `id`
+--       `premanager_0_nodes` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_nodegroup`
+-- Daten für Tabelle `premanager_0_nodegroup`
 --
 
-INSERT INTO `rack_premanager_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
+INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 (8, 3, '2010-05-29 00:37:39'),
 (8, 6, '2010-05-29 00:37:41'),
 (30, 2, '2010-05-29 00:46:29'),
@@ -957,14 +708,14 @@ INSERT INTO `rack_premanager_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUE
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_nodes`
+-- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
--- Erzeugt am: 01. Juli 2010 um 15:00
--- Aktualisiert am: 24. September 2010 um 23:49
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_nodes` (
+CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parentID` int(10) unsigned NOT NULL,
   `projectID` int(10) unsigned NOT NULL,
@@ -983,37 +734,37 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_nodes` (
   KEY `parentID` (`parentID`),
   KEY `projectID` (`projectID`),
   KEY `treeID` (`treeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=126 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=112 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_nodes`:
+-- RELATIONEN DER TABELLE `premanager_0_nodes`:
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `parentID`
---       `rack_premanager_nodes` -> `id`
+--       `premanager_0_nodes` -> `id`
 --   `projectID`
---       `rack_premanager_projects` -> `id`
+--       `premanager_0_projects` -> `id`
 --   `treeID`
---       `rack_premanager_trees` -> `id`
+--       `premanager_0_trees` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_nodes`
+-- Daten für Tabelle `premanager_0_nodes`
 --
 
-INSERT INTO `rack_premanager_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAccessRestriction`, `hasPanel`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
-(90, 94, 0, 12, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:22', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:32:04'),
-(89, 93, 0, 10, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:15', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:22'),
-(88, 92, 0, 9, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:27', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:27'),
-(97, 108, 17, 2, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:25', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:25'),
+INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAccessRestriction`, `hasPanel`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
+(90, 94, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:22', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(89, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:15', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(88, 92, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:27', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(97, 108, 17, 15, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:25', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 21:43:55'),
 (83, 93, 0, 4, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:58', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:55'),
-(82, 93, 0, 3, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:43', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2010-06-09 22:31:27'),
-(81, 93, 0, 2, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:51', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:11'),
+(82, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:43', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2010-10-06 19:24:39'),
+(81, 93, 0, 15, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:51', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 21:44:31'),
 (80, 93, 0, 1, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:34', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:05'),
 (79, 0, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:21:34', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-09-18 00:52:12'),
-(84, 93, 0, 11, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:05', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:17'),
+(84, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:05', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
 (92, 79, 0, 0, 0, 0, '2010-06-09 20:30:08', '2010-06-09 20:30:08', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:30:12'),
 (93, 79, 0, 0, 1, 0, '2010-06-09 20:30:44', '2010-06-09 20:30:44', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-07-01 15:50:04'),
 (94, 79, 0, 0, 0, 0, '2010-06-09 20:31:46', '2010-06-09 20:31:46', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:31:54'),
@@ -1022,27 +773,27 @@ INSERT INTO `rack_premanager_nodes` (`id`, `parentID`, `projectID`, `treeID`, `n
 (110, 95, 17, 0, 1, 0, '2010-06-11 22:21:55', '2010-06-11 22:21:55', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-12 00:21:55'),
 (109, 95, 17, 0, 1, 0, '2010-06-11 22:21:41', '2010-06-11 22:21:41', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-12 00:21:41'),
 (108, 95, 17, 0, 1, 0, '2010-06-11 22:21:32', '2010-06-11 22:21:32', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-12 00:21:32'),
-(107, 110, 17, 13, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:06', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:06'),
-(106, 109, 17, 12, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:23:56', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:23:56'),
-(105, 108, 17, 10, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:46', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:46'),
-(104, 110, 17, 9, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:14', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:14'),
-(100, 108, 17, 11, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:38', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:38'),
+(107, 110, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:06', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(106, 109, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:23:56', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(105, 108, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:46', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(104, 110, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:14', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(100, 108, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:38', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
 (99, 108, 17, 4, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:31', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:31'),
-(98, 108, 17, 3, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:57', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-12 00:24:57'),
-(91, 92, 0, 13, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:10', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:34'),
-(111, 94, 0, 14, 1, 0, '2010-06-26 19:07:54', '2010-06-26 19:07:54', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-26 21:27:11');
+(98, 108, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-11 22:24:57', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(91, 92, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:10', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(111, 94, 0, 0, 1, 0, '2010-06-26 19:07:54', '2010-06-26 19:07:54', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-10-06 19:24:39');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_nodesname`
+-- Tabellenstruktur für Tabelle `premanager_0_nodesname`
 --
--- Erzeugt am: 21. April 2010 um 20:48
--- Aktualisiert am: 24. September 2010 um 23:49
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_nodesname` (
+CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1054,21 +805,21 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_nodesname` (
   KEY `languageID` (`languageID`),
   KEY `name` (`name`),
   KEY `nodeID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=316 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=303 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_nodesname`:
+-- RELATIONEN DER TABELLE `premanager_0_nodesname`:
 --   `id`
---       `rack_premanager_nodes` -> `id`
+--       `premanager_0_nodes` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_nodesname`
+-- Daten für Tabelle `premanager_0_nodesname`
 --
 
-INSERT INTO `rack_premanager_nodesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
+INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
 (289, 96, 'base-users', 1, 0, '2010-06-12 00:24:51'),
 (264, 94, 'mein-konto', 1, 1, '2010-06-09 22:31:46'),
 (256, 93, 'mitglieder', 1, 1, '2010-06-09 22:30:44'),
@@ -1117,14 +868,13 @@ INSERT INTO `rack_premanager_nodesname` (`nameID`, `id`, `name`, `languageID`, `
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_nodestranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_nodestranslation`
 --
--- Erzeugt am: 29. März 2010 um 19:37
--- Aktualisiert am: 24. September 2010 um 23:49
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_nodestranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_nodestranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1134,18 +884,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_nodestranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_nodestranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_nodestranslation`:
 --   `id`
---       `rack_premanager_nodes` -> `id`
+--       `premanager_0_nodes` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_nodestranslation`
+-- Daten für Tabelle `premanager_0_nodestranslation`
 --
 
-INSERT INTO `rack_premanager_nodestranslation` (`id`, `languageID`, `name`, `title`, `timestamp`) VALUES
+INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`, `timestamp`) VALUES
 (100, 1, 'passwort-vergessen', 'Passwort vergessen', '2010-06-12 00:24:38'),
 (99, 1, 'anmeldung', 'Anmeldung', '2010-06-12 00:24:31'),
 (98, 1, 'wer-ist-online', 'Wer ist online?', '2010-06-12 00:24:57'),
@@ -1202,14 +952,14 @@ INSERT INTO `rack_premanager_nodestranslation` (`id`, `languageID`, `name`, `tit
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_options`
+-- Tabellenstruktur für Tabelle `premanager_0_options`
 --
--- Erzeugt am: 22. Mai 2010 um 15:50
--- Aktualisiert am: 27. Juni 2010 um 18:17
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_options` (
+CREATE TABLE IF NOT EXISTS `premanager_0_options` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1234,38 +984,38 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_options` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_options`:
+-- RELATIONEN DER TABELLE `premanager_0_options`:
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_options`
+-- Daten für Tabelle `premanager_0_options`
 --
 
-INSERT INTO `rack_premanager_options` (`id`, `pluginID`, `name`, `type`, `minValue`, `maxValue`, `defaultValue`, `globalValue`, `projectsCanOverwrite`, `usersCanOverwrite`, `projectMinValue`, `projectMaxValue`, `userMinValue`, `userMaxValue`, `editTime`, `editTimes`, `editorID`, `editorIP`, `timestamp`) VALUES
-(1, 0, 'sessionLength', 'int', 0, NULL, '3600', '3600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-02-17 21:51:27'),
-(2, 0, 'cookiePrefix', 'string', NULL, NULL, 'premanager_', NULL, b'0', b'0', NULL, NULL, NULL, NULL, '2010-02-15 22:13:30', 0, 2, '127.0.0.1', '2010-02-17 21:51:50'),
-(4, 0, 'viewonlineLength', 'int', 0, NULL, '300', '300', b'0', b'0', NULL, NULL, NULL, NULL, '2010-03-03 21:35:44', 0, 2, '127.0.0.1', '2010-06-18 23:57:50'),
-(5, 0, 'itemsPerPage', 'int', 1, NULL, '20', '20', b'0', b'1', NULL, NULL, NULL, 100, '2010-03-06 13:59:28', 0, 2, '127.0.0.1', '2010-06-06 00:29:43'),
-(6, 0, 'email', 'string', NULL, NULL, 'test@example.org', 'info@yogularm.de', b'0', b'0', NULL, NULL, NULL, NULL, '2010-05-07 19:20:20', 0, 2, '127.0.0.1', '2010-05-07 19:20:20'),
-(7, 0, 'passwordLostPasswordExpirationTime', 'int', 0, NULL, '172800', '172800', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-06-18 23:57:50'),
-(8, 0, 'avatarWidth', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-06-27 18:17:03'),
-(9, 0, 'avatarHeight', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-06-27 18:17:23');
+INSERT INTO `premanager_0_options` (`id`, `pluginID`, `name`, `type`, `minValue`, `maxValue`, `defaultValue`, `globalValue`, `projectsCanOverwrite`, `usersCanOverwrite`, `projectMinValue`, `projectMaxValue`, `userMinValue`, `userMaxValue`, `editTime`, `editTimes`, `editorID`, `editorIP`, `timestamp`) VALUES
+(1, 0, 'sessionLength', 'int', 0, NULL, '3600', '3600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
+(2, 0, 'cookiePrefix', 'string', NULL, NULL, 'premanager_', NULL, b'0', b'0', NULL, NULL, NULL, NULL, '2010-02-15 22:13:30', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
+(4, 0, 'viewonlineLength', 'int', 0, NULL, '300', '300', b'0', b'0', NULL, NULL, NULL, NULL, '2010-03-03 21:35:44', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
+(5, 0, 'itemsPerPage', 'int', 1, NULL, '20', '20', b'0', b'1', NULL, NULL, NULL, 100, '2010-03-06 13:59:28', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
+(6, 0, 'email', 'string', NULL, NULL, 'test@example.org', 'info@yogularm.de', b'0', b'0', NULL, NULL, NULL, NULL, '2010-05-07 19:20:20', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
+(7, 0, 'passwordLostPasswordExpirationTime', 'int', 0, NULL, '172800', '172800', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
+(8, 0, 'avatarWidth', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
+(9, 0, 'avatarHeight', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_panelobjects`
+-- Tabellenstruktur für Tabelle `premanager_0_panelobjects`
 --
--- Erzeugt am: 01. Juli 2010 um 14:52
--- Aktualisiert am: 04. Juli 2010 um 12:42
--- Letzter Check am: 01. Juli 2010 um 14:52
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_panelobjects` (
+CREATE TABLE IF NOT EXISTS `premanager_0_panelobjects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nodeID` int(10) unsigned NOT NULL,
   `userID` int(10) unsigned DEFAULT NULL,
@@ -1280,61 +1030,60 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_panelobjects` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_panelobjects`:
+-- RELATIONEN DER TABELLE `premanager_0_panelobjects`:
 --   `nodeID`
---       `rack_premanager_nodes` -> `id`
+--       `premanager_0_nodes` -> `id`
 --   `userID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `widgetID`
---       `rack_premanager_widgets` -> `id`
+--       `premanager_0_widgets` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_panelobjects`
+-- Daten für Tabelle `premanager_0_panelobjects`
 --
 
-INSERT INTO `rack_premanager_panelobjects` (`id`, `nodeID`, `userID`, `widgetID`, `group`, `order`, `isMinimized`, `timestamp`) VALUES
+INSERT INTO `premanager_0_panelobjects` (`id`, `nodeID`, `userID`, `widgetID`, `group`, `order`, `isMinimized`, `timestamp`) VALUES
 (1, 79, NULL, 1, 0, 0, 0, '2010-07-04 12:42:41'),
 (2, 79, NULL, 2, 1, 0, 0, '2010-07-04 12:42:41');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_plugins`
+-- Tabellenstruktur für Tabelle `premanager_0_plugins`
 --
--- Erzeugt am: 16. September 2010 um 21:46
--- Aktualisiert am: 16. September 2010 um 21:46
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:12
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_plugins` (
+CREATE TABLE IF NOT EXISTS `premanager_0_plugins` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `initializerClass` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
 
 --
--- Daten für Tabelle `rack_premanager_plugins`
+-- Daten für Tabelle `premanager_0_plugins`
 --
 
-INSERT INTO `rack_premanager_plugins` (`id`, `name`, `initializerClass`, `timestamp`) VALUES
-(0, 'Premanager', '', '2010-02-17 21:49:23'),
+INSERT INTO `premanager_0_plugins` (`id`, `name`, `initializerClass`, `timestamp`) VALUES
+(0, 'Premanager', '', '2010-10-07 21:04:29'),
 (2, 'Blog', '', '2010-02-17 21:29:49'),
-(4, 'DefaultThemes', '', '2010-06-11 18:13:39'),
 (5, 'Creativity', '', '2010-03-31 22:24:55'),
 (6, 'Wiki', '', '2010-04-01 15:50:51');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_projectoptions`
+-- Tabellenstruktur für Tabelle `premanager_0_projectoptions`
 --
--- Erzeugt am: 14. Februar 2010 um 21:28
--- Aktualisiert am: 14. Februar 2010 um 22:28
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_projectoptions` (
+CREATE TABLE IF NOT EXISTS `premanager_0_projectoptions` (
   `optionID` int(10) unsigned NOT NULL,
   `projectID` int(10) unsigned NOT NULL,
   `value` text COLLATE utf8_bin NOT NULL,
@@ -1343,29 +1092,28 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_projectoptions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_projectoptions`:
+-- RELATIONEN DER TABELLE `premanager_0_projectoptions`:
 --   `optionID`
---       `rack_premanager_options` -> `id`
+--       `premanager_0_options` -> `id`
 --   `projectID`
---       `rack_premanager_projects` -> `id`
+--       `premanager_0_projects` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_projectoptions`
+-- Daten für Tabelle `premanager_0_projectoptions`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_projects`
+-- Tabellenstruktur für Tabelle `premanager_0_projects`
 --
--- Erzeugt am: 01. März 2010 um 20:02
--- Aktualisiert am: 30. Juli 2010 um 13:51
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:42
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_projects` (
+CREATE TABLE IF NOT EXISTS `premanager_0_projects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `createTime` datetime NOT NULL,
@@ -1377,35 +1125,35 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_projects` (
   `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=21 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=91 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_projects`:
+-- RELATIONEN DER TABELLE `premanager_0_projects`:
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_projects`
+-- Daten für Tabelle `premanager_0_projects`
 --
 
-INSERT INTO `rack_premanager_projects` (`id`, `name`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
+INSERT INTO `premanager_0_projects` (`id`, `name`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
 (17, 'homepage-ag', '2010-06-09 20:34:29', '2010-07-03 22:12:56', 5, 2, '127.0.0.1', 2, '127.0.0.1', '2010-07-04 00:12:32'),
-(0, '', '2010-07-03 22:17:10', '2010-07-03 22:17:10', 0, 2, '127.0.0.1', 2, '127.0.0.1', '2010-07-04 00:21:44');
+(0, '', '2010-07-03 22:17:10', '2010-07-03 22:17:10', 0, 2, '127.0.0.1', 2, '127.0.0.1', '2010-10-07 21:30:37');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_projectsname`
+-- Tabellenstruktur für Tabelle `premanager_0_projectsname`
 --
--- Erzeugt am: 06. Juni 2010 um 18:13
--- Aktualisiert am: 30. Juli 2010 um 13:51
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_projectsname` (
+CREATE TABLE IF NOT EXISTS `premanager_0_projectsname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1417,21 +1165,21 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_projectsname` (
   KEY `name` (`name`),
   KEY `inUse` (`inUse`),
   KEY `languageID` (`languageID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=26 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=24 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_projectsname`:
+-- RELATIONEN DER TABELLE `premanager_0_projectsname`:
 --   `id`
---       `rack_premanager_projectstranslation` -> `id`
+--       `premanager_0_projectstranslation` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_projectsname`
+-- Daten für Tabelle `premanager_0_projectsname`
 --
 
-INSERT INTO `rack_premanager_projectsname` (`nameID`, `id`, `name`, `inUse`, `languageID`, `timestamp`) VALUES
+INSERT INTO `premanager_0_projectsname` (`nameID`, `id`, `name`, `inUse`, `languageID`, `timestamp`) VALUES
 (21, 17, 'zwei-gesichter', 0, 1, '2010-06-12 00:21:08'),
 (22, 17, 'homepage-ag', 1, 1, '2010-07-04 00:12:32'),
 (20, 0, '', 1, 1, '2010-06-09 22:27:46'),
@@ -1441,14 +1189,13 @@ INSERT INTO `rack_premanager_projectsname` (`nameID`, `id`, `name`, `inUse`, `la
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_projectstranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_projectstranslation`
 --
--- Erzeugt am: 01. März 2010 um 13:42
--- Aktualisiert am: 30. Juli 2010 um 13:51
--- Letzter Check am: 30. Juli 2010 um 13:51
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_projectstranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_projectstranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1462,32 +1209,32 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_projectstranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_projectstranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_projectstranslation`:
 --   `id`
---       `rack_premanager_projects` -> `id`
+--       `premanager_0_projects` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_projectstranslation`
+-- Daten für Tabelle `premanager_0_projectstranslation`
 --
 
-INSERT INTO `rack_premanager_projectstranslation` (`id`, `languageID`, `title`, `subTitle`, `author`, `copyright`, `description`, `keywords`, `timestamp`) VALUES
+INSERT INTO `premanager_0_projectstranslation` (`id`, `languageID`, `title`, `subTitle`, `author`, `copyright`, `description`, `keywords`, `timestamp`) VALUES
 (17, 1, 'Homepage-AG', '', 'Philipp da Silva, Paul Hartmann, Marc Jegliewski, Marco Kinkel, Jan Melcher, Philipp Schmitt', '© Philipp da Silva, Paul Hartmann, Marc Jegliewski, Marco Kinkel, Jan Melcher, Philipp Schmitt, 2009-2010', 'Die Homepage-AG kümmert sich um die offizielle Homepage des HCG Beilsteins und moderiert die Projektseite', 'Homepage, Internetseite, Design, Moderation', '2010-07-04 00:12:25'),
 (0, 1, 'HCG-Projekte', '', 'Das HCG Beilstein', '© Herzog-Christoph-Gymnasium Beilstein', 'Eine Plattform, auf der Arbeitsgemeinschaften und andere Projekte des Herzog-Christoph-Gymnasiums Beilstein präsentiert und verwaltet werden', 'Beilstein, Gymnasium, HCG, AG, Arbeitsgemeinschaft, Projekt', '2010-06-10 21:37:11');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_rights`
+-- Tabellenstruktur für Tabelle `premanager_0_rights`
 --
--- Erzeugt am: 25. April 2010 um 17:23
--- Aktualisiert am: 26. Juni 2010 um 21:11
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_rights` (
+CREATE TABLE IF NOT EXISTS `premanager_0_rights` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1497,45 +1244,44 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_rights` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_rights`:
+-- RELATIONEN DER TABELLE `premanager_0_rights`:
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_rights`
+-- Daten für Tabelle `premanager_0_rights`
 --
 
-INSERT INTO `rack_premanager_rights` (`id`, `pluginID`, `name`, `timestamp`) VALUES
-(1, 0, 'manageUsers', '2010-06-18 23:57:31'),
-(2, 0, 'createGroups', '2010-06-18 23:57:31'),
-(3, 0, 'moderateGroups', '2010-06-18 23:57:31'),
-(4, 0, 'lockGroups', '2010-06-18 23:57:31'),
-(5, 0, 'structureAdmin', '2010-06-18 23:57:31'),
-(6, 0, 'manageRights', '2010-06-18 23:57:31'),
-(7, 0, 'setGroupPriority', '2010-06-18 23:57:31'),
-(8, 0, 'register', '2010-06-18 23:57:31'),
-(9, 0, 'registerWithoutEmail', '2010-06-18 23:57:31'),
-(10, 0, 'changeUserName', '2010-06-18 23:57:31'),
-(11, 0, 'manageProjects', '2010-06-18 23:57:31'),
+INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `timestamp`) VALUES
+(1, 0, 'manageUsers', '2010-10-07 21:04:44'),
+(2, 0, 'createGroups', '2010-10-07 21:04:44'),
+(3, 0, 'moderateGroups', '2010-10-07 21:04:44'),
+(4, 0, 'lockGroups', '2010-10-07 21:04:44'),
+(5, 0, 'structureAdmin', '2010-10-07 21:04:44'),
+(6, 0, 'manageRights', '2010-10-07 21:04:44'),
+(7, 0, 'setGroupPriority', '2010-10-07 21:04:44'),
+(8, 0, 'register', '2010-10-07 21:04:44'),
+(9, 0, 'registerWithoutEmail', '2010-10-07 21:04:44'),
+(10, 0, 'changeUserName', '2010-10-07 21:04:44'),
+(11, 0, 'manageProjects', '2010-10-07 21:04:44'),
 (12, 2, 'createArticles', '2010-06-11 14:39:29'),
 (13, 2, 'editArticles', '2010-06-11 15:52:07'),
 (14, 2, 'deleteArticles', '2010-06-11 15:52:07'),
 (15, 2, 'publishRevisions', '2010-06-11 15:52:07'),
-(16, 0, 'changeOwnAvatar', '2010-06-26 21:11:07'),
-(17, 0, 'changeForeignAvatars', '2010-06-26 21:11:07');
+(16, 0, 'changeOwnAvatar', '2010-10-07 21:04:44'),
+(17, 0, 'changeForeignAvatars', '2010-10-07 21:04:44');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_rightstranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_rightstranslation`
 --
--- Erzeugt am: 26. April 2010 um 18:08
--- Aktualisiert am: 26. Juni 2010 um 21:37
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_rightstranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_rightstranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -1545,18 +1291,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_rightstranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_rightstranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_rightstranslation`:
 --   `id`
---       `rack_premanager_rights` -> `id`
+--       `premanager_0_rights` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_rightstranslation`
+-- Daten für Tabelle `premanager_0_rightstranslation`
 --
 
-INSERT INTO `rack_premanager_rightstranslation` (`id`, `languageID`, `title`, `description`, `timestamp`) VALUES
+INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `description`, `timestamp`) VALUES
 (2, 1, 'Gruppen erstellen', 'Erlaubt es, neue Gruppen erstellen können (eigene Gruppen können bearbeitet und gelöscht werden).', '2010-04-26 18:19:37'),
 (2, 2, 'Create groups', 'Allows to create new groups (own groups can be edited and deleted).', '2010-04-26 18:19:37'),
 (4, 1, 'Gruppen sperren', 'Erlaubt es, Gruppengründern und -leitern die Rechte an ihren Gruppen zu entziehen und gesperrte Gruppen selbst bearbeiten und freigeben zu können.', '2010-04-29 16:44:57'),
@@ -1587,14 +1333,14 @@ INSERT INTO `rack_premanager_rightstranslation` (`id`, `languageID`, `title`, `d
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_sessions`
+-- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
--- Erzeugt am: 26. September 2010 um 00:15
--- Aktualisiert am: 26. September 2010 um 00:38
--- Letzter Check am: 26. September 2010 um 00:15
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 22:02
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
+CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userID` int(10) unsigned NOT NULL,
   `startTime` datetime NOT NULL,
@@ -1611,34 +1357,34 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=836 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_sessions`:
+-- RELATIONEN DER TABELLE `premanager_0_sessions`:
 --   `projectID`
---       `rack_premanager_projects` -> `id`
+--       `premanager_0_projects` -> `id`
 --   `userID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_sessions`
+-- Daten für Tabelle `premanager_0_sessions`
 --
 
-INSERT INTO `rack_premanager_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `timestamp`) VALUES
-(835, 2, '2010-09-25 22:56:48', '2010-09-25 23:00:28', 'de876f0caaf3f916d544a19ddab138745bd0c25aede8498030a038b1b0819bd8', '127.0.0.1', 'Mozilla/5.0 (Windows NT 5.1; rv:2.0b6) Gecko/20100101 Firefox/4.0b6', 0, 0, 0, 0, '2010-09-26 01:00:04');
+INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `timestamp`) VALUES
+(1, 2, '2010-10-07 20:03:10', '2010-10-07 20:03:15', '83411d5277de8fa6a7b5078093d9adcc2734793451b34c4884d88368980009a1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 5.1; rv:2.0b6) Gecko/20100101 Firefox/4.0b6', 0, 0, 0, 0, '2010-10-07 22:02:51');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_sidebar`
+-- Tabellenstruktur für Tabelle `premanager_0_sidebar`
 --
--- Erzeugt am: 03. März 2010 um 21:09
--- Aktualisiert am: 04. März 2010 um 19:49
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_sidebar` (
+CREATE TABLE IF NOT EXISTS `premanager_0_sidebar` (
   `userID` int(11) NOT NULL,
   `widgetID` int(11) NOT NULL,
   `order` int(10) unsigned NOT NULL,
@@ -1648,465 +1394,465 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_sidebar` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_sidebar`:
+-- RELATIONEN DER TABELLE `premanager_0_sidebar`:
 --   `userID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `widgetID`
---       `rack_premanager_widgets` -> `id`
+--       `premanager_0_widgets` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_sidebar`
+-- Daten für Tabelle `premanager_0_sidebar`
 --
 
-INSERT INTO `rack_premanager_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) VALUES
+INSERT INTO `premanager_0_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) VALUES
 (0, 1, 1, '2010-03-04 18:41:10'),
 (0, 2, 0, '2010-03-04 18:41:13');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_strings`
+-- Tabellenstruktur für Tabelle `premanager_0_strings`
 --
--- Erzeugt am: 27. Februar 2010 um 17:17
--- Aktualisiert am: 10. September 2010 um 21:26
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_strings` (
+CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=553 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=564 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_strings`:
+-- RELATIONEN DER TABELLE `premanager_0_strings`:
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_strings`
+-- Daten für Tabelle `premanager_0_strings`
 --
 
-INSERT INTO `rack_premanager_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUES
+INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUES
 (1, 2, 'articlesList', '2010-02-27 17:42:20'),
-(182, 0, 'goToUpperPage', '2010-03-31 20:31:57'),
-(3, 0, 'pageNotFoundMessage', '2010-03-31 20:31:46'),
-(4, 0, 'pageNotFoundNoRefererMessage', '2010-03-31 20:31:46'),
-(5, 0, 'pageNotFoundInternalRefererMessage', '2010-03-31 20:31:46'),
-(6, 0, 'pageNotFoundExternalRefererMessage', '2010-03-31 20:31:46'),
-(7, 0, 'goToHomepage', '2010-03-31 20:31:46'),
-(8, 0, 'accessDenied', '2010-06-18 23:52:13'),
-(9, 0, 'accessDeniedMessage', '2010-06-18 23:52:13'),
-(10, 0, 'viewonline', '2010-06-18 23:52:13'),
-(11, 0, 'viewonlineDetailLinkTitle', '2010-06-18 23:52:13'),
-(12, 0, 'loginDetailLinkTitle', '2010-06-18 23:52:13'),
-(13, 0, 'loginSidebarUserLabel', '2010-06-18 23:52:13'),
-(14, 0, 'loginSidebarPasswordLabel', '2010-06-18 23:52:13'),
-(15, 0, 'widgetLoginButton', '2010-06-18 23:52:13'),
-(16, 0, 'loginSidebarTitle', '2010-06-18 23:52:13'),
-(24, 0, 'loginButton', '2010-06-18 23:52:13'),
-(18, 0, 'loggedInAs', '2010-06-18 23:52:13'),
-(19, 0, 'widgetLogoutButton', '2010-06-18 23:52:13'),
-(20, 0, 'widgetMyLabel', '2010-06-18 23:52:13'),
-(21, 0, 'widgetMyProfileLabel', '2010-06-18 23:52:13'),
-(23, 0, 'myLinkTitle', '2010-06-18 23:52:13'),
-(25, 0, 'loginUserLabel', '2010-06-18 23:52:13'),
-(26, 0, 'loginPasswordLabel', '2010-06-18 23:52:13'),
-(27, 0, 'loginTitle', '2010-06-18 23:52:13'),
-(28, 0, 'loginFailedTitle', '2010-06-18 23:52:13'),
-(29, 0, 'loginFailedGlobalMessage', '2010-06-18 23:52:13'),
-(30, 0, 'loginFailedMessage', '2010-06-18 23:52:13'),
-(31, 0, 'loginFailedPasswordLostMessage', '2010-06-18 23:52:13'),
-(32, 0, 'loginFailedPasswordLostLinkText', '2010-06-18 23:52:13'),
-(33, 0, 'loginFailedRetryLogin', '2010-06-18 23:52:13'),
-(34, 0, 'loginSuccessfulGlobalMessage', '2010-06-18 23:52:13'),
-(35, 0, 'viewonlineEmpty', '2010-06-18 23:52:13'),
-(36, 0, 'viewonlineMessage', '2010-06-18 23:52:13'),
-(37, 0, 'viewonlineUser', '2010-06-18 23:52:13'),
-(38, 0, 'viewonlineLastRequest', '2010-06-18 23:52:13'),
-(39, 0, 'viewonlineLocation', '2010-06-18 23:52:13'),
-(79, 0, 'yesterday', '2010-03-05 23:21:55'),
-(41, 0, 'dateMonday', '2010-03-05 22:40:03'),
-(42, 0, 'dateTuesday', '2010-03-05 22:40:03'),
-(43, 0, 'dateWednesday', '2010-03-05 22:40:03'),
-(44, 0, 'dateThursday', '2010-03-05 22:40:03'),
-(45, 0, 'dateFriday', '2010-03-05 22:40:03'),
-(46, 0, 'dateSaturday', '2010-03-05 22:40:03'),
-(47, 0, 'dateSunday', '2010-03-05 22:40:03'),
-(48, 0, 'dateMon', '2010-03-05 22:40:03'),
-(49, 0, 'dateTue', '2010-03-05 22:40:03'),
-(50, 0, 'dateWed', '2010-03-05 22:40:03'),
-(51, 0, 'dateThu', '2010-03-05 22:40:03'),
-(52, 0, 'dateFri', '2010-03-05 22:40:03'),
-(53, 0, 'dateSat', '2010-03-05 22:40:03'),
-(54, 0, 'dateSun', '2010-03-05 22:40:03'),
-(55, 0, 'dateJanuary', '2010-03-05 22:40:03'),
-(56, 0, 'dateFebruary', '2010-03-05 22:40:03'),
-(57, 0, 'dateMarch', '2010-03-05 22:40:03'),
-(58, 0, 'dateApril', '2010-03-05 22:40:03'),
-(59, 0, 'dateMay', '2010-03-05 22:40:03'),
-(60, 0, 'dateJune', '2010-03-05 22:40:03'),
-(61, 0, 'dateJuly', '2010-03-05 22:40:03'),
-(62, 0, 'dateAugust', '2010-03-05 22:40:03'),
-(63, 0, 'dateSeptember', '2010-03-05 22:40:03'),
-(64, 0, 'dateOctober', '2010-03-05 22:40:03'),
-(65, 0, 'dateNovember', '2010-03-05 22:40:03'),
-(66, 0, 'dateDecember', '2010-03-05 22:40:03'),
-(67, 0, 'dateJan', '2010-03-05 22:40:03'),
-(68, 0, 'dateFeb', '2010-03-05 22:40:03'),
-(69, 0, 'dateMar', '2010-03-05 22:40:03'),
-(70, 0, 'dateApr', '2010-03-05 22:40:03'),
-(71, 0, 'dateMayShort', '2010-03-05 22:40:03'),
-(72, 0, 'dateJun', '2010-03-05 22:40:03'),
-(73, 0, 'dateJul', '2010-03-05 22:40:03'),
-(74, 0, 'dateAug', '2010-03-05 22:40:03'),
-(75, 0, 'dateSep', '2010-03-05 22:40:03'),
-(76, 0, 'dateOct', '2010-03-05 22:40:03'),
-(77, 0, 'dateNov', '2010-03-05 22:40:03'),
-(78, 0, 'dateDec', '2010-03-05 22:40:03'),
-(80, 0, 'today', '2010-03-05 23:21:55'),
-(81, 0, 'tomorrow', '2010-03-05 23:21:55'),
-(82, 0, 'viewonlineLastRequestMask', '2010-06-18 23:52:13'),
-(130, 0, 'userListEmpty', '2010-06-18 23:52:13'),
-(84, 0, 'dateSecondsAgoLong', '2010-03-06 00:18:13'),
-(172, 0, 'editGroupDescription', '2010-06-18 23:52:13'),
-(86, 0, 'dateMinutesAgoLong', '2010-03-06 00:18:13'),
-(171, 0, 'editGroup', '2010-06-18 23:52:13'),
-(88, 0, 'dateHoursAgoLong', '2010-03-06 00:18:13'),
-(170, 0, 'addGroupDescription', '2010-06-18 23:52:13'),
-(90, 0, 'dateDaysAgoLong', '2010-03-07 00:50:03'),
-(169, 0, 'addGroup', '2010-06-18 23:52:13'),
-(92, 0, 'dateMonthsAgoLong', '2010-03-06 00:18:13'),
-(168, 0, 'deleteUserDescription', '2010-06-18 23:52:13'),
-(94, 0, 'dateYearsAgoLong', '2010-03-06 00:18:13'),
-(129, 0, 'userListMessage', '2010-06-18 23:52:13'),
-(96, 0, 'dateSecondsAgoShort', '2010-03-06 00:04:05'),
-(167, 0, 'editUserDescription', '2010-06-18 23:52:13'),
-(98, 0, 'dateMinutesAgoShort', '2010-03-06 00:04:05'),
-(166, 0, 'addUserDescription', '2010-06-18 23:52:13'),
-(100, 0, 'dateHoursAgoShort', '2010-03-06 00:04:05'),
-(165, 0, 'deleteUser', '2010-06-18 23:52:13'),
-(102, 0, 'dateDaysAgoShort', '2010-03-06 00:04:05'),
-(164, 0, 'editUser', '2010-06-18 23:52:13'),
-(104, 0, 'dateMonthsAgoShort', '2010-03-06 00:04:05'),
-(163, 0, 'addUser', '2010-06-18 23:52:13'),
-(106, 0, 'dateYearsAgoShort', '2010-03-06 00:04:05'),
-(128, 0, 'users', '2010-06-18 23:52:13'),
-(127, 0, 'up', '2010-03-06 23:17:27'),
-(126, 0, 'home', '2010-03-06 23:17:27'),
-(125, 0, 'canonical', '2010-03-06 23:17:27'),
-(124, 0, 'literalGap', '2010-03-06 23:04:06'),
-(123, 0, 'pageBack', '2010-03-06 19:09:15'),
-(122, 0, 'pageForward', '2010-03-06 19:03:38'),
-(121, 0, 'pageX', '2010-03-06 19:02:24'),
-(120, 0, 'avatarOf', '2010-06-18 23:52:13'),
-(136, 0, 'literalNone', '2010-03-07 00:52:54'),
-(119, 0, 'dateOneSecondAgoLong', '2010-03-06 00:28:40'),
-(131, 0, 'userListName', '2010-06-18 23:52:13'),
-(132, 0, 'userRegistrationTime', '2010-06-18 23:52:13'),
-(133, 0, 'userLastLoginTime', '2010-06-18 23:52:13'),
-(134, 0, 'userDoesNotExist', '2010-06-18 23:52:13'),
+(182, 0, 'goToUpperPage', '2010-10-07 21:04:52'),
+(3, 0, 'pageNotFoundMessage', '2010-10-07 21:04:52'),
+(4, 0, 'pageNotFoundNoRefererMessage', '2010-10-07 21:04:52'),
+(5, 0, 'pageNotFoundInternalRefererMessage', '2010-10-07 21:04:52'),
+(6, 0, 'pageNotFoundExternalRefererMessage', '2010-10-07 21:04:52'),
+(7, 0, 'goToHomepage', '2010-10-07 21:04:52'),
+(8, 0, 'accessDenied', '2010-10-07 21:04:52'),
+(9, 0, 'accessDeniedMessage', '2010-10-07 21:04:52'),
+(10, 0, 'viewonline', '2010-10-07 21:04:52'),
+(11, 0, 'viewonlineDetailLinkTitle', '2010-10-07 21:04:52'),
+(12, 0, 'loginDetailLinkTitle', '2010-10-07 21:04:52'),
+(13, 0, 'loginSidebarUserLabel', '2010-10-07 21:04:52'),
+(14, 0, 'loginSidebarPasswordLabel', '2010-10-07 21:04:52'),
+(15, 0, 'widgetLoginButton', '2010-10-07 21:04:52'),
+(16, 0, 'loginSidebarTitle', '2010-10-07 21:04:52'),
+(24, 0, 'loginButton', '2010-10-07 21:04:52'),
+(18, 0, 'loggedInAs', '2010-10-07 21:04:52'),
+(19, 0, 'widgetLogoutButton', '2010-10-07 21:04:52'),
+(20, 0, 'widgetMyLabel', '2010-10-07 21:04:52'),
+(21, 0, 'widgetMyProfileLabel', '2010-10-07 21:04:52'),
+(23, 0, 'myLinkTitle', '2010-10-07 21:04:52'),
+(25, 0, 'loginUserLabel', '2010-10-07 21:04:52'),
+(26, 0, 'loginPasswordLabel', '2010-10-07 21:04:52'),
+(27, 0, 'loginTitle', '2010-10-07 21:04:52'),
+(28, 0, 'loginFailedTitle', '2010-10-07 21:04:52'),
+(29, 0, 'loginFailedGlobalMessage', '2010-10-07 21:04:52'),
+(30, 0, 'loginFailedMessage', '2010-10-07 21:04:52'),
+(31, 0, 'loginFailedPasswordLostMessage', '2010-10-07 21:04:52'),
+(32, 0, 'loginFailedPasswordLostLinkText', '2010-10-07 21:04:52'),
+(33, 0, 'loginFailedRetryLogin', '2010-10-07 21:04:52'),
+(34, 0, 'loginSuccessfulGlobalMessage', '2010-10-07 21:04:52'),
+(35, 0, 'viewonlineEmpty', '2010-10-07 21:04:52'),
+(36, 0, 'viewonlineMessage', '2010-10-07 21:04:52'),
+(37, 0, 'viewonlineUser', '2010-10-07 21:04:52'),
+(38, 0, 'viewonlineLastRequest', '2010-10-07 21:04:52'),
+(39, 0, 'viewonlineLocation', '2010-10-07 21:04:52'),
+(79, 0, 'yesterday', '2010-10-07 21:04:52'),
+(41, 0, 'dateMonday', '2010-10-07 21:04:52'),
+(42, 0, 'dateTuesday', '2010-10-07 21:04:52'),
+(43, 0, 'dateWednesday', '2010-10-07 21:04:52'),
+(44, 0, 'dateThursday', '2010-10-07 21:04:52'),
+(45, 0, 'dateFriday', '2010-10-07 21:04:52'),
+(46, 0, 'dateSaturday', '2010-10-07 21:04:52'),
+(47, 0, 'dateSunday', '2010-10-07 21:04:52'),
+(48, 0, 'dateMon', '2010-10-07 21:04:52'),
+(49, 0, 'dateTue', '2010-10-07 21:04:52'),
+(50, 0, 'dateWed', '2010-10-07 21:04:52'),
+(51, 0, 'dateThu', '2010-10-07 21:04:52'),
+(52, 0, 'dateFri', '2010-10-07 21:04:52'),
+(53, 0, 'dateSat', '2010-10-07 21:04:52'),
+(54, 0, 'dateSun', '2010-10-07 21:04:52'),
+(55, 0, 'dateJanuary', '2010-10-07 21:04:52'),
+(56, 0, 'dateFebruary', '2010-10-07 21:04:52'),
+(57, 0, 'dateMarch', '2010-10-07 21:04:52'),
+(58, 0, 'dateApril', '2010-10-07 21:04:52'),
+(59, 0, 'dateMay', '2010-10-07 21:04:52'),
+(60, 0, 'dateJune', '2010-10-07 21:04:52'),
+(61, 0, 'dateJuly', '2010-10-07 21:04:52'),
+(62, 0, 'dateAugust', '2010-10-07 21:04:52'),
+(63, 0, 'dateSeptember', '2010-10-07 21:04:52'),
+(64, 0, 'dateOctober', '2010-10-07 21:04:52'),
+(65, 0, 'dateNovember', '2010-10-07 21:04:52'),
+(66, 0, 'dateDecember', '2010-10-07 21:04:52'),
+(67, 0, 'dateJan', '2010-10-07 21:04:52'),
+(68, 0, 'dateFeb', '2010-10-07 21:04:52'),
+(69, 0, 'dateMar', '2010-10-07 21:04:52'),
+(70, 0, 'dateApr', '2010-10-07 21:04:52'),
+(71, 0, 'dateMayShort', '2010-10-07 21:04:52'),
+(72, 0, 'dateJun', '2010-10-07 21:04:52'),
+(73, 0, 'dateJul', '2010-10-07 21:04:52'),
+(74, 0, 'dateAug', '2010-10-07 21:04:52'),
+(75, 0, 'dateSep', '2010-10-07 21:04:52'),
+(76, 0, 'dateOct', '2010-10-07 21:04:52'),
+(77, 0, 'dateNov', '2010-10-07 21:04:52'),
+(78, 0, 'dateDec', '2010-10-07 21:04:52'),
+(80, 0, 'today', '2010-10-07 21:04:52'),
+(81, 0, 'tomorrow', '2010-10-07 21:04:52'),
+(82, 0, 'viewonlineLastRequestMask', '2010-10-07 21:04:52'),
+(130, 0, 'userListEmpty', '2010-10-07 21:04:52'),
+(84, 0, 'dateSecondsAgoLong', '2010-10-07 21:04:52'),
+(172, 0, 'editGroupDescription', '2010-10-07 21:04:52'),
+(86, 0, 'dateMinutesAgoLong', '2010-10-07 21:04:52'),
+(171, 0, 'editGroup', '2010-10-07 21:04:52'),
+(88, 0, 'dateHoursAgoLong', '2010-10-07 21:04:52'),
+(170, 0, 'addGroupDescription', '2010-10-07 21:04:52'),
+(90, 0, 'dateDaysAgoLong', '2010-10-07 21:04:52'),
+(169, 0, 'addGroup', '2010-10-07 21:04:52'),
+(92, 0, 'dateMonthsAgoLong', '2010-10-07 21:04:52'),
+(168, 0, 'deleteUserDescription', '2010-10-07 21:04:52'),
+(94, 0, 'dateYearsAgoLong', '2010-10-07 21:04:52'),
+(129, 0, 'userListMessage', '2010-10-07 21:04:52'),
+(96, 0, 'dateSecondsAgoShort', '2010-10-07 21:04:52'),
+(167, 0, 'editUserDescription', '2010-10-07 21:04:52'),
+(98, 0, 'dateMinutesAgoShort', '2010-10-07 21:04:52'),
+(166, 0, 'addUserDescription', '2010-10-07 21:04:52'),
+(100, 0, 'dateHoursAgoShort', '2010-10-07 21:04:52'),
+(165, 0, 'deleteUser', '2010-10-07 21:04:52'),
+(102, 0, 'dateDaysAgoShort', '2010-10-07 21:04:52'),
+(164, 0, 'editUser', '2010-10-07 21:04:52'),
+(104, 0, 'dateMonthsAgoShort', '2010-10-07 21:04:52'),
+(163, 0, 'addUser', '2010-10-07 21:04:52'),
+(106, 0, 'dateYearsAgoShort', '2010-10-07 21:04:52'),
+(128, 0, 'users', '2010-10-07 21:04:52'),
+(127, 0, 'up', '2010-10-07 21:04:52'),
+(126, 0, 'home', '2010-10-07 21:04:52'),
+(125, 0, 'canonical', '2010-10-07 21:04:52'),
+(124, 0, 'literalGap', '2010-10-07 21:04:52'),
+(123, 0, 'pageBack', '2010-10-07 21:04:52'),
+(122, 0, 'pageForward', '2010-10-07 21:04:52'),
+(121, 0, 'pageX', '2010-10-07 21:04:52'),
+(120, 0, 'avatarOf', '2010-10-07 21:04:52'),
+(136, 0, 'literalNone', '2010-10-07 21:04:52'),
+(119, 0, 'dateOneSecondAgoLong', '2010-10-07 21:04:52'),
+(131, 0, 'userListName', '2010-10-07 21:04:52'),
+(132, 0, 'userRegistrationTime', '2010-10-07 21:04:52'),
+(133, 0, 'userLastLoginTime', '2010-10-07 21:04:52'),
+(134, 0, 'userDoesNotExist', '2010-10-07 21:04:52'),
 (135, 2, 'articleDoesNotExist', '2010-03-07 00:42:28'),
-(137, 0, 'loginHidden', '2010-06-18 23:52:13'),
-(138, 0, 'guest', '2010-03-07 16:47:33'),
-(139, 0, 'xGuests', '2010-03-07 16:47:33'),
-(142, 0, 'userName', '2010-06-18 23:52:13'),
-(143, 0, 'userTitle', '2010-06-18 23:52:13'),
-(144, 0, 'titleDivider', '2010-03-07 17:45:26'),
-(145, 0, 'avatar', '2010-06-18 23:52:13'),
-(149, 0, 'isGroupLeaderAppendix', '2010-06-18 23:52:13'),
-(148, 0, 'userGroupList', '2010-06-18 23:52:13'),
-(150, 0, 'groups', '2010-06-18 23:52:13'),
-(151, 0, 'groupListEmpty', '2010-06-18 23:52:13'),
-(152, 0, 'groupMemberCount', '2010-06-18 23:52:13'),
-(153, 0, 'groupDoesNotExist', '2010-06-18 23:52:13'),
-(154, 0, 'groupName', '2010-06-18 23:52:13'),
-(155, 0, 'groupTitle', '2010-06-18 23:52:13'),
-(156, 0, 'groupText', '2010-06-18 23:52:13'),
-(157, 0, 'brackets', '2010-03-10 18:24:01'),
-(158, 0, 'groupMemberList', '2010-06-18 23:52:13'),
-(159, 0, 'pageXOfY', '2010-03-10 18:24:21'),
-(160, 0, 'label', '2010-03-10 18:27:21'),
-(161, 0, 'groupLeaderHeader', '2010-06-18 23:52:13'),
-(162, 0, 'groupMemberHeader', '2010-06-18 23:52:13'),
-(173, 0, 'deleteGroup', '2010-06-18 23:52:13'),
-(174, 0, 'deleteGroupDescription', '2010-06-18 23:52:13'),
-(175, 0, 'gotoGroups', '2010-06-18 23:52:13'),
-(176, 0, 'gotoGroupsDescription', '2010-06-18 23:52:13'),
-(177, 0, 'gotoUsers', '2010-06-18 23:52:13'),
-(178, 0, 'gotoUsersDescription', '2010-06-18 23:52:13'),
-(179, 0, 'defaultPage', '2010-03-29 20:31:22'),
-(180, 0, 'pageNotFound', '2010-03-31 20:17:32'),
-(183, 0, 'structureMessage', '2010-06-18 23:52:13'),
-(184, 0, 'structureEmpty', '2010-06-18 23:52:13'),
-(185, 0, 'structureNameColumn', '2010-06-18 23:52:13'),
-(186, 0, 'structureTitleColumn', '2010-06-18 23:52:13'),
-(187, 0, 'structureRootNodeName', '2010-06-18 23:52:13'),
-(188, 0, 'editNode', '2010-06-18 23:52:13'),
-(189, 0, 'deleteNode', '2010-06-18 23:52:13'),
-(190, 0, 'editNodeDescription', '2010-06-18 23:52:13'),
-(191, 0, 'deleteNodeDescription', '2010-06-18 23:52:13'),
-(192, 0, 'moveNode', '2010-06-18 23:52:13'),
-(193, 0, 'moveNodeDescription', '2010-06-18 23:52:13'),
-(194, 0, 'addNode', '2010-06-18 23:52:13'),
-(195, 0, 'addNodeDescription', '2010-06-18 23:52:13'),
-(196, 0, 'deleteNodeMessage', '2010-06-18 23:52:13'),
-(197, 0, 'confirmation', '2010-04-01 22:21:55'),
-(198, 0, 'confirmationMessage', '2010-04-01 22:23:24'),
-(199, 0, 'nodeNameLabel', '2010-06-18 23:52:13'),
-(200, 0, 'nodeTitleLabel', '2010-06-18 23:52:13'),
-(201, 0, 'nodeNameDescription', '2010-06-18 23:52:13'),
-(202, 0, 'nodeTitleDescription', '2010-06-18 23:52:13'),
-(203, 0, 'submitButton', '2010-04-01 22:30:49'),
-(204, 0, 'addNodeButton', '2010-06-18 23:52:13'),
-(205, 0, 'editNodeButton', '2010-06-18 23:52:13'),
-(211, 0, 'deleteNodeTitle', '2010-06-18 23:52:13'),
-(210, 0, 'moveNodeTitle', '2010-06-18 23:52:13'),
-(208, 0, 'editNodeTitle', '2010-06-18 23:52:13'),
-(209, 0, 'addNodeTitle', '2010-06-18 23:52:13'),
-(213, 0, 'noNodeNameInputtedError', '2010-06-18 23:52:13'),
-(214, 0, 'noNodeTitleInputtedError', '2010-06-18 23:52:13'),
-(215, 0, 'nodeNameAlreadyExistsError', '2010-06-18 23:52:13'),
-(216, 0, 'confirmationConfirmButton', '2010-04-07 00:04:51'),
-(217, 0, 'confirmationCancelButton', '2010-04-07 00:03:51'),
-(218, 0, 'structureTitle', '2010-06-18 23:52:13'),
-(220, 0, 'moveNodeMessage', '2010-06-18 23:52:13'),
-(221, 0, 'insertNodeHere', '2010-06-18 23:52:13'),
-(222, 0, 'insertNodeHereDescription', '2010-06-18 23:52:13'),
-(223, 0, 'moveTargetDoesNotExistError', '2010-06-18 23:52:13'),
-(224, 0, 'moveTargetIsChildError', '2010-06-18 23:52:13'),
-(225, 0, 'nodeNameAlreadyExistsInTargetError', '2010-06-18 23:52:13'),
-(226, 0, 'userNameDescription', '2010-06-18 23:52:13'),
-(227, 0, 'isBotLabel', '2010-06-18 23:52:13'),
-(228, 0, 'isBotShortLabel', '2010-06-18 23:52:13'),
-(229, 0, 'isBotDescription', '2010-06-18 23:52:13'),
-(230, 0, 'botIdentifier', '2010-06-18 23:52:13'),
-(231, 0, 'botIdentifierDescription', '2010-06-18 23:52:13'),
-(232, 0, 'passwordLabel', '2010-06-18 23:52:13'),
-(233, 0, 'passwordDescription', '2010-06-18 23:52:13'),
-(234, 0, 'passwordConfirmationLabel', '2010-06-18 23:52:13'),
-(235, 0, 'passwordConfirmationDescription', '2010-06-18 23:52:13'),
-(236, 0, 'noNodeUserNameInputtedError', '2010-06-18 23:52:13'),
-(237, 0, 'registrationEmailLabel', '2010-06-18 23:52:13'),
-(238, 0, 'registrationEmailDescription', '2010-06-18 23:52:13'),
-(239, 0, 'invalidEmailAddressError', '2010-06-18 23:52:13'),
-(240, 0, 'noRegistrationEmailInputtedError', '2010-06-18 23:52:13'),
-(241, 0, 'userNameAlreadyExistsError', '2010-06-18 23:52:13'),
-(242, 0, 'noBotIdentifierInputtedError', '2010-06-18 23:52:13'),
-(243, 0, 'invalidBotIdentifierInputtedError', '2010-06-18 23:52:13'),
-(244, 0, 'noPasswordInputtedError', '2010-06-18 23:52:13'),
-(245, 0, 'noPasswordConfirmationInputtedError', '2010-06-18 23:52:13'),
-(246, 0, 'passwordConfirmationInvalidError', '2010-06-18 23:52:13'),
-(247, 0, 'nameContainsSlashError', '2010-06-06 16:53:02'),
-(248, 0, 'deleteUserMessage', '2010-06-18 23:52:13'),
-(503, 0, 'invalidPMLInputtedError', '2010-06-19 18:36:24'),
-(250, 0, 'groupNameDescription', '2010-06-18 23:52:13'),
-(253, 0, 'groupColor', '2010-06-18 23:52:13'),
-(252, 0, 'groupTitleDescription', '2010-06-18 23:52:13'),
-(254, 0, 'groupColorDescription', '2010-06-18 23:52:13'),
-(255, 0, 'groupTextDescription', '2010-06-18 23:52:13'),
-(256, 0, 'groupAutoJoinLabel', '2010-06-18 23:52:13'),
-(257, 0, 'groupAutoJoinShortLabel', '2010-06-18 23:52:13'),
-(258, 0, 'deleteGroupMessage', '2010-06-18 23:52:13'),
-(259, 0, 'noGroupNameInputtedError', '2010-06-18 23:52:13'),
-(260, 0, 'groupNameAlreadyExistsError', '2010-06-18 23:52:13'),
-(261, 0, 'noGroupTitleInputtedError', '2010-06-18 23:52:13'),
-(262, 0, 'noGroupColorInputtedError', '2010-06-18 23:52:13'),
-(263, 0, 'invalidGroupColorInputtedError', '2010-06-18 23:52:13'),
-(264, 0, 'noGroupTextInputtedError', '2010-06-18 23:52:13'),
-(265, 0, 'deleteGuestErrorMessage', '2010-06-18 23:52:13'),
-(266, 0, 'error', '2010-04-24 00:55:14'),
-(267, 0, 'goToGuestAccount', '2010-06-18 23:52:13'),
-(268, 0, 'userJoinGroup', '2010-06-18 23:52:13'),
-(269, 0, 'userJoinGroupDescription', '2010-06-18 23:52:13'),
-(270, 0, 'userJoinGroupMessage', '2010-06-18 23:52:13'),
-(271, 0, 'userJoinGroupEmptyMessage', '2010-06-18 23:52:13'),
-(272, 0, 'groupDoesNotExistError', '2010-06-18 23:52:13'),
-(273, 0, 'userJoinAlreadyMemberError', '2010-06-18 23:52:13'),
-(274, 0, 'userLeaveGroup', '2010-06-18 23:52:13'),
-(275, 0, 'userLeaveGroupDescription', '2010-06-18 23:52:13'),
-(276, 0, 'goToUser', '2010-06-18 23:52:13'),
-(277, 0, 'userMembershipMissingError', '2010-06-18 23:52:13'),
-(278, 0, 'promoteUser', '2010-06-18 23:52:13'),
-(279, 0, 'promoteUserDescription', '2010-06-18 23:52:13'),
-(280, 0, 'demoteUser', '2010-06-18 23:52:13'),
-(281, 0, 'demoteUserDescription', '2010-06-18 23:52:13'),
-(282, 0, 'defaultUserTitle', '2010-04-25 16:45:46'),
-(283, 0, 'groupPriority', '2010-06-18 23:52:13'),
-(284, 0, 'groupPriorityDescription', '2010-06-18 23:52:13'),
-(285, 0, 'invalidGroupPriorityInputtedError', '2010-06-18 23:52:13'),
-(286, 0, 'editGroupRights', '2010-06-18 23:52:13'),
-(287, 0, 'editGroupRightsDescription', '2010-06-18 23:52:13'),
-(288, 0, 'viewUserRights', '2010-06-18 23:52:13'),
-(289, 0, 'viewUserRightsDescription', '2010-06-18 23:52:13'),
-(290, 0, 'viewUserRightsMessage', '2010-06-18 23:52:13'),
-(291, 0, 'viewUserRightsEmptyMessage', '2010-06-18 23:52:13'),
-(292, 0, 'userRightColumn', '2010-06-18 23:52:13'),
-(293, 0, 'userRightSourceColumn', '2010-06-18 23:52:13'),
-(294, 0, 'inputErrorMessage', '2010-04-28 17:43:51'),
-(296, 0, 'lockGroup', '2010-06-18 23:52:13'),
-(297, 0, 'lockGroupDescription', '2010-06-18 23:52:13'),
-(298, 0, 'unlockGroup', '2010-06-18 23:52:13'),
-(299, 0, 'unlockGroupDescription', '2010-06-18 23:52:13'),
-(300, 0, 'lockGroupMessage', '2010-06-18 23:52:13'),
-(301, 0, 'unlockGroupMessage', '2010-06-18 23:52:13'),
-(302, 0, 'userJoinGroupAccessDeniedError', '2010-06-18 23:52:13'),
-(303, 0, 'registerAccessDeniedMessage', '2010-06-18 23:52:13'),
-(304, 0, 'registerMessage', '2010-06-18 23:52:13'),
-(305, 0, 'registerWithoutEmailMessage', '2010-06-18 23:52:13'),
-(306, 0, 'registerUserLabel', '2010-06-18 23:52:13'),
-(307, 0, 'registerUserDescription', '2010-06-18 23:52:13'),
-(308, 0, 'registerPasswordLabel', '2010-06-18 23:52:13'),
-(309, 0, 'registerPasswordDescription', '2010-06-18 23:52:13'),
-(310, 0, 'registerPasswordConfirmationLabel', '2010-06-18 23:52:13'),
-(311, 0, 'registerPasswordConfirmationDescription', '2010-06-18 23:52:13'),
-(312, 0, 'registerEmailLabel', '2010-06-18 23:52:13'),
-(313, 0, 'registerEmailDescription', '2010-06-18 23:52:13'),
-(314, 0, 'registerOptionalEmailDescription', '2010-06-18 23:52:13'),
-(315, 0, 'registerEmailConfirmationLabel', '2010-06-18 23:52:13'),
-(316, 0, 'registerEmailConfirmationDescription', '2010-06-18 23:52:13'),
-(317, 0, 'registerOptionalEmailConfirmationDescription', '2010-06-18 23:52:13'),
-(318, 0, 'registerButton', '2010-06-18 23:52:13'),
-(319, 0, 'noUserNameInputtedError', '2010-06-18 23:52:13'),
-(320, 0, 'noEmailConfirmationInputtedError', '2010-06-18 23:52:13'),
-(321, 0, 'emailConfirmationInvalidError', '2010-06-18 23:52:13'),
-(322, 0, 'userStatusLabel', '2010-06-18 23:52:13'),
-(323, 0, 'userStatusDescription', '2010-06-18 23:52:13'),
-(324, 0, 'userStatusEnabled', '2010-06-18 23:52:13'),
-(325, 0, 'userStatusDisabled', '2010-06-18 23:52:13'),
-(326, 0, 'userStatusWaitForEmail', '2010-06-18 23:52:13'),
-(327, 0, 'userHasUnconfirmedEmailInfo', '2010-06-18 23:52:13'),
-(328, 0, 'resetUnconfirmedEmailButton', '2010-06-18 23:52:13'),
-(329, 0, 'confirmUnconfirmedEmailButton', '2010-06-18 23:52:13'),
-(330, 0, 'userAccountActivationEmailMessage', '2010-06-18 23:52:13'),
-(331, 0, 'userAccountActivationEmailPlainMessage', '2010-06-18 23:52:13'),
-(332, 0, 'systemErrorMessage', '2010-05-21 16:10:16'),
-(333, 0, 'userAccountActivationEmailFailedErrorMessage', '2010-06-18 23:52:13'),
-(334, 0, 'userAccountActivationEmailSentMessage', '2010-06-18 23:52:13'),
-(335, 0, 'userAccountWithEmailCreatedMessage', '2010-06-18 23:52:13'),
-(336, 0, 'userAccountCreatedMessage', '2010-06-18 23:52:13'),
-(337, 0, 'registerEmailConfirmationEmailFailedMessage', '2010-06-18 23:52:13'),
-(338, 0, 'userEmailConfirmationEmailMessage', '2010-06-18 23:52:13'),
-(339, 0, 'userEmailConfirmationEmailPlainMessage', '2010-06-18 23:52:13'),
-(341, 0, 'emailAddressConfirmedMessage', '2010-06-18 23:52:13'),
-(342, 0, 'emailAddressConfirmedWithWaitForEmailMessage', '2010-06-18 23:52:13'),
-(343, 0, 'confirmEmailInvalidKeySpecifiedError', '2010-06-18 23:52:13'),
-(344, 0, 'userMeJoinGroupEmptyMessage', '2010-06-18 23:52:13'),
-(345, 0, 'passwordLostMessage', '2010-06-18 23:52:13'),
-(346, 0, 'passwordLostUserLabel', '2010-06-18 23:52:13'),
-(347, 0, 'passwordLostUserDescription', '2010-06-18 23:52:13'),
-(348, 0, 'passwordLostEmailLabel', '2010-06-18 23:52:13'),
-(349, 0, 'passwordLostEmailDescription', '2010-06-18 23:52:13'),
-(350, 0, 'passwordLostEmailDoesNotMatchError', '2010-06-18 23:52:13'),
-(351, 0, 'userEmailConfirmationOnAccountCreationEmailMessage', '2010-06-18 23:52:13'),
-(352, 0, 'userEmailConfirmationOnAccountCreationEmailPlainMessage', '2010-06-18 23:52:13'),
-(353, 0, 'userAccountActivationEmailTitle', '2010-06-18 23:52:13'),
-(354, 0, 'userEmailConfirmationOnAccountCreationEmailTitle', '2010-06-18 23:52:13'),
-(355, 0, 'userEmailConfirmationEmailTitle', '2010-06-18 23:52:13'),
-(356, 0, 'passwordLostEmailMessage', '2010-06-18 23:52:13'),
-(357, 0, 'passwordLostEmailPlainMessage', '2010-06-18 23:52:13'),
-(358, 0, 'passwordLostEmailFailedErrorMessage', '2010-06-18 23:52:13'),
-(359, 0, 'passwordLostSucceededMessage', '2010-06-18 23:52:13'),
-(360, 0, 'secondaryPasswordUsedGlobalMessage', '2010-06-18 23:52:13'),
-(361, 0, 'loginRegisterTip', '2010-06-18 23:52:13'),
-(362, 0, 'loginRegisterTipLinkText', '2010-06-18 23:52:13'),
-(363, 0, 'registerLoginTip', '2010-06-18 23:52:13'),
-(364, 0, 'registerLoginTipLinkText', '2010-06-18 23:52:13'),
-(365, 0, 'loginFailedWaitForEmailMessage', '2010-06-18 23:52:13'),
-(366, 0, 'loginFailedAccountDisabledMessage', '2010-06-18 23:52:13'),
-(367, 0, 'registrationDataNameLabel', '2010-06-18 23:52:13'),
-(368, 0, 'registrationDataNameDescription', '2010-06-18 23:52:13'),
-(369, 0, 'emailConfirmationDescription', '2010-06-18 23:52:13'),
-(370, 0, 'changePasswordDescription', '2010-06-18 23:52:13'),
-(371, 0, 'changePasswordConfirmationDescription', '2010-06-18 23:52:13'),
-(372, 0, 'registrationDataNotLoggedInError', '2010-06-18 23:52:13'),
-(373, 0, 'emailConfirmationEmailFailedMessage', '2010-06-18 23:52:13'),
-(374, 0, 'registrationDataSavedMessage', '2010-06-18 23:52:13'),
-(375, 0, 'passwordChangedMessage', '2010-06-18 23:52:13'),
-(376, 0, 'unconfirmedEmailChangedMessage', '2010-06-18 23:52:13'),
-(377, 0, 'goBack', '2010-05-24 22:29:36'),
-(378, 0, 'nodeNeighbors', '2010-06-18 23:52:13'),
-(379, 0, 'nodeNeighborsDescription', '2010-06-18 23:52:13'),
-(380, 0, 'nodeNeighborsMessage', '2010-06-18 23:52:13'),
-(381, 0, 'nodeNeighborsEmptyMessage', '2010-06-18 23:52:13'),
-(382, 0, 'nodeFreeTreesEmptyMessage', '2010-06-18 23:52:13'),
-(383, 0, 'nodeNeighborsListTitle', '2010-06-18 23:52:13'),
-(384, 0, 'nodeFreeTreesListTitle', '2010-06-18 23:52:13'),
-(385, 0, 'nodeNeighborsTitle', '2010-06-18 23:52:13'),
-(386, 0, 'nodeNeighborMoveUp', '2010-06-18 23:52:13'),
-(387, 0, 'nodeNeighborMoveUpDescription', '2010-06-18 23:52:13'),
-(388, 0, 'nodeNeighborMoveDown', '2010-06-18 23:52:13'),
-(389, 0, 'nodeNeighborMoveDownDescription', '2010-06-18 23:52:13'),
-(390, 0, 'nodeNeighborMakePrimary', '2010-06-18 23:52:13'),
-(391, 0, 'nodeNeighborMakePrimaryDescription', '2010-06-18 23:52:13'),
-(392, 0, 'nodeNeighborMakePrimaryActiveDescription', '2010-06-18 23:52:13'),
-(393, 0, 'nodeNeighborRemove', '2010-06-18 23:52:13'),
-(394, 0, 'nodeNeighborRemoveDescription', '2010-06-18 23:52:13'),
-(395, 0, 'nodeAddNeighborDescription', '2010-06-18 23:52:13'),
-(396, 0, 'nodeNeighborMakePrimaryDisabledDescription', '2010-06-18 23:52:13'),
-(397, 0, 'nodePermissions', '2010-06-18 23:52:13'),
-(398, 0, 'nodePermissionsDescription', '2010-06-18 23:52:13'),
-(399, 0, 'nodePermissionsTitle', '2010-06-18 23:52:13'),
-(400, 0, 'nodePermissionsNoAccessRestrictionMessage', '2010-06-18 23:52:13'),
-(401, 0, 'nodePermissionsAccessRestrictionMessage', '2010-06-18 23:52:13'),
-(402, 0, 'nodeAccessRestrictionButton', '2010-06-18 23:52:13'),
-(403, 0, 'nodeNoAccessRestrictionButton', '2010-06-18 23:52:13'),
-(404, 0, 'nodePermissionsRemoveGroup', '2010-06-18 23:52:13'),
-(405, 0, 'nodePermissionsRemoveGroupDescription', '2010-06-18 23:52:13'),
-(406, 0, 'nodePermissionsAddGroupDescription', '2010-06-18 23:52:13'),
-(407, 0, 'nodePermissionsGroupListTitle', '2010-06-18 23:52:13'),
-(408, 0, 'nodePermissionsFreeGroupListTitle', '2010-06-18 23:52:13'),
-(409, 0, 'nodePermissionsGroupListEmptyMessage', '2010-06-18 23:52:13'),
-(410, 0, 'nodePermissionsFreeGroupListEmptyMessage', '2010-06-18 23:52:13'),
-(411, 0, 'addProject', '2010-06-18 23:52:13'),
-(412, 0, 'addProjectDescription', '2010-06-18 23:52:13'),
-(413, 0, 'projectListEmptyMessage', '2010-06-18 23:52:13'),
-(414, 0, 'editProject', '2010-06-18 23:52:13'),
-(415, 0, 'editProjectDescription', '2010-06-18 23:52:13'),
-(416, 0, 'deleteProject', '2010-06-18 23:52:13'),
-(417, 0, 'deleteProjectDescription', '2010-06-18 23:52:13'),
-(418, 0, 'projectIsOrganization', '2010-06-18 23:52:13'),
-(419, 0, 'projectTitle', '2010-06-18 23:52:13'),
-(420, 0, 'projectAuthor', '2010-06-18 23:52:13'),
-(421, 0, 'projectDescription', '2010-06-18 23:52:13'),
-(422, 0, 'projectKeywords', '2010-06-18 23:52:13'),
-(423, 0, 'projectName', '2010-06-18 23:52:13'),
-(424, 0, 'projectNameDescription', '2010-06-18 23:52:13'),
-(425, 0, 'projectTitleDescription', '2010-06-18 23:52:13'),
-(426, 0, 'projectSubTitle', '2010-06-18 23:52:13'),
-(427, 0, 'projectSubTitleDescription', '2010-06-18 23:52:13'),
-(428, 0, 'projectAuthorDescription', '2010-06-18 23:52:13'),
-(429, 0, 'projectCopyright', '2010-06-18 23:52:13'),
-(430, 0, 'projectCopyrightDescription', '2010-06-18 23:52:13'),
-(431, 0, 'projectDescriptionDescription', '2010-06-18 23:52:13'),
-(432, 0, 'projectKeywordsDescription', '2010-06-18 23:52:13'),
-(433, 0, 'noProjectNameInputtedError', '2010-06-18 23:52:13'),
-(434, 0, 'projectNameAlreadyExistsError', '2010-06-18 23:52:13'),
-(435, 0, 'noProjectTitleInputtedError', '2010-06-18 23:52:13'),
-(436, 0, 'noProjectAuthorInputtedError', '2010-06-18 23:52:13'),
-(437, 0, 'noProjectDescriptionInputtedError', '2010-06-18 23:52:13'),
-(438, 0, 'noProjectCopyrightInputtedError', '2010-06-18 23:52:13'),
-(439, 0, 'projectNameInvalidError', '2010-06-18 23:52:13'),
-(440, 0, 'deleteProjectMessage', '2010-06-18 23:52:13'),
-(441, 0, 'gotoNodeDescription', '2010-06-18 23:52:13'),
-(442, 0, 'gotoNode', '2010-06-18 23:52:13'),
-(443, 0, 'deleteTreeNodeError', '2010-06-18 23:52:13'),
-(446, 0, 'nodeContentTitle', '2010-06-18 23:52:13'),
-(444, 0, 'moveTargetNotChangedError', '2010-06-18 23:52:13'),
-(445, 0, 'moveIntoTreeNodeError', '2010-06-18 23:52:13'),
-(447, 0, 'treeNodeDescription', '2010-06-18 23:52:13'),
-(448, 0, 'commonNodeDescription', '2010-06-18 23:52:13'),
-(449, 0, 'gotoProject', '2010-06-18 23:52:13'),
-(450, 0, 'gotoProjectDescription', '2010-06-18 23:52:13'),
-(451, 0, 'deleteOrganizationError', '2010-06-18 23:52:13'),
+(137, 0, 'loginHidden', '2010-10-07 21:04:52'),
+(138, 0, 'guest', '2010-10-07 21:04:52'),
+(139, 0, 'xGuests', '2010-10-07 21:04:52'),
+(142, 0, 'userName', '2010-10-07 21:04:52'),
+(143, 0, 'userTitle', '2010-10-07 21:04:52'),
+(144, 0, 'titleDivider', '2010-10-07 21:04:52'),
+(145, 0, 'avatar', '2010-10-07 21:04:52'),
+(149, 0, 'isGroupLeaderAppendix', '2010-10-07 21:04:52'),
+(148, 0, 'userGroupList', '2010-10-07 21:04:52'),
+(150, 0, 'groups', '2010-10-07 21:04:52'),
+(151, 0, 'groupListEmpty', '2010-10-07 21:04:52'),
+(152, 0, 'groupMemberCount', '2010-10-07 21:04:52'),
+(153, 0, 'groupDoesNotExist', '2010-10-07 21:04:52'),
+(154, 0, 'groupName', '2010-10-07 21:04:52'),
+(155, 0, 'groupTitle', '2010-10-07 21:04:52'),
+(156, 0, 'groupText', '2010-10-07 21:04:52'),
+(157, 0, 'brackets', '2010-10-07 21:04:52'),
+(158, 0, 'groupMemberList', '2010-10-07 21:04:52'),
+(159, 0, 'pageXOfY', '2010-10-07 21:04:52'),
+(160, 0, 'label', '2010-10-07 21:04:52'),
+(161, 0, 'groupLeaderHeader', '2010-10-07 21:04:52'),
+(162, 0, 'groupMemberHeader', '2010-10-07 21:04:52'),
+(173, 0, 'deleteGroup', '2010-10-07 21:04:52'),
+(174, 0, 'deleteGroupDescription', '2010-10-07 21:04:52'),
+(175, 0, 'gotoGroups', '2010-10-07 21:04:52'),
+(176, 0, 'gotoGroupsDescription', '2010-10-07 21:04:52'),
+(177, 0, 'gotoUsers', '2010-10-07 21:04:52'),
+(178, 0, 'gotoUsersDescription', '2010-10-07 21:04:52'),
+(179, 0, 'defaultPage', '2010-10-07 21:04:52'),
+(180, 0, 'pageNotFound', '2010-10-07 21:04:52'),
+(183, 0, 'structureMessage', '2010-10-07 21:04:52'),
+(184, 0, 'structureEmpty', '2010-10-07 21:04:52'),
+(185, 0, 'structureNameColumn', '2010-10-07 21:04:52'),
+(186, 0, 'structureTitleColumn', '2010-10-07 21:04:52'),
+(187, 0, 'structureRootNodeName', '2010-10-07 21:04:52'),
+(188, 0, 'editNode', '2010-10-07 21:04:52'),
+(189, 0, 'deleteNode', '2010-10-07 21:04:52'),
+(190, 0, 'editNodeDescription', '2010-10-07 21:04:52'),
+(191, 0, 'deleteNodeDescription', '2010-10-07 21:04:52'),
+(192, 0, 'moveNode', '2010-10-07 21:04:52'),
+(193, 0, 'moveNodeDescription', '2010-10-07 21:04:52'),
+(194, 0, 'addNode', '2010-10-07 21:04:52'),
+(195, 0, 'addNodeDescription', '2010-10-07 21:04:52'),
+(196, 0, 'deleteNodeMessage', '2010-10-07 21:04:52'),
+(197, 0, 'confirmation', '2010-10-07 21:04:52'),
+(198, 0, 'confirmationMessage', '2010-10-07 21:04:52'),
+(199, 0, 'nodeNameLabel', '2010-10-07 21:04:52'),
+(200, 0, 'nodeTitleLabel', '2010-10-07 21:04:52'),
+(201, 0, 'nodeNameDescription', '2010-10-07 21:04:52'),
+(202, 0, 'nodeTitleDescription', '2010-10-07 21:04:52'),
+(203, 0, 'submitButton', '2010-10-07 21:04:52'),
+(204, 0, 'addNodeButton', '2010-10-07 21:04:52'),
+(205, 0, 'editNodeButton', '2010-10-07 21:04:52'),
+(211, 0, 'deleteNodeTitle', '2010-10-07 21:04:52'),
+(210, 0, 'moveNodeTitle', '2010-10-07 21:04:52'),
+(208, 0, 'editNodeTitle', '2010-10-07 21:04:52'),
+(209, 0, 'addNodeTitle', '2010-10-07 21:04:52'),
+(213, 0, 'noNodeNameInputtedError', '2010-10-07 21:04:52'),
+(214, 0, 'noNodeTitleInputtedError', '2010-10-07 21:04:52'),
+(215, 0, 'nodeNameAlreadyExistsError', '2010-10-07 21:04:52'),
+(216, 0, 'confirmationConfirmButton', '2010-10-07 21:04:52'),
+(217, 0, 'confirmationCancelButton', '2010-10-07 21:04:52'),
+(218, 0, 'structureTitle', '2010-10-07 21:04:52'),
+(220, 0, 'moveNodeMessage', '2010-10-07 21:04:52'),
+(221, 0, 'insertNodeHere', '2010-10-07 21:04:52'),
+(222, 0, 'insertNodeHereDescription', '2010-10-07 21:04:52'),
+(223, 0, 'moveTargetDoesNotExistError', '2010-10-07 21:04:52'),
+(224, 0, 'moveTargetIsChildError', '2010-10-07 21:04:52'),
+(225, 0, 'nodeNameAlreadyExistsInTargetError', '2010-10-07 21:04:52'),
+(226, 0, 'userNameDescription', '2010-10-07 21:04:52'),
+(227, 0, 'isBotLabel', '2010-10-07 21:04:52'),
+(228, 0, 'isBotShortLabel', '2010-10-07 21:04:52'),
+(229, 0, 'isBotDescription', '2010-10-07 21:04:52'),
+(230, 0, 'botIdentifier', '2010-10-07 21:04:52'),
+(231, 0, 'botIdentifierDescription', '2010-10-07 21:04:52'),
+(232, 0, 'passwordLabel', '2010-10-07 21:04:52'),
+(233, 0, 'passwordDescription', '2010-10-07 21:04:52'),
+(234, 0, 'passwordConfirmationLabel', '2010-10-07 21:04:52'),
+(235, 0, 'passwordConfirmationDescription', '2010-10-07 21:04:52'),
+(236, 0, 'noNodeUserNameInputtedError', '2010-10-07 21:04:52'),
+(237, 0, 'registrationEmailLabel', '2010-10-07 21:04:52'),
+(238, 0, 'registrationEmailDescription', '2010-10-07 21:04:52'),
+(239, 0, 'invalidEmailAddressError', '2010-10-07 21:04:52'),
+(240, 0, 'noRegistrationEmailInputtedError', '2010-10-07 21:04:52'),
+(241, 0, 'userNameAlreadyExistsError', '2010-10-07 21:04:52'),
+(242, 0, 'noBotIdentifierInputtedError', '2010-10-07 21:04:52'),
+(243, 0, 'invalidBotIdentifierInputtedError', '2010-10-07 21:04:52'),
+(244, 0, 'noPasswordInputtedError', '2010-10-07 21:04:52'),
+(245, 0, 'noPasswordConfirmationInputtedError', '2010-10-07 21:04:52'),
+(246, 0, 'passwordConfirmationInvalidError', '2010-10-07 21:04:52'),
+(247, 0, 'nameContainsSlashError', '2010-10-07 21:04:52'),
+(248, 0, 'deleteUserMessage', '2010-10-07 21:04:52'),
+(503, 0, 'invalidPMLInputtedError', '2010-10-07 21:04:52'),
+(250, 0, 'groupNameDescription', '2010-10-07 21:04:52'),
+(253, 0, 'groupColor', '2010-10-07 21:04:52'),
+(252, 0, 'groupTitleDescription', '2010-10-07 21:04:52'),
+(254, 0, 'groupColorDescription', '2010-10-07 21:04:52'),
+(255, 0, 'groupTextDescription', '2010-10-07 21:04:52'),
+(256, 0, 'groupAutoJoinLabel', '2010-10-07 21:04:52'),
+(257, 0, 'groupAutoJoinShortLabel', '2010-10-07 21:04:52'),
+(258, 0, 'deleteGroupMessage', '2010-10-07 21:04:52'),
+(259, 0, 'noGroupNameInputtedError', '2010-10-07 21:04:52'),
+(260, 0, 'groupNameAlreadyExistsError', '2010-10-07 21:04:52'),
+(261, 0, 'noGroupTitleInputtedError', '2010-10-07 21:04:52'),
+(262, 0, 'noGroupColorInputtedError', '2010-10-07 21:04:52'),
+(263, 0, 'invalidGroupColorInputtedError', '2010-10-07 21:04:52'),
+(264, 0, 'noGroupTextInputtedError', '2010-10-07 21:04:52'),
+(265, 0, 'deleteGuestErrorMessage', '2010-10-07 21:04:52'),
+(266, 0, 'error', '2010-10-07 21:04:52'),
+(267, 0, 'goToGuestAccount', '2010-10-07 21:04:52'),
+(268, 0, 'userJoinGroup', '2010-10-07 21:04:52'),
+(269, 0, 'userJoinGroupDescription', '2010-10-07 21:04:52'),
+(270, 0, 'userJoinGroupMessage', '2010-10-07 21:04:52'),
+(271, 0, 'userJoinGroupEmptyMessage', '2010-10-07 21:04:52'),
+(272, 0, 'groupDoesNotExistError', '2010-10-07 21:04:52'),
+(273, 0, 'userJoinAlreadyMemberError', '2010-10-07 21:04:52'),
+(274, 0, 'userLeaveGroup', '2010-10-07 21:04:52'),
+(275, 0, 'userLeaveGroupDescription', '2010-10-07 21:04:52'),
+(276, 0, 'goToUser', '2010-10-07 21:04:52'),
+(277, 0, 'userMembershipMissingError', '2010-10-07 21:04:52'),
+(278, 0, 'promoteUser', '2010-10-07 21:04:52'),
+(279, 0, 'promoteUserDescription', '2010-10-07 21:04:52'),
+(280, 0, 'demoteUser', '2010-10-07 21:04:52'),
+(281, 0, 'demoteUserDescription', '2010-10-07 21:04:52'),
+(282, 0, 'defaultUserTitle', '2010-10-07 21:04:52'),
+(283, 0, 'groupPriority', '2010-10-07 21:04:52'),
+(284, 0, 'groupPriorityDescription', '2010-10-07 21:04:52'),
+(285, 0, 'invalidGroupPriorityInputtedError', '2010-10-07 21:04:52'),
+(286, 0, 'editGroupRights', '2010-10-07 21:04:52'),
+(287, 0, 'editGroupRightsDescription', '2010-10-07 21:04:52'),
+(288, 0, 'viewUserRights', '2010-10-07 21:04:52'),
+(289, 0, 'viewUserRightsDescription', '2010-10-07 21:04:52'),
+(290, 0, 'viewUserRightsMessage', '2010-10-07 21:04:52'),
+(291, 0, 'viewUserRightsEmptyMessage', '2010-10-07 21:04:52'),
+(292, 0, 'userRightColumn', '2010-10-07 21:04:52'),
+(293, 0, 'userRightSourceColumn', '2010-10-07 21:04:52'),
+(294, 0, 'inputErrorMessage', '2010-10-07 21:04:52'),
+(296, 0, 'lockGroup', '2010-10-07 21:04:52'),
+(297, 0, 'lockGroupDescription', '2010-10-07 21:04:52'),
+(298, 0, 'unlockGroup', '2010-10-07 21:04:52'),
+(299, 0, 'unlockGroupDescription', '2010-10-07 21:04:52'),
+(300, 0, 'lockGroupMessage', '2010-10-07 21:04:52'),
+(301, 0, 'unlockGroupMessage', '2010-10-07 21:04:52'),
+(302, 0, 'userJoinGroupAccessDeniedError', '2010-10-07 21:04:52'),
+(303, 0, 'registerAccessDeniedMessage', '2010-10-07 21:04:52'),
+(304, 0, 'registerMessage', '2010-10-07 21:04:52'),
+(305, 0, 'registerWithoutEmailMessage', '2010-10-07 21:04:52'),
+(306, 0, 'registerUserLabel', '2010-10-07 21:04:52'),
+(307, 0, 'registerUserDescription', '2010-10-07 21:04:52'),
+(308, 0, 'registerPasswordLabel', '2010-10-07 21:04:52'),
+(309, 0, 'registerPasswordDescription', '2010-10-07 21:04:52'),
+(310, 0, 'registerPasswordConfirmationLabel', '2010-10-07 21:04:52'),
+(311, 0, 'registerPasswordConfirmationDescription', '2010-10-07 21:04:52'),
+(312, 0, 'registerEmailLabel', '2010-10-07 21:04:52'),
+(313, 0, 'registerEmailDescription', '2010-10-07 21:04:52'),
+(314, 0, 'registerOptionalEmailDescription', '2010-10-07 21:04:52'),
+(315, 0, 'registerEmailConfirmationLabel', '2010-10-07 21:04:52'),
+(316, 0, 'registerEmailConfirmationDescription', '2010-10-07 21:04:52'),
+(317, 0, 'registerOptionalEmailConfirmationDescription', '2010-10-07 21:04:52'),
+(318, 0, 'registerButton', '2010-10-07 21:04:52'),
+(319, 0, 'noUserNameInputtedError', '2010-10-07 21:04:52'),
+(320, 0, 'noEmailConfirmationInputtedError', '2010-10-07 21:04:52'),
+(321, 0, 'emailConfirmationInvalidError', '2010-10-07 21:04:52'),
+(322, 0, 'userStatusLabel', '2010-10-07 21:04:52'),
+(323, 0, 'userStatusDescription', '2010-10-07 21:04:52'),
+(324, 0, 'userStatusEnabled', '2010-10-07 21:04:52'),
+(325, 0, 'userStatusDisabled', '2010-10-07 21:04:52'),
+(326, 0, 'userStatusWaitForEmail', '2010-10-07 21:04:52'),
+(327, 0, 'userHasUnconfirmedEmailInfo', '2010-10-07 21:04:52'),
+(328, 0, 'resetUnconfirmedEmailButton', '2010-10-07 21:04:52'),
+(329, 0, 'confirmUnconfirmedEmailButton', '2010-10-07 21:04:52'),
+(330, 0, 'userAccountActivationEmailMessage', '2010-10-07 21:04:52'),
+(331, 0, 'userAccountActivationEmailPlainMessage', '2010-10-07 21:04:52'),
+(332, 0, 'systemErrorMessage', '2010-10-07 21:04:52'),
+(333, 0, 'userAccountActivationEmailFailedErrorMessage', '2010-10-07 21:04:52'),
+(334, 0, 'userAccountActivationEmailSentMessage', '2010-10-07 21:04:52'),
+(335, 0, 'userAccountWithEmailCreatedMessage', '2010-10-07 21:04:52'),
+(336, 0, 'userAccountCreatedMessage', '2010-10-07 21:04:52'),
+(337, 0, 'registerEmailConfirmationEmailFailedMessage', '2010-10-07 21:04:52'),
+(338, 0, 'userEmailConfirmationEmailMessage', '2010-10-07 21:04:52'),
+(339, 0, 'userEmailConfirmationEmailPlainMessage', '2010-10-07 21:04:52'),
+(341, 0, 'emailAddressConfirmedMessage', '2010-10-07 21:04:52'),
+(342, 0, 'emailAddressConfirmedWithWaitForEmailMessage', '2010-10-07 21:04:52'),
+(343, 0, 'confirmEmailInvalidKeySpecifiedError', '2010-10-07 21:04:52'),
+(344, 0, 'userMeJoinGroupEmptyMessage', '2010-10-07 21:04:52'),
+(345, 0, 'passwordLostMessage', '2010-10-07 21:04:52'),
+(346, 0, 'passwordLostUserLabel', '2010-10-07 21:04:52'),
+(347, 0, 'passwordLostUserDescription', '2010-10-07 21:04:52'),
+(348, 0, 'passwordLostEmailLabel', '2010-10-07 21:04:52'),
+(349, 0, 'passwordLostEmailDescription', '2010-10-07 21:04:52'),
+(350, 0, 'passwordLostEmailDoesNotMatchError', '2010-10-07 21:04:52'),
+(351, 0, 'userEmailConfirmationOnAccountCreationEmailMessage', '2010-10-07 21:04:52'),
+(352, 0, 'userEmailConfirmationOnAccountCreationEmailPlainMessage', '2010-10-07 21:04:52'),
+(353, 0, 'userAccountActivationEmailTitle', '2010-10-07 21:04:52'),
+(354, 0, 'userEmailConfirmationOnAccountCreationEmailTitle', '2010-10-07 21:04:52'),
+(355, 0, 'userEmailConfirmationEmailTitle', '2010-10-07 21:04:52'),
+(356, 0, 'passwordLostEmailMessage', '2010-10-07 21:04:52'),
+(357, 0, 'passwordLostEmailPlainMessage', '2010-10-07 21:04:52'),
+(358, 0, 'passwordLostEmailFailedErrorMessage', '2010-10-07 21:04:52'),
+(359, 0, 'passwordLostSucceededMessage', '2010-10-07 21:04:52'),
+(360, 0, 'secondaryPasswordUsedGlobalMessage', '2010-10-07 21:04:52'),
+(361, 0, 'loginRegisterTip', '2010-10-07 21:04:52'),
+(362, 0, 'loginRegisterTipLinkText', '2010-10-07 21:04:52'),
+(363, 0, 'registerLoginTip', '2010-10-07 21:04:52'),
+(364, 0, 'registerLoginTipLinkText', '2010-10-07 21:04:52'),
+(365, 0, 'loginFailedWaitForEmailMessage', '2010-10-07 21:04:52'),
+(366, 0, 'loginFailedAccountDisabledMessage', '2010-10-07 21:04:52'),
+(367, 0, 'registrationDataNameLabel', '2010-10-07 21:04:52'),
+(368, 0, 'registrationDataNameDescription', '2010-10-07 21:04:52'),
+(369, 0, 'emailConfirmationDescription', '2010-10-07 21:04:52'),
+(370, 0, 'changePasswordDescription', '2010-10-07 21:04:52'),
+(371, 0, 'changePasswordConfirmationDescription', '2010-10-07 21:04:52'),
+(372, 0, 'registrationDataNotLoggedInError', '2010-10-07 21:04:52'),
+(373, 0, 'emailConfirmationEmailFailedMessage', '2010-10-07 21:04:52'),
+(374, 0, 'registrationDataSavedMessage', '2010-10-07 21:04:52'),
+(375, 0, 'passwordChangedMessage', '2010-10-07 21:04:52'),
+(376, 0, 'unconfirmedEmailChangedMessage', '2010-10-07 21:04:52'),
+(377, 0, 'goBack', '2010-10-07 21:04:52'),
+(378, 0, 'nodeNeighbors', '2010-10-07 21:04:52'),
+(379, 0, 'nodeNeighborsDescription', '2010-10-07 21:04:52'),
+(380, 0, 'nodeNeighborsMessage', '2010-10-07 21:04:52'),
+(381, 0, 'nodeNeighborsEmptyMessage', '2010-10-07 21:04:52'),
+(382, 0, 'nodeFreeTreesEmptyMessage', '2010-10-07 21:04:52'),
+(383, 0, 'nodeNeighborsListTitle', '2010-10-07 21:04:52'),
+(384, 0, 'nodeFreeTreesListTitle', '2010-10-07 21:04:52'),
+(385, 0, 'nodeNeighborsTitle', '2010-10-07 21:04:52'),
+(386, 0, 'nodeNeighborMoveUp', '2010-10-07 21:04:52'),
+(387, 0, 'nodeNeighborMoveUpDescription', '2010-10-07 21:04:52'),
+(388, 0, 'nodeNeighborMoveDown', '2010-10-07 21:04:52'),
+(389, 0, 'nodeNeighborMoveDownDescription', '2010-10-07 21:04:52'),
+(390, 0, 'nodeNeighborMakePrimary', '2010-10-07 21:04:52'),
+(391, 0, 'nodeNeighborMakePrimaryDescription', '2010-10-07 21:04:52'),
+(392, 0, 'nodeNeighborMakePrimaryActiveDescription', '2010-10-07 21:04:52'),
+(393, 0, 'nodeNeighborRemove', '2010-10-07 21:04:52'),
+(394, 0, 'nodeNeighborRemoveDescription', '2010-10-07 21:04:52'),
+(395, 0, 'nodeAddNeighborDescription', '2010-10-07 21:04:52'),
+(396, 0, 'nodeNeighborMakePrimaryDisabledDescription', '2010-10-07 21:04:52'),
+(397, 0, 'nodePermissions', '2010-10-07 21:04:52'),
+(398, 0, 'nodePermissionsDescription', '2010-10-07 21:04:52'),
+(399, 0, 'nodePermissionsTitle', '2010-10-07 21:04:52'),
+(400, 0, 'nodePermissionsNoAccessRestrictionMessage', '2010-10-07 21:04:52'),
+(401, 0, 'nodePermissionsAccessRestrictionMessage', '2010-10-07 21:04:52'),
+(402, 0, 'nodeAccessRestrictionButton', '2010-10-07 21:04:52'),
+(403, 0, 'nodeNoAccessRestrictionButton', '2010-10-07 21:04:52'),
+(404, 0, 'nodePermissionsRemoveGroup', '2010-10-07 21:04:52'),
+(405, 0, 'nodePermissionsRemoveGroupDescription', '2010-10-07 21:04:52'),
+(406, 0, 'nodePermissionsAddGroupDescription', '2010-10-07 21:04:52'),
+(407, 0, 'nodePermissionsGroupListTitle', '2010-10-07 21:04:52'),
+(408, 0, 'nodePermissionsFreeGroupListTitle', '2010-10-07 21:04:52'),
+(409, 0, 'nodePermissionsGroupListEmptyMessage', '2010-10-07 21:04:52'),
+(410, 0, 'nodePermissionsFreeGroupListEmptyMessage', '2010-10-07 21:04:52'),
+(411, 0, 'addProject', '2010-10-07 21:04:52'),
+(412, 0, 'addProjectDescription', '2010-10-07 21:04:52'),
+(413, 0, 'projectListEmptyMessage', '2010-10-07 21:04:52'),
+(414, 0, 'editProject', '2010-10-07 21:04:52'),
+(415, 0, 'editProjectDescription', '2010-10-07 21:04:52'),
+(416, 0, 'deleteProject', '2010-10-07 21:04:52'),
+(417, 0, 'deleteProjectDescription', '2010-10-07 21:04:52'),
+(418, 0, 'projectIsOrganization', '2010-10-07 21:04:52'),
+(419, 0, 'projectTitle', '2010-10-07 21:04:52'),
+(420, 0, 'projectAuthor', '2010-10-07 21:04:52'),
+(421, 0, 'projectDescription', '2010-10-07 21:04:52'),
+(422, 0, 'projectKeywords', '2010-10-07 21:04:52'),
+(423, 0, 'projectName', '2010-10-07 21:04:52'),
+(424, 0, 'projectNameDescription', '2010-10-07 21:04:52'),
+(425, 0, 'projectTitleDescription', '2010-10-07 21:04:52'),
+(426, 0, 'projectSubTitle', '2010-10-07 21:04:52'),
+(427, 0, 'projectSubTitleDescription', '2010-10-07 21:04:52'),
+(428, 0, 'projectAuthorDescription', '2010-10-07 21:04:52'),
+(429, 0, 'projectCopyright', '2010-10-07 21:04:52'),
+(430, 0, 'projectCopyrightDescription', '2010-10-07 21:04:52'),
+(431, 0, 'projectDescriptionDescription', '2010-10-07 21:04:52'),
+(432, 0, 'projectKeywordsDescription', '2010-10-07 21:04:52'),
+(433, 0, 'noProjectNameInputtedError', '2010-10-07 21:04:52'),
+(434, 0, 'projectNameAlreadyExistsError', '2010-10-07 21:04:52'),
+(435, 0, 'noProjectTitleInputtedError', '2010-10-07 21:04:52'),
+(436, 0, 'noProjectAuthorInputtedError', '2010-10-07 21:04:52'),
+(437, 0, 'noProjectDescriptionInputtedError', '2010-10-07 21:04:52'),
+(438, 0, 'noProjectCopyrightInputtedError', '2010-10-07 21:04:52'),
+(439, 0, 'projectNameInvalidError', '2010-10-07 21:04:52'),
+(440, 0, 'deleteProjectMessage', '2010-10-07 21:04:52'),
+(441, 0, 'gotoNodeDescription', '2010-10-07 21:04:52'),
+(442, 0, 'gotoNode', '2010-10-07 21:04:52'),
+(443, 0, 'deleteTreeNodeError', '2010-10-07 21:04:52'),
+(446, 0, 'nodeContentTitle', '2010-10-07 21:04:52'),
+(444, 0, 'moveTargetNotChangedError', '2010-10-07 21:04:52'),
+(445, 0, 'moveIntoTreeNodeError', '2010-10-07 21:04:52'),
+(447, 0, 'treeNodeDescription', '2010-10-07 21:04:52'),
+(448, 0, 'commonNodeDescription', '2010-10-07 21:04:52'),
+(449, 0, 'gotoProject', '2010-10-07 21:04:52'),
+(450, 0, 'gotoProjectDescription', '2010-10-07 21:04:52'),
+(451, 0, 'deleteOrganizationError', '2010-10-07 21:04:52'),
 (452, 2, 'addArticle', '2010-06-11 16:06:23'),
 (453, 2, 'addArticleDescription', '2010-06-11 16:12:52'),
-(454, 0, 'previewButton', '2010-06-11 18:21:55'),
+(454, 0, 'previewButton', '2010-10-07 21:04:52'),
 (455, 2, 'articleTitle', '2010-06-11 18:26:35'),
 (456, 2, 'articleTitleDescription', '2010-06-11 18:26:35'),
 (457, 2, 'articleText', '2010-06-11 18:24:11'),
@@ -2153,67 +1899,77 @@ INSERT INTO `rack_premanager_strings` (`id`, `pluginID`, `name`, `timestamp`) VA
 (500, 2, 'deleteArticleDescription', '2010-06-12 13:34:09'),
 (501, 2, 'deleteArticleMessage', '2010-06-12 13:52:22'),
 (502, 2, 'preview', '2010-06-18 19:48:53'),
-(504, 0, 'pmlTitle', '2010-06-20 20:37:13'),
-(505, 0, 'gotoChangeOwnAvatar', '2010-06-26 21:38:23'),
-(506, 0, 'canOnlyChangeOwnAvatar', '2010-06-26 21:46:39'),
-(507, 0, 'changeAvatarMessageOwnExisting', '2010-06-27 13:44:25'),
-(508, 0, 'changeAvatarMessageForeignExisting', '2010-06-27 13:44:25'),
-(509, 0, 'changeAvatarMessageOwnEmpty', '2010-06-27 13:52:05'),
-(510, 0, 'changeAvatarMessageForeignEmpty', '2010-06-27 13:52:05'),
-(511, 0, 'currentAvatar', '2010-06-27 14:19:16'),
-(512, 0, 'currentAvatarDescription', '2010-06-27 14:19:16'),
-(513, 0, 'selectAvatarExisting', '2010-06-27 14:39:32'),
-(514, 0, 'selectAvatarEmpty', '2010-06-27 14:39:32'),
-(515, 0, 'selectAvatarExistingDescription', '2010-06-27 14:40:22'),
-(516, 0, 'selectAvatarEmptyDescription', '2010-06-27 14:40:22'),
-(517, 0, 'changeAvatarButtonsLabel', '2010-06-27 15:28:24'),
-(518, 0, 'changeAvatarButton', '2010-06-27 15:33:51'),
-(519, 0, 'deleteAvatarButton', '2010-06-27 15:33:51'),
-(520, 0, 'changeAvatarNoFileSentError', '2010-06-27 15:52:30'),
-(521, 0, 'pictureFileTypeNotSupportedError', '2010-06-27 15:54:36'),
-(522, 0, 'changeAvatar', '2010-06-27 21:44:18'),
-(523, 0, 'changeAvatarDescription', '2010-06-27 21:44:18'),
-(524, 0, 'nodeCreatePanel', '2010-07-01 15:05:48'),
-(525, 0, 'nodeRemovePanel', '2010-07-01 15:05:48'),
-(526, 0, 'panelNodeDescription', '2010-07-01 15:07:58'),
-(527, 0, 'nodeCreatePanelMessage', '2010-07-01 15:45:20'),
-(528, 0, 'nodeRemovePanelMessage', '2010-07-01 15:45:20'),
-(529, 0, 'dateInXSecondsLong', '2010-09-10 17:25:47'),
-(530, 0, 'dateInXMinutesLong', '2010-09-10 17:25:47'),
-(531, 0, 'dateInXHoursLong', '2010-09-10 17:25:47'),
-(532, 0, 'dateInXDaysLong', '2010-09-10 17:25:47'),
-(533, 0, 'dateInXMonthsLong', '2010-09-10 17:25:47'),
-(534, 0, 'dateInXYearsLong', '2010-09-10 17:25:47'),
-(535, 0, 'dateInXSecondsShort', '2010-09-10 17:24:59'),
-(536, 0, 'dateInXMinutesShort', '2010-09-10 17:25:03'),
-(537, 0, 'dateInXHoursShort', '2010-09-10 17:25:09'),
-(538, 0, 'dateInXDaysShort', '2010-09-10 17:25:14'),
-(539, 0, 'dateInXMonthsShort', '2010-09-10 17:25:18'),
-(540, 0, 'dateInXYearsShort', '2010-09-10 17:25:24'),
-(541, 0, 'dateSecondsLong', '2010-09-10 21:21:11'),
-(542, 0, 'dateMinutesLong', '2010-09-10 21:25:08'),
-(543, 0, 'dateHoursLong', '2010-09-10 21:25:18'),
-(544, 0, 'dateDaysLong', '2010-09-10 21:25:28'),
-(545, 0, 'dateMonthsLong', '2010-09-10 21:25:36'),
-(546, 0, 'dateYearsLong', '2010-09-10 21:25:43'),
-(547, 0, 'dateSecondsShort', '2010-09-10 21:26:04'),
-(548, 0, 'dateMinutesShort', '2010-09-10 21:26:12'),
-(549, 0, 'dateHoursShort', '2010-09-10 21:26:20'),
-(550, 0, 'dateDaysShort', '2010-09-10 21:26:28'),
-(551, 0, 'dateMonthsShort', '2010-09-10 21:26:34'),
-(552, 0, 'dateYearsShort', '2010-09-10 21:26:42');
+(504, 0, 'pmlTitle', '2010-10-07 21:04:52'),
+(505, 0, 'gotoChangeOwnAvatar', '2010-10-07 21:04:52'),
+(506, 0, 'canOnlyChangeOwnAvatar', '2010-10-07 21:04:52'),
+(507, 0, 'changeAvatarMessageOwnExisting', '2010-10-07 21:04:52'),
+(508, 0, 'changeAvatarMessageForeignExisting', '2010-10-07 21:04:52'),
+(509, 0, 'changeAvatarMessageOwnEmpty', '2010-10-07 21:04:52'),
+(510, 0, 'changeAvatarMessageForeignEmpty', '2010-10-07 21:04:52'),
+(511, 0, 'currentAvatar', '2010-10-07 21:04:52'),
+(512, 0, 'currentAvatarDescription', '2010-10-07 21:04:52'),
+(513, 0, 'selectAvatarExisting', '2010-10-07 21:04:52'),
+(514, 0, 'selectAvatarEmpty', '2010-10-07 21:04:52'),
+(515, 0, 'selectAvatarExistingDescription', '2010-10-07 21:04:52'),
+(516, 0, 'selectAvatarEmptyDescription', '2010-10-07 21:04:52'),
+(517, 0, 'changeAvatarButtonsLabel', '2010-10-07 21:04:52'),
+(518, 0, 'changeAvatarButton', '2010-10-07 21:04:52'),
+(519, 0, 'deleteAvatarButton', '2010-10-07 21:04:52'),
+(520, 0, 'changeAvatarNoFileSentError', '2010-10-07 21:04:52'),
+(521, 0, 'pictureFileTypeNotSupportedError', '2010-10-07 21:04:52'),
+(522, 0, 'changeAvatar', '2010-10-07 21:04:52'),
+(523, 0, 'changeAvatarDescription', '2010-10-07 21:04:52'),
+(524, 0, 'nodeCreatePanel', '2010-10-07 21:04:52'),
+(525, 0, 'nodeRemovePanel', '2010-10-07 21:04:52'),
+(526, 0, 'panelNodeDescription', '2010-10-07 21:04:52'),
+(527, 0, 'nodeCreatePanelMessage', '2010-10-07 21:04:52'),
+(528, 0, 'nodeRemovePanelMessage', '2010-10-07 21:04:52'),
+(529, 0, 'dateInXSecondsLong', '2010-10-07 21:04:52'),
+(530, 0, 'dateInXMinutesLong', '2010-10-07 21:04:52'),
+(531, 0, 'dateInXHoursLong', '2010-10-07 21:04:52'),
+(532, 0, 'dateInXDaysLong', '2010-10-07 21:04:52'),
+(533, 0, 'dateInXMonthsLong', '2010-10-07 21:04:52'),
+(534, 0, 'dateInXYearsLong', '2010-10-07 21:04:52'),
+(535, 0, 'dateInXSecondsShort', '2010-10-07 21:04:52'),
+(536, 0, 'dateInXMinutesShort', '2010-10-07 21:04:52'),
+(537, 0, 'dateInXHoursShort', '2010-10-07 21:04:52'),
+(538, 0, 'dateInXDaysShort', '2010-10-07 21:04:52'),
+(539, 0, 'dateInXMonthsShort', '2010-10-07 21:04:52'),
+(540, 0, 'dateInXYearsShort', '2010-10-07 21:04:52'),
+(541, 0, 'dateSecondsLong', '2010-10-07 21:04:52'),
+(542, 0, 'dateMinutesLong', '2010-10-07 21:04:52'),
+(543, 0, 'dateHoursLong', '2010-10-07 21:04:52'),
+(544, 0, 'dateDaysLong', '2010-10-07 21:04:52'),
+(545, 0, 'dateMonthsLong', '2010-10-07 21:04:52'),
+(546, 0, 'dateYearsLong', '2010-10-07 21:04:52'),
+(547, 0, 'dateSecondsShort', '2010-10-07 21:04:52'),
+(548, 0, 'dateMinutesShort', '2010-10-07 21:04:52'),
+(549, 0, 'dateHoursShort', '2010-10-07 21:04:52'),
+(550, 0, 'dateDaysShort', '2010-10-07 21:04:52'),
+(551, 0, 'dateMonthsShort', '2010-10-07 21:04:52'),
+(552, 0, 'dateYearsShort', '2010-10-07 21:04:52'),
+(553, 0, 'loginAlreadyLoggedIn', '2010-10-07 21:04:52'),
+(554, 0, 'logoutButton', '2010-10-07 21:04:52'),
+(555, 0, 'backToReferer', '2010-10-07 21:04:52'),
+(556, 0, 'loginSuccessful', '2010-10-07 21:04:52'),
+(557, 0, 'logoutSuccessful', '2010-10-07 21:04:52'),
+(558, 0, 'theLogin', '2010-10-07 21:04:52'),
+(559, 0, 'theLogout', '2010-10-07 21:04:52'),
+(560, 0, 'groupListMessage', '2010-10-07 21:04:52'),
+(561, 0, 'groupListName', '2010-10-07 21:04:52'),
+(562, 0, 'groupListMemberCount', '2010-10-07 21:04:52'),
+(563, 0, 'groupMemberCountLabel', '2010-10-07 21:04:52');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_stringstranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
 --
--- Erzeugt am: 22. April 2010 um 15:02
--- Aktualisiert am: 10. September 2010 um 21:26
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_stringstranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `value` text COLLATE utf8_bin NOT NULL,
@@ -2222,18 +1978,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_stringstranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_stringstranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_stringstranslation`:
 --   `id`
---       `rack_premanager_strings` -> `id`
+--       `premanager_0_strings` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_stringstranslation`
+-- Daten für Tabelle `premanager_0_stringstranslation`
 --
 
-INSERT INTO `rack_premanager_stringstranslation` (`id`, `languageID`, `value`, `timestamp`) VALUES
+INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `timestamp`) VALUES
 (1, 1, 'Artikelübersicht', '2010-02-27 17:42:54'),
 (1, 2, 'Articles', '2010-02-27 17:43:03'),
 (8, 1, 'Zugriff verweigert', '2010-02-27 17:50:23'),
@@ -2848,7 +2604,7 @@ INSERT INTO `rack_premanager_stringstranslation` (`id`, `languageID`, `value`, `
 (354, 1, 'Herzlich Willkommen bei {organizationTitle html}!', '2010-05-22 21:56:14'),
 (355, 1, 'Bestätigung der E-Mail-Adresse', '2010-05-22 22:00:04'),
 (356, 1, 'Die Funktion "Password vergessen" wurde mit deinem Benutzerkonto durchgeführt.</p>\r\n\r\n<p>Wenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.</p>\r\n\r\n<p>Du kannst dich jetzt mit folgendem Passwort anmelden:</p>\r\n\r\n<p><b>{password html}</b></p>\r\n\r\n<p><b>Achtung:</b> Dieses Passwort verliert nach der nächsten Anmeldung seine Gültigkeit. Ändere also dein Passwort, sobald du dich damit angemeldet hast.', '2010-05-22 22:05:53');
-INSERT INTO `rack_premanager_stringstranslation` (`id`, `languageID`, `value`, `timestamp`) VALUES
+INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `timestamp`) VALUES
 (357, 1, 'Die Funktion "Password vergessen" wurde mit deinem Benutzerkonto durchgeführt.\r\n\r\nWenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.\r\n\r\nDu kannst dich jetzt mit folgendem Passwort anmelden:\r\n\r\n{password html}\r\n\r\nAchtung: Dieses Passwort verliert nach der nächsten Anmeldung seine Gültigkeit. Ändere also dein Passwort, sobald du dich damit angemeldet hast.', '2010-05-22 22:06:15'),
 (358, 1, 'Beim Versenden der E-Mail, die das neue Passwort enthalten sollte, ist ein Problem aufgetreten. Bitte wende dich an die Administration.', '2010-05-22 22:09:42'),
 (359, 1, 'In den nächsten Minuten solltest du eine E-Mail erhalten, in der das neue Passwort enthalten ist. Bitte prüfe auch den Ordner für Spam-Verdacht, falls du innerhalb der nächsten Minuten keine E-Mail erhalten solltest.', '2010-05-22 22:12:38'),
@@ -3042,19 +2798,30 @@ INSERT INTO `rack_premanager_stringstranslation` (`id`, `languageID`, `value`, `
 (549, 1, '{num} Std', '2010-09-10 21:26:20'),
 (550, 1, '{num} Tag{\\''e if(num!=1)}', '2010-09-10 21:26:28'),
 (551, 1, '{num} Monat{\\''e if(num!=1)}', '2010-09-10 21:26:34'),
-(552, 1, '{num} Jahr{\\''e if(num!=1)}', '2010-09-10 21:26:42');
+(552, 1, '{num} Jahr{\\''e if(num!=1)}', '2010-09-10 21:26:42'),
+(553, 1, 'Du bist momentan als {userName html} angemeldet. Wenn du dich unter einem anderen Namen anmelden willst, musst du dich zuerst abmelden.', '2010-09-26 18:16:55'),
+(554, 1, 'Abmelden', '2010-09-26 18:18:52'),
+(555, 1, 'Zurück zur zuletzt besuchten Seite', '2010-09-26 19:23:37'),
+(556, 1, 'Du bist jetzt als "{userName html}" angemeldet.', '2010-09-26 18:40:57'),
+(558, 1, 'Anmeldung', '2010-10-06 21:30:16'),
+(557, 1, 'Du bist jetzt abgemeldet.', '2010-09-26 19:20:13'),
+(559, 1, 'Abmeldung', '2010-10-06 21:30:22'),
+(560, 1, 'Hier sind alle Benutzergruppen aufgelistet.', '2010-10-06 21:39:36'),
+(561, 1, 'Gruppenname', '2010-10-06 21:43:01'),
+(562, 1, 'Anzahl der Mitglieder', '2010-10-06 21:43:07'),
+(563, 1, 'Anzahl der Mitglieder', '2010-10-06 21:54:12');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_styles`
+-- Tabellenstruktur für Tabelle `premanager_0_styles`
 --
--- Erzeugt am: 04. März 2010 um 20:08
--- Aktualisiert am: 24. September 2010 um 23:19
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_styles` (
+CREATE TABLE IF NOT EXISTS `premanager_0_styles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `isDefault` tinyint(1) NOT NULL,
@@ -3062,73 +2829,65 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_styles` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`,`isDefault`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_styles`:
+-- RELATIONEN DER TABELLE `premanager_0_styles`:
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_styles`
+-- Daten für Tabelle `premanager_0_styles`
 --
 
-INSERT INTO `rack_premanager_styles` (`id`, `pluginID`, `isDefault`, `class`, `timestamp`) VALUES
-(1, 0, 1, 'Premanager\\Styles\\ClassicStyle', '2010-09-24 23:06:07');
+INSERT INTO `premanager_0_styles` (`id`, `pluginID`, `isDefault`, `class`, `timestamp`) VALUES
+(1, 1, 1, 'Premanager\\Styles\\ClassicStyle', '2010-10-07 19:42:15');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_trees`
+-- Tabellenstruktur für Tabelle `premanager_0_trees`
 --
--- Erzeugt am: 31. März 2010 um 18:33
--- Aktualisiert am: 25. September 2010 um 22:38
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_trees` (
+CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `class` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=15 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_trees`:
+-- RELATIONEN DER TABELLE `premanager_0_trees`:
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_trees`
+-- Daten für Tabelle `premanager_0_trees`
 --
 
-INSERT INTO `rack_premanager_trees` (`id`, `pluginID`, `class`, `timestamp`) VALUES
-(1, 0, 'Premanager\\Pages\\UsersPage', '2010-09-18 19:56:35'),
-(2, 0, 'Groups', '2010-06-18 23:51:51'),
-(3, 0, 'Viewonline', '2010-06-18 23:51:51'),
-(4, 0, 'Premanager\\Pages\\LoginPage', '2010-09-25 22:09:29'),
-(11, 0, 'PasswordLost', '2010-06-18 23:51:51'),
-(9, 0, 'StructureNode', '2010-07-04 12:23:37'),
-(10, 0, 'Register', '2010-06-18 23:51:51'),
-(12, 0, 'RegistrationData', '2010-06-18 23:51:51'),
-(13, 0, 'ProjectsNode', '2010-07-03 13:23:01'),
-(14, 0, 'ChangeAvatar', '2010-06-26 21:07:16');
+INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `timestamp`) VALUES
+(1, 0, 'Premanager\\Pages\\UsersPage', '2010-10-07 21:05:06'),
+(4, 0, 'Premanager\\Pages\\LoginPage', '2010-10-07 21:05:06'),
+(15, 0, 'Premanager\\Pages\\GroupsPage', '2010-10-07 21:05:06');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_usergroup`
+-- Tabellenstruktur für Tabelle `premanager_0_usergroup`
 --
--- Erzeugt am: 04. März 2010 um 20:08
--- Aktualisiert am: 12. Juni 2010 um 13:44
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_usergroup` (
+CREATE TABLE IF NOT EXISTS `premanager_0_usergroup` (
   `userID` int(10) unsigned NOT NULL,
   `groupID` int(10) unsigned NOT NULL,
   `isLeader` tinyint(1) NOT NULL DEFAULT '0',
@@ -3139,18 +2898,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_usergroup` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_usergroup`:
+-- RELATIONEN DER TABELLE `premanager_0_usergroup`:
 --   `groupID`
---       `rack_premanager_groups` -> `id`
+--       `premanager_0_groups` -> `id`
 --   `userID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_usergroup`
+-- Daten für Tabelle `premanager_0_usergroup`
 --
 
-INSERT INTO `rack_premanager_usergroup` (`userID`, `groupID`, `isLeader`, `joinTime`, `joinIP`, `timestamp`) VALUES
+INSERT INTO `premanager_0_usergroup` (`userID`, `groupID`, `isLeader`, `joinTime`, `joinIP`, `timestamp`) VALUES
 (0, 1, 0, '2010-04-28 19:49:28', '127.0.0.1', '2010-04-28 19:49:28'),
 (2, 2, 1, '2010-04-25 14:03:27', '127.0.0.1', '2010-04-25 16:17:54'),
 (2, 6, 1, '2010-04-26 21:36:03', '127.0.0.1', '2010-04-28 21:52:34'),
@@ -3164,13 +2923,13 @@ INSERT INTO `rack_premanager_usergroup` (`userID`, `groupID`, `isLeader`, `joinT
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_useroptions`
+-- Tabellenstruktur für Tabelle `premanager_0_useroptions`
 --
--- Erzeugt am: 14. Februar 2010 um 21:29
--- Aktualisiert am: 14. Februar 2010 um 22:29
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_useroptions` (
+CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
   `optionID` int(10) unsigned NOT NULL,
   `userID` int(10) unsigned NOT NULL,
   `value` text COLLATE utf8_bin NOT NULL,
@@ -3179,27 +2938,27 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_useroptions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_useroptions`:
+-- RELATIONEN DER TABELLE `premanager_0_useroptions`:
 --   `optionID`
---       `rack_premanager_options` -> `id`
+--       `premanager_0_options` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_useroptions`
+-- Daten für Tabelle `premanager_0_useroptions`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_users`
+-- Tabellenstruktur für Tabelle `premanager_0_users`
 --
--- Erzeugt am: 27. Juni 2010 um 20:46
--- Aktualisiert am: 26. September 2010 um 00:38
--- Letzter Check am: 30. Juni 2010 um 18:18
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 21:42
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_users` (
+CREATE TABLE IF NOT EXISTS `premanager_0_users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `registrationTime` datetime NOT NULL,
@@ -3230,25 +2989,25 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_users` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=71 ;
 
 --
--- Daten für Tabelle `rack_premanager_users`
+-- Daten für Tabelle `premanager_0_users`
 --
 
-INSERT INTO `rack_premanager_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `isBot`, `botIdentifier`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
-(0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 1, 'image/png', '2010-06-27 22:03:06'),
+INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `isBot`, `botIdentifier`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
+(0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 1, 'image/png', '2010-10-07 21:29:57'),
 (2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2010-07-08 20:58:33', '2010-07-08 20:58:33', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, '', 0, 1, 'image/png', '2010-09-26 00:13:02'),
 (70, 'Marc', '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:56:40', '2010-06-11 22:56:40', '93.192.60.138', '92f50201d5d704933e7ec802d7b5425e0a7a831af3bf5eff77e7c745e02f1913', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '000000', 'starwarsfan32@web.de', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 0, '', '2010-07-04 00:12:19');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_usersname`
+-- Tabellenstruktur für Tabelle `premanager_0_usersname`
 --
--- Erzeugt am: 23. April 2010 um 22:26
--- Aktualisiert am: 12. Juni 2010 um 13:47
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_usersname` (
+CREATE TABLE IF NOT EXISTS `premanager_0_usersname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -3263,18 +3022,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_usersname` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=75 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_usersname`:
+-- RELATIONEN DER TABELLE `premanager_0_usersname`:
 --   `id`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_usersname`
+-- Daten für Tabelle `premanager_0_usersname`
 --
 
-INSERT INTO `rack_premanager_usersname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
+INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
 (1, 2, 'jan', 1, 1, '2010-05-24 19:50:20'),
 (2, 2, 'yogu', 0, 0, '2010-04-23 22:31:27'),
 (4, 0, 'guest', 2, 1, '2010-05-24 19:58:28'),
@@ -3286,14 +3045,13 @@ INSERT INTO `rack_premanager_usersname` (`nameID`, `id`, `name`, `languageID`, `
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_userstranslation`
+-- Tabellenstruktur für Tabelle `premanager_0_userstranslation`
 --
--- Erzeugt am: 14. Februar 2010 um 20:14
--- Aktualisiert am: 04. Juli 2010 um 12:28
--- Letzter Check am: 12. Juni 2010 um 00:36
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_userstranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_0_userstranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -3302,18 +3060,18 @@ CREATE TABLE IF NOT EXISTS `rack_premanager_userstranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_userstranslation`:
+-- RELATIONEN DER TABELLE `premanager_0_userstranslation`:
 --   `id`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_userstranslation`
+-- Daten für Tabelle `premanager_0_userstranslation`
 --
 
-INSERT INTO `rack_premanager_userstranslation` (`id`, `languageID`, `title`, `timestamp`) VALUES
+INSERT INTO `premanager_0_userstranslation` (`id`, `languageID`, `title`, `timestamp`) VALUES
 (0, 1, 'Gast', '2010-07-04 12:28:28'),
 (6, 1, '', '2010-04-23 22:42:05'),
 (9, 1, '', '2010-04-23 22:43:59'),
@@ -3331,47 +3089,283 @@ INSERT INTO `rack_premanager_userstranslation` (`id`, `languageID`, `title`, `ti
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_premanager_widgets`
+-- Tabellenstruktur für Tabelle `premanager_0_widgets`
 --
--- Erzeugt am: 03. März 2010 um 21:07
--- Aktualisiert am: 18. Juni 2010 um 23:54
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_premanager_widgets` (
+CREATE TABLE IF NOT EXISTS `premanager_0_widgets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `class` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 --
--- RELATIONEN DER TABELLE `rack_premanager_widgets`:
+-- RELATIONEN DER TABELLE `premanager_0_widgets`:
 --   `pluginID`
---       `rack_premanager_plugins` -> `id`
+--       `premanager_0_plugins` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_premanager_widgets`
+-- Daten für Tabelle `premanager_0_widgets`
 --
 
-INSERT INTO `rack_premanager_widgets` (`id`, `pluginID`, `class`, `timestamp`) VALUES
-(1, 0, 'ViewonlineWidget', '2010-06-18 23:51:07'),
-(2, 0, 'LoginWidget', '2010-06-18 23:51:07');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_articles`
+-- Tabellenstruktur für Tabelle `premanager_2_articles`
 --
--- Erzeugt am: 01. April 2010 um 16:49
--- Aktualisiert am: 01. April 2010 um 16:49
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_articles` (
+CREATE TABLE IF NOT EXISTS `premanager_2_articles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `createTime` datetime NOT NULL,
+  `editTime` datetime NOT NULL,
+  `editTimes` int(10) unsigned NOT NULL,
+  `creatorID` int(10) unsigned NOT NULL,
+  `creatorIP` varchar(255) COLLATE utf8_bin NOT NULL,
+  `editorID` int(10) unsigned NOT NULL,
+  `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `createTime` (`createTime`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+
+--
+-- RELATIONEN DER TABELLE `premanager_2_articles`:
+--   `creatorID`
+--       `premanager_0_users` -> `id`
+--   `editorID`
+--       `premanager_0_users` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_2_articles`
+--
+
+INSERT INTO `premanager_2_articles` (`id`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
+(1, '2010-06-11 17:20:47', '2010-06-18 17:55:39', 15, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 19:55:39'),
+(2, '2010-06-11 22:31:56', '2010-06-18 17:42:18', 11, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 19:42:18'),
+(4, '2010-06-12 13:30:32', '2010-06-18 17:29:48', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 19:29:48'),
+(6, '2010-06-18 18:06:01', '2010-06-18 18:06:34', 2, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-18 20:06:34'),
+(7, '2010-06-19 10:04:34', '2010-06-19 10:05:03', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-19 12:05:03');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_2_articlesname`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_2_articlesname` (
+  `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `languageID` int(10) unsigned NOT NULL,
+  `inUse` tinyint(1) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`nameID`),
+  UNIQUE KEY `name` (`name`),
+  KEY `articleID` (`id`),
+  KEY `langaugeID` (`languageID`),
+  KEY `inUse` (`inUse`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+
+--
+-- RELATIONEN DER TABELLE `premanager_2_articlesname`:
+--   `id`
+--       `premanager_2_articles` -> `id`
+--   `languageID`
+--       `premanager_0_languages` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_2_articlesname`
+--
+
+INSERT INTO `premanager_2_articlesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
+(1, 1, 'blog-funktion-im-aufbau', 1, 1, '2010-06-11 19:20:47'),
+(2, 2, 'und-so-gehts', 1, 1, '2010-06-12 00:31:56'),
+(4, 4, 'der-erste-wysiwyg-artikel', 1, 1, '2010-06-12 15:30:32'),
+(6, 6, 'premanager-markup-language-integriert', 1, 1, '2010-06-18 20:06:01'),
+(7, 7, 'ein-test', 1, 1, '2010-06-19 12:04:34');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_2_articlestranslation`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_2_articlestranslation` (
+  `id` int(10) unsigned NOT NULL,
+  `languageID` int(10) unsigned NOT NULL,
+  `publishedRevisionID` int(10) unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `title` varchar(255) COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`languageID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- RELATIONEN DER TABELLE `premanager_2_articlestranslation`:
+--   `languageID`
+--       `premanager_0_languages` -> `id`
+--   `publishedRevisionID`
+--       `premanager_2_revisions` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_2_articlestranslation`
+--
+
+INSERT INTO `premanager_2_articlestranslation` (`id`, `languageID`, `publishedRevisionID`, `name`, `title`, `timestamp`) VALUES
+(1, 1, 3, 'blog-funktion-im-aufbau', 'Blog-Funktion im Aufbau', '2010-06-12 00:16:43'),
+(2, 1, 11, 'und-so-gehts', 'Und so geht''s', '2010-06-18 19:42:18'),
+(4, 1, 0, 'der-erste-wysiwyg-artikel', 'Der Erste Wysiwyg-Artikel', '2010-06-12 15:30:32'),
+(6, 1, 13, 'premanager-markup-language-integriert', 'Premanager Markup Language integriert', '2010-06-18 20:06:34'),
+(7, 1, 0, 'ein-test', 'Ein Test', '2010-06-19 12:04:34');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_2_revisions`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_2_revisions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `articleID` int(10) unsigned NOT NULL,
+  `revision` int(10) unsigned NOT NULL,
+  `languageID` int(10) unsigned NOT NULL,
+  `createTime` datetime NOT NULL,
+  `creatorID` int(10) unsigned NOT NULL,
+  `creatorIP` varchar(255) COLLATE utf8_bin NOT NULL,
+  `text` text COLLATE utf8_bin NOT NULL,
+  `summary` text COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `articleRevisionLanguage` (`articleID`,`revision`,`languageID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+--
+-- RELATIONEN DER TABELLE `premanager_2_revisions`:
+--   `articleID`
+--       `premanager_2_articles` -> `id`
+--   `creatorID`
+--       `premanager_0_users` -> `id`
+--   `languageID`
+--       `premanager_0_languages` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_2_revisions`
+--
+
+INSERT INTO `premanager_2_revisions` (`id`, `articleID`, `revision`, `languageID`, `createTime`, `creatorID`, `creatorIP`, `text`, `summary`, `timestamp`) VALUES
+(1, 1, 1, 1, '2010-06-11 17:20:47', 2, '127.0.0.1', 'Heyho!\r\n\r\nDie Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n\r\nGrüße', 'Der Artikel wurde erstellt', '2010-06-11 19:20:47'),
+(2, 1, 2, 1, '2010-06-11 20:25:16', 2, '127.0.0.1', 'Heyho!\r\n\r\nDie Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n\r\nGrüße\r\n\r\nPS: Jetzt kommt auch noch das Bearbeiten! :-)', 'Hinweis zur Bearbeitungs-Funktion hinzugefügt', '2010-06-11 22:25:16'),
+(3, 1, 3, 1, '2010-06-11 20:26:37', 2, '127.0.0.1', 'Heyho!\r\n\r\nDie Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n\r\nGrüße\r\n\r\nPS: Jetzt kommt auch noch das Bearbeiten! :-)\r\n\r\nPPS: Die Bearbeitungs-Funktion klappt sogar.', 'Information zur Funktionstüchtigkeit der Bearbeitungs-Funktion', '2010-06-11 22:26:37'),
+(4, 2, 1, 1, '2010-06-11 22:31:56', 2, '127.0.0.1', 'Hallo,\r\n\r\nich möchte hier kurz erklären, wie der Blog im allgemeinen Funktioniert.\r\n\r\nÜber die Schaltfläche "Verfassen" in der Blogübersicht kannst du einen neuen Artikel erstellen. Artikel haben einen Titel und einen Text; und beides kann übersetzt werden.\r\n\r\nSchickst du das Formular ab, ist der Artikel vorerst nur für Redakteure sichtbar. Über die Schaltfläche "Bearbeiten" kann er verändert werden. Das besondere: Die alte Version bleibt bestehen. Mit dem Knopf "Versionen" siehst du eine Liste aller Versionen. Durch Anklicken des Datums wird die jeweilige Version angezeigt.\r\n\r\nUm den Artikel Gästen sichtbar zu machen, muss eine Version veröffentlicht werden. Um das tun zu können, muss man Moderator sein. Dann findet sich in der Versionsansicht eine Schaltfläche zum Veröffentlichen einer bestimmten Version (fahre mit der Maus über den Listeneintrag, um den Button sichtbar zu machen [muss man hier häufig tun]). Außerdem kann in der Artikelansicht die aktuelle Version veröffentlicht werden (Knopf ganz oben).\r\n\r\nWenn eine Version veröffentlicht wurde, ist es möglich, weitere, nicht veröffentlichte, Versionen zu erstellen, hier und da etwas rumzubasteln. Veröffentlicht werden diese Änderungen wie oben beschrieben.\r\n\r\nMöchte man irgendwann einen veröffentlichten Artikel ganz aus dem Netz nehmen, sodass er nur noch für Redakteure sichtbar ist, verwendet man die Schaltfäche "Verstecken". Das ist keine Zauberei; die Funktion gibt einfach an, dass keine Version mehr öffentlich ist. Und deshalb wird der Artikel für Gäste gar nicht angezeigt.\r\n\r\nDas war''s soweit, Funktionen folgen :-)\r\n\r\nDanke für''s Lesen und Weiterbilden,\r\nJan', 'Der Artikel wurde erstellt', '2010-06-12 00:31:56'),
+(7, 1, 4, 1, '2010-06-12 13:01:42', 2, '127.0.0.1', '<p>\r\n	Heyho!\r\n</p>\r\n<p>\r\n	Die Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.\r\n</p>\r\n<p>\r\n	Grüße\r\n</p>\r\n<p>\r\n	PS: Jetzt kommt auch noch das Bearbeiten! :-)\r\n</p>\r\n<p>\r\n	PPS: Die Bearbeitungs-Funktion klappt sogar.\r\n</p>\r\n<p>\r\n	PPPS: Jetzt mit Wysiwyg-Editor :-)\r\n</p>', 'An XML-Format angepasst', '2010-06-12 15:01:42'),
+(8, 4, 1, 1, '2010-06-12 13:30:32', 2, '127.0.0.1', '<p>\r\n	Hallo!\r\n</p>\r\n<p>\r\n	Ich schreibe hier gerade meinen ersten Wysiwyg-Artikel. Das heißt, ich benutze einen Editor, in dem ich formatieren kann, wie man es von Textverarbeitungsprogrammen wie Microsoft Word oder OpenOffice.org Writer gewöhnt ist.\r\n</p>\r\n<p>\r\n	Nachfolgend die bisherigen Formatierungsmöglichkeiten:\r\n</p>\r\n<ul>\r\n	<li>\r\n		<p>\r\n			Überschriften\r\n		</p>\r\n	</li>\r\n	<li>\r\n		<p>\r\n			Listen\r\n		</p>\r\n	</li>\r\n	<li>\r\n		<p>\r\n			Links\r\n		</p>\r\n	</li>\r\n</ul>\r\n<h2>\r\n	Überschriften\r\n</h2>\r\n<p>\r\n	Es gibt drei Typen von Überschriften, in drei verschiedenen Größen.\r\n</p>\r\n<h2>\r\n	Listen\r\n</h2>\r\n<p>\r\n	Du kannst zwischen Aufzählungen (mit Punkten) und nummerierten Listen (mit Zahlen) wählen.\r\n</p>\r\n<h2>\r\n	Links\r\n</h2>\r\n<p>\r\n	Bisher sind nur Verweise auf externe Seiten möglich. Beispiel: \r\n	<a href="http://www.juvenile-studios.de">\r\n		 Juvenile Studios\r\n	</a>\r\n</p>\r\n<p>\r\n	Das war''s soweit, weitere Funktionen folgen.\r\n</p>\r\n<p>\r\n	Grüße,\r\n	<br />\r\n	Jan\r\n</p>', 'Der Artikel wurde erstellt', '2010-06-12 15:30:32'),
+(12, 1, 5, 1, '2010-06-18 17:55:39', 2, '127.0.0.1', '<p>Heyho!</p>\r\n<p>Die Blog-Verfassen-Funktion ist jetzt fast fertig, das Bearbeiten kommt auch noch.</p>\r\n<p>Grüße</p>\r\n<p>PS: Jetzt kommt auch noch das Bearbeiten! :-)</p>\r\n<p>PPS: Die Bearbeitungs-Funktion klappt sogar.</p>\r\n<p>PPPS: Jetzt mit Wysiwyg-Editor :-)</p>', 'Erneut abgeschickt', '2010-06-18 19:55:39'),
+(10, 4, 2, 1, '2010-06-18 17:29:48', 2, '127.0.0.1', '<p>Hallo!</p>\r\n<p>Ich schreibe hier gerade meinen ersten Wysiwyg-Artikel. Das heißt, ich benutze einen Editor, in dem ich formatieren kann, wie man es von Textverarbeitungsprogrammen wie Microsoft Word oder OpenOffice.org Writer gewöhnt ist.</p>\r\n<p>Nachfolgend die bisherigen Formatierungsmöglichkeiten:</p>\r\n<ul>\r\n	<li>\r\n		<p>Überschriften</p>\r\n	</li>\r\n	<li>\r\n		<p>Listen</p>\r\n	</li>\r\n	<li>\r\n		<p>Links</p>\r\n	</li>\r\n</ul>\r\n<h2>\r\nÜberschriften</h2>\r\n<p>Es gibt drei Typen von Überschriften, in drei verschiedenen Größen.</p>\r\n<h2>\r\nListen</h2>\r\n<p>Du kannst zwischen Aufzählungen (mit Punkten) und nummerierten Listen (mit Zahlen) wählen.</p>\r\n<h2>\r\nLinks</h2>\r\n<p>Bisher sind nur Verweise auf externe Seiten möglich. Beispiel: <a href="http://www.juvenile-studios.de"> Juvenile Studios</a></p>\r\n<p>Das war''s soweit, weitere Funktionen folgen.</p>\r\n<p>Grüße, <br /> Jan</p>', 'Erneut abgeschickt', '2010-06-18 19:29:48'),
+(11, 2, 2, 1, '2010-06-18 17:42:06', 2, '127.0.0.1', '<p>Hallo,</p>\r\n<p>ich möchte hier kurz erklären, wie der Blog im allgemeinen Funktioniert.</p>\r\n<p>Über die Schaltfläche &quot;Verfassen&quot; in der Blogübersicht kannst du einen neuen Artikel erstellen. Artikel haben einen Titel und einen Text; und beides kann übersetzt werden.</p>\r\n<p>Schickst du das Formular ab, ist der Artikel vorerst nur für Redakteure sichtbar. Über die Schaltfläche &quot;Bearbeiten&quot; kann er verändert werden. Das besondere: Die alte Version bleibt bestehen. Mit dem Knopf &quot;Versionen&quot; siehst du eine Liste aller Versionen. Durch Anklicken des Datums wird die jeweilige Version angezeigt.</p>\r\n<p>Um den Artikel Gästen sichtbar zu machen, muss eine Version veröffentlicht werden. Um das tun zu können, muss man Moderator sein. Dann findet sich in der Versionsansicht eine Schaltfläche zum Veröffentlichen einer bestimmten Version (fahre mit der Maus über den Listeneintrag, um den Button sichtbar zu machen [muss man hier häufig tun]). Außerdem kann in der Artikelansicht die aktuelle Version veröffentlicht werden (Knopf ganz oben).</p>\r\n<p>Wenn eine Version veröffentlicht wurde, ist es möglich, weitere, nicht veröffentlichte, Versionen zu erstellen, hier und da etwas rumzubasteln. Veröffentlicht werden diese Änderungen wie oben beschrieben.</p>\r\n<p>Möchte man irgendwann einen veröffentlichten Artikel ganz aus dem Netz nehmen, sodass er nur noch für Redakteure sichtbar ist, verwendet man die Schaltfäche &quot;Verstecken&quot;. Das ist keine Zauberei; die Funktion gibt einfach an, dass keine Version mehr öffentlich ist. Und deshalb wird der Artikel für Gäste gar nicht angezeigt.</p>\r\n<p>Das war''s soweit, Funktionen folgen :-)</p>\r\n<p>Danke für''s Lesen und Weiterbilden,<br />Jan</p>', 'Konvertiert in PML', '2010-06-18 19:42:06'),
+(13, 6, 1, 1, '2010-06-18 18:06:01', 2, '127.0.0.1', '<p>Hallo,</p>\r\n<p>soeben habe ich den aktuellen Stand der Premanager Markup Language eingebaut. Dabei handelt es sich um eine auf <a href="http://de.wikipedia.org/wiki/Extensible_Markup_Language">XML</a> basierende Sprache, in der formatierte Texte gespeichert werden. Im <a href="http://letsrack.juvenile-studios.de/de/blog/der-erste-wysiwyg-artikel">WYSIWYG-Editor</a> war sie schon in Verwendung, jetzt aber wird sie vollends unterstützt, denn der im PML-Format gespeicherte Text wird nun  beim Anzeigen  in <a href="http://de.wikipedia.org/wiki/Hypertext_Markup_Language">HTML</a>-Code umgewandelt, den jeder Browser versteht.</p>\r\n<p>Grüße,<br />Jan</p>', 'Der Artikel wurde erstellt', '2010-06-18 20:06:01'),
+(14, 7, 1, 1, '2010-06-19 10:04:34', 2, '127.0.0.1', 'Ohne Javascript', 'Der Artikel wurde erstellt', '2010-06-19 12:04:34'),
+(15, 7, 2, 1, '2010-06-19 10:05:03', 2, '127.0.0.1', 'Ohne Javascript<p><p>a</p></p>', '', '2010-06-19 12:05:03');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_5_creativepages`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_5_creativepages` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nodeID` int(10) unsigned NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nodeID` (`nodeID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+
+--
+-- RELATIONEN DER TABELLE `premanager_5_creativepages`:
+--   `nodeID`
+--       `premanager_0_nodes` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_5_creativepages`
+--
+
+INSERT INTO `premanager_5_creativepages` (`id`, `nodeID`, `timestamp`) VALUES
+(1, 0, '2010-03-31 22:53:40');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_5_creativepagestranslation`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_5_creativepagestranslation` (
+  `id` int(10) unsigned NOT NULL,
+  `languageID` int(10) unsigned NOT NULL,
+  `text` text COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`languageID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- RELATIONEN DER TABELLE `premanager_5_creativepagestranslation`:
+--   `id`
+--       `premanager_5_creativepages` -> `id`
+--   `languageID`
+--       `premanager_0_languages` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_5_creativepagestranslation`
+--
+
+INSERT INTO `premanager_5_creativepagestranslation` (`id`, `languageID`, `text`, `timestamp`) VALUES
+(1, 1, '<p>Herzlich Willkommen bei <b>Rack</b>, dem momentanen Entwicklungsstand der Organisationssoftware <b>Premanager</b>!</p>\r\n\r\n<p>Da die Navigation gerade noch in Arbeit ist, sind die einzelnen Kategorien noch nicht richtig verlinkt. Benutze deshalb die folgende Liste, um diese Website zu erkunden.</p>\r\n\r\n<ul>\r\n<li><p><a href="./mitglieder/benutzer">Benutzerliste</a></p></li>\r\n<li><p><a href="./mitglieder/gruppen">Gruppenliste</a></p></li>\r\n<li><p><a href="./mitglieder/wer-ist-online">Wer ist online?</a></p></li>\r\n<li><p><a href="./anmeldung">Anmeldeformular</a></p></li>\r\n<li><p><a href="./blog">Blog</a></p></li>\r\n<li><p><a href="./admin/struktur">Seitenstruktur</a></p></li>\r\n</ul>\r\n\r\n<p>Du kannst auch jederzeit auf Englisch umschalten, indem du das <i>de</i> in der Adresszeile durch ein <i>en</i> austauschst.</p>\r\n\r\n<p>Genauso ist es möglich, ein Projekt auszuwählen: Füge dafür <i>/zwei-gesichter</i> direkt nach dem Servernamen ein.</p>\r\n\r\n<p>Ich wünsche dir viel Spaß beim Erkunden der bisherigen Funktionen von Premanager 1.0. Wenn du noch fragen hast, kontaktiere mich bitte <a href="mailto:info@yogularm.de">E-Mail</a>. Danke!</p>', '2010-05-23 00:49:56'),
+(1, 2, '<p>Welcome to <b>Rack</b>, the current development snapshot of organization software <b>Premanager</b>!</p>\r\n\r\n<p>Because the navigation is still in progress, you can use the following list to reach some more content.</p>\r\n\r\n<ul>\r\n<li><p><a href="./members/users">User List</a></p></li>\r\n<li><p><a href="./members/groups">Group List</a></p></li>\r\n<li><p><a href="./members/who-is-online">Who is online?</a></p></li>\r\n<li><p><a href="./login">Login</a></p></li>\r\n<li><p><a href="./blog">Blog</a></p></li>\r\n<li><p><a href="./admin/structure">Structure</a></p></li>\r\n</ul>\r\n\r\n<p>You can always switch to German by replacing <i>en</i> in address bar by <i>de</i>.</p>\r\n\r\n<p>It is also possible to select a project: Insert <i>/zwei-gesichter</i> directly after server name.</p>\r\n\r\n<p>Happy discovering new features of Premanager 1.0. Feel free to contact my via <a href="mailto:info@yogularm.de">e-mail</a>. Thank you!</p>', '2010-05-23 00:50:10');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_6_articles`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_6_articles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `categoryID` int(10) unsigned NOT NULL,
   `createTime` datetime NOT NULL,
@@ -3387,33 +3381,33 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_articles` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_articles`:
+-- RELATIONEN DER TABELLE `premanager_6_articles`:
 --   `categoryID`
---       `rack_wiki_categories` -> `id`
+--       `premanager_6_categories` -> `id`
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_articles`
+-- Daten für Tabelle `premanager_6_articles`
 --
 
-INSERT INTO `rack_wiki_articles` (`id`, `categoryID`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
+INSERT INTO `premanager_6_articles` (`id`, `categoryID`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
 (1, 2, '2010-04-01 16:14:13', '2010-04-01 16:14:13', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-04-01 16:14:13');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_articlesname`
+-- Tabellenstruktur für Tabelle `premanager_6_articlesname`
 --
--- Erzeugt am: 29. Mai 2010 um 15:24
--- Aktualisiert am: 29. Mai 2010 um 15:24
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_articlesname` (
+CREATE TABLE IF NOT EXISTS `premanager_6_articlesname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -3428,30 +3422,29 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_articlesname` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_articlesname`:
+-- RELATIONEN DER TABELLE `premanager_6_articlesname`:
 --   `id`
---       `rack_wiki_articles` -> `id`
+--       `premanager_6_articles` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_articlesname`
+-- Daten für Tabelle `premanager_6_articlesname`
 --
 
-INSERT INTO `rack_wiki_articlesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
+INSERT INTO `premanager_6_articlesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
 (1, 1, 'biografie', 0, 0, '2010-04-01 16:18:28'),
 (2, 1, 'biography', 0, 0, '2010-04-01 16:18:28');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_articlestranslation`
+-- Tabellenstruktur für Tabelle `premanager_6_articlestranslation`
 --
--- Erzeugt am: 01. April 2010 um 16:49
--- Aktualisiert am: 06. Juni 2010 um 00:33
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_articlestranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_6_articlestranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -3462,34 +3455,34 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_articlestranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_articlestranslation`:
+-- RELATIONEN DER TABELLE `premanager_6_articlestranslation`:
 --   `id`
---       `rack_wiki_articles` -> `id`
+--       `premanager_6_articles` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --   `publicRevisionID`
---       `rack_wiki_revisions` -> `id`
+--       `premanager_6_revisions` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_articlestranslation`
+-- Daten für Tabelle `premanager_6_articlestranslation`
 --
 
-INSERT INTO `rack_wiki_articlestranslation` (`id`, `languageID`, `name`, `title`, `publicRevisionID`, `timestamp`) VALUES
+INSERT INTO `premanager_6_articlestranslation` (`id`, `languageID`, `name`, `title`, `publicRevisionID`, `timestamp`) VALUES
 (1, 1, 'biografie', 'Biografie', 1, '2010-04-01 16:51:02'),
 (1, 2, 'biography', 'Biography', 2, '2010-04-01 16:51:09');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_categories`
+-- Tabellenstruktur für Tabelle `premanager_6_categories`
 --
--- Erzeugt am: 01. April 2010 um 16:09
--- Aktualisiert am: 01. April 2010 um 16:18
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_categories` (
+CREATE TABLE IF NOT EXISTS `premanager_6_categories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parentID` int(10) unsigned NOT NULL,
   `indexArticleID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -3506,36 +3499,36 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_categories` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_categories`:
+-- RELATIONEN DER TABELLE `premanager_6_categories`:
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `editorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `indexArticleID`
---       `rack_wiki_articles` -> `id`
+--       `premanager_6_articles` -> `id`
 --   `parentID`
---       `rack_wiki_categories` -> `id`
+--       `premanager_6_categories` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_categories`
+-- Daten für Tabelle `premanager_6_categories`
 --
 
-INSERT INTO `rack_wiki_categories` (`id`, `parentID`, `indexArticleID`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
-(0, 0, 0, '2010-04-01 16:09:16', '2010-04-01 16:09:16', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-04-01 16:11:46'),
+INSERT INTO `premanager_6_categories` (`id`, `parentID`, `indexArticleID`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
+(1, 0, 0, '2010-04-01 16:09:16', '2010-04-01 16:09:16', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-04-01 16:11:46'),
 (2, 0, 1, '2010-04-01 16:12:55', '2010-04-01 16:12:55', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-04-01 16:18:37');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_categoriesname`
+-- Tabellenstruktur für Tabelle `premanager_6_categoriesname`
 --
--- Erzeugt am: 29. Mai 2010 um 15:24
--- Aktualisiert am: 29. Mai 2010 um 15:24
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_categoriesname` (
+CREATE TABLE IF NOT EXISTS `premanager_6_categoriesname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -3550,30 +3543,29 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_categoriesname` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_categoriesname`:
+-- RELATIONEN DER TABELLE `premanager_6_categoriesname`:
 --   `id`
---       `rack_wiki_categories` -> `id`
+--       `premanager_6_categories` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_categoriesname`
+-- Daten für Tabelle `premanager_6_categoriesname`
 --
 
-INSERT INTO `rack_wiki_categoriesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
+INSERT INTO `premanager_6_categoriesname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
 (1, 2, 'über-uns', 0, 0, '2010-04-01 16:13:51'),
 (2, 2, 'about-us', 0, 0, '2010-04-01 16:13:51');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_categoriestranslation`
+-- Tabellenstruktur für Tabelle `premanager_6_categoriestranslation`
 --
--- Erzeugt am: 01. April 2010 um 16:03
--- Aktualisiert am: 01. April 2010 um 16:13
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_categoriestranslation` (
+CREATE TABLE IF NOT EXISTS `premanager_6_categoriestranslation` (
   `id` int(10) unsigned NOT NULL,
   `languageID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -3583,18 +3575,18 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_categoriestranslation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_categoriestranslation`:
+-- RELATIONEN DER TABELLE `premanager_6_categoriestranslation`:
 --   `id`
---       `rack_wiki_categories` -> `id`
+--       `premanager_6_categories` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_categoriestranslation`
+-- Daten für Tabelle `premanager_6_categoriestranslation`
 --
 
-INSERT INTO `rack_wiki_categoriestranslation` (`id`, `languageID`, `name`, `title`, `timestamp`) VALUES
+INSERT INTO `premanager_6_categoriestranslation` (`id`, `languageID`, `name`, `title`, `timestamp`) VALUES
 (0, 1, '', 'Startseite', '2010-04-01 16:12:13'),
 (0, 2, '', 'Home Page', '2010-04-01 16:12:13'),
 (2, 1, 'über-uns', 'Über uns', '2010-04-01 16:13:39'),
@@ -3603,14 +3595,14 @@ INSERT INTO `rack_wiki_categoriestranslation` (`id`, `languageID`, `name`, `titl
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `rack_wiki_revisions`
+-- Tabellenstruktur für Tabelle `premanager_6_revisions`
 --
--- Erzeugt am: 01. April 2010 um 16:43
--- Aktualisiert am: 06. Juni 2010 um 00:33
--- Letzter Check am: 06. Juni 2010 um 00:33
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 20:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
-CREATE TABLE IF NOT EXISTS `rack_wiki_revisions` (
+CREATE TABLE IF NOT EXISTS `premanager_6_revisions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `articleID` int(10) unsigned NOT NULL,
   `revision` int(10) unsigned NOT NULL,
@@ -3628,20 +3620,20 @@ CREATE TABLE IF NOT EXISTS `rack_wiki_revisions` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
--- RELATIONEN DER TABELLE `rack_wiki_revisions`:
+-- RELATIONEN DER TABELLE `premanager_6_revisions`:
 --   `articleID`
---       `rack_wiki_articles` -> `id`
+--       `premanager_6_articles` -> `id`
 --   `creatorID`
---       `rack_premanager_users` -> `id`
+--       `premanager_0_users` -> `id`
 --   `languageID`
---       `rack_premanager_languages` -> `id`
+--       `premanager_0_languages` -> `id`
 --
 
 --
--- Daten für Tabelle `rack_wiki_revisions`
+-- Daten für Tabelle `premanager_6_revisions`
 --
 
-INSERT INTO `rack_wiki_revisions` (`id`, `articleID`, `revision`, `languageID`, `createTime`, `creatorID`, `creatorIP`, `text`, `summary`, `timestamp`) VALUES
+INSERT INTO `premanager_6_revisions` (`id`, `articleID`, `revision`, `languageID`, `createTime`, `creatorID`, `creatorIP`, `text`, `summary`, `timestamp`) VALUES
 (1, 1, 1, 1, '2010-04-01 16:41:33', 2, '127.0.0.1', 'Juvenile Studios ist eine Film-Crew, bestehend aus dreizehn Kindern und Jugendlichen zwischen neun und 16 Jahren. Im Herbst 2008 Jahres drehten sie einen fünfzehnminütigen Spielfilm und begeisterten damit weitere Schauspieler. Januar 2009 fand die Premiere des zweiten Films Das Puzzle der Waisen statt. Momentan arbeitet das Team an dem Film Zwei Gesichter, Trau schau wem!.', 'Biography copied from http://www.lastfm.de/music/Juvenile+Studios/+wiki', '2010-04-01 16:44:44'),
 (2, 1, 1, 2, '2010-04-01 16:47:04', 2, '127.0.0.1', 'Juvenile Studios is a film crew of thirteen children and juveniles between nine and 16 years. In autumn 2008, they produced a fifteen-minute movie and attracked further actors. In January, 2010, there was the premiere of their second film called "Das Puzzle der Waisen". At the moment the crew is producing "Zwei Gesichter, Trau schau wem!"', 'Copied from null-project''s description', '2010-04-01 16:47:04');
 

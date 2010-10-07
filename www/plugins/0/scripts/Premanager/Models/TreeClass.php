@@ -150,7 +150,7 @@ final class TreeClass extends Model {
 		}
 	
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_Trees')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'Trees')." ".
 			"(pluginID, class) ".
 			"VALUES ('$plugin->id', '".DataBase::escape($className)."'");
 		$id = DataBase::insertID();
@@ -174,7 +174,7 @@ final class TreeClass extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(tree.treeID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Trees')." AS tree");
+				"FROM ".DataBase::formTableName('Premanager', 'Trees')." AS tree");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -202,7 +202,7 @@ final class TreeClass extends Model {
 				'id' => DataType::NUMBER,
 				'plugin' => Plugin::getDescriptor(),
 				'className' => DataType::STRING),
-				'Premanager_Trees', array(__CLASS__, 'getByID'));
+				'Premanager', 'Trees', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}                                           
@@ -279,12 +279,12 @@ final class TreeClass extends Model {
 		// Delete nodes
 		$result = DataBase::query(
 			"SELECT node.id ".
-			"FROM ".DataBase::formTableName('Premanger_Nodes')." AS node ".
+			"FROM ".DataBase::formTableName('Premanger', 'Nodes')." AS node ".
 			"WHERE node.treeID = '$this->_id'");
 		// Change node type to SIMPLE because otherwise we could not delete 
 		// them
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanger_Nodes')." ".
+			"UPDATE ".DataBase::formTableName('Premanger', 'Nodes')." ".
 			"SET id = 0 ".
 			"WHERE treeID = '$this->_id'");
 		while ($result->next()) {
@@ -293,7 +293,7 @@ final class TreeClass extends Model {
 		}
 			
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanger_Trees')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanger', 'Trees')." ".
 			"WHERE tree.id = '$this->_id'");
 			
 		if (self::$_count !== null)
@@ -307,7 +307,7 @@ final class TreeClass extends Model {
 	private function load() {
 		$result = DataBase::query(
 			"SELECT tree.pluginID, tree.class ".    
-			"FROM ".DataBase::formTableName('Premanager_Trees')." AS tree ".
+			"FROM ".DataBase::formTableName('Premanager', 'Trees')." AS tree ".
 			"WHERE tree.id = '$this->_id'");
 		
 		if (!$result->next())

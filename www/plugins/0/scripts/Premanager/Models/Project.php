@@ -278,7 +278,7 @@ final class Project extends Model {
 	public static function getByName($name) {
 		$result = DataBase::query(
 			"SELECT name.projectID ".            
-			"FROM ".DataBase::formTableName('Premanager_ProjectsName')." AS name ".
+			"FROM ".DataBase::formTableName('Premanager', 'ProjectsName')." AS name ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name)."'"));
 		if ($result->next()) {
 			$project = self::createFromID($result->get('projectID'));
@@ -413,7 +413,7 @@ final class Project extends Model {
 		if (self::_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(project.projectID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Projects')." AS project");
+				"FROM ".DataBase::formTableName('Premanager', 'Projects')." AS project");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -451,7 +451,7 @@ final class Project extends Model {
 				'createTime' => DataType::DATE_TIME,
 				'editor' => User::getDescriptor(),
 				'editTime' => DataType::DATE_TIME),
-				'Premanager_Projects', array(__CLASS__, 'getByID'));
+				'Premanager', 'Projects', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}                
@@ -569,7 +569,7 @@ final class Project extends Model {
 		if (!$this->_rootNode) {
 			$result = DataBase::query(
 				"SELECT node.id ".
-				"FROM ".DataBase::formTableName("Premanager_Nodes")." AS node ".
+				"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 				"WHERE node.parentID = '0' ".
 					"AND node.projectID = '$this->_id'");
 			if (!$result->next())
@@ -653,13 +653,13 @@ final class Project extends Model {
 			    
 		// Delete project-specified options
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_ProjectOptions')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'ProjectOptions')." ".
 			"WHERE projectID = '$this->_id'");
 			
 		// Delete structure
 		$result = DataBase::query(
 			"SELECT node.nodeID ".
-			"FROM ".DataBase::formTableName('Premanager_Nodes')." AS node ".
+			"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 			"WHERE node.projectID = '$this->_id'");
 		while ($result->next()) {
 			// Delete this node
@@ -669,7 +669,7 @@ final class Project extends Model {
 				    
 			// Delete group permissions
 			DataBase::query(
-				"DELETE FROM ".DataBase::formTableName('Premanager_NodeGroup')." ".
+				"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 				"WHERE nodeID = '".$result->get('nodeID')."'");
 		}
 
@@ -771,7 +771,7 @@ final class Project extends Model {
 				"translation.author, translation.copyright, translation.description, ".
 				"translation.keywords, project.createTime, project.creatorID, ".
 				"project.editorID, project.editTime, project.editTimes ".
-			"FROM ".DataBase::formTableName('Premanager_Projects')." AS project ",
+			"FROM ".DataBase::formTableName('Premanager', 'Projects')." AS project ",
 			/* translating */
 			"WHERE project.id = '$this->id'");
 		

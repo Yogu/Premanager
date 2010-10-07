@@ -403,7 +403,7 @@ final class User extends Model {
 	public static function getByName($name) {
 		$result = DataBase::query(
 			"SELECT name.id ".            
-			"FROM ".DataBase::formTableName('Premanager_UsersName')." AS name ".
+			"FROM ".DataBase::formTableName('Premanager', 'UsersName')." AS name ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$user = self::createFromID($result->get('id'));
@@ -522,7 +522,7 @@ final class User extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(user.userID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Users')." AS user");
+				"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -583,7 +583,7 @@ final class User extends Model {
 				'secondaryPasswordStartTime' => DataType::DATE_TIME,
 				'secondaryPasswordStartIP' => DataType::STRING,
 				'secondaryPasswordExpirationTime' => DataType::DATE_TIME),
-				'Premanager_Users', array(__CLASS__, 'getByID'));
+				'Premanager', 'Users', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}                                   
@@ -972,9 +972,9 @@ final class User extends Model {
 		$list = array();
 		$result = DataBase::query(
 			"SELECT grp.id ".
-			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ",
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
 			/* translating */
-			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup').
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
 				" AS userGroup ".
 				"ON userGroup.groupID = grp.id ".
 				"AND userGroup.userID = '$this->_id' ". 
@@ -1001,7 +1001,7 @@ final class User extends Model {
 		if ($this->_groupCount === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(userGroup.userID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_UsersGroup')." AS userGroup ".
+				"FROM ".DataBase::formTableName('Premanager', 'UsersGroup')." AS userGroup ".
 				"WHERE userGroup.userID = '$this->_id'");
 			$this->_groupCount = $result->get('count');
 		}
@@ -1019,7 +1019,7 @@ final class User extends Model {
 			
 		$result = DataBase::query(
 			"SELECT userGroup.isGroupLeader ".
-			"FROM ".DataBase::formTableName('Premanager_UsersGroup')." AS userGroup ".
+			"FROM ".DataBase::formTableName('Premanager', 'UsersGroup')." AS userGroup ".
 			"WHERE userGroup.userID = '$this->_id' ".
 				"AND userGroup.groupID = '$group->id'");
 		return $result->get('isGroupLeader');
@@ -1041,7 +1041,7 @@ final class User extends Model {
 		// Password properties are not stored as class vars for security reasons
 		$result = DataBase::query(
 			"SELECT user.password, user.secondaryPassword ".
-			"FROM ".DataBase::formTableName('Premanager_Users')." AS user ".
+			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ".
 			"WHERE user.id = '$this->_id'");
 		$dbPassword = $result->get('password');
 		$dbSecondaryPassword = $result->get('secondaryPassword');
@@ -1081,8 +1081,8 @@ final class User extends Model {
 	  if (!$this->id) {
 			$result = DataBase::query(
 				"SELECT string.id, translation.languageID ".
-				"FROM ".DataBase::formTableName('Premanager_Strings')." AS string ".
-				"LEFT JOIN ".DataBase::formTableName('Premanager_StringsTranslation').
+				"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
+				"LEFT JOIN ".DataBase::formTableName('Premanager', 'StringsTranslation').
 					" AS translation ".
 					"ON string.id = translation.id ".
 					"AND translation.languageID = '".
@@ -1092,14 +1092,14 @@ final class User extends Model {
 			if (Types::isInteger($result->get('languageID'))) {
 				DataBase::query(
 					"UPDATE ".
-						DataBase::formTableName('Premanager_StringsTranslation'). " ".
+						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
 					"SET value = '".DataBase::escape($_name)."' ".
 					"WHERE id = '".$result->get('id')."' ".
 						"AND languageID = '".Environment::getCurrent()->$language->id."'");
 			} else {
 				DataBase::query(
 					"INSERT INTO ".
-						DataBase::formTableName('Premanager_StringsTranslation'). " ".
+						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
 					"(id, languageID, value) ".
 					"VALUES ('".$result->get('id')."', ".
 						"'".Environment::getCurrent()->$language->id."', ".
@@ -1109,9 +1109,9 @@ final class User extends Model {
 			$callback = function($name, &$languageID) {
 				$result = DataBase::query(
 					"SELECT translation.languageID ".
-					"FROM ".DataBase::formTableName('Premanager_Strings')." AS string ".
+					"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
 					"INNER JOIN ".
-						DataBase::formTableName('Premanager_StringsTranslation').
+						DataBase::formTableName('Premanager', 'StringsTranslation').
 						" AS translation ".
 						"ON string.id = translation.id ".
 					"WHERE string.pluginID = '0' ".
@@ -1255,11 +1255,11 @@ final class User extends Model {
 		DataBaseHelper::delete('Premanager_User', 0, $this->_id);      
 			    
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"WHERE userID = '$this->_id'");        
 			    
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_UserOptions')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserOptions')." ".
 			"WHERE userID = '$this->_id'");
 			
 		unset(self::$_instances[$this->_id]);
@@ -1286,7 +1286,7 @@ final class User extends Model {
 
 		// If user is already in that group, just add 0 to 0 (do "nothing")
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"(userID, groupID, isLeader, joinTime, joinIP) ".
 			"VALUES ('$this->_id', '$group->id', '0', NOW(), '".Client::$ip."') ".
 			"ON DUPLICATE KEY UPDATE 0+0");
@@ -1312,7 +1312,7 @@ final class User extends Model {
 			throw new ArgumentNullException('group');
 
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"WHERE userID = '$this->_id' ".
 				"AND groupID = '$group->id'");   
 				   
@@ -1337,7 +1337,7 @@ final class User extends Model {
 			throw new ArgumentNullException('group');
 
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"SET isLeader = '1' ".
 			"WHERE userID = '$this->_id' ".
 				"AND groupID = '$group->id'");
@@ -1360,7 +1360,7 @@ final class User extends Model {
 			throw new ArgumentNullException('group');
 
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"SET isLeader = '0' ".
 			"WHERE userID = '$this->_id' ".
 				"AND groupID = '$group->id'");
@@ -1387,7 +1387,7 @@ final class User extends Model {
 		$key = generateRandomPassword();
 		     
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET unconfirmedEmail = '".DataBase::escape($email)."', ".
 				"unconfirmedEmailStartTime = NOW(), ".
 				"unconfirmedEmailKey = '".DataBase::escape($key)."' ".
@@ -1410,7 +1410,7 @@ final class User extends Model {
 			throw new ArgumentException('$email is null or an empty string', 'email');
 
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET unconfirmedEmail = '', ".
 				"unconfirmedEmailStartTime = '0000-00-00 00:00:00', ".
 				"unconfirmedEmailKey = '' ".
@@ -1444,7 +1444,7 @@ final class User extends Model {
 		$email = $this->unconfirmedEmail;
 		
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET email = unconfirmedEmail,
 				unconfirmedEmail = '', ".
 				"unconfirmedEmailStartTime = '0000-00-00 00:00:00', ".
@@ -1474,7 +1474,7 @@ final class User extends Model {
 				
 		$encodedPassword = $this->encodePassword($password);
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET password = '".DataBase::escape($encodedPassword)."' ".
 			"WHERE id = '$this->_id'");
 	}          
@@ -1505,7 +1505,7 @@ final class User extends Model {
 				
 		$encodedPassword = $this->encodePassword($password);
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET secondaryPassword = '".DataBase::escape($encodedPassword)."', ".
 				"secondaryPasswordStartTime = NOW(), ".
 				"secondaryPasswordStartIP = '".DataBase::escape(Client::$ip)."', ".
@@ -1527,7 +1527,7 @@ final class User extends Model {
 		$this->checkDisposed();;
 			
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET secondaryPassword = '', ".
 				"secondaryPasswordStartTime = '0000-00-00 00:00:00', ".
 				"secondaryPasswordStartIP = '', ".
@@ -1569,7 +1569,7 @@ final class User extends Model {
 		$picture->saveToFile(Config::$storePath.'Premanager/avatars/'.$this->_id);
 
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')."  ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')."  ".
 			"SET hasAvatar = '1', ".
 				"avatarMIME = '".DataBase::escape($picture->getMIME())."' ".
 			"WHERE id = '$this->_id'");
@@ -1585,7 +1585,7 @@ final class User extends Model {
 	 */
 	public function deleteAvatar() {
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')."  ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')."  ".
 			"SET hasAvatar = '0' ".
 			"WHERE id = '$this->_id'");	
 			
@@ -1603,8 +1603,8 @@ final class User extends Model {
 	public function clearCache() {
 		$result = DataBase::query(
 			"SELECT grp.color, translation.title ".
-			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup').
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
 				" AS userGroup ".
 				"ON userGroup.groupID = grp.id ",
 			/* translating */
@@ -1622,24 +1622,24 @@ final class User extends Model {
 		
 		// Update color
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Users')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET color = '$this->_color' ".
 			"WHERE id = '$this->_id'");
 
 		// Delete current translations
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_UsersTranslation')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'UsersTranslation')." ".
 			"WHERE id = '$this->_id'");
 
 		// Update _all_ languages
 		$result = DataBase::query(
 			"SELECT language.languageID ".
-			"FROM ".DataBase::formTableName('Premanager_Languages')." AS language");
+			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language");
 		while ($result->next()) {
 			$id = $result->get('languageID');
 			DataBase::query(
 				"INSERT INTO ".
-					DataBase::formTableName('Premanager_UsersTranslation')." ".
+					DataBase::formTableName('Premanager', 'UsersTranslation')." ".
 				"(id, languageID, title) ".
 				"VALUES ('$this->_id', '$id', '".DataBase::escape($this->_title)."')");
 		} 	
@@ -1673,7 +1673,7 @@ final class User extends Model {
 				"(user.secondaryPassword != '') AS hasSecondaryPassword, ".
 				"user.secondaryPasswordStartTime, ".
 				"user.secondaryPasswordExpirationTime, user.secondaryPasswordStartIP ".    
-			"FROM ".DataBase::formTableName('Premanager_Users')." AS user ",
+			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ",
 			/* translating */
 			"WHERE user.id = '$this->_id'");
 		
@@ -1741,13 +1741,13 @@ final class User extends Model {
 		
 		$result = DataBase::query(
 			"SELECT rght.name, plugin.name AS pluginName ".
-			"FROM ".DataBase::formTableName('Premanager_Rights')." AS rght ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ". 
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 				"ON plugin.id = rght.pluginID ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager_GroupRight').
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight').
 				" AS groupRight ".
 				"ON groupRight.rightID = rght.id ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup').
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
 				" AS userGroup ".
 				"ON userGroup.groupID = groupRight.groupID ".
 				"AND userGroup.userID = '$this->_id' ".
@@ -1771,7 +1771,7 @@ final class User extends Model {
 	private function joinAutoJoinGroups() {
 		$result = DataBase::query(
 			"SELECT grp.id ".
-			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ".
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
 			"WHERE grp.autoJoin");
 		while ($result->next()) {
 			$this->joinGroup(Group::getByID($result->get('groupID')));

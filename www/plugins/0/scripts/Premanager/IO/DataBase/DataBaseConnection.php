@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\IO\DataBase;
 
+use Premanager\Models\Plugin;
+
 use Premanager\Module;
 use Premanager\Strings;
 use Premanager\Debug\Debug;
@@ -189,13 +191,15 @@ class DataBaseConnection extends Module {
 	}
 	
 	/**
-	 * Adds the DataBase::formTableName prefix and does further neccessary conversion
+	 * Adds the table prefix and does further neccessary conversion
 	 * 
-	 * @param string $rawName
-	 * @return string
+	 * @param string $plugin the name of the plugin owning the table
+	 * @param string $table the raw table name
+	 * @return string the formatted table identifier
 	 */
-	public function formTableName($rawName) {
-		return Strings::toLower($this->_prefix.$rawName);
+	public function formTableName($plugin, $table) {
+		$pluginID = Plugin::getIDFromName($plugin);
+		return Strings::toLower($this->_prefix.$pluginID.'_'.$table);
 	}
 }
 

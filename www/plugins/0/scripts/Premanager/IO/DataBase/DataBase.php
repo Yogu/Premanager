@@ -87,14 +87,15 @@ class DataBase extends Module {
 	}
 	
 	/**
-	 * Adds the DataBase::formTableName prefix and does further neccessary conversion using the
+	 * Adds the table prefix and does further neccessary conversion using the
 	 * default connection
 	 * 
-	 * @param string $rawName
-	 * @return string
+	 * @param string $plugin the name of the plugin owning the table
+	 * @param string $table the raw table name
+	 * @return string the formatted table identifier
 	 */
-	public static function formTableName($rawName) {
-		return self::getConnection()->formTableName($rawName);
+	public static function formTableName($plugin, $table) {
+		return self::getConnection()->formTableName($plugin, $table);
 	}
 }
 

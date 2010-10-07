@@ -283,7 +283,7 @@ final class Group extends Model {
 	public static function getByName($name) {
 		$result = DataBase::query(
 			"SELECT name.id ".            
-			"FROM ".DataBase::formTableName('Premanager_GroupsName')." AS name ".
+			"FROM ".DataBase::formTableName('Premanager', 'GroupsName')." AS name ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$user = self::createFromID($result->get('id'));
@@ -382,7 +382,7 @@ final class Group extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(grp.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp");
+				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -419,7 +419,7 @@ final class Group extends Model {
 				'createTime' => DataType::DATE_TIME,
 				'editor' => User::getDescriptor(),
 				'editTime' => DataType::DATE_TIME),
-				'Premanager_Groups', array(__CLASS__, 'getByID'));
+				'Premanager', 'Groups', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}
@@ -487,7 +487,7 @@ final class Group extends Model {
 		if ($this->_text === null) {
 			$result = DataBase::query(
 				"SELECT translation.text ".
-				"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ",
+				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
 				/* translating */
 				"WHERE grp.id = '$this->_id'");
 			$this->_text = $result->get('text');
@@ -647,8 +647,8 @@ final class Group extends Model {
 		$list = array();
 		$result = DataBase::query(
 			"SELECT user.userID ".
-			"FROM ".DataBase::formTableName('Premanager_Users')." AS user ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 				"AS userGroup ".
 				"ON userGroup.groupID = '$this->id' ".
 				"AND userGroup.userID = user.userID ".
@@ -673,7 +673,7 @@ final class Group extends Model {
 	public function getMemberCount() {
 		$result = DataBase::query(
 			"SELECT COUNT(userGroup.userID) AS count ".
-			"FROM ".DataBase::formTableName('Premanager_UserGroup')." AS userGroup ".
+			"FROM ".DataBase::formTableName('Premanager', 'UserGroup')." AS userGroup ".
 			"WHERE userGroup.groupID = '$this->_id'");
 		return $result->get('count');
 	}   
@@ -803,14 +803,14 @@ final class Group extends Model {
 			
 		// Delete all existing rights
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_GroupRight')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'GroupRight')." ".
 			"WHERE groupID = '$this->_id'");
 	    
 	  // Insert selected rights
 	  $result = DataBase::query(
 	  	"SELECT plugin.name AS pluginName, rght.rightID, rght.name ".
-	  	"FROM ".DataBase::formTableName('Premanager_Rights')." AS rght ".
-	  	"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+	  	"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ".
+	  	"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 	  		"ON rght.pluginID = plugin.pluginID");
 	  while ($result->next()) {
 	  	$id = $result->get('rightID');
@@ -818,7 +818,7 @@ final class Group extends Model {
 	  	$right = $result->get('name');
 	  	if (is_array($rights[$plugin]) && $rights[$plugin][$right]) {
 				DataBase::query(
-					"INSERT INTO ".DataBase::formTableName('Premanager_GroupRight')." ".
+					"INSERT INTO ".DataBase::formTableName('Premanager', 'GroupRight')." ".
 					"(groupID, rightID) ".
 					"VALUES ('$this->_id', '$id')");	  	
 	  	}
@@ -841,7 +841,7 @@ final class Group extends Model {
 		DataBaseHelper::delete('Premanager_Groups', 0, $this->_id);      
 			    
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_UserGroup')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"WHERE groupID = '$this->_id'");   
 			
 		// User's color and title might have changed
@@ -879,7 +879,7 @@ final class Group extends Model {
 			"SELECT translation.name, translation.title, grp.color, grp.priority, ".
 				"grp.autoJoin, grp.isLocked, grp.creatorID, grp.editorID, ".
 				"grp.createTime, grp.editTime ".
-			"FROM ".DataBase::formTableName('Premanager_Groups')." AS grp ",
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
 			/* translating */
 			"WHERE grp.id = '$this->_id'");
 		
@@ -905,10 +905,10 @@ final class Group extends Model {
 		
 		$result = DataBase::query(
 			"SELECT rght.name, plugin.name AS pluginName ".
-			"FROM ".DataBase::formTableName('Premanager_Rights')." AS rght ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ". 
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 				"ON plugin.pluginID = rght.pluginID ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager_GroupRight')." AS groupRight ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight')." AS groupRight ".
 				"ON groupRight.groupI = '$this->_id' ".
 			"GROUP BY rght.rightID ".
 			"ORDER BY plugin.name ASC, ".

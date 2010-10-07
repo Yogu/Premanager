@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\IO;
 
+use Premanager\Models\Plugin;
+
 use Premanager\URL;
 
 class Config {
@@ -47,7 +49,7 @@ class Config {
 	}
 	
 	/**
-	 * Gets the path of the folder that contains all plugins (without trailing
+	 * Gets the path to the folder that contains all plugins (without trailing
 	 * slash)
 	 * 
 	 * @return string
@@ -57,13 +59,76 @@ class Config {
 	}
 	
 	/**
-	 * Gets the path of the folder that contains configuration files (without
+	 * Gets the path to the plugin folder specified by the plugin name (without
+	 * trailing slash)
+	 * 
+	 * @return string
+	 */
+	public static function getPluginPathOf($pluginName) {
+		return self::getPluginPath().'/'.Plugin::getIDFromName($pluginName);
+	}
+	
+	/**
+	 * Gets the path to the folder that contains configuration files (without
 	 * trailing slash)
 	 * 
 	 * @return string
 	 */
 	public static function getConfigPath() {
 		return self::getRootPath().'/config';
+	}
+	
+	/**
+	 * Gets the path to the store folder (without trailing slash)
+	 * 
+	 * @return string
+	 */
+	public static function getStorePath() {
+		if (self::$_storePath === null)
+			self::loadFromFile();
+		return self::$_storePath;
+	}
+	
+	/**
+	 * Gets the path to the store folder of the plugin specified by its name
+	 * (without trailing slash)
+	 * 
+	 * @return string
+	 */
+	public static function getStorePathOf($pluginName) {
+		return self::getStorePath().'/'.Plugin::getIDFromName($pluginName);
+	}
+	
+	/**
+	 * Gets the path to the cache folder (without trailing slash)
+	 * 
+	 * @return string
+	 */
+	public static function getCachePath() {
+		if (self::$_cachePath === null)
+			self::loadFromFile();
+		return self::$_cachePath;
+	}
+	
+	/**
+	 * Gets the path to the cache folder of the plugin specified by its name
+	 * (without trailing slash)
+	 * 
+	 * @return string
+	 */
+	public static function getCachePathOf($pluginName) {
+		return self::getCachePath().'/'.Plugin::getIDFromName($pluginName);
+	}
+	
+	/**
+	 * Gets the path to the static folder (without trailing slash)
+	 * 
+	 * @return string
+	 */
+	public static function getStaticPath() {
+		if (self::$_staticPath === null)
+			self::loadFromFile();
+		return self::$_staticPath;
 	}
 	
 	/**
@@ -145,39 +210,6 @@ class Config {
 		if (self::$_dataBasePrefix === null)
 			self::loadFromFile();
 		return self::$_dataBasePrefix;
-	}
-	
-	/**
-	 * Gets the path to the store folder (without trailing slash)
-	 * 
-	 * @return string
-	 */
-	public static function getStorePath() {
-		if (self::$_storePath === null)
-			self::loadFromFile();
-		return self::$_storePath;
-	}
-	
-	/**
-	 * Gets the path to the cache folder (without trailing slash)
-	 * 
-	 * @return string
-	 */
-	public static function getCachePath() {
-		if (self::$_cachePath === null)
-			self::loadFromFile();
-		return self::$_cachePath;
-	}
-	
-	/**
-	 * Gets the path to the static folder (without trailing slash)
-	 * 
-	 * @return string
-	 */
-	public static function getStaticPath() {
-		if (self::$_staticPath === null)
-			self::loadFromFile();
-		return self::$_staticPath;
 	}
 	
 	/**

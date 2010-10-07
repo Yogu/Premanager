@@ -160,7 +160,7 @@ final class Session extends Model {
 	public static function __init() { 
 		// Remove outdated sessions
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_Sessions')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"WHERE lastRequestTime < DATE_SUB(NOW(), INTERVAL ".
 				Options::defaultGet('Premanager', 'sessionLength')." SECOND)");
 	}
@@ -253,7 +253,7 @@ final class Session extends Model {
 		
 		$result = DataBase::query(
 			"SELECT session.id ".            
-			"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session ".
+			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.userID = '$user->id'");
 		if ($result->next()) {
 			return self::createFromID($result->get('id'));
@@ -270,7 +270,7 @@ final class Session extends Model {
 	public static function getByKey($key) {
 		$result = DataBase::query(
 			"SELECT session.id ".            
-			"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session ".
+			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.key = '".DataBase::escape($key)."'");
 		if ($result->next()) {
 			return self::createFromID($result->get('id'));
@@ -306,7 +306,7 @@ final class Session extends Model {
 		$_secondaryPassowordUsed = $secondaryPassowordUsed ? '1' : '0';
 		$_hidden = $hidden ? '1' : '0';
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_Sessions')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"(userID, startTime, lastRequestTime, `key`, ip, userAgent, ".
 				"secondaryPasswordUsed, hidden, projectID, isFirstRequest) ".
 			"VALUES ('$user->id', NOW(), NOW(), '".DataBase::escape($key)."', ".
@@ -333,7 +333,7 @@ final class Session extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(session.sessionID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session");
+				"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -369,7 +369,7 @@ final class Session extends Model {
 				'hidden' => DataType::BOOLEAN,
 				'isFirstRequest' => DataType::BOOLEAN,
 				'project' => Project::getDescriptor()),
-				'Premanager_Sessions', array(__CLASS__, 'getByID'));
+				'Premanager', 'Sessions', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
 	}                                            
@@ -530,7 +530,7 @@ final class Session extends Model {
 		$this->checkDisposed();
 		
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager_Sessions')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"WHERE id = '$this->_id'");
 
 		if (self::$_count !== null)
@@ -549,7 +549,7 @@ final class Session extends Model {
 		$project = Environment::getCurrent()->project;
 		
 		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager_Sessions')." ".
+			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"SET lastRequestTime = NOW(), ".
 				"isFirstRequest = '0', ".
 				"projectID = '$project->id'");	
@@ -568,7 +568,7 @@ final class Session extends Model {
 				"session.startTime AS startTime, session.lastRequestTime, ".
 				"session.ip, session.userAgent, session.secondaryPasswordUsed, ".
 				"session.hidden, session.isFirstRequest, session.projectID ".
-			"FROM ".DataBase::formTableName('Premanager_Sessions')." AS session ".
+			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.id = '$this->_id'");
 		
 		if (!$result->next())

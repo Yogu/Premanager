@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Models;
 
+use Premanager\IO\Config;
+
 use Premanager\Execution\PluginInitializer;
 
 use Premanager\NotImplementedException;
@@ -149,7 +151,7 @@ final class Plugin extends Model {
 		}
 
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager_Plugins')." ".
+			"INSERT INTO ".DataBase::formTableName('Premanager', 'Plugins')." ".
 			"(name, initializerClass) ".
 			"VALUES ('".DataBase::escape($name)."', ".
 				"'".DataBase::escape($initialiizerClassName)."')");
@@ -173,7 +175,7 @@ final class Plugin extends Model {
 		if (self::$_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(plugin.pluginID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager_Plugins')." AS plugin");
+				"FROM ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;
@@ -201,7 +203,7 @@ final class Plugin extends Model {
 	public static function isNameAvailable($name) {
 		$result = DataBase::query(
 			"SELECT plugin.pluginID ".
-			"FROM ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"FROM ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 			"WHERE LOWER(plugin.name) = '".
 		DataBase::escape(Strings::unitize($name)."'"));
 		return !$result->next();
@@ -217,9 +219,28 @@ final class Plugin extends Model {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => DataType::NUMBER,
 				'name' => DataType::STRING),
-				'Premanager_Plugins', array(__CLASS__, 'getByID'));
+				'Premanager', 'Plugins', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
+	}
+	
+	/**
+	 * Gets the id of the plugin specified by its name
+	 * 
+	 * @param unknown_type $name
+	 */
+	public static function getIDFromName($name) {
+		static $cache;
+		if (!$cache) {
+			$cache = array();
+			$result = DataBase::query(
+				"SELECT plugin.id, plugin.name ".
+				"FROM ".Config::getDataBasePrefix()."0_plugins AS plugin");
+			while ($result->next()) {
+				$cache[$result['name']] = $result['id'];
+			}
+		}
+		return $cache[$name];
 	}
 
 	// ===========================================================================
@@ -289,7 +310,7 @@ final class Plugin extends Model {
 		$this->checkDisposed();
 			
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanger_Plugin')." ".
+			"DELETE FROM ".DataBase::formTableName('Premanger', 'Plugin')." ".
 			"WHERE plugin.pluginID = '$this->_id'");
 			
 		unset(self::$_instances[$this->_id]);
@@ -304,7 +325,7 @@ final class Plugin extends Model {
 	private function load() {
 		$result = DataBase::query(
 			"SELECT plugin.name, plugin.initializerClass ".    
-			"FROM ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"FROM ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 			"WHERE plugin.id = '$this->_id'");
 
 		if (!$result->next())

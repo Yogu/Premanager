@@ -83,8 +83,8 @@ class Options extends Module {
 		$result = DataBase::query(
 			"SELECT plugin.name AS pluginName, optn.name AS optionName, ".
 				"IFNULL(optn.globalValue, optn.defaultValue) AS value ".
-			"FROM ".DataBase::formTableName('Premanager_Options')." AS optn ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"FROM ".DataBase::formTableName('Premanager', 'Options')." AS optn ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 				"ON optn.pluginID = plugin.id");
 		while ($result->next()) {
 			$pluginName = $result->get('pluginName');
@@ -110,11 +110,11 @@ class Options extends Module {
 		$result = DataBase::query(
 			"SELECT plugin.name AS pluginName, optn.name AS optionName, ".
 				"projectOption.value ".
-			"FROM ".DataBase::formTableName('Premanager_ProjectOptions')." AS ".
+			"FROM ".DataBase::formTableName('Premanager', 'ProjectOptions')." AS ".
 				"projectOption ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Options')." AS optn ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Options')." AS optn ".
 				"ON optn.id = projectOption.optionID ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 				"ON optn.pluginID = plugin.id ".
 			"WHERE projectOption.projectID = '".$this->_environment->project->id."'");
 		while ($result->next()) {
@@ -138,11 +138,11 @@ class Options extends Module {
 		$result = DataBase::query(
 			"SELECT plugin.name AS pluginName, optn.name AS optionName, ".
 				"userOption.value ".
-			"FROM ".DataBase::formTableName('Premanager_UserOptions')." AS ".
+			"FROM ".DataBase::formTableName('Premanager', 'UserOptions')." AS ".
 				" userOption ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Options')." AS optn ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Options')." AS optn ".
 				"ON optn.id = userOption.optionID ".
-			"INNER JOIN ".DataBase::formTableName('Premanager_Plugins')." AS plugin ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 				"ON optn.pluginID = plugin.id ".
 			"WHERE userOption.userID = '".$this->_environment->user->id."'");
 		while ($result->next()) {
