@@ -104,16 +104,6 @@ abstract class ListPageNode extends PageNode {
 				(int)Options::defaultGet('Premanager', 'itemsPerPage');
 		else
 			$this->_itemsPerPage = (int)$itemsPerPage;
-		
-		$this->_pageCount = ceil($this->itemCount / $this->_itemsPerPage);
-		
-		// Check that current page is in page range  
-		if ($this->_pageIndex > $this->_pageCount)
-			$this->_pageIndex = $this->_pageCount;
-		if ($this->_pageIndex < 1)
-			$this->_pageIndex = 1;  
-		
-		$this->_startIndex = ($this->_pageIndex-1) * $this->_itemsPerPage;
 	}
 	
 	/**
@@ -123,7 +113,8 @@ abstract class ListPageNode extends PageNode {
 	 */
 	public function getURLQuery() {
 		$arr = parent::getURLQuery();
-		$arr['page'] = $this->_pageIndex;
+		if ($this->_pageIndex > 1)
+			$arr['page'] = $this->getPageIndex();
 		return $arr;
 	}
 	
@@ -133,6 +124,8 @@ abstract class ListPageNode extends PageNode {
 	 * @return int
 	 */
 	public function getPageCount() {
+		if ($this->_pageCount === null)
+			$this->_pageCount = ceil($this->itemCount / $this->_itemsPerPage);
 		return $this->_pageCount;
 	}
 	
@@ -162,6 +155,8 @@ abstract class ListPageNode extends PageNode {
 	 * @return int
 	 */
 	public function getStartIndex() {
+		if ($this->_startIndex === null)
+			$this->_startIndex = ($this->pageIndex-1) * $this->_itemsPerPage;
 		return $this->_startIndex;
 	}
 	
@@ -171,6 +166,13 @@ abstract class ListPageNode extends PageNode {
 	 * @return int
 	 */
 	public function getPageIndex() {
+		if ($this->_pageIndex === null) {
+			// Check that current page is in page range  
+			if ($this->_pageIndex > $this->pageCount)
+				$this->_pageIndex = $this->pageCount;
+			if ($this->_pageIndex < 1)
+				$this->_pageIndex = 1;
+		}
 		return $this->_pageIndex;
 	}
 	
