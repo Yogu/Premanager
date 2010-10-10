@@ -145,7 +145,8 @@ class QueryExpression extends Module {
 			switch ($operation) {
 				case QueryOperation::MEMBER:
 					if (!$operand1 || !($operand1 instanceof MemberInfo))
-						throw new ArgumentException('Invalid operands the MEMBER operator');
+						throw new ArgumentException('Invalid operands for the MEMBER '.
+							'operator');
 					if ($operand0) {
 						if (!($operand0->type instanceof ModelDescriptor))
 							throw new ArgumentException(
@@ -402,7 +403,7 @@ class QueryExpression extends Module {
 	public function evaluate($object, $queryEvaluated = false) {
 		if (!($object instanceof $this->_objectType->className))
 			throw ArgumentException('$object is of the wrong type, expected type: '.
-				$this->_obj->className, 'object');
+				$this->_objectType->className, 'object');
 		
 		switch ($this->_operation) {
 			case QueryOperation::NONE:

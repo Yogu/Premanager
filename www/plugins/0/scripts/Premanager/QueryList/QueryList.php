@@ -2,11 +2,8 @@
 namespace Premanager\QueryList;
 
 use Premanager\Types;
-
 use Premanager\Execution\Template;
-
 use Premanager\Model;
-
 use Premanager\QueryList\QueryOperation;
 use Premanager\QueryList\QueryExpression;
 use Premanager\Module;
@@ -29,6 +26,10 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @var Premanager\QueryList\QueryExpression
 	 */
 	private $_filter;
+	/**
+	 * @var array
+	 */
+	private $_sortRules = array();
 	/**
 	 * @var int
 	 */
@@ -74,19 +75,30 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Creates a new Premanager\QueryList\QueryList
 	 * 
-	 * @param Premanager\QueryList\ModelDescriptor $modelType
-	 * @param Premanager\QueryList\QueryExpression $filter
+	 * @param Premanager\QueryList\ModelDescriptor $modelType the type of items
+	 * @param Premanager\QueryList\QueryExpression $filter a filter the items 
+	 *   must match
+	 * @param array $sortRules an array of Premanager\QueryList\SortRule objects
+	 * 
+	 * @throws Premanager\ArgumentException $filter is not valid for lists of the
+	 *   type specified by $modelType - or - $filter contains invalid elements
 	 */
-	public function __construct(ModelDescriptor $modelType, $filter = null) {
+	public function __construct(ModelDescriptor $modelType,
+		QueryExpression $filter = null, array $sortRules = array()) {
 		parent::__construct();
 		
 		$this->_modelType = $modelType;
 		
 		if ($filter !== null) {
-			if (!($filter instanceof QueryExpression))
-				throw new ArgumentException('$filter must be null or a '.
-					'Premanager\QueryList\QueryExpression', 'filter');
+			if ($filter->objectType != $modelType)
+				throw new ArgumentException('The filter is not valid for lists of the '.
+					'type specified by modelType (see getObjectType())', 'filter');
 			$this->_filter = $filter;
+		}
+		
+		if (count($sortRules)) {
+			$this->checkSortRules($sortRules);
+			$this->_sortRules = $sortRules;
 		}
 	}
 
@@ -146,27 +158,12 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function getAll() {
 		// If we have not collected all items, continue collecting
-		if (!$this->_completed) { 
-			$count = \count($this->_items);
-			
-			// Request all items beginning at the index of the last item received and
-			// evaluated
-			$result = DataBase::query(
-				$this->getQueryBase().
-				"LIMIT ".$this->_queryItemIndex.", ".self::MAX_LONG);
-			while ($result->next()) {
-				// Get the object and evaluate it
-				$id = $result->get('id');
-				$obj = $this->_modelType->getByID($id);
-				if (!$this->_filter || $this->_filter->evaluate($obj, true)) {
-					$this->_items[$count] = $obj;
-					$count++;
-				}
-			}
-			
-			// No we are sure to have collected all items
-			$this->_count = $count;
-			$this->_completed = true;
+		if (!$this->_completed) {
+			// If there are sort rules, we have to sort at first
+			if (count($this->_sortRules))
+				$this->retrieveAllSorted();
+			else
+				$this->retrieveAllUnsorted();
 		}
 		
 		// optimated for lists without post-query evaluation
@@ -201,32 +198,40 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	
 		$count = count($this->_items);
 		
-		// If the item is not already collected, get it. If the collection has
-		// completed an the item is still not collected, the index is too large.
-		// Otherwise, continue collecting items
-		while ($index >= $count && !$this->_completed) {
-			// Request another list of possible correct items
-			$result = DataBase::query(
-				$this->getQueryBase().
-				"LIMIT ".$this->_queryItemIndex.", ".self::ITEMS_PER_STEP);
-			while ($index >= $count && $result->next()) {
-				// We don't have to check this item later, so store the current index
-				$this->_queryItemIndex++;
-				
-				// Get the object and evaluate it
-				$id = $result->get('id');
-				$obj = $this->_modelType->getByID($id);
-				if (!$this->_filter || $this->_filter->evaluate($obj, true)) {
-					$this->_items[$count] = $obj;
-					$count++;
+		if (!$this->_completed) {
+			// If there are sort rules, we have to sort at first
+			if ($this->_sortRules)
+				$this->retrieveAllSorted();
+			else {
+				// If the item is not already collected, get it. If the collection has
+				// completed an the item is still not collected, the index is too large.
+				// Otherwise, continue collecting items
+				while ($index >= $count && !$this->_completed) {
+					// Request another list of possible correct items
+					$result = DataBase::query(
+						$this->getQueryBase().
+						"LIMIT ".$this->_queryItemIndex.", ".self::ITEMS_PER_STEP);
+					while ($index >= $count && $result->next()) {
+						// We don't have to check this item later, so store the current
+						// index
+						$this->_queryItemIndex++;
+						
+						// Get the object and evaluate it
+						$id = $result->get('id');
+						$obj = $this->_modelType->getByID($id);
+						if (!$this->_filter || $this->_filter->evaluate($obj, true)) {
+							$this->_items[$count] = $obj;
+							$count++;
+						}
+					}
+					
+					// Determine whether there are more items by comparing the requested
+					// count of items to the actual received count of items.
+					if ($result->rowCount < self::ITEMS_PER_STEP) {
+						$this->_completed = true;
+						$this->_count = $count;
+					}
 				}
-			}
-			
-			// Determine whether there are more items by comparing the requested
-			// count of items to the actual received count of items.
-			if ($result->rowCount < self::ITEMS_PER_STEP) {
-				$this->_completed = true;
-				$this->_count = $count;
 			}
 		}
 		 
@@ -280,32 +285,41 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		
 		$lastIndex = $index + $count - 1;
 		
-		// If the item is not already collected, get it. If the collection has
-		// completed an the item is still not collected, the index is too large.
-		// Otherwise, continue collecting items
-		while ($lastIndex >= $currentCount && !$this->_completed) {
-			// Request another list of possible correct items
-			$result = DataBase::query(
-				$this->getQueryBase().
-				"LIMIT ".$this->_queryItemIndex.", ".self::ITEMS_PER_STEP);
-			while ($count > $index && $result->next()) {
-				// We don't have to check this item later, so store the current index
-				$this->_queryItemIndex++;
-				
-				// Get the object and evaluate it
-				$id = $result->get('id');
-				$obj = $this->_modelType->getByID($id);
-				if (!$this->_filter || $this->_filter->evaluate($obj, true)) {
-					$this->_items[$currentCount] = $obj;
-					$currentCount++;
+		if (!$this->_completed) {
+			// If there are sort rules, we have to sort at first
+			if ($this->_sortRules) {
+				$this->retrieveAllSorted();
+				$currentCount = $this->_count; // is needed below 
+			} else {
+				// If the item is not already collected, get it. If the collection has
+				// completed an the item is still not collected, the index is too large.
+				// Otherwise, continue collecting items
+				while ($lastIndex >= $currentCount && !$this->_completed) {
+					// Request another list of possible correct items
+					$result = DataBase::query(
+						$this->getQueryBase().
+						"LIMIT ".$this->_queryItemIndex.", ".self::ITEMS_PER_STEP);
+					while ($count > $index && $result->next()) {
+						// We don't have to check this item later, so store the current
+						// index
+						$this->_queryItemIndex++;
+						
+						// Get the object and evaluate it
+						$id = $result->get('id');
+						$obj = $this->_modelType->getByID($id);
+						if (!$this->_filter || $this->_filter->evaluate($obj, true)) {
+							$this->_items[$currentCount] = $obj;
+							$currentCount++;
+						}
+					}
+					
+					// Determine whether there are more items by comparing the requested
+					// count of items to the actual received count of items.
+					if ($result->rowCount < self::ITEMS_PER_STEP) {
+						$this->_completed = true;
+						$this->_count = $currentCount;
+					}
 				}
-			}
-			
-			// Determine whether there are more items by comparing the requested
-			// count of items to the actual received count of items.
-			if ($result->rowCount < self::ITEMS_PER_STEP) {
-				$this->_completed = true;
-				$this->_count = $currentCount;
 			}
 		}
 		
@@ -373,15 +387,25 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets a list that contains all items of this list in a specified order
 	 * 
-	 * @param array $criteria
+	 * The order of items that can not be sorted with the speicified rules is
+	 * random.
+	 * 
+	 * If this list is already sorted, the sort rules of this list are ignored in
+	 * the returned list.
+	 * 
+	 * @param array $rules an array of QueryExpressions
 	 * @return QueryList a list of all items of this list in a specified order
+	 * 
+	 * @throws Premanager\ArgumentException $rules contains an invalid element
 	 */
-	public function sort(array $criteria) {
-		// If there is nothing to sort, return this list
-		if (!count($criteria))
+	public function sort(array $rules) {
+		// If there is nothing to sort and this list is not sorted, too, return this
+		// list
+		if (!count($rules) && !count($this->_sortRules))
 			return $this;
-		
-		throw new NotImplementedException();
+			
+		$this->checkSortRules($rules);
+		return new QueryList($this->_modelType, $this->_filter, $rules);
 	}
 	
 	/**
@@ -529,6 +553,81 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 				($condition ? "WHERE $condition " : "");
 		}
 		return $this->_queryBase;
+	}
+	
+	/**
+	 * Retrieves all items and sorts them
+	 * 
+	 * This is neccessary if sorting can not be done with a query
+	 */
+	private function retrieveAllSorted() {
+		$this->retrieveAllUnsorted();
+		
+		// Sort the items based on the sort rules; the lower the index the more
+		// decisive the rule is
+		uasort($this->_items, array($this, 'compareItems'));
+	}
+
+	/**
+	 * Compares two items using the $_sortRules field
+	 * 
+	 * @param Premanager\Model $item0 the left-hand operand
+	 * @param Premanager\Model $item1 the right-hand operand
+	 * @return int value less than, equal or greater than zero to indicate whether
+	 *   $item0 is less, equal or greater than $item1
+	 */
+	private function compareItems($item0, $item1) {
+		foreach ($this->_sortRules as $rule) {
+			if ($result = $rule->evaluate($item0, $item1))
+				return $result;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Retrieves all items but does not care about sorting them
+	 */
+	private function retrieveAllUnsorted() {
+		// If we have not collected all items, continue collecting
+		if (!$this->_completed) { 
+			$count = \count($this->_items);
+			
+			// Request all items beginning at the index of the last item received and
+			// evaluated
+			$result = DataBase::query(
+				$this->getQueryBase().
+				"LIMIT ".$this->_queryItemIndex.", ".self::MAX_LONG);
+			while ($result->next()) {
+				// Get the object and evaluate it
+				$id = $result->get('id');
+				$obj = $this->_modelType->getByID($id);
+				if (!$this->_filter || $this->_filter->evaluate($obj, true)) {
+					$this->_items[$count] = $obj;
+					$count++;
+				}
+			}
+			
+			// No we are sure to have collected all items
+			$this->_count = $count;
+			$this->_completed = true;
+		}
+	}
+	
+	/**
+	 * Checks an array of sort rules for validity on this list
+	 * 
+	 * @throws ArgumentException if the sort rules are invalid
+	 */
+	private function checkSortRules() {
+		for ($i = 0; $i < count($sortRules); $i++) {
+			if (!($rule instanceof SortRule))
+				throw new ArgumentException('Item '.$i.' of the $sortRules array '.
+					'is not an instance of Premanager\QueryList\SortRule', 'sortRules');
+			if ($rule->objectType != $modelType)
+				throw new ArgumentException('Item '.$i.' of the $sortRules array '.
+					'is valid for lists fo the type specified by modelType (see '.
+					'getObjectType())', 'sortRules');
+			}
 	}
 }
 
