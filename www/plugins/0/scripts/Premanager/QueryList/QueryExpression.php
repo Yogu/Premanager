@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\QueryList;
 
+use Premanager\TimeSpan;
+use Premanager\DateTime;
 use Premanager\InvalidOperationException;
 use Premanager\Module;
 use Premanager\Types;
@@ -117,7 +119,11 @@ class QueryExpression extends Module {
 				$this->_type = DataType::BOOLEAN;
 			else if (is_string($operation))
 				$this->_type = DataType::STRING;
-			else if (is_object($operation) && $operation instanceof Model) {
+			else if ($operation instanceof DateTime)
+				$this->_type = DataType::DATE_TIME;
+			else if ($operation instanceof TimeSpan)
+				$this->_type = DataType::TIME_SPAN;
+			else if ($operation instanceof Model) {
 				$class = get_class($operation);
 				$func = array($class, 'getDescriptor');
 				if (!is_callable($func))
@@ -166,17 +172,26 @@ class QueryExpression extends Module {
 					break;
 					
 				case QueryOperation::NEGATE:
-					if (!$operand0 || $operand0->type != DataType::NUMBER)
-						throw new ArgumentException(
-							'Invalid operands for the NEGATE operator');
-					$this->_operand0 = $operand0;
-					$this->_type = DataType::NUMBER;
+					switch ($operand0 ? $operand0->type : 0) {
+						case DataType::NUMBER:
+							$this->_operand0 = $operand0;
+							$this->_type = DataType::NUMBER;
+							break;
+							
+						case DataType::TIME_SPAN:
+							$this->_operand0 = $operand0;
+							$this->_type = DataType::TIME_SPAN;
+							break;
+							
+						default:
+							throw new ArgumentException(
+								'Invalid operands for the NEGATE operator');
+					}
 					break;
 					
 				case QueryOperation::MULTIPLY:
 				case QueryOperation::DIVIDE:
 				case QueryOperation::MODULUS:
-				case QueryOperation::SUBTRACT:
 					if (!$operand0 || !$operand1 ||
 						!($operand1 instanceof QueryExpression) ||
 						$operand0->type != DataType::NUMBER || 
@@ -188,18 +203,56 @@ class QueryExpression extends Module {
 					$this->_type = DataType::NUMBER;
 					break;
 					
-				case QueryOperation::ADD:
+				case QueryOperation::SUBTRACT:
 					if (!$operand0 || !$operand1 ||
-						!($operand1 instanceof QueryExpression) || (
-						($operand0->type != DataType::NUMBER || 
-						$operand1->type != DataType::NUMBER) &&
-						($operand0->type != DataType::STRING || 
-						$operand1->type != DataType::STRING)))
+						!($operand1 instanceof QueryExpression))
 						throw new ArgumentException(
 							'Invalid operands for the arithmetic operator');
+					
+					if ($operand0->type == DataType::NUMBER && 
+						$operand1->type == DataType::NUMBER)
+						$this->_type = DataType::NUMBER;
+					else if ($operand0->type == DataType::TIME_SPAN && 
+						$operand1->type == DataType::TIME_SPAN)
+						$this->_type = DataType::TIME_SPAN;
+					else if ($operand0->type == DataType::DATE_TIME && 
+						$operand1->type == DataType::TIME_SPAN)
+						$this->_type = DataType::DATE_TIME;
+						
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
-					$this->_type = DataType::NUMBER;
+					break;
+					
+				case QueryOperation::ADD:
+					if (!$operand0 || !$operand1 ||
+						!($operand1 instanceof QueryExpression))
+						throw new ArgumentException(
+							'Invalid operands for the arithmetic operator');
+					
+					if ($operand0->type == DataType::NUMBER && 
+						$operand1->type == DataType::NUMBER)
+						$this->_type = DataType::NUMBER;
+					else if ($operand0->type == DataType::TIME_SPAN && 
+						$operand1->type == DataType::TIME_SPAN)
+						$this->_type = DataType::TIME_SPAN;
+					else if ($operand0->type == DataType::DATE_TIME && 
+						$operand1->type == DataType::TIME_SPAN)
+						$this->_type = DataType::DATE_TIME;
+					else if ($operand0->type == DataType::TIME_SPAN && 
+						$operand1->type == DataType::DATE_TIME) {
+						$this->_type = DataType::DATE_TIME;
+						
+						// Change operand0 and operand1 so that the first operand is a
+						// date/time (normalize)
+						$tmp = $operand1;
+						$operand1 = $operand0;
+						$operand0 = $tmp;
+					} else if ($operand0->type == DataType::STRING && 
+						$operand1->type == DataType::STRING)
+						$this->_type = DataType::STRING;
+						
+					$this->_operand0 = $operand0;
+					$this->_operand1 = $operand1;
 					break;
 						
 				case QueryOperation::LESS:
@@ -208,12 +261,15 @@ class QueryExpression extends Module {
 				case QueryOperation::GREATER_EQUAL:
 					if (!$operand0 || !$operand1 ||
 						!($operand1 instanceof QueryExpression) ||
-						!($operand0->type == DataType::NUMBER) || 
-						!($operand1->type == DataType::NUMBER) ||
-						($operand0->type != DataType::DATE_TIME || 
-						$operand1->type != DataType::DATE_TIME))
+						!(($operand0->type == DataType::NUMBER && 
+						$operand1->type == DataType::NUMBER) ||
+						($operand0->type == DataType::TIME_SPAN && 
+						$operand1->type == DataType::TIME_SPAN) ||
+						($operand0->type == DataType::DATE_TIME && 
+						$operand1->type == DataType::DATE_TIME)))
 						throw new ArgumentException(
 							'Invalid operands for the comparing operator');
+						
 					$this->_operand0 = $operand0;
 					$this->_operand1 = $operand1;
 					$this->_type = DataType::BOOLEAN;
@@ -360,7 +416,13 @@ class QueryExpression extends Module {
 				return !$this->_operand0->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::NEGATE:
-				return -$this->_operand0->evaluate($object, $queryEvaluated);
+				switch ($this->_operand0->type) {
+					case DataType::NUMBER:
+						return -$this->_operand0->evaluate($object, $queryEvaluated);
+					case DataType::TIME_SPAN:
+						return
+							$this->_operand0->evaluate($object, $queryEvaluated)->negate();
+				}
 					
 			case QueryOperation::MULTIPLY:
 				return $this->_operand0->evaluate($object, $queryEvaluated) *
@@ -382,17 +444,29 @@ class QueryExpression extends Module {
 					case DataType::STRING:
 						return $this->_operand0->evaluate($object, $queryEvaluated) .
 						  $this->_operand1->evaluate($object, $queryEvaluated);
+					case DataType::TIME_SPAN:
+					case DataType::DATE_TIME: // then the second must be a TIME_STAMP
+						return $this->_operand0->evaluate($object, $queryEvaluated)->add(
+						  $this->_operand1->evaluate($object, $queryEvaluated));
 				}
 					
 			case QueryOperation::SUBTRACT:
-				return $this->_operand0->evaluate($object, $queryEvaluated) -
-				  $this->_operand1->evaluate($object, $queryEvaluated);
+				switch ($this->_operand0->type) {
+					case DataType::NUMBER:
+						return $this->_operand0->evaluate($object, $queryEvaluated) -
+						  $this->_operand1->evaluate($object, $queryEvaluated);
+					case DataType::TIME_SPAN:
+					case DataType::DATE_TIME:
+						return $this->_operand0->evaluate($object, $queryEvaluated)->
+							subtract($this->_operand1->evaluate($object, $queryEvaluated));
+				}
 					
 			case QueryOperation::LESS:
 				switch ($this->_operand0->type) {
 					case DataType::NUMBER:
 						return $this->_operand0->evaluate($object, $queryEvaluated) <
 						  $this->_operand1->evaluate($object, $queryEvaluated);
+					case DataType::TIME_SPAN:
 					case DataType::DATE_TIME:
 						return $this->_operand0->evaluate($object,
 							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
@@ -405,6 +479,7 @@ class QueryExpression extends Module {
 						return $this->_operand0->evaluate($object, $queryEvaluated) >
 						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
+					case DataType::TIME_SPAN:
 						return $this->_operand0->evaluate($object, 
 							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
 							$queryEvaluated), $queryEvaluated) > 0;
@@ -416,6 +491,7 @@ class QueryExpression extends Module {
 						return $this->_operand0->evaluate($object, $queryEvaluated) <=
 						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
+					case DataType::TIME_SPAN:
 						return $this->_operand0->evaluate($object,
 							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
 							$queryEvaluated), $queryEvaluated) <= 0;
@@ -427,6 +503,7 @@ class QueryExpression extends Module {
 						return $this->_operand0->evaluate($object, $queryEvaluated) >=
 						  $this->_operand1->evaluate($object, $queryEvaluated);
 					case DataType::DATE_TIME:
+					case DataType::TIME_SPAN:
 						return $this->_operand0->evaluate($object,
 							$queryEvaluated)->compareTo($this->_operand1->evaluate($object,
 							$queryEvaluated), $queryEvaluated) >= 0;
@@ -435,6 +512,7 @@ class QueryExpression extends Module {
 			case QueryOperation::EQUAL:
 				switch ($this->_operand0->type) {
 					case DataType::DATE_TIME:
+					case DataType::TIME_SPAN:
 						return $this->_operand0->evaluate($object, $queryEvaluated)->equals(
 						  $this->_operand1->evaluate($object, $queryEvaluated),
 						  $queryEvaluated);
@@ -446,6 +524,7 @@ class QueryExpression extends Module {
 			case QueryOperation::UNEQUAL:
 				switch ($this->_operand0->type) {
 					case DataType::DATE_TIME:
+					case DataType::TIME_SPAN:
 						return !$this->_operand0->evaluate($object,
 							$queryEvaluated)->equals($this->_operand1->evaluate($object,
 							$queryEvaluated), $queryEvaluated);

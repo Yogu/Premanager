@@ -26,6 +26,7 @@ class QueryOperation {
 	 * The number operator
 	 * 
 	 * - -NUMBER: Multiplies a number with (-1) 
+	 * - -TIME_STAMP: Changes the sign (2 hours gets -2 hours)
 	 * @var int
 	 */
 	const NEGATE = 3;
@@ -59,6 +60,8 @@ class QueryOperation {
 	 * 
 	 * - NUMBER + NUMBER: Adds two numbers
 	 * - STRING + STRING: Concats two strings
+	 * - TIME_SPAN + TIME_SPAN: Adds two time spans 
+	 * - DATE_TIME + TIME_SPAN: Adds a time span to a date/time
 	 * @var int
 	 */
 	const ADD = 7;
@@ -67,6 +70,8 @@ class QueryOperation {
 	 * The subtract operator
 	 * 
 	 * - NUMBER - NUMBER: Subtracts two numbers
+	 * - TIME_SPAN - TIME_SPAN: Subtracts two time spans
+	 * - DATE_TIME - TIME_SPAN: Subtracts a time span off a date/time
 	 * @var int
 	 */
 	const SUBTRACT = 8;
@@ -75,6 +80,8 @@ class QueryOperation {
 	 * The less-than operator
 	 * 
 	 * - NUMBER < NUMBER: Determines whether a number is less than another
+	 * - TIME_SPAN < TIME_SPAN: Determines whether a time span is less than
+	 *   another
 	 * - DATE_TIME < DATE_TIME: Determines whether a date/time is earlier than
 	 *   another
 	 * @var int
@@ -85,6 +92,8 @@ class QueryOperation {
 	 * The greater-than operator
 	 * 
 	 * - NUMBER > NUMBER: Determines whether a number is greater than another
+	 * - TIME_SPAN < TIME_SPAN: Determines whether a time span is greater than
+	 *   another
 	 * - DATE_TIME > DATE_TIME: Determines whether a date/time is later than
 	 *   another
 	 * @var int
@@ -96,6 +105,8 @@ class QueryOperation {
 	 * 
 	 * - NUMBER <= NUMBER: Determines whether a number is less than another or
 	 *   equals it
+	 * - TIME_SPAN <= TIME_SPAN: Determines whether a time span is less than
+	 *   another or equals it
 	 * - DATE_TIME <= DATE_TIME: Determines whether a date/time is earlier than
 	 *   another or equals it
 	 * @var int
@@ -107,6 +118,8 @@ class QueryOperation {
 	 * 
 	 * - NUMBER >= NUMBER: Determines whether a number is greater than another or
 	 *   equals it
+	 * - TIME_SPAN >= TIME_SPAN: Determines whether a time span is greater than
+	 *   another or equals it
 	 * - DATE_TIME >= DATE_TIME: Determines whether a date/time is later than
 	 *   another or equals it
 	 * @var int
@@ -120,6 +133,7 @@ class QueryOperation {
 	 * - BOOLEAN == BOOLEAN: Determines whether a boolean equals another
 	 * - STRING == STRING: Determines whether a string equals another
 	 * - DATE_TIME == DATE_TIME: Determines whether a date/time equals another
+	 * - TIME_SPAN == TIME_SPAN: Determines whether a time span equals another
 	 * - MODEL == MODEL: Determines whether a model is the same as another
 	 * @var int
 	 */
@@ -132,6 +146,8 @@ class QueryOperation {
 	 * - BOOLEAN == BOOLEAN: Determines whether a boolean does not equal another
 	 * - STRING == STRING: Determines whether a string does not equal another
 	 * - DATE_TIME == DATE_TIME: Determines whether a date/time does not equal
+	 *   another
+	 * - TIME_SPAN == TIME_SPAN: Determines whether a time span does not equal
 	 *   another
 	 * - MODEL == MODEL: Determines whether a model is not the same as another
 	 * @var int
