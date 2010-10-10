@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Debug\Debug;
+use Premanager\QueryList\SortDirection;
+use Premanager\QueryList\QueryOperation;
+use Premanager\QueryList\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -19,7 +23,7 @@ use Premanager\IO\Output;
 /**
  * A page that shows a list of all users
  */
-class UsersPage extends TreeListPageNode {	
+class UsersPage extends TreeListPageNode {
 	/**
 	 * Gets the child specified by its name
 	 * 
@@ -44,7 +48,7 @@ class UsersPage extends TreeListPageNode {
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
 		$referenceModel = $referenceNode instanceof UserPage ?
 			$referenceNode->getUser() : null;
-		$users = $this->getChildrenHelper(User::getUsers(), $referenceModel,
+		$users = $this->getChildrenHelper(self::getList(), $referenceModel,
 			$count);
 			
 		$list = array();
@@ -58,7 +62,7 @@ class UsersPage extends TreeListPageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		$list = User::getUsers()->getRange($this->startIndex, $this->itemsPerPage,
+		$list = self::getList()->getRange($this->startIndex, $this->itemsPerPage,
 			true);
 		
 		$page = new Page($this);
@@ -84,7 +88,21 @@ class UsersPage extends TreeListPageNode {
 	 * @return int
 	 */
 	protected function countItems() {
-		return User::getUsers()->count;
+		return self::getList()->count;
+	}
+	
+	/**
+	 * Gets the list of users sorted by name
+	 * 
+	 * @return Premanager\QueryList\QueryList the list of users
+	 */
+	private static function getList() {
+		static $cache;
+		if (!$cache) {
+			$cache = User::getUsers();
+			$cache = $cache->sort(array(new SortRule($cache->exprMember('name'))));
+		}
+		return $cache;
 	}
 }
 

@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Debug\Debug;
+use Premanager\QueryList\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -44,7 +46,7 @@ class GroupsPage extends TreeListPageNode {
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
 		$referenceModel = $referenceNode instanceof GroupPage ?
 			$referenceNode->getGroup() : null;
-		$models = $this->getChildrenHelper(Group::getGroups(), $referenceModel,
+		$models = $this->getChildrenHelper(self::getList(), $referenceModel,
 			$count);
 			
 		$list = array();
@@ -58,7 +60,7 @@ class GroupsPage extends TreeListPageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		$list = Group::getGroups()->getRange($this->startIndex, $this->itemsPerPage,
+		$list = self::getList()->getRange($this->startIndex, $this->itemsPerPage,
 			true);
 		
 		$page = new Page($this);
@@ -84,7 +86,21 @@ class GroupsPage extends TreeListPageNode {
 	 * @return int
 	 */
 	protected function countItems() {
-		return Group::getGroups()->count;
+		return self::getList()->count;
+	}
+	
+	/**
+	 * Gets the list of groups sorted by name
+	 * 
+	 * @return Premanager\QueryList\QueryList the list of groups
+	 */
+	private static function getList() {
+		static $cache;
+		if (!$cache) {
+			$cache = Group::getGroups();
+			$cache = $cache->sort(array(new SortRule($cache->exprMember('name'))));
+		}
+		return $cache;
 	}
 }
 
