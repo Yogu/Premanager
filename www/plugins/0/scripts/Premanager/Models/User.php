@@ -2,9 +2,7 @@
 namespace Premanager\Models;
 
 use Premanager\IO\Config;
-
 use Premanager\IO\DataBase\DataBaseHelper;
-
 use Premanager\NameConflictException;
 use Premanager\Module;
 use Premanager\Model;
@@ -1643,6 +1641,28 @@ final class User extends Model {
 				"(id, languageID, title) ".
 				"VALUES ('$this->_id', '$id', '".DataBase::escape($this->_title)."')");
 		} 	
+	}
+	
+	/**
+	 * Sets the $lastLoginTime and, if $hidden is false, the $lastVisibleLoginTime
+	 * properties to the current date/time
+	 * 
+	 * Has to be called when a user logs in
+	 * 
+	 * @param bool $hidden true, if the login should not be displayed in public
+	 */
+	public function updateLoginTime($hidden = false) {
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
+			"SET lastLoginTime = NOW(), ".
+				"lastLoginIP = '".Request::getIP()."' ".
+				(!$hidden ? ", lastVisibleLoginTime = NOW()" : '').
+			"WHERE id = '$this->_id'");
+				
+		$this->_lastLoginTime = new DateTime();
+		$this->_lastLoginIP = Request::getIP();
+		if (!$hidden)
+			$this->_lastVisibleLoginTime = new DateTime();
 	}
 
 	// ===========================================================================

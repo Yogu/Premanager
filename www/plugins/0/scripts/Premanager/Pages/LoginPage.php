@@ -2,13 +2,9 @@
 namespace Premanager\Pages;
 
 use Premanager\Models\Session;
-
 use Premanager\Debug\Debug;
-
 use Premanager\Event;
-
 use Premanager\Models\UserStatus;
-
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Execution\Environment;
 use Premanager\Models\StructureNode;
@@ -177,6 +173,8 @@ class LoginPage extends TreePageNode {
 						
 					// Create new session
 					$session = Session::createNew($user, $hidden, $isSecondaryPassword);
+					
+					$user->updateLoginTime($hidden);
 					
 					// Set session cookie
 					Output::setCookie('session', $session->key);
