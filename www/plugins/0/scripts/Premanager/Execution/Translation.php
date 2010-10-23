@@ -223,18 +223,19 @@ class Translation extends Module {
 					"ON plugin.id = string.pluginID ",
 				/* translating */
 				'');
-			while ($result->next()) {
-				$pluginName = $result->get('pluginName');
-				$stringName = $result->get('stringName');
-				$value = $result->get('value');
+			while ($arr = $result->getNextRow()) {
+				$pluginName = $arr['pluginName'];
+				$stringName = $arr['stringName'];
+				$value = $arr['value'];
 				if (!$value)
 					$value = $stringName;
 				
-				if (!array_key_exists($pluginName, $this->_values))
+				if (!isset($this->_values[$pluginName]))
 					$this->_values[$pluginName] = array();
 					
 				$this->_values[$pluginName][$stringName] = $value;
 			}
+			
 			$this->_loaded = true;
 		} catch (Exception $e) {
 			if ($pushNeeded) {

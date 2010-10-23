@@ -53,10 +53,19 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 		if ($this->_eof)
 			return false;
 			
-			
  		$this->_nextCalled = true;
-		$this->_eof = !($this->_row = \mysql_fetch_array($this->_resource));
+		$this->_eof = !($this->_row = mysql_fetch_array($this->_resource));
 		return (!$this->_eof);				
+	}                           
+
+	/**
+	 * Selects the next row and returns it as an array
+	 * 
+	 * @return array an array with the field names assigned to their values or
+	 *   false if the end of result is exeeded
+	 */
+	public function getNextRow() {
+		return $this->next() ? $this->_row : false;
 	}
 
 	/**
