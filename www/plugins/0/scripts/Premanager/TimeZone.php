@@ -28,8 +28,8 @@ class TimeZone extends Module {
 	 * @return TimeSpan the offset
 	 */
 	public function getOffset(DateTime $time) {
-		$transitions = $this->_object->getTransitions($time->gettimestamp(),
-			$time->gettimestamp());
+		$transitions = $this->_object->getTransitions($time->getTimestamp(),
+			$time->getTimestamp());
 		return new TimeSpan($transitions[0]['offset']);
 	}
 	

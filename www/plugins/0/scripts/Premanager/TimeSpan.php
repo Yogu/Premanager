@@ -4,6 +4,8 @@ namespace Premanager;
 /**
  * A time span 
  */
+use Premanager\Debug\Debug;
+
 class TimeSpan extends Module {
 	private $_timestamp;
 	
@@ -119,8 +121,30 @@ class TimeSpan extends Module {
 			throw new ArgumentException('This constructor does not accept two '.
 				'parameters');
 		} else if ($arg0 !== null) {
-			// timestamp
-			$this->_timestamp = $arg0;
+			if (Types::isInteger($arg0))
+				$this->_timestamp = $arg0;
+			else if (Types::isString($arg0)) {
+				$components = \preg_split('/[^0-9]/', $arg0);
+				if (count($components) != 3 && count($components) != 4)
+					throw new FormatException('$arg0 does not contain exactly 3 or 4 '.
+						'components');
+				
+				if (count($components) == 4) {
+					$days = $components[0];
+					$hours = $components[1];
+					$minutes = $components[2];
+					$seconds = $components[3];
+				} else {
+					$hours = $components[0];
+					$minutes = $components[1];
+					$seconds = $components[2];
+				}
+				
+				$this->_timestamp = $seconds + $minutes * 60 + $hours * 60 * 60 +
+					$days * 60 * 60 * 24;
+			} else
+				throw new ArgumentException('The first parameter must be an integer '.
+					'or string', 'arg0');
 		} else {
 			throw new ArgumentException('This constructor needs at least one '.
 				'parameter');
@@ -182,10 +206,7 @@ class TimeSpan extends Module {
 	 * @return int
 	 */
 	public function getHours() {
-		// The left expression subtracts that seconds that belong to the day
-		// component
-		return Math::intDivide(
-			$this->_timestamp - $this->_timestamp % (60*60*24), 60*60);
+		return Math::intDivide($this->_timestamp % (60*60*24), 60*60);
 	}
 	
 	/**
@@ -194,10 +215,7 @@ class TimeSpan extends Module {
 	 * @return int
 	 */
 	public function getMinutes() {
-		// The left expression subtracts that seconds that belong to the day and
-		// and hour components
-		return Math::intDivide(
-			$this->_timestamp - $this->_timestamp % (60*60), 60);
+		return Math::intDivide($this->_timestamp % (60*60), 60);
 	}
 	
 	/**
@@ -206,8 +224,7 @@ class TimeSpan extends Module {
 	 * @return int
 	 */
 	public function getSeconds() {
-		// Subtract that seconds that belong to the day, hour and minute components
-		return $this->_timestamp - $this->_timestamp % 60;
+		return $this->_timestamp % 60;
 	}
 	
 	/**
@@ -437,6 +454,27 @@ class TimeSpan extends Module {
 		
 		return
 			Translation::defaultGet('Premanager', $stringName, array('num' => $num));
+	}
+	
+	/**
+	 * Converts this date/time into a string using the 
+	 * Premanager\DateTime::DEFAULT_FORMAT format string
+	 * 
+	 * @return tring the formatted date/time string
+	 */
+	public function __tostring() {
+		if (($days = $this->getDays()) > 0)
+			$str = $days.'.';
+		if (($hours = $this->getHours()) < 10)
+			$str .= '0';
+		$str .= $hours.':';
+		if (($minutes = $this->getMinutes()) < 10)
+			$str .= '0';
+		$str .= $minutes.':';
+		if (($seconds = $this->getSeconds()) < 10)
+			$str .= '0';
+		$str .= $seconds;
+		return $str;
 	}
 }
 
