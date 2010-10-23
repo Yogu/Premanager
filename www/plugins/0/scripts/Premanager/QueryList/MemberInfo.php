@@ -14,6 +14,7 @@ class MemberInfo extends Module{
 	private $_name;
 	private $_kind;
 	private $_type;
+	private $_fieldName;
 	
 	/**
 	 * The model that contains this member
@@ -52,9 +53,12 @@ class MemberInfo extends Module{
 	 * @param int $kind enum Premanager\QueryList\MemberKind
 	 * @param int|Premanager\QueryList\ModelDescriptor $type
 	 *   enum Premanager\QueryList\DataType or a model descriptor
+	 * @param string $fieldName the name of the field the value of this member is
+	 *   stored in (must be a field of the table specified by the model
+	 *   descriptor) 
 	 */
 	public function __construct(ModelDescriptor $modelDescriptor, $name, $kind,
-		$type) {
+		$type, $fieldName = '') {
 		parent::__construct();
 		
 		if (!is_string($name))
@@ -68,6 +72,7 @@ class MemberInfo extends Module{
 		$this->_name = $name;
 		$this->_kind = $kind;
 		$this->_type = $type;
+		$this->_fieldName = $fieldName;
 	}
 	
 	/**
@@ -104,6 +109,16 @@ class MemberInfo extends Module{
 	 */
 	public function getType() {
 		return $this->_type;
+	}
+	
+	/**
+	 * Gets the name of the field that contains the value
+	 * 
+	 * @return string the name of the field or an empty string if this field
+	 *   can not be accessed using a data base field of the model's table
+	 */
+	public function getFieldName() {
+		return $this->_fieldName;
 	}
 	
 	/**

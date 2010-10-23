@@ -70,11 +70,18 @@ class ModelDescriptor extends Module {
 		$this->_pluginName = $pluginName;
 		$this->_table = $table;
 		$this->_getByIDCallback = $getByIDCallback;
-		foreach ($properties as $name => $type) {
-			if ($type == 'this')
-				$type = $this;
+		foreach ($properties as $name => $value) {
+			if ($value == 'this')
+				$value = $this;
+			if (is_array($value)) {
+				$type = $value[0];
+				$field = $value[1];
+			} else {
+				$type = $value;
+				$field = '';
+			}
 			$this->_members[$name] =
-				new MemberInfo($this, $name, MemberKind::PROPERTY, $type);
+				new MemberInfo($this, $name, MemberKind::PROPERTY, $type, $field);
 		}
 	}
 	

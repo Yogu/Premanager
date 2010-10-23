@@ -95,7 +95,7 @@ class QueryExpression extends Module {
 	 * If there is only one argument, this object will contain a literal value
 	 * specified by this argument.
 	 * 
-	 * @param Premanager\QueryList\ModelDescriptor the type of "this"
+	 * @param Premanager\QueryList\ModelDescriptor $objectType the type of "this"
 	 * @param mixed $operation the operation
 	 *   (enum Premanager\QueryList\QueryOperation)
 	 * @param Premanager\QueryList\QueryExpression $operand0 the first operand
@@ -137,8 +137,9 @@ class QueryExpression extends Module {
 			} else if ($operation === null)
 				throw new ArgumentNullException('operation');
 			else
-				throw new ArgumentException('The one-argument constructor expects a '.
-					'number, bool, string or model.', 'operation');
+				throw new ArgumentException('The two-argument constructor expects a '.
+					'number, bool, string, Premanager\DateTime, Premanager\TimeSpan or '.
+					'model for the second argument.', 'operation');
 			$this->_value = $operation;
 			$this->_operation = QueryOperation::NONE;
 		} else {
@@ -388,6 +389,142 @@ class QueryExpression extends Module {
 	 * @return string
 	 */
 	public function getQuery() {
+		switch ($this->_operation) {
+			case QueryOperation::NONE:
+				switch ($this->_type) {
+					case DataType::NUMBER:
+					case DataType::STRING:
+					case DataType::DATE_TIME: // overrides the __tostring() method
+						return "'" . ((string)$this->_value) . "'";
+					case DataType::BOOLEAN:
+						return $this->_value ? "'1'" : "'0'";
+					case DataType::TIME_SPAN:
+						return "'" . $this->_value->getTimestamp() . "'";
+				}
+				break;
+				
+			case QueryOperation::MEMBER:
+				if ($this->_operand0 == null && $this->_memberInfo->getFieldName()) {
+					return $this->_memberInfo->getFieldName();
+				}
+				break;
+				
+			case QueryOperation::NOT:
+				if ($op0 = $this->_operand0->getQuery())
+					return 'NOT ('.$op0.')';
+				break;
+				
+			case QueryOperation::NEGATE:
+				if ($op0 = $this->_operand0->getQuery())
+					return '-('.$op0.')';
+				break;
+				
+			case QueryOperation::MULTIPLY:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') * ('.$op1.')';
+				break;
+				
+			case QueryOperation::DIVIDE:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') / ('.$op1.')';
+				break;
+				
+			case QueryOperation::MODULUS:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') % ('.$op1.')';
+				break;
+				
+			case QueryOperation::ADD:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+				{
+					switch ($this->_operand0->getType()) {
+						case DataType::STRING:
+							return 'CONCAT (('.$op0.'), ('.$op1.'))';
+						case DataType::DATE_TIME:
+							return 'DATE_ADD(('.$op0.'), INTERVAL ('.$op1.') SECOND)';
+						default:
+							return '(' . $op0 . ') + (' . $op1 . ')';
+					}
+				}
+				break;
+				
+			case QueryOperation::SUBTRACT:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+				{
+					switch ($this->_operand0->getType()) {
+						case DataType::DATE_TIME:
+							return 'DATE_SUB(('.$op0.'), INTERVAL ('.$op1.') SECOND)';
+						default:
+							return '('.$op0.') - ('.$op1.')';
+					}
+				}
+				break;
+				
+			case QueryOperation::EQUAL:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') = ('.$op1.')';
+				break;
+				
+			case QueryOperation::UNEQUAL:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') != ('.$op1.')';
+				break;
+				
+			case QueryOperation::LESS:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') < ('.$op1.')';
+				break;
+				
+			case QueryOperation::GREATER:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') > ('.$op1.')';
+				break;
+				
+			case QueryOperation::LESS_EQUAL:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') <= ('.$op1.')';
+				break;
+				
+			case QueryOperation::GREATER_EQUAL:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') >= ('.$op1.')';
+				break;
+				
+			case QueryOperation::LOGICAL_AND:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') AND ('.$op1.')';
+				break;
+				
+			case QueryOperation::LOGICAL_OR:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())))
+					return '('.$op0.') OR ('.$op1.')';
+				break;
+				
+			case QueryOperation::CONDITIONAL:
+				if (($op0 = $this->_operand0->getQuery()) && 
+					($op1 = ($this->_operand1->getQuery())) &&
+					($op2 = $this->_operand2->getQuery()))
+					return 'IF(('.$op0.'), ('.$op1.'), ('.$op2.'))';
+				break;
+				
+			case QueryOperation::IS_NULL:
+				if ($op0 = $this->_operand0->getQuery())
+					return '('.$op0.') IS NULL';
+				break;
+		}
 		return '';
 	}
 	
@@ -418,7 +555,7 @@ class QueryExpression extends Module {
 				return !$this->_operand0->evaluate($object, $queryEvaluated);
 					
 			case QueryOperation::NEGATE:
-				switch ($this->_operand0->gettype()) {
+				switch ($this->_operand0->getType()) {
 					case DataType::NUMBER:
 						return -$this->_operand0->evaluate($object, $queryEvaluated);
 					case DataType::TIME_SPAN:
