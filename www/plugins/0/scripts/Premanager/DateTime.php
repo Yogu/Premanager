@@ -16,6 +16,13 @@ class DateTime extends Module {
 	private $_timeZone;
 	
 	/**
+	 * Specifies the format __tostring() and __construct(string) use
+	 * 
+	 * @var string
+	 */
+	const DEFAULT_FORMAT = 'Y-m-d H:i:s';
+	
+	/**
 	 * The year component
 	 * 
 	 * This property is read-only.
@@ -211,7 +218,12 @@ class DateTime extends Module {
 			} else if (Types::isInteger($arg0)) {
 				$timestamp = $arg0;
 			} else {
-				$str = (string) $arg0;
+				$obj = \DateTime::createFromFormat(self::DEFAULT_FORMAT,
+					(string) $arg0);
+				if (!$obj)
+					throw new ArgumentException('$arg0 is neither a an integer or a '.
+						'Premanager\TimeZone object, nor a vaild time string', 'arg0');
+				$timestamp = $obj->getTimestamp();
 			}
 		}
 		
@@ -219,67 +231,47 @@ class DateTime extends Module {
 			$timeZone = TimeZone::getUTC();
 		
 		if (!$timestamp) {
-			if ($str !== null) {
-				$components = \preg_split('/[^0-9]/', $str);
-				if (Arrays::count($components) != 3 && Arrays::count($components) != 6)
-					throw new FormatException('$arg0 does not contain exactly 3 or 6 '.
-						'components');
-	
-				$year = $components[0];
-				$month = $components[1];
-				$day = $components[2];
-				if (Arrays::count($components) == 6) {
-					$hour = $components[3];
-					$minute = $components[4];
-					$second = $components[5];
-				} else {
-					$hour = 0;
-					$minute = 0;
-					$second = 0;
-				}
+			// Check component parameters
+			if (!Types::isInteger($year))
+				throw new ArgumentException('$arg0 must be an integer if three '.
+					'or four arguments are passed', 'time');
+			if (!Types::isInteger($month))
+				throw new ArgumentException('$arg1 must be an integer', 'month');
+			if ($month < 1 || $month > 12)
+				throw new ArgumentOutOfRangeException('month', $month,
+					'$arg1 must be a value between 1 and 12');
+			if (!Types::isInteger($day))
+				throw new ArgumentException('$arg2 must be an integer', 'day');
+			if ($day < 1 || $day > self::daysInMonth($year, $month))
+				throw new ArgumentOutOfRangeException('day', '$day',
+					'$arg2 must be a value between 1 and '.self::daysInMonth($year,
+					$month).' (the count of days in the month');
+			
+			if ($hour !== null || $minute !== null || $second !== null) {
+				if ($hour === null || $minute === null || $second === null)
+					throw new ArgumentException('Invalid arguments passed');
+					
+				if (!Types::isInteger($hour))
+					throw new ArgumentException('$arg3 must be an integer if six or '.
+						'seven parameters are specified', 'hour');
+				if ($hour < 0 || $hour > 23)
+					throw new ArgumentOutOfRangeException('hour', $hour,
+						'$arg3 must be a value between 0 and 23 if six or seven '.
+						'parameters are specified');
+				if (!Types::isInteger($minute))
+					throw new ArgumentException('$arg4 must be an integer', 'minute');
+				if ($minute < 0 || $minute > 59)
+					throw new ArgumentOutOfRangeException('minute', $minute,
+						'$arg4 must be a value between 0 and 59');
+				if (!Types::isInteger($second))
+					throw new ArgumentException('$arg5 must be an integer', 'second');
+				if ($second < 0 || $second > 59)
+					throw new ArgumentOutOfRangeException('second', $second,
+						'$arg5 must be a value between 0 and 59');
 			} else {
-				// Check component parameters
-				if (!Types::isInteger($year))
-					throw new ArgumentException('$arg0 must be an integer if three '.
-						'or four arguments are passed', 'time');
-				if (!Types::isInteger($month))
-					throw new ArgumentException('$arg1 must be an integer', 'month');
-				if ($month < 1 || $month > 12)
-					throw new ArgumentOutOfRangeException('month', $month,
-						'$arg1 must be a value between 1 and 12');
-				if (!Types::isInteger($day))
-					throw new ArgumentException('$arg2 must be an integer', 'day');
-				if ($day < 1 || $day > self::daysInMonth($year, $month))
-					throw new ArgumentOutOfRangeException('day', '$day',
-						'$arg2 must be a value between 1 and '.self::daysInMonth($year,
-						$month).' (the count of days in the month');
-				
-				if ($hour !== null || $minute !== null || $second !== null) {
-					if ($hour === null || $minute === null || $second === null)
-						throw new ArgumentException('Invalid arguments passed');
-						
-					if (!Types::isInteger($hour))
-						throw new ArgumentException('$arg3 must be an integer if six or '.
-							'seven parameters are specified', 'hour');
-					if ($hour < 0 || $hour > 23)
-						throw new ArgumentOutOfRangeException('hour', $hour,
-							'$arg3 must be a value between 0 and 23 if six or seven '.
-							'parameters are specified');
-					if (!Types::isInteger($minute))
-						throw new ArgumentException('$arg4 must be an integer', 'minute');
-					if ($minute < 0 || $minute > 59)
-						throw new ArgumentOutOfRangeException('minute', $minute,
-							'$arg4 must be a value between 0 and 59');
-					if (!Types::isInteger($second))
-						throw new ArgumentException('$arg5 must be an integer', 'second');
-					if ($second < 0 || $second > 59)
-						throw new ArgumentOutOfRangeException('second', $second,
-							'$arg5 must be a value between 0 and 59');
-				} else {
-					$hour = 0;
-					$minute = 0;
-					$second = 0;
-				}
+				$hour = 0;
+				$minute = 0;
+				$second = 0;
 			}
 			
 			$timestamp = mktime($hour, $minute, $second, $month, $day, $year);
@@ -723,8 +715,14 @@ class DateTime extends Module {
 			$this->_timestamp), $dateFormatCache[$format]['localizer']);
 	}
 	
+	/**
+	 * Converts this date/time into a string using the 
+	 * Premanager\DateTime::DEFAULT_FORMAT format string
+	 * 
+	 * @return tring the formatted date/time string
+	 */
 	public function __tostring() {
-		return date('Y-m-d H:i:s', $this->_timestamp);
+		return date(self::DEFAULT_FORMAT, $this->_timestamp);
 	}
 
 	/**
