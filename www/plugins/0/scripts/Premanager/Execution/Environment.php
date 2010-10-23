@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\Debug\Debug;
+
 use Premanager\URL;
 
 use Premanager\Module;
@@ -69,19 +71,7 @@ class Environment extends Module {
 	/**
 	 * @var bool
 	 */
-	private $_projectLoading;
-	/**
-	 * @var bool
-	 */
-	private $_languageLoading;
-	/**
-	 * @var bool
-	 */
 	private $_styleLoading;
-	/**
-	 * @var bool
-	 */
-	private $_editionLoading;
 	
 	/**
 	 * @var array
@@ -331,18 +321,10 @@ class Environment extends Module {
 	 */
 	public function getProject() {
 		if (!$this->_project && $this->_isReal) {
-			if ($this->_projectLoading)
+			if (Request::isAnalyzing())
 				return Project::getOrganization();
-			else {
-				$this->_projectLoading = true;
-				try {
-					$this->_project = Request::getProject();
-				} catch (\Exception $e) {
-					$this->_projectLoading = false;
-					throw $e;
-				}
-				$this->_projectLoading = false;
-			}
+			else
+				$this->_project = Request::getProject();
 		}
 		
 		return $this->_project;
@@ -408,18 +390,10 @@ class Environment extends Module {
 	 */
 	public function getEdition() {
 		if (!$this->_user && $this->_isReal) {
-			if ($this->_editionLoading)
+			if (Request::isAnalyzing())
 				return Edition::COMMON;
-			else {
-				$this->_editionLoading = true;
-				try {
-					$this->_edition = Request::getEdition();
-				} catch (\Exception $e) {
-					$this->_editionLoading = false;
-					throw $e;
-				}
-				$this->_editionLoading = false;
-			}
+			else
+				$this->_edition = Request::getEdition();
 		}
 		
 		return $this->_edition;
@@ -479,7 +453,7 @@ class Environment extends Module {
 	 * @return bool true, if $project is available
 	 */
 	public function isProjectAvailable() {
-		return !$this->_projectLoading;
+		return !Request::isAnalyzing();
 	}
 	
 	/**
@@ -488,7 +462,7 @@ class Environment extends Module {
 	 * @return bool true, if $language is available
 	 */
 	public function isLanguageAvailable() {
-		return !$this->_languageLoading;
+		return !Request::isAnalyzing();
 	}
 	
 	/**
@@ -506,7 +480,7 @@ class Environment extends Module {
 	 * @return bool true, if $edition is available
 	 */
 	public function isEditionAvailable() {
-		return !$this->_editionLoading;
+		return !Request::isAnalyzing();
 	}
 
 	// ===========================================================================
