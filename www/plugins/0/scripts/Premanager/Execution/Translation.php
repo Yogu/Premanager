@@ -65,7 +65,7 @@ class Translation extends Module {
 	 */
 	public static function defaultGet($pluginName, $stringName,
 		array $params = array()) {
-		return Environment::getCurrent()->translation->get($pluginName, $stringName,
+		return Environment::getCurrent()->gettranslation()->get($pluginName, $stringName,
 			$params);
 	}
 	
@@ -116,32 +116,32 @@ class Translation extends Module {
 						
 						case 'longDateTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->language->longDateTimeFormat) : '';
+								$this->_environment->getlanguage()->longDateTimeFormat) : '';
 						break;	         				      
 						
 						case 'longDate':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->language->longDateFormat) : '';
+								$this->_environment->getlanguage()->longDateFormat) : '';
 						break;	           				      
 						
 						case 'longTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->language->longTimeFormat) : '';
+								$this->_environment->getlanguage()->longTimeFormat) : '';
 						break;	   				      
 						
 						case 'shortDateTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->language->shortDateTimeFormat) : '';
+								$this->_environment->getlanguage()->shortDateTimeFormat) : '';
 						break;	         				      
 						
 						case 'shortDate':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->language->shortDateFormat) : '';
+								$this->_environment->getlanguage()->shortDateFormat) : '';
 						break;	           				      
 						
 						case 'shortTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->language->shortTimeFormat) : '';
+								$this->_environment->getlanguage()->shortTimeFormat) : '';
 						break;
 						
 						default:

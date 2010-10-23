@@ -69,7 +69,7 @@ class Options extends Module {
 	 * @return string the value of the option
 	 */
 	public static function defaultGet($plugin, $name, $skipUserOptions = false) {
-		return Environment::getCurrent()->options->get($plugin, $name,
+		return Environment::getCurrent()->getoptions()->get($plugin, $name,
 			$skipUserOptions);	
 	}	
 
@@ -114,9 +114,11 @@ class Options extends Module {
 				"projectOption ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Options')." AS optn ".
 				"ON optn.id = projectOption.optionID ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins').
+				" AS plugin ".
 				"ON optn.pluginID = plugin.id ".
-			"WHERE projectOption.projectID = '".$this->_environment->project->id."'");
+			"WHERE projectOption.projectID = '".
+				$this->_environment->getProject()->getID()."'");
 		while ($result->next()) {
 			$pluginName = $result->get('pluginName');
 			$optionName = $result->get('optionName');
@@ -142,9 +144,11 @@ class Options extends Module {
 				" userOption ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Options')." AS optn ".
 				"ON optn.id = userOption.optionID ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins').
+				" AS plugin ".
 				"ON optn.pluginID = plugin.id ".
-			"WHERE userOption.userID = '".$this->_environment->user->id."'");
+			"WHERE userOption.userID = '".
+			$this->_environment->getUser()->getID()."'");
 		while ($result->next()) {
 			$pluginName = $result->get('pluginName');
 			$optionName = $result->get('optionName');

@@ -45,7 +45,7 @@ class GroupPage extends PageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_group->name;
+		return $this->_group->getname();
 	}
 	
 	/**
@@ -55,7 +55,7 @@ class GroupPage extends PageNode {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_group->name;
+		return $this->_group->getname();
 	}
 
 	/**

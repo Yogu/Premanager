@@ -115,7 +115,8 @@ class MemberInfo extends Module{
 	public function getValue($object) {
 		if (!$object)
 			throw new ArgumentNullException('object');
-		if (!$object instanceof $this->_modelDescriptor->className)
+		$className = $this->_modelDescriptor->getClassName();
+		if (!$object instanceof $className)
 			throw new ArgumentException('$object is not an instance of the model '.
 				'that contains this member');
 			

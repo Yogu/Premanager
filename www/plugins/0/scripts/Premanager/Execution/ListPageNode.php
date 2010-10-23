@@ -125,7 +125,7 @@ abstract class ListPageNode extends PageNode {
 	 */
 	public function getPageCount() {
 		if ($this->_pageCount === null)
-			$this->_pageCount = ceil($this->itemCount / $this->_itemsPerPage);
+			$this->_pageCount = ceil($this->getitemCount() / $this->_itemsPerPage);
 		return $this->_pageCount;
 	}
 	
@@ -156,7 +156,7 @@ abstract class ListPageNode extends PageNode {
 	 */
 	public function getStartIndex() {
 		if ($this->_startIndex === null)
-			$this->_startIndex = ($this->pageIndex-1) * $this->_itemsPerPage;
+			$this->_startIndex = ($this->getpageIndex()-1) * $this->_itemsPerPage;
 		return $this->_startIndex;
 	}
 	
@@ -168,8 +168,8 @@ abstract class ListPageNode extends PageNode {
 	public function getPageIndex() {
 		if ($this->_pageIndex === null) {
 			// Check that current page is in page range  
-			if ($this->_pageIndex > $this->pageCount)
-				$this->_pageIndex = $this->pageCount;
+			if ($this->_pageIndex > $this->getpageCount())
+				$this->_pageIndex = $this->getpageCount();
 			if ($this->_pageIndex < 1)
 				$this->_pageIndex = 1;
 		}

@@ -505,7 +505,7 @@ final class StructureNode extends Model {
 			"FROM ".DataBase::formTableName('Premanager', 'NodesName')." AS name ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 				"ON name.id = node.id ".
-			"WHERE node.parentID = '$this->id' ". 
+			"WHERE node.parentID = '$this->_id' ". 
 				"AND name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$user = self::createFromID($result->get('id'), $this);
@@ -574,7 +574,7 @@ final class StructureNode extends Model {
 				"SELECT group.groupID ".
 				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS group ".
 				"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." AS userGroup ".
-					"ON userGroup.userID = '$user->id' ".
+					"ON userGroup.userID = '$user->getid()' ".
 					"AND userGroup.groupID = group.groupID ".
 				"INNER JOIN ".DataBase::formTableName('Premanager', 'NodeGroup')." AS nodeGroup ".
 					"ON nodeGroup.groupID = group.groupID ".
@@ -667,7 +667,7 @@ final class StructureNode extends Model {
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"(nodeID, groupID) ".
-			"VALUES ('$this->_id', '$group->id') ".
+			"VALUES ('$this->_id', '$group->getid()') ".
 			"ON DUPLICATE KEY UPDATE 0+0");
 			
 		if (DataBase::getAffectedRows() && $this->_authorizedGroupsCount !== null)
@@ -690,7 +690,7 @@ final class StructureNode extends Model {
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"WHERE nodeID = '$this->_id' ".
-				"AND groupID = '$group->id'");   
+				"AND groupID = '$group->getid()'");   
 			
 		if (DataBase::getAffectedRows() && $this->_authorizedGroupsCount !== null)
 			$this->_authorizedGroupsCount--;
@@ -714,7 +714,7 @@ final class StructureNode extends Model {
 		$name = Strings::normalize($name);
 		$title = \trim($title);
 		if ($noAccessRestriction === null)
-			$noAccessRestriction = $this->noAccessRestriction;
+			$noAccessRestriction = $this->getnoAccessRestriction();
 		else
 			$noAccessRestriction = !!$noAccessRestriction;
 		
@@ -733,19 +733,19 @@ final class StructureNode extends Model {
 		if ($type !== null) {
 			switch ($type)  {
 				case StructureNodeType::SIMPLE:
-					if ($this->tree)
+					if ($this->gettree())
 						throw new InvalidOperationException('The type of a node with type '.
 							'TREE can not be changed');
 					$hasPanel = false;
 					break;
 				case StructureNodeType::PANEL:
-					if ($this->tree)
+					if ($this->gettree())
 						throw new InvalidOperationException('The type of a node with type '.
 							'TREE can not be changed');
 					$hasPanel = true;
 					break;
 				case StructureNodeType::TREE:
-					if (!$this->tree)
+					if (!$this->gettree())
 						throw new InvalidOperationException('The type of a node can not '.
 							'be changed to TREE');
 					$hasPanel = false;
@@ -755,7 +755,7 @@ final class StructureNode extends Model {
 						'Premanage\Objects\StructureNodeType'); 
 			}
 		} else
-			$hasPanel = $this->hasPanel;
+			$hasPanel = $this->gethasPanel();
 			
 		DataBaseHelper::update('Premanager_StructureNodes', 'nodeID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
@@ -775,7 +775,7 @@ final class StructureNode extends Model {
 		$this->_hasPanel = $hasPanel;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->user;
+		$this->_editor = Environment::getCurrent()->getuser();
 	}     
 	
 	/**
@@ -792,10 +792,10 @@ final class StructureNode extends Model {
 	public function setParent(StructureNode $parent) {
 		$this->checkDisposed();
 			
-		if ($parent == $this->parent)
+		if ($parent == $this->getparent())
 			return;
 			
-		if (!$this->parent)
+		if (!$this->getparent())
 			throw new InvalidOperationException('Root node can not be moved');
 		if (!$parent)
 			throw new ArgumentNullException('parent');
@@ -804,10 +804,10 @@ final class StructureNode extends Model {
 				'parent');
 		if ($parent->isChildOf($this))
 			throw new ArgumentException('$parent is a child of this', 'parent');
-		if ($parent->project != $this->_project)
+		if ($parent->getproject() != $this->_project)
 			throw new ArgumentException('$parent\'s project must be the same '.
 				'project like this node\'s project', 'parent');
-		if ($parent->type == StructureNodeType::TREE)
+		if ($parent->gettype() == StructureNodeType::TREE)
 			throw new ArgumentException('$parent\'s type is TREE, so it '.
 				'can not contain children', 'parent');
 		if (!$parent->areNamesAvailable($this))
@@ -829,21 +829,21 @@ final class StructureNode extends Model {
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE , $this->_id, null,
 			array(
-				'parentID' => $parent->id),
+				'parentID' => $parent->getid()),
 			array()
 		);           
 		
 		// Update child count
-		if ($this->parent->_childCount !== null)
-			$this->parent->_childCount--;
+		if ($this->getparent()->_childCount !== null)
+			$this->getparent()->_childCount--;
 		if ($parent->_childCount !== null)	
 			$parent->_childCount++;
 		
-		$this->_parentID = $parent->id;
+		$this->_parentID = $parent->getid();
 		$this->_parent = $parent;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->user;
+		$this->_editor = Environment::getCurrent()->getuser();
 	}
 	
 	/**
@@ -871,7 +871,7 @@ final class StructureNode extends Model {
 		$this->_noAccessRestriction = $noAccessRestriction;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->user;
+		$this->_editor = Environment::getCurrent()->getuser();
 	}   
 	
 	/**
@@ -886,19 +886,19 @@ final class StructureNode extends Model {
 			
 		switch ($type)  {
 			case StructureNodeType::SIMPLE:
-				if ($this->tree)
+				if ($this->gettree())
 					throw new InvalidOperationException('The type of a node with type '.
 						'TREE can not be changed');
 				$hasPanel = false;
 				break;
 			case StructureNodeType::TYPE_PANEL:
-				if ($this->tree)
+				if ($this->gettree())
 					throw new InvalidOperationException('The type of a node with type '.
 						'TREE can not be changed');
 				$hasPanel = true;
 				break;
 			case StructureNodeType::TYPE_TREE:
-				if (!$this->tree)
+				if (!$this->gettree())
 					throw new InvalidOperationException('The type of a node can not '.
 						'be changed to TREE');
 				$hasPanel = false;
@@ -908,7 +908,7 @@ final class StructureNode extends Model {
 					'Premanager\Models\StructureNodeType');
 		}
 		
-		if ($hasPanel == $this->hasPanel)
+		if ($hasPanel == $this->gethasPanel())
 			return;
 			
 		DataBaseHelper::update('Premanager_StructureNodes', 'nodeID',
@@ -923,7 +923,7 @@ final class StructureNode extends Model {
 		$this->_hasPanel = $hasPanel;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->user;
+		$this->_editor = Environment::getCurrent()->getuser();
 	}     
 
 	/**
@@ -975,7 +975,7 @@ final class StructureNode extends Model {
 			DataBaseHelepr::CREATOR_FIELDS | DataBaseHelepr::EDITOR_FIELDS, $name,
 			array(
 				'noAccessRestriction' => $noAccessRestriction,
-				'parentID' => $parent->id,
+				'parentID' => $parent->getid(),
 				'hasPanel' => $type == self::TYPE_PANEL,
 				'treeID' => 0),
 			array(
@@ -983,9 +983,9 @@ final class StructureNode extends Model {
 		);
 		
 		$instance = self::createFromID($id, $name, $title, $parent);
-		$instance->_creator = Environment::getCurrent()->user;
+		$instance->_creator = Environment::getCurrent()->getuser();
 		$instance->_createTime = new DateTime();
-		$instance->_editor = Environment::getCurrent()->user;
+		$instance->_editor = Environment::getCurrent()->getuser();
 		$instance->_editTime = new DateTime();
 
 		// Now parent node contains one child more
@@ -994,7 +994,7 @@ final class StructureNode extends Model {
 			
 		// Other children of this node's parent might have moved
 		foreach (self::$_instances as $instance)
-			if ($instance->_index !== null && $instance->parent == $parent)
+			if ($instance->_index !== null && $instance->getparent() == $parent)
 				$instance::$_index = null;	
 		
 		return $instance;
@@ -1026,8 +1026,8 @@ final class StructureNode extends Model {
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"WHERE nodeID = '$this->_id'");
 		
-		if ($this->parent && $this->parent->_childCount !== null)
-			$this->parent->_childCount--;
+		if ($this->getparent() && $this->getparent()->_childCount !== null)
+			$this->getparent()->_childCount--;
 			
 		unset(self::$_instance[$this->_id]);
 
@@ -1043,10 +1043,10 @@ final class StructureNode extends Model {
 	 * @return bool true, if this node can be deleted
 	 */
 	public function canDelete() {
-		if ($this->tree)
+		if ($this->gettree())
 			return false;
 		else
-			foreach ($this->children as $child) {
+			foreach ($this->getchildren() as $child) {
 				if (!$child->canDelete())
 					return false;
 			}
@@ -1103,7 +1103,7 @@ final class StructureNode extends Model {
 	 * @return bool true, if this node is a child of $node
 	 */
 	public function isChildOf(StructureNode $node) {
-		return $this->parent == $node || $this->isChildOf($node->parent);
+		return $this->getparent() == $node || $this->isChildOf($node->getparent());
 	}
 
 	// ===========================================================================       

@@ -48,7 +48,7 @@ abstract class TreeListPageNode extends ListPageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_structureNode->name;
+		return $this->_structureNode->getname();
 	}
 	
 	/**
@@ -58,7 +58,7 @@ abstract class TreeListPageNode extends ListPageNode {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_structureNode->title;
+		return $this->_structureNode->gettitle();
 	}
 	
 	/**

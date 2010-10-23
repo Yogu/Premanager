@@ -44,9 +44,9 @@ class DataBaseHelper extends Module {
 	 */
 	public static function insert($table, $flags, $name,
 		array $values, array $translatedValues, $parentID = null) {
-		$user = Environment::getCurrent()->user->id;
+		$user = Environment::getCurrent()->getuser()->getid();
 		$ip = Request::getIP();
-		$lang = Environment::getCurrent()->language->id;   
+		$lang = Environment::getCurrent()->getlanguage()->getid();   
 		
 		if (($flags & self::IS_TREE)) {
 			if (!Types::isInteger($parentID) || $parentID < 0)
@@ -191,9 +191,9 @@ class DataBaseHelper extends Module {
 	public static function update($table, $flags, $id, $name,
 		array $values, array $translatedValues, $parentID = null,
 		$isNameInUseCallback = null) {
-		$user = Environment::getCurrent()->user->id;
+		$user = Environment::getCurrent()->getuser()->getid();
 		$ip = Request::getIP();
-		$lang = Environment::getCurrent()->language->id;
+		$lang = Environment::getCurrent()->getlanguage()->getid();
 		
 		if (!Types::isInteger($id) || $id < 0)
 			throw new rgumentException('$id must be a positive integer value', 'id');
@@ -440,7 +440,7 @@ class DataBaseHelper extends Module {
 	 */
 	private static function insertName($table, $flags, $id, $name,
 		$parentID = null) {  
-		$lang = Environment::getCurrent()->language->id;
+		$lang = Environment::getCurrent()->getlanguage()->getid();
 		$name = DataBase::escape(unitize($name));
 		
 		if (!Types::isInteger($id) || $id < 0)

@@ -1019,7 +1019,7 @@ final class User extends Model {
 			"SELECT userGroup.isGroupLeader ".
 			"FROM ".DataBase::formTableName('Premanager', 'UsersGroup')." AS userGroup ".
 			"WHERE userGroup.userID = '$this->_id' ".
-				"AND userGroup.groupID = '$group->id'");
+				"AND userGroup.groupID = '$group->getid()'");
 		return $result->get('isGroupLeader');
 	} 
 	
@@ -1049,7 +1049,7 @@ final class User extends Model {
 			return true;
 		else {
 			// Check if secondary password has expired
-			if ($this->secondaryPasswordExpirationTime < time())
+			if ($this->getsecondaryPasswordExpirationTime() < time())
 				$this->deleteSecondaryPassword();
 			else if  ($encodedPassword == $dbSecondaryPassword) {
 				$isSecondaryPassword = true;
@@ -1076,7 +1076,7 @@ final class User extends Model {
 				'$name is an empty string or contains only whitespaces', 'name');
 
 		// Update guest's name
-	  if (!$this->id) {
+	  if (!$this->_id) {
 			$result = DataBase::query(
 				"SELECT string.id, translation.languageID ".
 				"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
@@ -1084,7 +1084,7 @@ final class User extends Model {
 					" AS translation ".
 					"ON string.id = translation.id ".
 					"AND translation.languageID = '".
-						Environment::getCurrent()->$language->id."' ".
+						Environment::getCurrent()->$language->getid()."' ".
 				"WHERE string.pluginID = '0' ".
 					"AND string.name = 'guest'");
 			if (Types::isInteger($result->get('languageID'))) {
@@ -1093,14 +1093,14 @@ final class User extends Model {
 						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
 					"SET value = '".DataBase::escape($_name)."' ".
 					"WHERE id = '".$result->get('id')."' ".
-						"AND languageID = '".Environment::getCurrent()->$language->id."'");
+						"AND languageID = '".Environment::getCurrent()->$language->getid()."'");
 			} else {
 				DataBase::query(
 					"INSERT INTO ".
 						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
 					"(id, languageID, value) ".
 					"VALUES ('".$result->get('id')."', ".
-						"'".Environment::getCurrent()->$language->id."', ".
+						"'".Environment::getCurrent()->$language->getid()."', ".
 						"'".DataBase::escape($this->_name)."')");
 			}
 			
@@ -1152,7 +1152,7 @@ final class User extends Model {
 				$s = 'disabled';
 				break;
 			case UserStatus::WAIT_FOR_EMAIL:
-				if (!$this->unconfirmedEmail)
+				if (!$this->getunconfirmedEmail())
 					throw new ArgumentException('WAIT_FOR_EMAIL is only '.
 						'available if there is a unconfirmed email', 'status');
 				$s = 'waitForEmail';
@@ -1286,7 +1286,7 @@ final class User extends Model {
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"(userID, groupID, isLeader, joinTime, joinIP) ".
-			"VALUES ('$this->_id', '$group->id', '0', NOW(), '".Client::$ip."') ".
+			"VALUES ('$this->_id', '$group->getid()', '0', NOW(), '".Client::$ip."') ".
 			"ON DUPLICATE KEY UPDATE 0+0");
 			
 		if (DataBase::getAffectedRows() && $this->_groupCount !== null)
@@ -1312,7 +1312,7 @@ final class User extends Model {
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"WHERE userID = '$this->_id' ".
-				"AND groupID = '$group->id'");   
+				"AND groupID = '$group->getid()'");   
 				   
 		if (DataBase::getAffectedRows() && $this->_groupCount !== null)
 			$this->_groupCount--;
@@ -1338,7 +1338,7 @@ final class User extends Model {
 			"UPDATE ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"SET isLeader = '1' ".
 			"WHERE userID = '$this->_id' ".
-				"AND groupID = '$group->id'");
+				"AND groupID = '$group->getid()'");
 
 		// Title and color might have changed
 		$this->clearCache(); 
@@ -1361,7 +1361,7 @@ final class User extends Model {
 			"UPDATE ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"SET isLeader = '0' ".
 			"WHERE userID = '$this->_id' ".
-				"AND groupID = '$group->id'");
+				"AND groupID = '$group->getid()'");
 
 		// Title and color might have changed
 		$this->clearCache(); 
@@ -1412,7 +1412,7 @@ final class User extends Model {
 			"SET unconfirmedEmail = '', ".
 				"unconfirmedEmailStartTime = '0000-00-00 00:00:00', ".
 				"unconfirmedEmailKey = '' ".
-			"WHERE id = '$this->id'");
+			"WHERE id = '$this->_id'");
 		$this->_unconfirmedEmailKey = '';
 		$this->_unconfirmedEmail = '';
 		$this->_unconfirmedEmailStartTime = null;
@@ -1439,7 +1439,7 @@ final class User extends Model {
 			throw new ArgumentException('$email is null or an empty string', 'email');
 			
 		// Store unconfirmed email before it's lost
-		$email = $this->unconfirmedEmail;
+		$email = $this->getunconfirmedEmail();
 		
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
@@ -1448,7 +1448,7 @@ final class User extends Model {
 				"unconfirmedEmailStartTime = '0000-00-00 00:00:00', ".
 				"unconfirmedEmailKey = '', ".   
 				"status = IF(status = 'waitForEmail', 'enabled', status) ".
-			"WHERE id = '$this->id'");	    
+			"WHERE id = '$this->_id'");	    
 		$this->_email = $email;
 		$this->_unconfirmedEmailKey = '';       
 		$this->_unconfirmedEmail = '';          
@@ -1497,7 +1497,7 @@ final class User extends Model {
 		
 		if (!$expirationInterval)
 			throw new ArgumentNullException('expirationInterval');
-		if ($expirationInterval->timestamp <= 0)
+		if ($expirationInterval->gettimestamp() <= 0)
 			throw new ArgumentException('$expirationInterval must be positive',
 				'expirationInterval');
 				
@@ -1508,7 +1508,7 @@ final class User extends Model {
 				"secondaryPasswordStartTime = NOW(), ".
 				"secondaryPasswordStartIP = '".DataBase::escape(Client::$ip)."', ".
 				"secondaryPasswordExpirationTime = ".
-					"NOW() + INTERVAL $expirationTime->seconds SECOND ".
+					"NOW() + INTERVAL $expirationTime->getseconds() SECOND ".
 			"WHERE id = '$this->_id'");
 			
 		$this->_hasSecondaryPassword = true;

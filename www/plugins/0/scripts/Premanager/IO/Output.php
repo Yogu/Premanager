@@ -30,9 +30,9 @@ class Output {
 	public static function setCookie($name, $value, $expire = null) {
 		// Get trunk domain and check whether it contains two parts
 		$url = new URL(Config::getEmptyURLPrefix());
-		$counts = count_chars($url->host, 1);
+		$counts = count_chars($url->gethost(), 1);
 		if ($counts[46] == 1)
-			$serverName = '.'.$url->host;
+			$serverName = '.'.$url->gethost();
 		else
 			$serverName = null;
 			
@@ -46,7 +46,7 @@ class Output {
 
 		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
 		if (!setcookie($prefix.$name, $value,
-			$expirationTime, $url->path, $serverName)) {
+			$expirationTime, $url->getpath(), $serverName)) {
 			throw new InvalidOperationException('Page output has already started');
 		}
 		$_COOKIE[$prefix.$name] = $value;
@@ -73,7 +73,7 @@ class Output {
 		if ($location === null)
 			$location = Request::getRequestURL();
 		elseif (preg_match('/^[a-zA-Z0-9+.-]\:/', $location) === false)
-			$location = Environment::getCurrent()->urlPrefix.$location;
+			$location = Environment::getCurrent()->geturlPrefix().$location;
 
 		header("Location: $location", true, $code);
 		echo '<?xml version="1.0" encoding="utf-8" ?'.'>'.

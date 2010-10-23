@@ -137,7 +137,7 @@ class Request {
 	public static function isRefererInternal() {
 		if (self::$_isRefererInternal === null) {
 			$prefix = new URL(Config::getEmptyURLPrefix());
-			$prefix = $prefix->host.$prefix->path;
+			$prefix = $prefix->gethost().$prefix->getpath();
 			// Check wehater the referer is in a subfolder of Config::$urlTrunk
 			self::$_isRefererInternal = preg_match('/[a-zA-Z0-9+.-]*\:\/\/'.
 				'[a-zA-Z0-9.-]*'.str_replace('/', '\/', $prefix).
@@ -167,14 +167,14 @@ class Request {
 	 */
 	public static function getPOST($name) {
 		if (self::$_postValidated === null) {
-			if (!Environment::getCurrent()->session)
+			if (!Environment::getCurrent()->getsession())
 				self::$_postValidated = true;
 			else {
 				// pretend post data to be validated for accessing the validator
 				self::$_postValidated = true;
 				$validator = self::getPOST('postValidator');
 				self::$_postValidated =
-					$validator == Environment::getCurrent()->session->key;
+					$validator == Environment::getCurrent()->getsession()->key;
 			}
 		}
 		if (!self::$_postValidated )

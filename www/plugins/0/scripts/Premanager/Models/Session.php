@@ -254,7 +254,7 @@ final class Session extends Model {
 		$result = DataBase::query(
 			"SELECT session.id ".            
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
-			"WHERE session.userID = '$user->id'");
+			"WHERE session.userID = '$user->getid()'");
 		if ($result->next()) {
 			return self::createFromID($result->get('id'));
 		}
@@ -292,7 +292,7 @@ final class Session extends Model {
 		$secondaryPassowordUsed = false) {
 		if (!$user)
 			throw new ArgumentNullException('user');
-		if ($user->id == 0)
+		if ($user->getid() == 0)
 			throw new ArgumentException('Cannot create a session for the guest',
 				'user');
 			
@@ -302,19 +302,19 @@ final class Session extends Model {
 		$key = self::formKey($user);
 		$ip = Request::getIP();
 		$userAgent = Request::getUserAgent();
-		$projectID = Environment::getCurrent()->project->id;
+		$projectID = Environment::getCurrent()->getproject()->id;
 		$_secondaryPassowordUsed = $secondaryPassowordUsed ? '1' : '0';
 		$_hidden = $hidden ? '1' : '0';
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"(userID, startTime, lastRequestTime, `key`, ip, userAgent, ".
 				"secondaryPasswordUsed, hidden, projectID, isFirstRequest) ".
-			"VALUES ('$user->id', NOW(), NOW(), '".DataBase::escape($key)."', ".
+			"VALUES ('$user->getid()', NOW(), NOW(), '".DataBase::escape($key)."', ".
 				"'".DataBase::escape($ip)."', '".DataBase::escape($userAgent)."', ".
 				"'$_secondaryPassowordUsed', '$_hidden', '$projectID', '1')");
 		$id = DataBase::getInsertID();
 		
-		$instance = self::createFromID($id, $user->id, $key, new DateTime(), 
+		$instance = self::createFromID($id, $user->getid(), $key, new DateTime(), 
 			new DateTime(), $ip, $userAgent, $secondaryPasswordUsed, $hidden, true,
 			$projectID);
 
@@ -546,18 +546,18 @@ final class Session extends Model {
 	public function hit() {
 		$this->checkDisposed();
 		
-		$project = Environment::getCurrent()->project;
+		$project = Environment::getCurrent()->getproject();
 		
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"SET lastRequestTime = NOW(), ".
 				"isFirstRequest = '0', ".
-				"projectID = '$project->id'");	
+				"projectID = '$project->getid()'");	
 		
 		$this->_lastRequestTime = new DateTime();
 		$this->_isFirstRequest = false;
 		$this->_project = $project;
-		$this->_projectID = $project->id;
+		$this->_projectID = $project->getid();
 	}
 
 	// ===========================================================================
@@ -592,7 +592,7 @@ final class Session extends Model {
 	private static function formKey(User $user)  {
 		if (!$user)
 			throw new ArgumentNullException('user');
-		if ($user->id == 0)
+		if ($user->getid() == 0)
 			throw new ArgumentException('$user is a guest', 'user'); 
 
 		return hash('sha256',
@@ -600,7 +600,7 @@ final class Session extends Model {
 			Config::getSecurityCode().
 			hash('sha256',
 				'758e75425237cebe36a282b543a14567de6bb5ae80203c77d6d1bdaf19e675a7'.
-				$user->name.Config::getSecurityCode().$user->id).Request::getIP().
+				$user->getname().Config::getSecurityCode().$user->getid()).Request::getIP().
 			time()); 
 	}       
 }

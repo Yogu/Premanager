@@ -152,7 +152,7 @@ final class TreeClass extends Model {
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Trees')." ".
 			"(pluginID, class) ".
-			"VALUES ('$plugin->id', '".DataBase::escape($className)."'");
+			"VALUES ('$plugin->getid()', '".DataBase::escape($className)."'");
 		$id = DataBase::insertID();
 		
 		$instance = self::createFromID($id, $plugin, $className);
@@ -259,13 +259,13 @@ final class TreeClass extends Model {
 	 */
 	public function createInstance(StructurePageNode $parent,
 		StructureNode $structureNode)  {
-		if (!class_exists($this->className))
+		if (!class_exists($this->getclassName()))
 			throw new CorruptDataException('The class of tree class '.$this->_id.
-				' ('.$this->className.') does not exist');
+				' ('.$this->getclassName().') does not exist');
 		$instance = new $this->className($parent, $structureNode);
 		if (!($instance instanceof PageNode))
 			throw new CorruptDataException('The class of tree class '.$this->_id.
-				' ('.$this->className.') does not inherit from '.
+				' ('.$this->getclassName().') does not inherit from '.
 				'Premanager\Execution\PageNode');
 		return $instance;
 	}   

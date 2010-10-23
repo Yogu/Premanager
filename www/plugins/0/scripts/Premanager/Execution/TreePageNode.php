@@ -42,7 +42,7 @@ abstract class TreePageNode extends PageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_structureNode->name;
+		return $this->_structureNode->getname();
 	}
 	
 	/**
@@ -52,7 +52,7 @@ abstract class TreePageNode extends PageNode {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_structureNode->title;
+		return $this->_structureNode->gettitle();
 	}
 	
 	/**

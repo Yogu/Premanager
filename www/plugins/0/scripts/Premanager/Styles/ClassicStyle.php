@@ -20,7 +20,7 @@ class ClassicStyle extends Style {
 	 * @return array of Premanager\Execution\StylesheetInfo
 	 */
 	public function getStylesheets() {
-		switch (Environment::getCurrent()->edition) {
+		switch (Environment::getCurrent()->getedition()) {
 			case Edition::COMMON:
 				return array(
 					StylesheetInfo::simpleCreate('Premanager',

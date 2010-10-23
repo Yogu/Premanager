@@ -45,7 +45,7 @@ class UserPage extends PageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_user->name;
+		return $this->_user->getname();
 	}
 	
 	/**
@@ -55,7 +55,7 @@ class UserPage extends PageNode {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_user->name;
+		return $this->_user->getname();
 	}
 
 	/**

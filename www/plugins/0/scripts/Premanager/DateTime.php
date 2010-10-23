@@ -291,7 +291,7 @@ class DateTime extends Module {
 		$this->_timestamp = $timestamp;
 		$this->_timeZone = $timeZone;
 		$this->_universalTimestamp = $timestamp -
-			$timeZone->getOffset($this)->timestamp;
+			$timeZone->getOffset($this)->gettimestamp();
 	}
 	
 	public static function __init() {
@@ -307,7 +307,7 @@ class DateTime extends Module {
 	 *   object and the time of midnight (00:00:00)
 	 */
 	public function getDate() {
-		return new DateTime($this->year, $this->month, $this->day);
+		return new DateTime($this->getyear(), $this->getmonth(), $this->getday());
 	}
 
 	/**
@@ -316,7 +316,7 @@ class DateTime extends Module {
 	 * @return Premanager\TimeStamp the time elapsed since midnight
 	 */
 	public function getTimeOfDay() {
-		return new TimeSpan($this->hour, $this->minute, $this->second);
+		return new TimeSpan($this->gethour(), $this->getminute(), $this->getsecond());
 	}
 	
 	/**
@@ -495,7 +495,7 @@ class DateTime extends Module {
 	 * @return Premanager\DateTime the result
 	 */
 	public function add(TimeSpan $value) { 
-		return new DateTime($this->_timestamp + $value->timestamp);
+		return new DateTime($this->_timestamp + $value->gettimestamp());
 	}
 	
 	/**
@@ -509,7 +509,7 @@ class DateTime extends Module {
 	 */
 	public function subtract($value) { 
 		if ($value instanceof TimeSpan)
-			return new DateTime($this->_timestamp -$value->timestamp);
+			return new DateTime($this->_timestamp -$value->gettimestamp());
 		else if ($value instanceof DataTime)
 			return new TimeSpan($this->_timestamp -$value->_timestamp);
 		else
@@ -539,7 +539,7 @@ class DateTime extends Module {
 			throw new ArgumentNullException('timeZone');
 		
 		return new DateTime($this->_universalTimestamp +
-			$timeZone->getOffset($this->_universalTimestamp)->timestamp, $timeZone);
+			$timeZone->getOffset($this->_universalTimestamp)->gettimestamp(), $timeZone);
 	}
 	
 	/**
@@ -645,28 +645,28 @@ class DateTime extends Module {
 					format(TimeSpanFormat::SHORT_RELATIVE_TO_NOW);
 			
 			case DateTimeFormat::LONG_DATE:
-				$format = Environment::getCurrent()->language->longDateFormat;
+				$format = Environment::getCurrent()->getlanguage()->longDateFormat;
 				break;
 				
 			case DateTimeFormat::LONG_TIME:
-				$format = Environment::getCurrent()->language->longTimeFormat;
+				$format = Environment::getCurrent()->getlanguage()->longTimeFormat;
 				break;
 				
 			case DateTimeFormat::SHORT_DATE_TIME:
-				$format = Environment::getCurrent()->language->shortDateTimeFormat;
+				$format = Environment::getCurrent()->getlanguage()->shortDateTimeFormat;
 				break;
 				
 			case DateTimeFormat::SHORT_DATE:
-				$format = Environment::getCurrent()->language->shortDateFormat;
+				$format = Environment::getCurrent()->getlanguage()->shortDateFormat;
 				break;
 				
 			case DateTimeFormat::SHORT_TIME:
-				$format = Environment::getCurrent()->language->shortTimeFormat;
+				$format = Environment::getCurrent()->getlanguage()->shortTimeFormat;
 				break;
 			
 			default:
 				if (!is_string($format))
-					$format = Environment::getCurrent()->language->longDateTimeFormat;
+					$format = Environment::getCurrent()->getlanguage()->longDateTimeFormat;
 		}
 			
 		// If we are here, an absolute format is selected.
@@ -694,7 +694,7 @@ class DateTime extends Module {
 		}
 		
 		if (!$midnight)
-			$midnight = DateTime::getNow()->date;
+			$midnight = DateTime::getNow()->getdate();
 			
 		// Use short representation (with YESTERDAY, TODAY or TOMORROW instead
 		// of the part embedded in |), if this date/time is in the correct range

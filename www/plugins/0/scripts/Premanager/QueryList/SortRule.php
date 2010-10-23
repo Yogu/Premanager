@@ -53,7 +53,7 @@ class SortRule extends Module{
 		SortDirection::ASCENDING) {
 		parent::__construct();
 		
-		switch ($expression->type) {
+		switch ($expression->gettype()) {
 			case DataType::NUMBER:
 			case DataType::BOOLEAN:
 			case DataType::STRING:
@@ -118,16 +118,17 @@ class SortRule extends Module{
 	 *   type
 	 */
 	public function evaluate($obj0, $obj1) {
-		if (!($obj0 instanceof $this->_expression->objectType->className))
+		$className = $this->_expression->getObjectType()->className;
+		if (!($obj0 instanceof $className))
 			throw ArgumentException('$obj0 is of the wrong type, expected type: '.
-				$this->_expression->objectType->className, 'obj0');
-		if (!($obj1 instanceof $this->_expression->objectType->className))
+				$this->_expression->getobjectType()->className, 'obj0');
+		if (!($obj1 instanceof $className))
 			throw ArgumentException('$obj1 is of the wrong type, expected type: '.
-				$this->_expression->objectType->className, 'obj1');
+				$this->_expression->getobjectType()->className, 'obj1');
 				
 		$value0 = $this->_expression->evaluate($obj0);
 		$value1 = $this->_expression->evaluate($obj1);
-		switch ($this->_expression->objectType) {
+		switch ($this->_expression->getobjectType()) {
 			case DataType::NUMBER:
 			case DataType::BOOLEAN:
 			case DataType::STRING:

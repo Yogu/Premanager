@@ -62,7 +62,7 @@ class UsersPage extends TreeListPageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		$list = self::getList()->getRange($this->startIndex, $this->itemsPerPage,
+		$list = self::getList()->getRange($this->getstartIndex(), $this->getitemsPerPage(),
 			true);
 		
 		$page = new Page($this);
@@ -88,7 +88,7 @@ class UsersPage extends TreeListPageNode {
 	 * @return int
 	 */
 	protected function countItems() {
-		return self::getList()->count;
+		return self::getList()->getcount();
 	}
 	
 	/**

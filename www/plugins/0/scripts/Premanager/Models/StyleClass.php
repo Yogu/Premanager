@@ -156,7 +156,7 @@ final class StyleClass extends Model {
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Styles')." ".
 			"(pluginID, class) ".
-			"VALUES ('$plugin->id', '".DataBase::escape($className)."'");
+			"VALUES ('$plugin->getid()', '".DataBase::escape($className)."'");
 		$id = DataBase::insertID();
 		
 		$instance = self::createFromID($id, $plugin, $className);
@@ -221,7 +221,7 @@ final class StyleClass extends Model {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 			"SET style.isDefault = '1' ".
-			"WHERE style.id = '$style->id'");
+			"WHERE style.id = '$style->getid()'");
 		
 		self::$_default = $style;
 	}
@@ -301,8 +301,10 @@ final class StyleClass extends Model {
 	 * @return Premanager\Models\Style
 	 */
 	public function getInstance()  {
-		if ($this->_instance === null)
-			$this->_instance = new $this->className();
+		if ($this->_instance === null) {
+			$className = $this->getClassName();
+			$this->_instance = new $className;
+		}
 		return $this->_instance;
 	}   
 	

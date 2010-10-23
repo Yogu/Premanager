@@ -1,14 +1,12 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Models\Project;
+
 use Premanager\Model;
-
 use Premanager\QueryList\QueryList;
-
 use Premanager\DateTime;
-
 use Premanager\Debug\Debug;
-
 use Premanager\ArgumentException;
 use Premanager\Module;
 
@@ -52,14 +50,14 @@ abstract class PageNode extends Module {
 	public $title = Module::PROPERTY_GET;
 	
 	/**
-	 * The url of this page relative to Environment::getCurrent()->urlPrefix
+	 * The url of this page relative to Environment::getCurrent()->geturlPrefix()
 	 * 
 	 * @var string
 	 */
 	public $url = Module::PROPERTY_GET_ACRONYM;
 	
 	/**
-	 * The url of this page relative to Environment::getCurrent()->urlPrefix,
+	 * The url of this page relative to Environment::getCurrent()->geturlPrefix(),
 	 * including a query part if exists
 	 * 
 	 * @var string
@@ -186,22 +184,22 @@ abstract class PageNode extends Module {
 	}	     
 	
 	/**
-	 * Gets the url of this page relative to Environment::getCurrent()->urlPrefix
+	 * Gets the url of this page relative to Environment::getCurrent()->geturlPrefix()
 	 * 
 	 * @return string
 	 */
 	public function getURL() {
 		// If there are two parents, one of them is _not_ root
-		if ($this->parent && $this->parent->parent) {
-			if ($name = $this->name)
-				return $this->parent->url.'/'.rawurlencode($name);
+		if ($this->getParent() && $this->getParent()->getParent()) {
+			if ($name = $this->getName())
+				return $this->getParent()->url.'/'.rawurlencode($name);
 			else
-				return $this->parent->url;
+				return $this->getParent()->url;
 		}
 			
 		// If there is exactly one parent, that is root
-		else if ($this->parent)
-			return rawurlencode($this->name);
+		else if ($this->getParent())
+			return rawurlencode($this->getName());
 			
 		// Root node has an empty url	
 		else
@@ -209,7 +207,7 @@ abstract class PageNode extends Module {
 	}
 	
 	/**
-	 * Gets the url of this page relative to Environment::getCurrent()->urlPrefix,
+	 * Gets the url of this page relative to Environment::getCurrent()->geturlPrefix(),
 	 * including a query part if exists
 	 * 
 	 * @return string

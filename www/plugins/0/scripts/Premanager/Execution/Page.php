@@ -58,7 +58,7 @@ class Page extends Module {
 	public function __construct(PageNode $node) {
 		parent::__construct();
 		$this->_node = $node;
-		$this->title = $node->title;
+		$this->title = $node->getTitle();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ class Page extends Module {
 	 * @param Premanager\Execution\PageBlock $block the block to insert
 	 */
 	public function insertBlock(PageBlock $block) {
-		array_splice(&$this->blocks[], 0, 0, array(array(array($block))));
+		array_splice(&$this->blocks, 0, 0, array(array(array($block))));
 	}
 	
 	/**
@@ -112,7 +112,7 @@ class Page extends Module {
 		
 		// Get list of node, parent of node, parent of parent of node ...
 		$hierarchy = array();
-		for ($node = $this->_node; $node != null; $node = $node->parent) {
+		for ($node = $this->_node; $node != null; $node = $node->getparent()) {
 			$hierarchy[] = $node;
 		}
 		
@@ -131,12 +131,12 @@ class Page extends Module {
 			}
 			$navigationTree = array($node, $children);
 			$prev = $node; 
-			$node = $node->parent;
+			$node = $node->getparent();
 		}
 		
 		$template->set('node', $this->_node);
 		$template->set('title', $this->title);
-		$template->set('project', $this->_node->project);
+		$template->set('project', $this->_node->getproject());
 		$template->set('projectNode', $projectNode);
 		$template->set('isIndexPage', $this->_node instanceof StructurePageNode &&
 			$this->_node->isProjectNode());
@@ -146,7 +146,7 @@ class Page extends Module {
 		$template->set('environment', Environment::getCurrent());
 		$template->set('organization', Project::getOrganization());
 		$template->set('canonicalURLPrefix',
-			URL::fromTemplate(Environment::getCurrent()->language, Edition::COMMON));
+			URL::fromTemplate(Environment::getCurrent()->getlanguage(), Edition::COMMON));
 		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());

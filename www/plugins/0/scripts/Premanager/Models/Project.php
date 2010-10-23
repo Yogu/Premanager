@@ -359,8 +359,8 @@ final class Project extends Model {
 		
 		// Insert nodes for current trees
 		foreach (TreeClass::getTreeClasses() as $treeClass) {
-			$title = $treeClass->plugin->name . '-' . 
-				\preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->className);
+			$title = $treeClass->getplugin()->name . '-' . 
+				\preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->getclassName());
 			$name = $rootNode->getAvailableName(Strings::toLower($title));
 			
 			// Now we can't use createChild because we want to create a TREE node
@@ -370,7 +370,7 @@ final class Project extends Model {
 					'noAccessRestriction' => true,
 					'parentID' => $rootNodeID,
 					'hasPanel' => 0,
-					'treeID' => $treeClass->id),
+					'treeID' => $treeClass->getid()),
 				array(
 					'title' => $title)
 			);
@@ -574,7 +574,7 @@ final class Project extends Model {
 					"AND node.projectID = '$this->_id'");
 			if (!$result->next())
 				throw new CorruptDataException('There is no root node for the project '.
-					$this->name.' (id: '.$this->_id.')');
+					$this->getname().' (id: '.$this->_id.')');
 					
 			$this->_rootNode = StructureNode::getByID($result->get('id'));
 		}
@@ -742,8 +742,8 @@ final class Project extends Model {
 		$this->_copyright = $copyright;
 		$this->_description = $description;
 		$this->_keywords = $keywords;
-		$this->_editor = Environment::getCurrent()->user;
-		$this->_editorID = $this->_editor->id;
+		$this->_editor = Environment::getCurrent()->getuser();
+		$this->_editorID = $this->_editor->getid();
 		$this->_editTime = new DateTime();
 	}     
 
@@ -773,7 +773,7 @@ final class Project extends Model {
 				"project.editorID, project.editTime, project.editTimes ".
 			"FROM ".DataBase::formTableName('Premanager', 'Projects')." AS project ",
 			/* translating */
-			"WHERE project.id = '$this->id'");
+			"WHERE project.id = '$this->_id'");
 		
 		if (!$result->next())
 			return false;

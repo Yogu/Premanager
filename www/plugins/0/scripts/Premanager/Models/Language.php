@@ -447,7 +447,7 @@ final class Language extends Model {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"SET language.isDefault = '1' ".
-			"WHERE language.id = '$langauge->id'");
+			"WHERE language.id = '$langauge->getid()'");
 		
 		self::$_default = $language;
 	}
@@ -497,7 +497,7 @@ final class Language extends Model {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"SET language.isInternational = '1' ".
-			"WHERE language.id = '$langauge->id'");
+			"WHERE language.id = '$langauge->getid()'");
 		
 		self::$_internationalLanguage = $language;
 	}
@@ -790,14 +790,14 @@ final class Language extends Model {
 			"SET name = '".DataBase::escape($name)."', ".
 				"title = '".DataBase::escape($title)."', ".
 				"englishTitle = '".DataBase::escape($englishTitle)."' ".
-			"WHERE id = '$this->id'");
+			"WHERE id = '$this->_id'");
 		
 		$this->_name = $name;
 		$this->_title = $title;	
 		$this->_englishTitle = $englishTitle;
 		
-		$this->_editor = Environment::getCurrent()->user;
-		$this->_editorID = $this->_editor->id;
+		$this->_editor = Environment::getCurrent()->getuser();
+		$this->_editorID = $this->_editor->getid();
 		$this->_editTime = new DateTime();
 	}           
 	
@@ -839,15 +839,15 @@ final class Language extends Model {
 				"shortTimeFormat = '".DataBase::escape($shortTimeFormat)."', ".
 				"longDateFormat = '".DataBase::escape($longDateFormat)."', ".   
 				"longTimeFormat = '".DataBase::escape($longTimeFormat)."' ".
-			"WHERE id = '$this->id'");
+			"WHERE id = '$this->_id'");
 		
 		$this->_shortDateFormat = $shortDateFormat;
 		$this->_shortTimeFormat = $shortTimeFormat;
 		$this->_longDateFormat = $longDateFormat;
 		$this->_longTimeFormat = $longTimeFormat;
 		
-		$this->_editor = Environment::getCurrent()->user;
-		$this->_editorID = $this->_editor->id;
+		$this->_editor = Environment::getCurrent()->getuser();
+		$this->_editorID = $this->_editor->getid();
 		$this->_editTime = new DateTime();
 	}   
 
@@ -867,7 +867,7 @@ final class Language extends Model {
 			"SELECT language.id ".
 			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"WHERE language.name = '".DataBase::escape(Strings::unitize($name)."' ").
-				"AND language.id != '$this->id'");
+				"AND language.id != '$this->_id'");
 		return !$result->next();
 	}   
 
@@ -881,7 +881,7 @@ final class Language extends Model {
 				"language.createTime, language.editTime, language.creatorID, ".
 				"language.editorID ".
 			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
-			"WHERE language.id = '$this->id'");
+			"WHERE language.id = '$this->_id'");
 		
 		if (!$result->next())
 			return false;

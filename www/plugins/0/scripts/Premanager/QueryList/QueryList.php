@@ -90,7 +90,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		$this->_modelType = $modelType;
 		
 		if ($filter !== null) {
-			if ($filter->objectType != $modelType)
+			if ($filter->getobjectType() != $modelType)
 				throw new ArgumentException('The filter is not valid for lists of the '.
 					'type specified by modelType (see getObjectType())', 'filter');
 			$this->_filter = $filter;
@@ -170,10 +170,10 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		/*
 		// If all elements are collected, simply return that collection. If count
 		// has not been received jet, get it now because it would be needed anyway.
-		if (\count($this->_items) != $this->count) {
+		if (\count($this->_items) != $this->getcount()) {
 			$result = DataBase::query($this->getQueryBase());
 			for ($i = 0; $result->next(); $i++) {
-				$id = $result->get($this->_modelType->idField);
+				$id = $result->get($this->_modelType->getidField());
 				$this->_items[$i] = $this->_modelType->getByID($id);
 			}
 		}
@@ -227,7 +227,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 					
 					// Determine whether there are more items by comparing the requested
 					// count of items to the actual received count of items.
-					if ($result->rowCount < self::ITEMS_PER_STEP) {
+					if ($result->getrowCount() < self::ITEMS_PER_STEP) {
 						$this->_completed = true;
 						$this->_count = $count;
 					}
@@ -315,7 +315,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 					
 					// Determine whether there are more items by comparing the requested
 					// count of items to the actual received count of items.
-					if ($result->rowCount < self::ITEMS_PER_STEP) {
+					if ($result->getrowCount() < self::ITEMS_PER_STEP) {
 						$this->_completed = true;
 						$this->_count = $currentCount;
 					}
@@ -370,11 +370,11 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		if (!$condition)
 			throw new ArgumentNullException('$condition');
 			
-		if ($condition->type != DataType::BOOLEAN)
+		if ($condition->gettype() != DataType::BOOLEAN)
 			throw new ArgumentException('Only BOOLEAN expressions are valid for the '.
 				'$condition parameter', 'condition');
 		
-		if ($condition->value === true)
+		if ($condition->getvalue() === true)
 			return $this;
 		
 		if ($this->_filter)
@@ -415,7 +415,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @return bool
 	 */
 	public function offsetExists($offset) {
-		return \Types::isInteger($offset) && $offset >= 0 && $offset < $this->count;
+		return \Types::isInteger($offset) && $offset >= 0 && $offset < $this->getcount();
 	}
 	
 	/**
@@ -523,10 +523,10 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function exprMember($arg0, $arg1 = null) {
 		if ($arg0 instanceof QueryExpression &&
-			$arg0->type instanceof ModelDescriptor)
+			$arg0->gettype() instanceof ModelDescriptor)
 		{
 			$object = $arg0;
-			$type = $object->type;
+			$type = $object->gettype();
 			$memberName = $arg1;
 		} else {
 			$object = null;
@@ -549,7 +549,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			$this->_queryBase =
 				"SELECT item.id ".
 				"FROM ".DataBase::formTableName(
-					$this->_modelType->pluginName, $this->_modelType->table)." AS item ".
+					$this->_modelType->getpluginName(), $this->_modelType->gettable())." AS item ".
 				($condition ? "WHERE $condition " : "");
 		}
 		return $this->_queryBase;
@@ -623,7 +623,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			if (!($rule instanceof SortRule))
 				throw new ArgumentException('Item '.$i.' of the $sortRules array '.
 					'is not an instance of Premanager\QueryList\SortRule', 'sortRules');
-			if ($rule->objectType != $modelType)
+			if ($rule->getobjectType() != $modelType)
 				throw new ArgumentException('Item '.$i.' of the $sortRules array '.
 					'is valid for lists fo the type specified by modelType (see '.
 					'getObjectType())', 'sortRules');

@@ -147,7 +147,7 @@ class Environment extends Module {
 	 *
 	 * Ths property is read-only.
 	 * 
-	 * This property contains Premanager\Models\Style::getDefault()->instance if
+	 * This property contains Premanager\Models\Style::getDefault()->getinstance() if
 	 * it is accessed while the actual value for $style is loading. Use
 	 * isStyleAvailable() to check whether this is the case.
 	 * 
@@ -288,7 +288,7 @@ class Environment extends Module {
 	 * @return Premanager\Models\User
 	 */
 	public function getUser() {
-		return $this->session ? $this->session->user : User::getGuest();
+		return $this->getSession() ? $this->getSession()->user : User::getGuest();
 	}
 
 	/**
@@ -359,18 +359,10 @@ class Environment extends Module {
 	 */
 	public function getLanguage() {
 		if (!$this->_language && $this->_isReal) {
-			if ($this->_languageLoading)
+			if (Request::isAnalyzing())
 				return Language::getDefault();
-			else {
-				$this->_languageLoading = true;
-				try {
-					$this->_language = Request::getLanguage();
-				} catch (\Exception $e) {
-					$this->_languageLoading = false;
-					throw $e;
-				}
-				$this->_languageLoading = false;
-			}
+			else
+				$this->_language = Request::getLanguage();
 		}
 		
 		return $this->_language;
@@ -379,8 +371,8 @@ class Environment extends Module {
 	/**
 	 * Gets the current style
 	 * 
-	 * This method returns Premanager\Models\Style::getDefault()->instance if it
-	 * is called while the actual value for $style is loading. Use
+	 * This method returns Premanager\Models\Style::getDefault()->getInstance() if
+	 * it is called while the actual value for $style is loading. Use
 	 * isStyleAvailable() to check whether this is the case.
 	 * 
 	 * @return Premanager\Execution\Style
@@ -388,12 +380,12 @@ class Environment extends Module {
 	public function getStyle() {
 		if (!$this->_user && $this->_isReal) {
 			if ($this->_styleLoading)
-				return StyleClass::getDefault()->instance;
+				return StyleClass::getDefault()->getinstance();
 			else {
 				$this->_styleLoading = true;
 				try {
 					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_style = StyleClass::getDefault()->instance;
+					$this->_style = StyleClass::getDefault()->getinstance();
 				} catch (\Exception $e) {
 					$this->_styleLoading = false;
 					throw $e;
@@ -468,7 +460,7 @@ class Environment extends Module {
 	public function getURLPrefix() {
 		if ($this->_urlPrefix === null)
 			$this->_urlPrefix =
-				URL::fromTemplate($this->language, $this->edition, $this->project);
+				URL::fromTemplate($this->getlanguage(), $this->getedition(), $this->getproject());
 		return $this->_urlPrefix;
 	}
 	

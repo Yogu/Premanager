@@ -70,8 +70,8 @@ class LoginPage extends TreePageNode {
 	public function execute() {
 		// helpers
 		$canRegister = 
-			Environment::getCurrent()->user->hasRight('Premanager', 'register') ||
-			Environment::getCurrent()->user->hasRight('Premanager', 
+			Environment::getCurrent()->getuser()->hasRight('Premanager', 'register') ||
+			Environment::getCurrent()->getuser()->hasRight('Premanager', 
 				'registerWithoutEmail');
 		$referer = Request::isRefererInternal() ? Request::getReferer() : ''; 
 		
@@ -94,7 +94,7 @@ class LoginPage extends TreePageNode {
 					break;
 				case LoginFailedReason::STATUS:
 					// Show the reason message and a login form
-					switch ($user->status) {
+					switch ($user->getstatus()) {
 						case UserStatus::DISABLED:
 							$text = Translation::defaultGet('Premanager',
 								'loginFailedAccountDisabledMessage');
@@ -128,7 +128,7 @@ class LoginPage extends TreePageNode {
 			$page->title = Translation::defaultGet('Premanager', 'theLogout');
 			$page->createMainBlock($template->get());
 			Output::select($page);
-		} else  if (Environment::getCurrent()->session) {
+		} else  if (Environment::getCurrent()->getsession()) {
 			// Show a logout button
 			$template = new Template('Premanager', 'logout');
 			$template->set('environment', Environment::getCurrent());
@@ -160,7 +160,7 @@ class LoginPage extends TreePageNode {
 		$hidden = (bool) Request::getPOST('hidden');
 		$user = User::getByName($userName);
 		if ($user) {
-			if ($user->status == UserStatus::ENABLED) {
+			if ($user->getstatus() == UserStatus::ENABLED) {
 				if ($user->checkPassword($password, &$isSecondaryPassword)) {
 					// If there is a session of this user, delete it		
 					$session = Session::getByUser($user);
@@ -177,7 +177,7 @@ class LoginPage extends TreePageNode {
 					$user->updateLoginTime($hidden);
 					
 					// Set session cookie
-					Output::setCookie('session', $session->key);
+					Output::setCookie('session', $session->getkey());
 					
 					self::$loginSuccessful->call($this, array('user' => $user));
 					

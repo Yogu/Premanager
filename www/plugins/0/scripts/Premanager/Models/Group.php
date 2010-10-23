@@ -650,7 +650,7 @@ final class Group extends Model {
 			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 				"AS userGroup ".
-				"ON userGroup.groupID = '$this->id' ".
+				"ON userGroup.groupID = '$this->_id' ".
 				"AND userGroup.userID = user.userID ".
 			"ORDER BY LOWER(user.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
@@ -702,13 +702,13 @@ final class Group extends Model {
 		$color = \trim($color);
 		$text = \trim($text);
 		if ($priority === null)
-			$priority = $this->priority;  
+			$priority = $this->getpriority();  
 		if ($autoJoin === null)
-			$autoJoin = $this->autoJoin;
+			$autoJoin = $this->getautoJoin();
 		else			
 			$autoJoin = !!$autoJoin;
 		if ($isLocked === null)
-			$isLocked = $this->isLocked;
+			$isLocked = $this->getisLocked();
 		else
 			$isLocked = !!$isLocked;
 		

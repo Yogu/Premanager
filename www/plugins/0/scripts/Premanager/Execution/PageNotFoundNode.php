@@ -65,7 +65,7 @@ class PageNotFoundNode extends PageNode {
 	public function execute() {
 		$template = new Template('Premanager', 'notFound');
 		$template->set('urlRest', $this->_urlRest);
-		$template->set('deepmostExistingNode', $this->parent);
+		$template->set('deepmostExistingNode', $this->getparent());
 		$template->set('refererExists', Request::getReferer() != '');
 		$template->set('refererIsInternal', (bool) Request::isRefererInternal());
 		
@@ -81,27 +81,27 @@ class PageNotFoundNode extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof PageNotFoundNode &&
-			((!$other->parent && !$this->parent) ||
-			($other->parent->equals($this->parent) &&
+			((!$other->getparent() && !$this->getparent()) ||
+			($other->getparent()->equals($this->getparent()) &&
 			$other->_urlRest == $this->_urlRest));
 	}	      
 	
 	/**
-	 * Gets the url of this page relative to Environment::getCurrent()->urlPrefix
+	 * Gets the url of this page relative to Environment::getCurrent()->geturlPrefix()
 	 * 
 	 * @return string
 	 */
 	public function getURL() {
 		// If there are two parents, one of them is _not_ root
-		if ($this->parent && $this->parent->parent) {
+		if ($this->getparent() && $this->getparent()->parent) {
 			if ($this->_urlRest)
-				return $this->parent->url.'/'.$this->_urlRest;
+				return $this->getparent()->url.'/'.$this->_urlRest;
 			else
-				return $this->parent->url;
+				return $this->getparent()->url;
 		}
 			
 		// If there is exactly one parent, that is root
-		else if ($this->parent)
+		else if ($this->getparent())
 			return $this->_urlRest;
 			
 		// Root node has an empty url	

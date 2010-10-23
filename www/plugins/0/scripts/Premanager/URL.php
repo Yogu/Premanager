@@ -282,13 +282,13 @@ class URL extends Module {
 	 */
 	public static function fromTemplate($language = null, $edition = null) {
 		if ($language === null)
-			$language = Environment::getCurrent()->language;
+			$language = Environment::getCurrent()->getlanguage();
 		else if (!($language instanceof Language))
 			throw new ArgumentException('$language must be null or a '.
 				'Premanager\Models\Language', 'language');
 			
 		if ($edition === null)
-			$edition = Environment::getCurrent()->edition;
+			$edition = Environment::getCurrent()->getedition();
 			
 		switch ($edition) {
 			case Edition::MOBILE:
@@ -301,7 +301,7 @@ class URL extends Module {
 				$editionString = '';		
 		}
 		
-		return self::fromTemplateUsingStrings($language->name, $editionString);
+		return self::fromTemplateUsingStrings($language->getname(), $editionString);
 	}
 	
 	/**

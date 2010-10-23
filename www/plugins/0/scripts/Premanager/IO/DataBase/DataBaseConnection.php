@@ -48,7 +48,7 @@ class DataBaseConnection extends Module {
 		// Set connection character set to UTF-8
 		if (!@\mysql_query("SET NAMES 'utf8'"))
 			throw new DataBaseException('Could not set data base character set: '.
-				$this->getError);
+				$this->getgetError());
 		
 		// Enable strict mode
 		if (!@\mysql_query("SET sql_mode = 'STRICT_ALL_TABLES'"))      
@@ -140,8 +140,8 @@ class DataBaseConnection extends Module {
 				$fields = $matches['fields'];
 				$table = $matches['table'];
 				$shortTable = $matches['shortTable'];  
-				$l1 = Environment::getCurrent()->language->id;
-				$l2 = Language::getInternationalLanguage()->id;
+				$l1 = Environment::getCurrent()->getlanguage()->getid();
+				$l2 = Language::getInternationalLanguage()->getid();
 				$tt = Strings::toLower($table."Translation");
 
 				$query .= 

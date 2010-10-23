@@ -35,13 +35,13 @@ class Premanager extends Module {
 		// Call the primary init routines of all plugins, e.g. to assign event
 		// handlers
 		foreach (Plugin::getPlugins() as $plugin) {
-			if ($plugin->initializer)
-				$plugin->initializer->primaryInit();
+			if ($plugin->getinitializer())
+				$plugin->getinitializer()->primaryInit();
 		}
 		// Call the main init routines of all plugins 
 		foreach (Plugin::getPlugins() as $plugin) {
-			if ($plugin->initializer)
-				$plugin->initializer->init();
+			if ($plugin->getinitializer())
+				$plugin->getinitializer()->init();
 		}
 		
 		// Check if the user has accessed a valid url and that the request url
@@ -49,8 +49,8 @@ class Premanager extends Module {
 		Request::validateURL();
 
 		// If a user is logged in, note that it has made another request.
-		if (Environment::getCurrent()->session)
-			Environment::getCurrent()->session->hit();
+		if (Environment::getCurrent()->getsession())
+			Environment::getCurrent()->getsession()->hit();
 			
 		// Execute the request
 		Request::getPageNode()->execute();
