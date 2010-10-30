@@ -1,9 +1,9 @@
 ﻿<<?php ?>?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="{$environment->language->name}">
 	<head>
+		<meta charset="utf-8" />
 		<title>{html $project->title}{if !$isIndexPage}{string Premanager titleDivider}{html $title}{elseif $project->subTitle}{string Premanager titleDivider}{html $project->subTitle}{/if}</title>
 		<base href="{html $environment->urlPrefix}" />
 				
@@ -55,82 +55,87 @@
 		{$head}
 	</head>
 	
-	<body lang="{$environment->language->name}">
-		<div id="header">
-			<div id="organization-title">
-				<span class="text"><a href="./">{html $organization->title}</a></span>
-			</div>
-			
-			{if $project->id != 0}
-				<div id="project-title">
-					<span class="text"><a href="./{html $project->name}">{html $project->title}</a></span>
-				</div>
-			{/if}
-		</div>
-
-		<div class="navigation">
-			<ul class="location">
+	<body class="{if $sidebar}has-sidebar {/if}has-navigation-tree">
+		<header id="header">
+			<hgroup>
+				<h1 id="organization-heading"><a href="./">{html $organization->title}</a></h1>
+				{if $project->id != 0}
+					<h2 id="project-heading"><a href="./{html $project->name}">{html $project->title}</a></h2>
+				{/if}
+			</hgroup>
+		</header>
+		
+		<nav id="navbar">
+			<ul>                         
 				{foreach $hierarchy|reverse item}
 					<li><a href="./{html $item->url}">{html $item->title}</a></li>
-				{/foreach}
-			</ul>
+				{/foreach}			
+			</ul>		
+		</nav>
 			
-			{*
-			TODO: move this to where it works
-			{if $List_pageCount > 1}
-				<div class="pagination">
-					{if $List_page > 1}
-						<a href="./{if $List_page-1 > 1}{$List_baseURL}{$List_page-1}{else}{$List_firstPageURL}{/if}" class="page-back">{string Premanager pageBack}</a>
-					{/if}
+		{*
+		TODO: move this to where it works
+		{if $List_pageCount > 1}
+			<div class="pagination">
+				{if $List_page > 1}
+					<a href="./{if $List_page-1 > 1}{$List_baseURL}{$List_page-1}{else}{$List_firstPageURL}{/if}" class="page-back">{string Premanager pageBack}</a>
+				{/if}
+				
+				<span class="pages">
+					{if $List_page > 1}<a href="./{$List_firstPageURL}">1</a>{/if}
+					{if $List_page > 2}<a href="./{$List_baseURL}2">2</a>{/if}
+					{if $List_page > 3}<a href="./{$List_baseURL}3">3</a>{/if}
 					
-					<span class="pages">
-						{if $List_page > 1}<a href="./{$List_firstPageURL}">1</a>{/if}
-						{if $List_page > 2}<a href="./{$List_baseURL}2">2</a>{/if}
-						{if $List_page > 3}<a href="./{$List_baseURL}3">3</a>{/if}
-						
-						{if $List_page > 5}<span class="gap">{string Premanager literalGap}</span>{/if}
+					{if $List_page > 5}<span class="gap">{string Premanager literalGap}</span>{/if}
 
             {if $List_page > 5 && $List_page == $List_pageCount}<a href="./{$List_baseURL}{$List_page-2}">{$List_page-2}</a>{/if} 
-						{if $List_page > 4}<a href="./{$List_baseURL}{$List_page-1}">{$List_page-1}</a>{/if}
-						
-						<span class="current">{$List_page}</span>
-						
-						{if $List_page < $List_pageCount-3}<a href="./{$List_baseURL}{$List_page+1}">{$List_page+1}{/if}
-						
-						{if $List_page < $List_pageCount-4}{string Premanager literalGap}</span>{/if}
-						
-						{if $List_page < $List_pageCount-2}<a href="./{$List_baseURL}{$List_pageCount-2}">{$List_pageCount-2}</a>{/if}
-						{if $List_page < $List_pageCount-1}<a href="./{$List_baseURL}{$List_pageCount-1}">{$List_pageCount-1}</a>{/if}
-						{if $List_page < $List_pageCount}<a href="./{$List_baseURL}{$List_pageCount}">{$List_pageCount}</a>{/if}
-					</span>
+					{if $List_page > 4}<a href="./{$List_baseURL}{$List_page-1}">{$List_page-1}</a>{/if}
+					
+					<span class="current">{$List_page}</span>
+					
+					{if $List_page < $List_pageCount-3}<a href="./{$List_baseURL}{$List_page+1}">{$List_page+1}{/if}
+					
+					{if $List_page < $List_pageCount-4}{string Premanager literalGap}</span>{/if}
+					
+					{if $List_page < $List_pageCount-2}<a href="./{$List_baseURL}{$List_pageCount-2}">{$List_pageCount-2}</a>{/if}
+					{if $List_page < $List_pageCount-1}<a href="./{$List_baseURL}{$List_pageCount-1}">{$List_pageCount-1}</a>{/if}
+					{if $List_page < $List_pageCount}<a href="./{$List_baseURL}{$List_pageCount}">{$List_pageCount}</a>{/if}
+				</span>
 
-					{if $List_page < $List_pageCount}
-						<a href="./{$List_baseURL}{$List_page+1}" class="page-forward">{string Premanager pageForward}</a>
-					{/if}
-				</div>			
-			{/if}
-			*}
-		</div>
+				{if $List_page < $List_pageCount}
+					<a href="./{$List_baseURL}{$List_page+1}" class="page-forward">{string Premanager pageForward}</a>
+				{/if}
+			</div>			
+		{/if}
+		*}
 		
-		{$toolbar}
+		{if count($toolbar)}
+			<ul class="toolbar" id="toolbar">
+				{foreach $toolbar item}
+					<li><a href="{$item->url}"{if $item->description} title="{html $item->description}">{html $item->title}</a></li>
+				{/foreach}
+			</ul>
+		{/if}
 
-		<div id="content" class="{if $sidebar}with-sidebar {/if}with-navigation-tree">
+		<div id="content">
 			{$global}
 		
 			{if $log}
-				<dl class="block" id="log">
-					<dt>Log</dt>
-					<dd>
+				<section class="block" id="log">
+					<header>
+						<h1>Log</h1>
+					</header>
+					<div>
 						<ul class="list">
 							{foreach $log item}
 								<li{if strpos($item->message, "\n") !== false} class="multi-line"{/if}>
-									<span>{$item->fullFunctionName} ({html(basename($item->fileName))}:{$item->line})</span>
+									<span>{html $item->fullFunctionName} ({html(basename($item->fileName))}:{html $item->line})</span>
 									<span>{$item->message}</span>
 								</li>
 							{/foreach}
 						</ul>
-					</dd>
-				</dl>
+					</div>
+				</section>
 			{/if}
 			
 			{foreach $blocks row}
@@ -146,14 +151,27 @@
 			{/foreach}
 		</div>
 
-		<ul id="navigation-tree">
-			{include file='navigationItem.tpl' node=$navigationTree activeNode=$node}		
-		</ul>
+		<nav id="navigation-tree">
+			<ul class="tree">
+				{include file='navigationItem.tpl' node=$navigationTree activeNode=$node}		
+			</ul>
+		</nav>
 		
 		{if $sidebar}
-			<div id="sidebar">
+			<aside id="sidebar">
 				{$sidebar}
-			</div>
+			</aside>
 		{/if} 
+		
+		<footer id="footer">
+			<p>{html $organization->copyright}</p>
+			<p><a href="http://www.yogularm.de/">Premanager © Jan Melcher, 2009-2010.</a></p>
+			{*<nav id="footlinks">
+				<ul>
+					<li><a href="./info/impressum">Impressum</a></li>
+					<li><a href="./info/kontakt">Kontakt</a></li>
+				</ul>			
+			</nav>*}
+		</footer>
 	</body>
 </html>

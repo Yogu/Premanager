@@ -24,10 +24,13 @@ class PageBlock extends Module {
 	 * @param bool $isMainBlock if true, the block is defined as "main block".
 	 *   Watch out to use it only one time per page; if there are multiple main
 	 *   blocks, the html output will be invalid.
+	 * @param bool $isArticle true, if the block should generate a <article> tag
+	 *   to indicate that the contents can stand alone (for blog articles,
+	 *   calendar events, comments etc.)
 	 * @return Premanager\Execution\PageBlock
 	 */
 	public static function createSimple($title, $body, $url = '',
-		$linkTitle = '', $isMainBlock = false) {
+		$linkTitle = '', $isMainBlock = false, $isArticle = false) {
 		$instance = new self();
 		
 		if ($url) {
@@ -40,8 +43,10 @@ class PageBlock extends Module {
 
 		$main = $isMainBlock ? ' id="main-block"' : '';
 		
-		$instance->_html = '<dl class="block"'.$main.'><dt>'.$head.'</dt>'.
-			'<dd>'.$body.'</dd></dl>';
+		$tagName = $isArticle ? 'article' : 'section';
+		
+		$instance->_html = '<'.$tagName.' class="block"'.$main.'><header><h1>'.
+			$head.'</h1></header><div>'.$body.'</div></'.$tagName.'>';
 		return $instance;
 	}
 	
@@ -55,8 +60,8 @@ class PageBlock extends Module {
 	public static function createTable($head, $body) {
 		$instance = new self();
 		
-		$instance->_html = '<div class="block"><table><thead>'.$head.'</thead>'.
-			'<tbody>'.$body.'</tbody></table></div>';
+		$instance->_html = '<section class="block"><table><thead>'.$head.'</thead>'.
+			'<tbody>'.$body.'</tbody></table></section>';
 		return $instance;
 	}
 	

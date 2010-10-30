@@ -1,0 +1,293 @@
+/* ========== Toolbars ========== */
+						
+.toolbar {
+	padding: 3px; 	
+}						
+						
+.toolbar > li {
+	float: left;
+	margin-right: 2px;
+	
+	list-style: none;
+}
+
+.toolbar > li.new-group {
+	margin-left: 10px;
+}
+
+.toolbar > li.new-group:first-child {
+	margin-left: 0;
+}
+
+.toolbar > li > a,
+.toolbar > li > span {
+	display: block;
+	padding: 5px;
+	
+	outline: none;	
+	-moz-border-radius: 5px;     
+	-webkit-border-radius: 5px;
+
+	font-size: 11px;
+	font-weight: normal;	
+	color: #000000;  
+}
+
+.toolbar > li > a[class],
+.toolbar > li > span[class] {
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	padding-left: 30px !important;
+}
+
+.toolbar > li > a:hover,
+.toolbar > li > a.active {
+	color: #000000;
+	text-decoration: none;
+	
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.toolbar > li > span.disabled {
+	opacity: 0.5;
+	cursor: default;
+}    
+
+/* ========== Lists ========== */
+
+.list > li,
+.list > li > a,
+.block > table > tbody > tr > td {
+	padding: 7px 8px;
+
+	background-color: #DFF0FF;
+	border-bottom: 1px solid #B1DBFF;
+	border-top: 1px solid #FFFFFF;
+	list-style: none;
+	outline: none;
+}
+
+.list > li.selected,
+.list > li.selected > a,
+.block > table > tbody > tr.selected > td {
+	background-color: #FFD053;
+	border-bottom: 1px solid #F4B100;
+}    
+
+.list > li.selected:hover,
+.list > li.selected:hover > a,
+.block > table > tbody > tr.selected:hover > td {
+	background-color: #FFC836;
+}
+
+.block > table > tbody > tr > td > a {
+	padding: 7px 8px;
+	
+	outline: none;
+}
+     
+.list > li > a, 
+.block > table > tbody > tr > td > a {
+	display: block;
+}
+
+.block > table > tbody > tr > td > a {
+	overflow: hidden;
+}
+
+.list > li > a,
+.block > table > tbody > tr > td > a {
+ 	margin: -8px;
+} 
+
+.list > li > a,
+.list > li:hover > a,
+.block > table > tbody > tr > td > a,
+.block > table > tbody > tr > td > a:hover {
+ 	color: #000000;
+ 	text-decoration: none;
+}
+
+.list > li:hover,
+.list > li:hover > a,
+.block > table > tbody > tr:hover > td {
+	background-color: #CBE7FF;
+}    
+
+.list > li.group-header {
+	background-color: #FFD07C !important;
+	border: none !important;
+
+	font-size: 16px;
+	font-weight: bold;
+	color: #800000;
+}   
+
+#sidebar > .block > div > .list > li,
+#sidebar > .block > div > .list > li > a {
+	padding: 3px 4px;
+} 
+
+#sidebar > .block > div > .list > li > a {
+ 	margin: -4px;
+}            
+
+/* ========== List Toolbars ========== */
+                  
+.list > li > .toolbar,
+.block > table .toolbar {
+	float: right;
+	margin: -8px;
+}			
+          
+.list > li > .toolbar {
+	display: none;
+}
+
+.list > li:hover > .toolbar{
+	display: block;
+}    
+
+/* we can't hide a toolbar in a table because the layout would change when showing it (that looked ugly) */
+.block > table .toolbar {
+	position: relative;
+	left: -10000px;
+}  
+
+.block > table tr:hover .toolbar {
+	left: 0;
+}
+						
+.list > li > .toolbar > li,
+.block > table .toolbar > li {
+	float: left;
+	margin-right: 2px;
+	
+	list-style: none;
+}   
+						
+.list > li > .toolbar > li:last-child,
+.block > table .toolbar > li:last-child {
+	margin-right: 0;
+}
+
+.list > li > .toolbar > li.new-group,
+.block > table .toolbar > li.new-group {
+	margin-left: 10px;
+}
+
+.list > li > .toolbar > li.new-group:first-child,
+.block > table .toolbar > li.new-group:first-child {
+	margin-left: 0;
+}
+
+.list > li > .toolbar > li > a,
+.list > li > .toolbar > li > span,
+.block > table .toolbar > li > a,
+.block > table .toolbar > li > span {
+	display: block;
+	padding: 5px;
+	
+	outline: none;	
+	-moz-border-radius: 5px;     
+	-webkit-border-radius: 5px;
+
+	font-size: 11px;
+	font-weight: normal;	
+	color: #000000;  
+}
+
+.list > li > .toolbar > li > a[class],
+.list > li > .toolbar > li > span[class],
+.block > table .toolbar > li > a[class],
+.block > table .toolbar > li > span[class] {
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	padding-left: 30px !important;
+}
+
+.list > li > .toolbar > li > a:hover,
+.list > li > .toolbar > li > a.active,
+.list > li > .toolbar > li > span:hover,
+.list > li > .toolbar > li > span.active,
+.block > table .toolbar > li > a:hover,
+.block > table .toolbar > li > a.active,
+.block > table .toolbar > li > span:hover,
+.block > table .toolbar > li > span.active {
+	color: #000000;
+	text-decoration: none;
+	
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.list > li > .toolbar > li > span,
+.block > table .toolbar li > span {
+	cursor: default;
+}  
+
+.list > li > .toolbar > li > span.disabled,
+.block > table .toolbar > span.disabled {
+	opacity: 0.5;
+	background-color: transparent !important;
+}
+
+/* ========== Trees ========== */
+
+.tree li > ul > li {   
+	margin-left: 15px;
+}
+
+.tree li {
+	list-style: none;
+}                   
+
+.tree a {  
+	display: block;
+	padding: 2px; 
+	overflow: hidden;
+	white-space: nowrap;
+
+	background-color: #DFF0FF;
+	border-bottom: 1px solid #B1DBFF;     
+	border-right: 1px solid #B1DBFF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	
+ 	font-size: 11px;
+}
+
+.tree .selected > a,
+.tree > li > a {  
+	background-color: #FFD053;
+	border-bottom: 1px solid #F4B100;     
+	border-right: 1px solid #F4B100;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}        
+
+.tree .active > a {  
+	background-color: #85C5FF;
+	border-bottom: 1px solid #60B5FF;     
+	border-right: 1px solid #60B5FF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}
+
+.tree a:hover {   
+	background-color: #CBE7FF;
+}  
+
+.tree .selected > a:hover {
+	background-color: #FFC836;
+}   
+
+.tree .active > a:hover {
+	background-color: #66B8FF;
+}    
+                        
+.tree a,
+.tree a:hover {
+ 	color: #000000;
+ 	text-decoration: none; 
+	outline: none;
+}
