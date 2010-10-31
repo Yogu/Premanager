@@ -87,21 +87,31 @@ class Page extends Response {
 	}
 	
 	/**
-	 * Adds the block in a new col in a new row which is placed at the end
+	 * Adds the block in the first col of the first row and places it at the end
 	 * 
 	 * @param Premanager\Execution\PageBlock $block the block to append
 	 */
 	public function appendBlock(PageBlock $block) {
-		$this->blocks[] = array(array($block));
+		if (!count($this->blocks))
+			$this->blocks[] = array(array());
+		if (!count($this->blocks[0]))
+			$this->blocks[0][] = array();
+		$this->blocks[0][0][] = $block;
 	}
 	
 	/**
-	 * Adds the block in a new col in a new row which is placed at the beginning
+	 * Adds the block in the first col of the first row and places it at the
+	 * beginning
 	 * 
 	 * @param Premanager\Execution\PageBlock $block the block to insert
 	 */
 	public function insertBlock(PageBlock $block) {
-		array_splice(&$this->blocks, 0, 0, array(array(array($block))));
+		if (!count($this->blocks))
+			$this->blocks[] = array(array());
+		if (!count($this->blocks[0]))
+			$this->blocks[0][] = array();
+		$arr &= $this->blocks[0][0];
+		array_splice(&$arr, 0, 0, array($block));
 	}
 	
 	/**
