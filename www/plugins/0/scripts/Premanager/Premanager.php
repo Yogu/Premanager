@@ -53,10 +53,7 @@ class Premanager extends Module {
 			Environment::getCurrent()->getsession()->hit();
 			
 		// Execute the request
-		Request::getPageNode()->execute();
-		
-		// Output headers and content
-		Output::finish();
+		Output::send(Request::getPageNode()->getResponse());
 	}
 	
 	/**

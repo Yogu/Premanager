@@ -55,13 +55,15 @@ class GroupsPage extends TreeListPageNode {
 		}
 		return $list;
 	}
-
+	
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
-		$list = self::getList()->getRange($this->getstartIndex(), $this->getitemsPerPage(),
-			true);
+	public function getResponse() {
+		$list = self::getList()->getRange($this->getStartIndex(),
+			$this->getItemsPerPage(), true);
 		
 		$page = new Page($this);
 		$page->title = Translation::defaultGet('Premanager', 'groups');
@@ -77,7 +79,7 @@ class GroupsPage extends TreeListPageNode {
 		$body = $template->get();
 		
 		$page->appendBlock(PageBlock::createTable($head, $body));
-		Output::select($page);
+		return $page;
 	} 
 	
 	/**

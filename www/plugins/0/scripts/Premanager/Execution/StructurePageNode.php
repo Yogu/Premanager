@@ -136,11 +136,13 @@ class StructurePageNode extends PageNode {
 		else
 			return $this->_structureNode->gettitle();
 	}
-
+	
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		switch ($this->_structureNode->gettype()) {
 			case StructureNodeType::PANEL:
 				//TODO: create a panel page
@@ -158,7 +160,7 @@ class StructurePageNode extends PageNode {
 				
 				$page = new Page($this);
 				$page->createMainBlock($template->get());
-				Output::select($page);
+				return $page;
 		}
 	}
 	

@@ -168,9 +168,11 @@ abstract class PageNode extends Module {
 	public abstract function getTitle();
 
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public abstract function execute();
+	public abstract function getResponse();
 	
 	/**
 	 * Checks if this object represents the same page as $other (the

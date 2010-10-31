@@ -63,11 +63,13 @@ class LoginPage extends TreePageNode {
 	}
 	
 	// =========================================================================== 
-
+	
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		// helpers
 		$canRegister = 
 			Environment::getCurrent()->getuser()->hasRight('Premanager', 'register') ||
@@ -139,7 +141,7 @@ class LoginPage extends TreePageNode {
 			// Show the login form
 			$page->createMainBlock($template->get());
 		}
-		Output::select($page);
+		return $page;
 	}
 	
 	// =========================================================================== 
@@ -200,8 +202,7 @@ class LoginPage extends TreePageNode {
 	}
 
 	/**
-	 * Deletes the session specified by cookie and removes the cookie. Afterwards,
-	 * redirects to the current page to drop POST data
+	 * Deletes the session specified by cookie and removes the cookie
 	 */
 	private static function logout() {
 		$key = Request::getCookie('session');

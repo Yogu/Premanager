@@ -11,7 +11,7 @@ use Premanager\IO\Config;
 /**
  * Defines a common page that can be outputted
  */
-class Page extends Module {
+class Page extends Response {
 	/**
 	 * @var Premanager\Execution\PageNode
 	 */
@@ -25,6 +25,16 @@ class Page extends Module {
 	 * @var array
 	 */
 	public $blocks;
+	
+	/**
+	 * The HTML status code for this page.
+	 * 
+	 * Default is 200 (OK). Other possible values are for example 404 (Not Found)
+	 * or 403 (Forbidden)
+	 * 
+	 * @var int
+	 */
+	public $statusCode;
 	
 	/**
 	 * The page title (may differ from the page node title)
@@ -59,6 +69,7 @@ class Page extends Module {
 		parent::__construct();
 		$this->_node = $node;
 		$this->title = $node->getTitle();
+		$this->statusCode = 200;
 	}
 	
 	/**
@@ -107,7 +118,7 @@ class Page extends Module {
 	 * 
 	 * @return string
 	 */
-	public function getHTML() {
+	public function getContent() {
 		$template = new Template('Premanager', 'page');
 		
 		// Get list of node, parent of node, parent of parent of node ...
@@ -150,8 +161,28 @@ class Page extends Module {
 		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());
+			
+		$template->set('sidebar', '<section class="block"><header><h1>Search</h1></header><div><p>The search field.</p></div></section>');
 		
 		return $template->get();
+	}
+	
+	/**
+	 * Gets the MIME type of this response
+	 * 
+	 * @return string
+	 */
+	public function getContentType() {
+		return 'text/html';
+	}
+	
+	/**
+	 * Gets the HTML status code to be sent (e.g. 200 for OK)
+	 * 
+	 * @return int
+	 */
+	public function getStatusCode() {
+		return $this->statusCode;
 	}
 }
 

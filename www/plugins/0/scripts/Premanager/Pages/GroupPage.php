@@ -57,11 +57,13 @@ class GroupPage extends PageNode {
 	public function getTitle() {
 		return $this->_group->getname();
 	}
-
+	
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		$page = new Page($this);
 		
 		$template = new Template('Premanager', 'groupView');
@@ -69,8 +71,7 @@ class GroupPage extends PageNode {
 		$template->set('group', $this->_group);
 		
 		$page->createMainBlock($template->get());
-		
-		Output::select($page);
+		return $page;
 	}
 
 	// ===========================================================================

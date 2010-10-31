@@ -60,9 +60,11 @@ class PageNotFoundNode extends PageNode {
 	}
 
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		$template = new Template('Premanager', 'notFound');
 		$template->set('urlRest', $this->_urlRest);
 		$template->set('deepmostExistingNode', $this->getparent());
@@ -71,7 +73,8 @@ class PageNotFoundNode extends PageNode {
 		
 		$page = new Page($this);
 		$page->createMainBlock($template->get());
-		Output::select($page, StatusCode::NOT_FOUND);
+		$page->responseCode = 404;
+		return $page;
 	}
 	
 	/**

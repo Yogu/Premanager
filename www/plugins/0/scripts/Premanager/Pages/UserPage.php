@@ -59,9 +59,11 @@ class UserPage extends PageNode {
 	}
 
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		$page = new Page($this);
 		
 		$template = new Template('Premanager', 'userView');
@@ -69,8 +71,7 @@ class UserPage extends PageNode {
 		$template->set('user', $this->_user);
 		
 		$page->createMainBlock($template->get());
-		
-		Output::select($page);
+		return $page;
 	}
 
 	// ===========================================================================
