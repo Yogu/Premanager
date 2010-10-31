@@ -55,7 +55,7 @@
 		{$head}
 	</head>
 	
-	<body class="{if $sidebar}has-sidebar {/if}has-navigation-tree">
+	<body class="{if $sidebar}has-sidebar {/if}">
 		<header id="header">
 			<hgroup>
 				<h1 id="organization-heading"><a href="./">{html $organization->title}</a></h1>
@@ -117,6 +117,18 @@
 			</ul>
 		{/if}
 
+		<nav id="navigation-tree">
+			<ul class="tree">
+				{include file='navigationItem.tpl' node=$navigationTree activeNode=$node}		
+			</ul>
+		</nav>
+		
+		{if $sidebar}
+			<aside id="sidebar">
+				{$sidebar}
+			</aside>
+		{/if} 
+
 		<div id="content">
 			{$global}
 		
@@ -150,18 +162,6 @@
 				</div>
 			{/foreach}
 		</div>
-
-		<nav id="navigation-tree">
-			<ul class="tree">
-				{include file='navigationItem.tpl' node=$navigationTree activeNode=$node}		
-			</ul>
-		</nav>
-		
-		{if $sidebar}
-			<aside id="sidebar">
-				{$sidebar}
-			</aside>
-		{/if} 
 		
 		<footer id="footer">
 			<p>{html $organization->copyright}</p>

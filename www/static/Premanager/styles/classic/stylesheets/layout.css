@@ -81,39 +81,38 @@ body {
 
 /* ========== Content - Sidebar - Navigation Tree ========== */
 
-body.has-sidebar #content,
-body.has-navigation-tree #content {
-	width: 100%;
-	float: left;
+#content {
+	margin-bottom: 20px;
+	padding-left: 200px;
 }
 
 body.has-sidebar #content {
-	margin-right: -200px;
+	padding-right: 200px;	
 }
 
 #sidebar {
 	float: right;
 	width: 180px;
-}
-
-body.has-sidebar #content > * {
-	margin-right: 200px;
-}
-
-body.has-navigation-tree #content > * {
-	margin-left: 200px;
+	margin-left: 20px;
+	margin-bottom: 20px;
 }
 
 #navigation-tree {
-	position: absolute;
+	float: left;
 	width: 180px;
-}      
+	margin-bottom: 20px;
+	margin-right: 20px;	
+}
 
-/* ========== Content and sidebar blocks ========== */
+/* ========== Content blocks and sidebar blocks ========== */
 
 .block {
 	margin-bottom: 20px;
-}    
+}
+
+.block:last-child {
+	margin-bottom: 0;	
+}
 
 .block > header,
 .block > table > thead > tr > th {
