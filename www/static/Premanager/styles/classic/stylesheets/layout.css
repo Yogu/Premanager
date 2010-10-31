@@ -249,7 +249,23 @@ div.block:after {
 
 .block > div {
 	overflow: hidden;
-}   
+}
+
+.block-row {
+	margin-bottom: 20px;	
+}
+
+.block-row:last-child {
+	margin-bottom: 0;	
+}
+
+.block-col {
+	margin-right: 20px;	
+}
+
+.block-col:last-child {
+	margin-right: 0;	
+}
 
 /* ========== Fullsize elements ========== */
 
