@@ -1,8 +1,9 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Models\Plugin;
+use Premanager\Strings;
 use Premanager\Models\Project;
-
 use Premanager\Model;
 use Premanager\QueryList\QueryList;
 use Premanager\DateTime;
@@ -256,16 +257,35 @@ abstract class PageNode extends Module {
 	 * @param string|array $url the relative url or an array of path elements
 	 * @param Premanager\Execution\PageNode $impact if the page node is not found,
 	 *   contains the deepmost node found
+	 * @param bool $isBackend is true, if the request ends in a backend page
 	 * @return Premanager\Execution\PageNode the found page node or null
 	 */
-	public static function fromPath($url, &$impact = null) {
+	public static function fromPath($url, &$impact = null, &$isBackend = false) {
 		if (is_array($url))
 			$path = $url;
 		else
 			$path = explode('!/!', rtrim(trim($url), '/'));
-
-		// Get the root node for the organization project
-		$node = new StructurePageNode();
+	
+		// If first character is a '!', use the backend node
+		if (count($path) && ($path[0][0] == '!' ||
+			Strings::substring($path[0], 0, 3) == '%21')) {
+			$isBackend = true;
+			
+			$pluginName = Strings::substring($path[0], $path[0][0] == '!' ? 1 : 3, 
+				Strings::length($path[0]));
+				
+			$plugin = Plugin::getByName($pluginName);
+			if ($plugin)
+				$node = $plugin->getBackendPageNode();
+			if (!$node) {
+				$impact = new StructurePageNode();
+				return null;
+			}
+			unset($path[0]);
+		} else {
+			// Get the root node for the organization project
+			$node = new StructurePageNode();
+		}
 		              
 		// Go through the path and find matching nodes 
 		foreach ($path as $name) {
