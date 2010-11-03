@@ -114,13 +114,26 @@ final class Plugin extends Model {
 			$instance = self::createFromID($id);
 			// Check if id is correct
 			if ($instance->load())
-			return $instance;
+				return $instance;
 			else
-			return null;
+				return null;
 		}
 	}
 
 	/**
+	 * Gets a plugin using its name
+	 *
+	 * @param string $name the name of the plugin
+	 * @return Premanager\Models\Plugin the plugin or null if there is no Plugin
+	 *   with this name
+	 */
+	public static function getByName($name) {
+		$id = self::getIDFromName($name);
+		if ($id !== null)
+			return self::getByID($id);
+		else
+			return null;
+	}
 	 * Creates a new plugin and inserts it into data base
 	 *
 	 * @param string $name the plugin name

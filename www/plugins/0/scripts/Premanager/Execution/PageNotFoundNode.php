@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Debug\Debug;
+
 use Premanager\IO\Request;
 
 use Premanager\IO\StatusCode;
@@ -73,7 +75,7 @@ class PageNotFoundNode extends PageNode {
 		
 		$page = new Page($this);
 		$page->createMainBlock($template->get());
-		$page->responseCode = 404;
+		$page->statusCode = 404;
 		return $page;
 	}
 	
@@ -96,20 +98,29 @@ class PageNotFoundNode extends PageNode {
 	 */
 	public function getURL() {
 		// If there are two parents, one of them is _not_ root
-		if ($this->getparent() && $this->getparent()->parent) {
+		if ($this->getParent() && $this->getParent()->parent) {
 			if ($this->_urlRest)
-				return $this->getparent()->url.'/'.$this->_urlRest;
+				return $this->getParent()->url.'/'.$this->_urlRest;
 			else
-				return $this->getparent()->url;
+				return $this->getParent()->url;
 		}
 			
 		// If there is exactly one parent, that is root
-		else if ($this->getparent())
+		else if ($this->getParent())
 			return $this->_urlRest;
 			
 		// Root node has an empty url	
 		else
 			return '';		
+	}
+	
+	/**
+	 * Gets an array of names and values of the query ('page' => 7 for '?page=7')
+	 * 
+	 * @return array
+	 */
+	public function getURLQuery() {
+		return $_GET;
 	}
 }
 

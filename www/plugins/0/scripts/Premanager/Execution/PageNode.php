@@ -242,7 +242,9 @@ abstract class PageNode extends Module {
 		foreach ($query as $name => $value) {
 			if ($queryString)
 				$queryString .= '&';
-			$queryString .= rawurlencode($name).'='.rawurlencode($value);
+			$queryString .= rawurlencode($name);
+			if ($value)
+				$queryString .= '='.rawurlencode($value);
 		}
 		return $queryString;
 	}
