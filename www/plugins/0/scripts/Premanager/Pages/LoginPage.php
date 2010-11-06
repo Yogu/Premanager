@@ -129,7 +129,6 @@ class LoginPage extends TreePageNode {
 			$template->set('referer', Request::getPOST('referer'));
 			$page->title = Translation::defaultGet('Premanager', 'theLogout');
 			$page->createMainBlock($template->get());
-			Output::select($page);
 		} else  if (Environment::getCurrent()->getsession()) {
 			// Show a logout button
 			$template = new Template('Premanager', 'logout');

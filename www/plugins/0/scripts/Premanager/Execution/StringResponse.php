@@ -6,7 +6,7 @@ use Premanager\IO\Request;
 /**
  * Defines a response consting of a string
  */
-class Redirection extends Response {
+class StringResponse extends Response {
 	private $_content;
 	private $_contentType;
 	private $_statusCode;
@@ -16,9 +16,9 @@ class Redirection extends Response {
 	 * 
 	 * @param string $content the response content
 	 * @param string $contentType the MIME type of this response
-	 * @param string|null $code the HTTP status code, by default 303 See other
+	 * @param string|null $code the HTTP status code, by default 200 OK
 	 */
-	public function __construct($content, $contentType, $code = 303) {
+	public function __construct($content, $contentType, $code = 200) {
 		$this->_content = $content;
 		$this->_contentType = $contentType;
 		$this->_statusCode = $code;

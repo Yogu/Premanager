@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\Models\Project;
+use Premanager\Execution\StructurePageNode;
 use Premanager\Execution\BackendPageNotFoundNode;
 use Premanager\Debug\Debug;
 use Premanager\Execution\PageNotFoundNode;
@@ -127,7 +129,7 @@ class URLInfo {
 				try {
 					$requestURL = new URL($this->_url);
 				} catch (FormatException $e) {
-					$this->_pageNode = new PageNotFoundNode(StructurePageNode(), '');
+					$this->_pageNode = new PageNotFoundNode(new StructurePageNode(), '');
 					$this->_relativeRequestURL = '';
 					$this->_isAnalyzing = false;
 					$this->_project = Project::getOrganization();

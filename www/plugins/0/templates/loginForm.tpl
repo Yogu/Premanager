@@ -37,5 +37,4 @@
 			<p>{string Premanager loginRegisterTip} <a href="./{$registerURL}">{string Premanager loginRegisterTipLinkText}</a></p>
 		</div>	
 	{/if}
-	</form>
 {/form}

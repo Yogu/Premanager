@@ -20,9 +20,9 @@ class XMLResponse extends Response {
 	/**
 	 * Creates a redirection response
 	 * 
-	 * @param string|null $code the HTTP status code, by default 303 See other
+	 * @param string|null $code the HTTP status code, by default 200 OK
 	 */
-	public function __construct($code = 303) {
+	public function __construct($code = 200) {
 		$this->writer = new \XMLWriter();
 		$this->writer->openMemory();
 		$this->writer->startDocument('1.0', 'utf-8');
