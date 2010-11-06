@@ -166,12 +166,14 @@ class Page extends Response {
 		$template->set('blocks', $this->blocks);
 		$template->set('environment', Environment::getCurrent());
 		$template->set('organization', Project::getOrganization());
-		$template->set('canonicalURLPrefix',
-			URL::fromTemplate(Environment::getCurrent()->getlanguage(), Edition::COMMON));
+		$template->set('canonicalURLPrefix', URL::fromTemplate(
+			Environment::getCurrent()->getlanguage(), Edition::COMMON));
+		$template->set('emptyURLPrefix', Config::getEmptyURLPrefix());
 		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());
-			
+
+		//TODO: replace this when no longer needed (only for testing purpose)
 		$template->set('sidebar', '<section class="block"><header><h1>Search</h1></header><div><p>The search field.</p></div></section>');
 		
 		return $template->get();
