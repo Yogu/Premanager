@@ -17,7 +17,7 @@ class StructurePageNode extends PageNode {
 	 */
 	private $_structureNode;
 	/**
-	 * @vqr bool
+	 * @var bool
 	 */
 	private $_isProjectNode;
 	
@@ -39,7 +39,7 @@ class StructurePageNode extends PageNode {
 	 */
 	public function __construct($parent = null, $structureNode = null) {
 		if (!$parent) {
-			$this->_structureNode = Project::getOrganization()->getrootNode();
+			$this->_structureNode = Project::getOrganization()->getRootNode();
 			$this->_isProjectNode = true;
 		} else {
 			if (!($structureNode instanceof StructureNode))
@@ -57,7 +57,7 @@ class StructurePageNode extends PageNode {
 		
 		parent::__construct($parent);
 		
-		$this->_project = $this->_structureNode->getproject();
+		$this->_project = $this->_structureNode->getProject();
 	}
 	
 	/**
@@ -103,7 +103,8 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the page node
 	 */
 	public function getChildByStructureNode(StructureNode $structureNode) {
-		if ($this->_structureNode != $structureNode->getparent())
+		if ($this->_structureNode != $structureNode->getParent() && 
+			!($this->_isRootNode && $structureNode->getParent() == null))
 			throw new ArgumentException('The passed structure node is not a child '.
 				'of the structure ndoe this page node represents', 'structureNode');
 		
@@ -121,7 +122,10 @@ class StructurePageNode extends PageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_structureNode->getname();
+		// A project's root node's name is the project's name
+		return $this->_structureNode->getParent() ? 
+			$this->_structureNode->getName() :
+			$this->_structureNode->getProject()->getName();
 	}
 	
 	/**
