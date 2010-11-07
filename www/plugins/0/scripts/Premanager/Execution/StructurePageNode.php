@@ -20,6 +20,10 @@ class StructurePageNode extends PageNode {
 	 * @var bool
 	 */
 	private $_isProjectNode;
+	/**
+	 * @var bool
+	 */
+	private $_isRootNode;
 	
 	/**
 	 * The base structure node
@@ -41,6 +45,7 @@ class StructurePageNode extends PageNode {
 		if (!$parent) {
 			$this->_structureNode = Project::getOrganization()->getRootNode();
 			$this->_isProjectNode = true;
+			$this->_isRootNode = true;
 		} else {
 			if (!($structureNode instanceof StructureNode))
 				throw new ArgumentException('$structureNode must be an a '.
@@ -53,6 +58,8 @@ class StructurePageNode extends PageNode {
 			// If the parent is the organization node, this must be a project node
 			$this->_isProjectNode =
 				$structureNode->getProject()->getRootNode() == $structureNode;
+			$this->_isRootNode = $this->_isProjectNode &&
+				$structureNode->getProject()->getID() == 0;
 		}
 		
 		parent::__construct($parent);
@@ -67,11 +74,13 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
+		$project = Project::getByName($name);
+		if ($project)
+			return $this->getChildByStructureNode($project->getRootNode());
+		
 		$structureNode = $this->_structureNode->getChild($name);
-		if ($structureNode) {
+		if ($structureNode)
 			return $this->getChildByStructureNode($structureNode);
-		} else
-			return null;
 	}
 	
 	/**
@@ -90,9 +99,20 @@ class StructurePageNode extends PageNode {
 			$this->_structureNode->getChildren(), $referenceModel, $count);
 			
 		$list = array();
+		
+		// Projects if root node
+		if ($this->_isRootNode) {
+			foreach (Project::getProjects() as $project) {
+				if ($project->getID())
+					$list[] = $this->getChildByStructureNode($project->getRootNode());
+			}
+		}
+		
+		// Child nodes
 		foreach ($structureNodes as $structureNode) {
 			$list[] = $this->getChildByStructureNode($structureNode);
 		}
+		
 		return $list;
 	}
 	
