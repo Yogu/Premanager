@@ -230,7 +230,7 @@ body.has-sidebar #content {
 	margin-top: 2px;
 }
 
-div.block:after {
+.block.table-wrap:after {
 	display: block;
 	height: 5px;
 	overflow: hidden;

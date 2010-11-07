@@ -60,8 +60,8 @@ class PageBlock extends Module {
 	public static function createTable($head, $body) {
 		$instance = new self();
 		
-		$instance->_html = '<section class="block"><table><thead>'.$head.'</thead>'.
-			'<tbody>'.$body.'</tbody></table></section>';
+		$instance->_html = '<section class="block table-wrap"><table><thead>'.$head.
+			'</thead><tbody>'.$body.'</tbody></table></section>';
 		return $instance;
 	}
 	
