@@ -13,6 +13,7 @@
 	<project>
 		<name>{html $pageNode->getProject()->getName()}</name>
 		<title>{html $pageNode->getProject()->getTitle()}</title>
+		<subtitle>{html $pageNode->getProject()->getSubTitle()}</subtitle>
 	</project>
 	<content>
 		{foreach $page->blocks row}
