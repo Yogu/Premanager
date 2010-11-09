@@ -404,8 +404,23 @@ class QueryExpression extends Module {
 				break;
 				
 			case QueryOperation::MEMBER:
-				if ($this->_operand0 == null && $this->_memberInfo->getFieldName()) {
-					return $this->_memberInfo->getFieldName();
+				if ($this->_operand0 == null &&
+					$field = $this->_memberInfo->getFieldName()) {
+					if ($isTranslated = $field[0] == '*')
+						$field = substr($field, 1);
+					if ($p0 = strpos('!', $field) !== false) {
+						$expression = $field;
+						// Extract the field name
+						$pre = substr($field, 0, $p0-1);
+						$field = substr($field, $p0+1);
+						$p1 = strpos('!', $field)-1;
+						if ($p1 !== false) {
+							$field = substr($field, 0, $p1);
+							$post = substr($field, $p1);
+						}
+					} 
+					return $pre . ($isTranslated ? 'translation' : 'item') . '.`' .
+						$field . '`' . $post; 
 				}
 				break;
 				

@@ -25,6 +25,10 @@ class ModelDescriptor extends Module {
 	 */
 	private $_table;
 	/**
+	 * @var bool
+	 */
+	private $_tableIsTranslated;
+	/**
 	 * @var callback
 	 */
 	private $_getByIDCallback;
@@ -129,6 +133,16 @@ class ModelDescriptor extends Module {
 	 */
 	public function getTable() {
 		return $this->_table;
+	}
+	
+	/**
+	 * Specifies whether there is a translation table for the table specified by
+	 * getTable()
+	 * 
+	 * @return string
+	 */
+	public function isTableTranslated() {
+		return $this->_tableIsTranslated;
 	}
 	
 	/**
