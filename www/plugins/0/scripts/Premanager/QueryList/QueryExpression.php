@@ -374,19 +374,10 @@ class QueryExpression extends Module {
 	}
 	
 	/**
-	 * Checks whether a additional evaluation after the query is needed to
-	 * evaluate this expression
-	 * 
-	 * @return bool
-	 */
-	public function isPostQueryEvaluationNeeded() {
-		return true; //TODO: implement sql evaluation
-	}
-	
-	/**
 	 * Gets a query string for the expression part that can be represented as sql
 	 * 
-	 * @return string
+	 * @return string the query or null if this expression can not be represented
+	 *   in a query
 	 */
 	public function getQuery() {
 		switch ($this->_operation) {
@@ -540,7 +531,7 @@ class QueryExpression extends Module {
 					return '('.$op0.') IS NULL';
 				break;
 		}
-		return '';
+		return null;
 	}
 	
 	/**

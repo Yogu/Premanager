@@ -107,6 +107,21 @@ class SortRule extends Module{
 	}
 	
 	/**
+	 * Gets the query part that can be used to sort items with this sort rule
+	 * (including the expression and DESC or ASC, depending on getDirection())
+	 * 
+	 * @return string the query or null if the expression can only be evaluated
+	 *   with evaluate()
+	 */
+	public function getQuery() {
+		if ($query = $this->_expression->getQuery())
+			return $query .
+				($this->_direction == SortDirection::DESCENDING) ? ' DESC' : ' ASC';
+		else
+			return null;
+	}
+	
+	/**
 	 * Compares two models of the type specified by the $objectType property
 	 * 
 	 * @param Premanager\Model $obj0 the left-hand operand
