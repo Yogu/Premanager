@@ -77,8 +77,7 @@ class DataBaseConnection extends Module {
 	 *   query, otherwise null
 	 */
 	public function query($query, $rightPart = null) {
-		return $this->internalQuery($query, $rightPart, $rightPart !== null, false,
-			0);
+		return $this->internalQuery($query, $rightPart, false, 0);
 	}
 	
 	/**
@@ -99,8 +98,58 @@ class DataBaseConnection extends Module {
 	 */
 	public function queryAndLog($query, $rightPart = null,
 		$indirectCallDepth = 0) {
-		return $this->internalQuery($query, $rightPart, $rightPart !== null, true,
-			$indirectCallDepth+1);
+		return $this->internalQuery($query, $rightPart, true, $indirectCallDepth+1);
+	}
+	
+	/**
+	 * Creates a single query string for a translating query
+	 *   
+	 * If $rightPart is specified, the translation will be available. 
+	 * The final query then will look like this:
+	 * $query
+	 * INNER JOIN translation
+	 * $rightPart
+	 * 
+	 * @return string
+	 */
+	public function getQuery($query, $rightPart = null) {
+		$query = trim($query);
+		    
+		// Translating query?
+		if ($rightPart !== null) {
+			$rightPart = trim($rightPart);
+			if (\preg_match( 
+				'/FROM\s+(?P<table>\S+)\s+AS\s+(?P<shortTable>\S+)/i',
+				$query, &$matches))
+			{
+				$table = $matches['table'];
+				$shortTable = $matches['shortTable'];  
+				$l1 = Environment::getCurrent()->getLanguage()->getID();
+				$l2 = Language::getInternationalLanguage()->getID();
+				$tt = Strings::toLower($table."Translation");
+
+				$query .= 
+					" ".
+					"LEFT JOIN $tt AS translation ".
+					  "ON $shortTable.id = translation.id ".
+					"WHERE ". 
+					  "(CASE translation.languageID WHEN $l1 THEN 2 WHEN $l2 THEN 1 ".
+							"ELSE 0 END) ".
+						"= (".
+							"SELECT MAX(CASE translationTemp.languageID WHEN $l1 THEN 2 ".
+								"WHEN $l2 THEN 1 ELSE 0 END) ".
+							"FROM $table AS translationTempItem ".
+							"LEFT JOIN $tt AS translationTemp ".
+								"ON translationTempItem.id = translationTemp.id ".
+							"WHERE $shortTable.id = translationTempItem.id ".
+						") ";
+				
+				if (Strings::toUpper(Strings::substring($rightPart, 0, 5)) == 'WHERE')
+					$rightPart = "AND ".Strings::substring($rightPart, 5);
+				$query .= $rightPart;
+			}
+		}
+		return $query;
 	}
 	
 	/**
@@ -125,51 +174,16 @@ class DataBaseConnection extends Module {
 		return \mysql_error($this->_link);
 	}
 	
-	private function internalQuery($query, $rest, $doTranslate, $doLog,
+	private function internalQuery($query, $rightPart, $doLog,
 		$indirectCallDepth) {
 		$this->_queryCount++;
 		
-		$query = trim($query);
-		$rest = trim($rest);
-		    
-		// Translating query?
-		if ($doTranslate) {    
-			if (\preg_match( 
-				'/^SELECT\s+(?P<fields>.*)\s+FROM\s+(?P<table>\S+)\s+AS\s+'.
-				'(?P<shortTable>\S+)/i', $query, &$matches)) {
-				$fields = $matches['fields'];
-				$table = $matches['table'];
-				$shortTable = $matches['shortTable'];  
-				$l1 = Environment::getCurrent()->getlanguage()->getid();
-				$l2 = Language::getInternationalLanguage()->getid();
-				$tt = Strings::toLower($table."Translation");
-
-				$query .= 
-					" ".
-					"LEFT JOIN $tt AS translation ".
-					  "ON $shortTable.id = translation.id ".
-					"WHERE ". 
-					  "(CASE translation.languageID WHEN $l1 THEN 2 WHEN $l2 THEN 1 ".
-							"ELSE 0 END) ".
-						"= (".
-							"SELECT MAX(CASE translationTemp.languageID WHEN $l1 THEN 2 ".
-								"WHEN $l2 THEN 1 ELSE 0 END) ".
-							"FROM $table AS translationTempItem ".
-							"LEFT JOIN $tt AS translationTemp ".
-								"ON translationTempItem.id = translationTemp.id ".
-							"WHERE $shortTable.id = translationTempItem.id ".
-						") ";
-				
-				if (Strings::toUpper(Strings::substring($rest, 0, 5)) == 'WHERE')
-					$rest = "AND ".Strings::substring($rest, 5);
-				$query .= $rest;
-			}
-		}
+		$query = $this->getQuery($query, $rightPart);
 
 		if ($doLog)
 			Debug::log($query, $indirectCallDepth+1);           
 		
-		$mysqlResult = @\mysql_query($query, $this->_link);
+		$mysqlResult = @mysql_query($query, $this->_link);
 		if ($mysqlResult === false)
 			throw new SQLException($query, $this->getError());
 
@@ -187,7 +201,7 @@ class DataBaseConnection extends Module {
 	 * @return string
 	 */
 	public function escape($str) {
-		return \mysql_real_escape_string($str, $this->_link);
+		return mysql_real_escape_string($str, $this->_link);
 	}
 	
 	/**

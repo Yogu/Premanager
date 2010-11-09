@@ -59,6 +59,21 @@ class DataBase extends Module {
 	}
 	
 	/**
+	 * Creates a single query string for a translating query
+	 *   
+	 * If $rightPart is specified, the translation will be available. 
+	 * The final query then will look like this:
+	 * $query
+	 * INNER JOIN translation
+	 * $rightPart
+	 * 
+	 * @return string
+	 */
+	public static function getQuery($query, $rightPart = null) {
+		return self::getConnection()->getQuery($query, $rightPart);
+	}
+	
+	/**
 	 * Gets the id value of the last inserted row
 	 * 
 	 * @return int
