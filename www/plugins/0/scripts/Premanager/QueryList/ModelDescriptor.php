@@ -53,13 +53,16 @@ class ModelDescriptor extends Module {
 	 * Creates a new model descriptor
 	 * 
 	 * @param string $className the class name
-	 * @param array $properties an array with property names as keys and the types
-	 *   as values (use 'this' as value if the type is this model)
+	 * @param array $properties an array with property names as keys and an array
+	 *   as value (containing type, getter name and, optional, field name). Use
+	 *   'this' as type if the type is this model.
 	 * @param string $table the name of the table that contains this models
 	 * @param callback $getByIDCallback a callback that gets an instance by its id
+	 * @param bool $tableIsTranslated true (default), if there is a translation
+	 *   table for the table speicified by the $table argument
 	 */
 	public function __construct($className, array $properties, $pluginName,
-		$table = null, $getByIDCallback = null) {
+		$table = null, $getByIDCallback = null, $tableIsTranslated = true) {
 		parent::__construct();
 			
 		if ($getByIDCallback != null && !\is_callable($getByIDCallback))
@@ -70,18 +73,22 @@ class ModelDescriptor extends Module {
 		$this->_pluginName = $pluginName;
 		$this->_table = $table;
 		$this->_getByIDCallback = $getByIDCallback;
+		$this->_tableIsTranslated = $tableIsTranslated;
 		foreach ($properties as $name => $value) {
-			if ($value == 'this')
-				$value = $this;
 			if (is_array($value)) {
 				$type = $value[0];
-				$field = $value[1];
+				$getter = $value[1];
+				$field = count($value) > 1 ? $value[2] : '';
 			} else {
 				$type = $value;
 				$field = '';
+				$getter = 'get'.$name;
 			}
+			if ($type == 'this')
+				$type = $this;
 			$this->_members[$name] =
-				new MemberInfo($this, $name, MemberKind::PROPERTY, $type, $field);
+				new MemberInfo($this, $name, MemberKind::PROPERTY, $type, $getter,
+					$field);
 		}
 	}
 	

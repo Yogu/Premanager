@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\QueryList;
 
+use Premanager\Debug\Debug;
 use Premanager\ArgumentNullException;
 use Premanager\ArgumentException;
 use Premanager\Module;
@@ -14,6 +15,7 @@ class MemberInfo extends Module{
 	private $_name;
 	private $_kind;
 	private $_type;
+	private $_getterName;
 	private $_fieldName;
 	
 	/**
@@ -58,7 +60,7 @@ class MemberInfo extends Module{
 	 *   descriptor) 
 	 */
 	public function __construct(ModelDescriptor $modelDescriptor, $name, $kind,
-		$type, $fieldName = '') {
+		$type, $getterName, $fieldName = '') {
 		parent::__construct();
 		
 		if (!is_string($name))
@@ -72,6 +74,7 @@ class MemberInfo extends Module{
 		$this->_name = $name;
 		$this->_kind = $kind;
 		$this->_type = $type;
+		$this->_getterName = $getterName;
 		$this->_fieldName = $fieldName;
 	}
 	
@@ -112,7 +115,20 @@ class MemberInfo extends Module{
 	}
 	
 	/**
+	 * Gets the name of the method that returns the value of this member
+	 * 
+	 * @return string the getter's name
+	 */
+	public function getGetterName() {
+		return $this->_getterName;
+	}
+	
+	/**
 	 * Gets the name of the field that contains the value
+	 * 
+	 * If this string starts with an asterix (*), the field belongs to the
+	 * translation table. Two exclamation marks (!) embed the field name if an
+	 * expression is given.
 	 * 
 	 * @return string the name of the field or an empty string if this field
 	 *   can not be accessed using a data base field of the model's table
@@ -135,8 +151,10 @@ class MemberInfo extends Module{
 			throw new ArgumentException('$object is not an instance of the model '.
 				'that contains this member');
 			
-		$name = $this->_name;
-		return $object->$name;
+		$getter = array($object, $this->_getterName);
+		Debug::assert(is_callable($getter), 'the getter for field ' .
+			$this->_name . ' (' . $this->_getterName.') is not callable');
+		return call_user_func($getter); 
 	}
 }
 
