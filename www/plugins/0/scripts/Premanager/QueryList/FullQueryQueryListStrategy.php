@@ -146,8 +146,10 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 				// Try to access the next item
 				if ($this->_currentResult->next()) {
 					$this->_currentResultCounter++;
-					return $this->getQueryBase()->getModelType()->getByID(
+					$item = $this->getQueryList()->getModelType()->getByID(
 						$this->_currentResult->get('id'));
+					$this->_items[] = $item;
+					return $item;
 				} else if ($this->_currentResultCounter == self::ITEMS_PER_STEP) {
 					// The last request returned as much items as requested, so there
 					// might be more
@@ -219,6 +221,31 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 		// Maybe the requested items are already collected
 		if ($index + $count < count($this->_items))
 			return array_slice($this->_items, $index, $count);
+			
+		// Are the items before $index already received? Then we can start there
+		if (count($this->_items) >= $index) {
+			// Add the items that have already been received
+			$array = array();
+			$i = $index;
+			while ($i < count($this->_items)) {
+				$array[] = $this->_items[$i];
+				$i++;
+			}
+			
+			// Receive and add the new items
+			try {
+				while ($index + $count > count($this->_items)) {
+					$array[$i] = $this->getByIndex(count($this->_items));
+					$i++;
+				}
+			} catch (ArgumentOutOfRangeException $e) {
+				if (!$weakRangeCheck)
+					throw new ArgumentOutOfRangeException('count', $count,
+						'$count must not be larger than the difference between actual '.
+						'count ('.$this->_count.') and $index ('.$index.')');
+			}
+			return $array;
+		}
 		
 		$array = array();
 		$result = DataBase::query(
@@ -307,7 +334,8 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 	}
 	
 	/**
-	 * Starts a data base request that ties in with $this->_items
+	 * Starts a data base request that ties in with $this->_items and adds the
+	 * first item to thel ist
 	 * 
 	 * @return Premanager\Model the next item or null if the end has been reached
 	 */
@@ -318,8 +346,10 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			"LIMIT ".count($this->_items).",".self::ITEMS_PER_STEP);
 		if ($this->_currentResult->next()) {
 			$this->_currentResultCounter = 1;
-			return $this->getQueryBase()->getModelType()->getByID(
+			$item = $this->getQueryList()->getModelType()->getByID(
 				$this->_currentResult->get('id'));
+			$this->_items[] = $item;
+			return $item;
 		} else {
 			// The end has been reached.
 			$this->_count = count($this->_items);
