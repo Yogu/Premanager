@@ -51,7 +51,7 @@ class QueryListIterator extends Module implements \Iterator {
 	 * @return bool
 	 */
 	public function valid() {
-		return $this->_index < $this->_list->getcount();
+		return $this->_list->isIndexValid($this->_index);
 	}
 }
 

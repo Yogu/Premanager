@@ -81,6 +81,16 @@ abstract class QueryListStrategy extends Module  {
 	 * @return array an array of objects
 	 */
 	public abstract function getRange($index, $count, $weakRangeCheck = false);
+	
+	/**
+	 * Checks whether an index is in the valid range
+	 * 
+	 * @param int $index the index to validate
+	 * @return bool true, if the index is in the valid range
+	 */
+	public function isIndexValid($index) {
+		return $index >= 0 && $index < $this->getCount();
+	}
 }
 
 ?>

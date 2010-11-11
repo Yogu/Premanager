@@ -236,6 +236,33 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 				'('.$this->_count.') and $index ('.$index.')');
 		return $array;
 	}
+	
+	/**
+	 * Checks whether an index is in the valid range
+	 * 
+	 * @param int $index the index to validate
+	 * @return bool true, if the index is in the valid range
+	 */
+	public function isIndexValid($index) {
+		if ($index < 0)
+			return false;
+			
+		if ($this->_count !== null)
+			return $index < $this->_count;
+		if ($index < count($this->_items))
+			return true;
+		if ($index == 0 || $index <= count($this->_items)) {
+			// Get the item because it probably will be requested later. Calling
+			// getByIndex() will cache the item.
+			try {
+				$this->getByIndex($index);
+				return true;
+			} catch (ArgumentOutOfRangeException $e) {
+				return false;
+			}
+		} else
+			return $index < $this->getCount();
+	}
 
 	// ===========================================================================
 	

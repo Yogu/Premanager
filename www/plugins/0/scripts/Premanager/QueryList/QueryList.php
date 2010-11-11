@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\QueryList;
 
+use Premanager\Debug\Debug;
 use Premanager\Types;
 use Premanager\Execution\Template;
 use Premanager\Model;
@@ -183,6 +184,15 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function getRange($index, $count, $weakRangeCheck = false) {
 		return $this->getStrategy()->getRange($index, $count, $weakRangeCheck);
+	}
+	/**
+	 * Checks whether an index is in the valid range
+	 * 
+	 * @param int $index the index to validate
+	 * @return bool true, if the index is in the valid range
+	 */
+	public function isIndexValid($index) {
+		return $this->getStrategy()->isIndexValid($index);
 	}
 	
 	/**
