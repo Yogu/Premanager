@@ -73,11 +73,14 @@ class DataBaseConnection extends Module {
 	 * 
 	 * @param string $query the query to execute
 	 * @param string $rightPart the query part after the translating part
+	 * @param int $indirectCallDepth the count of methods in call stack to be
+	 *   excluded from stored call stack
 	 * @return Premanager\IO\DataBase\DataBaseResult the result if it is a WHERE
 	 *   query, otherwise null
 	 */
-	public function query($query, $rightPart = null) {
-		return $this->internalQuery($query, $rightPart, false, 0);
+	public function query($query, $rightPart = null, $indirectCallDepth = 0) {
+		return $this->internalQuery($query, $rightPart, false,
+			$indirectCallDepth + 1);
 	}
 	
 	/**
@@ -98,7 +101,8 @@ class DataBaseConnection extends Module {
 	 */
 	public function queryAndLog($query, $rightPart = null,
 		$indirectCallDepth = 0) {
-		return $this->internalQuery($query, $rightPart, true, $indirectCallDepth+1);
+		return $this->internalQuery($query, $rightPart, true,
+			$indirectCallDepth + 1);
 	}
 	
 	/**
@@ -175,7 +179,7 @@ class DataBaseConnection extends Module {
 	}
 	
 	private function internalQuery($query, $rightPart, $doLog,
-		$indirectCallDepth) {
+		$indirectCallDepth = 0) {
 		$this->_queryCount++;
 		
 		$query = $this->getQuery($query, $rightPart);

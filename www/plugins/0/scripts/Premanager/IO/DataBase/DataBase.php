@@ -37,7 +37,7 @@ class DataBase extends Module {
 	 *   query, otherwise null
 	 */
 	public static function query($query, $rightPart = null) {
-		return self::getConnection()->query($query, $rightPart);
+		return self::getConnection()->query($query, $rightPart, 1);
 	}
 	
 	/**
