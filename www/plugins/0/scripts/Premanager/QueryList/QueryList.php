@@ -408,7 +408,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	private function getStrategy() {
 		if (!$this->_strategy) {
 			$filterQuery = $this->_filter ? $this->_filter->getQuery() : '';
-			if ($filterQuery != null) {
+			if ($filterQuery !== null) {
 				$sortQueries = array();
 				$ok = true;
 				foreach ($this->_sortRules as $rule) {

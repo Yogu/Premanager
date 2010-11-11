@@ -57,7 +57,7 @@ class StructurePageNode extends PageNode {
 		
 		parent::__construct($parent);
 		
-		$this->_project = $this->_structureNode->getproject();
+		$this->_project = $this->_structureNode->getProject();
 	}
 	
 	/**
@@ -103,14 +103,15 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the page node
 	 */
 	public function getChildByStructureNode(StructureNode $structureNode) {
-		if ($this->_structureNode != $structureNode->getparent())
+		if ($this->_structureNode != $structureNode->getParent())
 			throw new ArgumentException('The passed structure node is not a child '.
-				'of the structure ndoe this page node represents', 'structureNode');
+				'of the structure node this page node represents', 'structureNode');
 		
 		// If the child is a TREE node, the embedded node is used, not the
 		// structure page node
-		if ($structureNode->gettype() == StructureNodeType::TREE)
-			return $structureNode->gettreeClass()->createInstance($this, $structureNode);
+		if ($structureNode->getType() == StructureNodeType::TREE)
+			return $structureNode->getTreeClass()->createInstance($this,
+				$structureNode);
 		else
 			return new StructurePageNode($this, $structureNode);
 	}
@@ -121,7 +122,7 @@ class StructurePageNode extends PageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_structureNode->getname();
+		return $this->_structureNode->getName();
 	}
 	
 	/**
@@ -134,7 +135,7 @@ class StructurePageNode extends PageNode {
 		if ($this->_isProjectNode)
 			return $this->_project->gettitle();
 		else
-			return $this->_structureNode->gettitle();
+			return $this->_structureNode->getTitle();
 	}
 
 	/**

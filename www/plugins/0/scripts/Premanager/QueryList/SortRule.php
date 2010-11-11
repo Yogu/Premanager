@@ -116,7 +116,7 @@ class SortRule extends Module{
 	public function getQuery() {
 		if ($query = $this->_expression->getQuery())
 			return $query .
-				($this->_direction == SortDirection::DESCENDING) ? ' DESC' : ' ASC';
+				($this->_direction == SortDirection::DESCENDING ? ' DESC' : ' ASC');
 		else
 			return null;
 	}

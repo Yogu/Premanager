@@ -111,7 +111,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 		$this->_items = array();
 		while ($result->next()) {
 			$this->_items[] =
-				$this->getQueryBase()->getModelType()->getByID($result->get('id'));
+				$this->getQueryList()->getModelType()->getByID($result->get('id'));
 		}
 		$this->_count = count($this->_items);
 		return $this->_items;
@@ -130,7 +130,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			throw new ArgumentOutOfRangeException('index', $index,
 				'$index must not be negative');
 			
-		if ($this->_count !== null && $indx > $this->_count)
+		if ($this->_count !== null && $index > $this->_count)
 			throw new ArgumentOutOfRangeException('$index must be smaller than the '.
 				'count of items ('.$this->_count.')', 'index');
 						
@@ -180,7 +180,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			$this->getQueryBase().
 			"LIMIT $index,1");
 		if ($result->next()) {
-			return $this->getQueryBase()->getModelType()->getByID($result->get('id'));
+			return $this->getQueryList()->getModelType()->getByID($result->get('id'));
 		} else
 			throw new ArgumentOutOfRangeException('$index must be smaller than the '.
 				'count of items', $index, 'index');
@@ -227,7 +227,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			"LIMIT $index,$count");
 		while ($result->next()) {
 			$array[] =
-				$this->getQueryBase()->getModelType()->getByID($result->get('id'));
+				$this->getQueryList()->getModelType()->getByID($result->get('id'));
 		}
 		
 		if (!$weakRangeCheck && count($array) != $count)

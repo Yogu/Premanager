@@ -60,8 +60,8 @@ class GroupsPage extends TreeListPageNode {
 	 * Performs a call of this page
 	 */
 	public function execute() {
-		$list = self::getList()->getRange($this->getstartIndex(), $this->getitemsPerPage(),
-			true);
+		$list = self::getList()->getRange($this->getStartIndex(),
+			$this->getItemsPerPage(), true);
 		
 		$page = new Page($this);
 		$page->title = Translation::defaultGet('Premanager', 'groups');

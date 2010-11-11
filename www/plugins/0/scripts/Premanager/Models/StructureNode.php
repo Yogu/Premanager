@@ -197,7 +197,7 @@ final class StructureNode extends Model {
 			$name = \trim($name);
 		if ($title !== null)
 			$title = \trim($title);
-		$hasPanel = !! $hasPanel;
+		$hasPanel = !!$hasPanel;
 		if ($hasPanel && $tree)
 			throw new ArgumentException('A node can not have both a tree and a '.
 				'panel');
@@ -247,7 +247,9 @@ final class StructureNode extends Model {
 		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException(
 				'$id must be a nonnegative integer value', 'id');
-			
+		
+		// This switch allows not to call load() on models that have already been
+		// created
 		if (\array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];
 		} else {
@@ -1105,7 +1107,7 @@ final class StructureNode extends Model {
 	 * @return bool true, if this node is a child of $node
 	 */
 	public function isChildOf(StructureNode $node) {
-		return $this->getparent() == $node || $this->isChildOf($node->getparent());
+		return $this->getParent() == $node || $this->isChildOf($node->getParent());
 	}
 
 	// ===========================================================================       
