@@ -397,24 +397,8 @@ class QueryExpression extends Module {
 				break;
 				
 			case QueryOperation::MEMBER:
-				if ($this->_operand0 == null &&
-					$field = $this->_memberInfo->getFieldName()) {
-					if ($isTranslated = $field[0] == '*')
-						$field = substr($field, 1);
-					if ($p0 = strpos('!', $field) !== false) {
-						$expression = $field;
-						// Extract the field name
-						$pre = substr($field, 0, $p0-1);
-						$field = substr($field, $p0+1);
-						$p1 = strpos('!', $field)-1;
-						if ($p1 !== false) {
-							$field = substr($field, 0, $p1);
-							$post = substr($field, $p1);
-						}
-					} 
-					return $pre . ($isTranslated ? 'translation' : 'item') . '.`' .
-						$field . '`' . $post; 
-				}
+				if ($this->_operand0 == null)
+					return $this->_memberInfo->getFieldQuery();
 				break;
 				
 			case QueryOperation::NOT:
@@ -474,6 +458,21 @@ class QueryExpression extends Module {
 				break;
 				
 			case QueryOperation::EQUAL:
+				if ($this->_operand0->_type instanceof ModelDescriptor) {
+					if (!$this->_operand0->_operation &&
+						$field = $this->_operand1->_memberInfo->getFieldQuery())
+					{
+						$id = $this->_operand0->_value->getID();
+						return '('.$field.') = '.DataBase::escape($id); 
+					}
+					else if (!$this->_operand1->_operation &&
+						$field = $this->_operand0->_memberInfo->getFieldQuery())
+					{
+						$id = $this->_operand1->_value->getID();
+						return '('.$field.') = '.DataBase::escape($id); 
+					}
+				}
+				
 				if (($op0 = $this->_operand0->getQuery()) && 
 					($op1 = ($this->_operand1->getQuery())))
 					return '('.$op0.') = ('.$op1.')';

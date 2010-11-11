@@ -138,6 +138,34 @@ class MemberInfo extends Module{
 	}
 	
 	/**
+	 * Gets a query that results in the value of this field
+	 * 
+	 * @return string the query string or null if this field can not be accessed
+	 *   using a data base field of the model's table
+	 */
+	public function getFieldQuery() {
+		if ($this->_fieldName) {
+			$field = $this->_fieldName;
+			if ($isTranslated = $field[0] == '*')
+				$field = substr($field, 1);
+			if ($p0 = strpos('!', $field) !== false) {
+				$expression = $field;
+				// Extract the field name
+				$pre = substr($field, 0, $p0-1);
+				$field = substr($field, $p0+1);
+				$p1 = strpos('!', $field)-1;
+				if ($p1 !== false) {
+					$field = substr($field, 0, $p1);
+					$post = substr($field, $p1);
+				}
+			} 
+			return $pre . ($isTranslated ? 'translation' : 'item') . '.`' .
+				$field . '`' . $post;
+		} else
+			return null; 
+	}
+	
+	/**
 	 * Gets the value of this member on a specified object
 	 * 
 	 * @param mixed $object the object that contains this member

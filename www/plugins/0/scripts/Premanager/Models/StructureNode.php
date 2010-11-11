@@ -547,12 +547,8 @@ final class StructureNode extends Model {
 		if (!$this->_children) {
 			$l = self::getStructureNodes();
 			$this->_children =
-				$l->filter($l->exprAnd(
-					$l->expr(QueryOperation::NOT,
-						$l->expr(QueryOperation::IS_NULL, $l->exprMember('parent'))),
-					$l->exprEqual(
-						$l->exprMember($l->exprMember('parent'), 'id'),
-						$this->_id)));
+				$l->filter($l->exprEqual(
+					$l->exprMember('parent'), $this));
 		}
 		return $this->_children;
 	}
