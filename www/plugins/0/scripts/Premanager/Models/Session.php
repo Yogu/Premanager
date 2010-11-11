@@ -358,17 +358,20 @@ final class Session extends Model {
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => DataType::NUMBER,
-				'user' => User::getDescriptor(),
-				'key' => DataType::STRING,
-				'startTime' => DataType::DATE_TIME,
-				'lastRequestTime' => DataType::DATE_TIME,
-				'ip' => DataType::STRING,
-				'userAgent' => DataType::STRING,
-				'issecondaryPasswordUsed' => DataType::BOOLEAN,
-				'hidden' => DataType::BOOLEAN,
-				'isFirstRequest' => DataType::BOOLEAN,
-				'project' => Project::getDescriptor()),
+				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'user' => array(User::getDescriptor(), 'getUser', 'user'),
+				'key' => array(DataType::STRING, 'getKey', 'key'),
+				'startTime' => array(DataType::DATE_TIME, 'getStartTime', 'startTime'),
+				'lastRequestTime' => array(DataType::DATE_TIME, 'getLastRequestTime',
+					'lastRequestTime'),
+				'ip' => array(DataType::STRING, 'getip', 'ip'),
+				'userAgent' => array(DataType::STRING, 'getUserAgent', 'userAgent'),
+				'isSecondaryPasswordUsed' => array(DataType::BOOLEAN,
+					'getIsSecondaryPasswordUsed', 'isSecondaryPasswordUsed'),
+				'hidden' => array(DataType::BOOLEAN, 'getHidden', 'hidden'),
+				'isFirstRequest' => array(DataType::BOOLEAN, 'getIsFirstRequest',
+					'isFirstRequest'),
+				'project' => array(Project::getDescriptor(), 'getProject', 'project')),
 				'Premanager', 'Sessions', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
@@ -564,10 +567,10 @@ final class Session extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT session.userID, session.key, ".
-				"session.startTime AS startTime, session.lastRequestTime, ".
-				"session.ip, session.userAgent, session.secondaryPasswordUsed, ".
-				"session.hidden, session.isFirstRequest, session.projectID ".
+			"SELECT session.userID, session.key, session.startTime, ".
+				"session.lastRequestTime, session.ip, session.userAgent, ".
+				"session.secondaryPasswordUsed, session.hidden, ".
+				"session.isFirstRequest, session.projectID ".
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.id = '$this->_id'");
 		

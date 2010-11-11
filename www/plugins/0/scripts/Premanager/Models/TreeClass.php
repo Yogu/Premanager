@@ -199,9 +199,9 @@ final class TreeClass extends Model {
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => DataType::NUMBER,
-				'plugin' => Plugin::getDescriptor(),
-				'className' => DataType::STRING),
+				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'plugin' => array(Plugin::getDescriptor(), 'getPlugin', 'pluginID'),
+				'className' => array(DataType::STRING, 'getClassName', 'class')),
 				'Premanager', 'Trees', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;

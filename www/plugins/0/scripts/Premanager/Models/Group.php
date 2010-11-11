@@ -407,18 +407,19 @@ final class Group extends Model {
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => DataType::NUMBER,
-				'name' => DataType::STRING,
-				'title' => DataType::STRING,
-				'color' => DataType::STRING,
-				'text' => DataType::STRING,
-				'priority' => DataType::NUMBER,
-				'autoJoin' => DataType::BOOLEAN,
-				'isLocked' => DataType::BOOLEAN,
-				'creator' => User::getDescriptor(),
-				'createTime' => DataType::DATE_TIME,
-				'editor' => User::getDescriptor(),
-				'editTime' => DataType::DATE_TIME),
+				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'name' => array(DataType::STRING, 'getName', '*name'),
+				'title' => array(DataType::STRING, 'getTitle', '*title'),
+				'color' => array(DataType::STRING, 'getColor', 'color'),
+				'text' => array(DataType::STRING, 'getText', '*text'),
+				'priority' => array(DataType::NUMBER, 'getPriority', 'priority'),
+				'autoJoin' => array(DataType::BOOLEAN, 'getAutoJoin', 'autoJoin'),
+				'isLocked' => array(DataType::BOOLEAN, 'getIsLocked', 'isLocked'),
+				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
+				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
+					'createTime'),
+				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
+				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
 				'Premanager', 'Groups', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;

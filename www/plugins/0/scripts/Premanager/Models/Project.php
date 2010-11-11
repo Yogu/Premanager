@@ -438,19 +438,20 @@ final class Project extends Model {
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => DataType::NUMBER,
-				'name' => DataType::STRING,
-				'title' => DataType::STRING,
-				'subTitle' => DataType::STRING,
-				'author' => DataType::STRING,
-				'copyright' => DataType::STRING,
-				'description' => DataType::STRING,
-				'keywords' => DataType::STRING,
-				'rootNode' => StructureNode::getDescriptor(),
-				'creator' => User::getDescriptor(),
-				'createTime' => DataType::DATE_TIME,
-				'editor' => User::getDescriptor(),
-				'editTime' => DataType::DATE_TIME),
+				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'name' => array(DataType::STRING, 'getName', '*name'),
+				'title' => array(DataType::STRING, 'getTitle', '*title'),
+				'subTitle' => array(DataType::STRING, 'getSubTitle', '*subTitle'),
+				'author' => array(DataType::STRING, 'getAuthor', '*author'),
+				'copyright' => array(DataType::STRING, 'getCopyright', '*copyright'),
+				'description' => array(DataType::STRING, 'getDescription', '*description'),
+				'keywords' => array(DataType::STRING, 'getKeywords', '*keywords'),
+				'rootNode' => array(StructureNode::getDescriptor(), 'getRootNode'),
+				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
+				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
+					'createTime'),
+				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
+				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
 				'Premanager', 'Projects', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;

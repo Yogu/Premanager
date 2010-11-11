@@ -217,8 +217,8 @@ final class Plugin extends Model {
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => DataType::NUMBER,
-				'name' => DataType::STRING),
+				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'name' => array(DataType::STRING, 'getName', 'name')),
 				'Premanager', 'Plugins', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;

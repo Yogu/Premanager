@@ -279,15 +279,17 @@ final class StructureNode extends Model {
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => DataType::NUMBER,
-				'name' => DataType::STRING,
-				'parent' => 'this',
-				'tree' => TreeClass::getDescriptor(),
-				'creator' => User::getDescriptor(),
-				'createTime' => DataType::DATE_TIME,
-				'editor' => User::getDescriptor(),
-				'editTime' => DataType::DATE_TIME),
-				'Premanager', 'Nodes', array(__CLASS__, 'getByID'));
+				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'name' => array(DataType::STRING, 'getName', '*name'),
+				'title' => array(DataType::STRING, 'getTitle', '*title'),
+				'parent' => array('this', 'getParent', 'parentID'),
+				'tree' => array(TreeClass::getDescriptor(), 'getTree', 'treeID'),
+				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
+				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
+					'createTime'),
+				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
+				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
+				'Premanager', 'Nodes', array(__CLASS__, 'getByID'), true);
 		}
 		return self::$_descriptor;
 	}
