@@ -32,7 +32,9 @@ Premanager.SmartPageload = {
 	},
 
 	browse: function(url) {
+		var startTime = new Date().getTime();
 		var loadPage = function(node) {
+			var responseTime = new Date().getTime();
 			function getChild(node, name) {
 				for (var i = 0; i < node.childNodes.length; i++) {
 					if (node.childNodes[i].nodeName.toUpperCase() == name.toUpperCase())
@@ -270,6 +272,17 @@ Premanager.SmartPageload = {
 					}
 				}
 				Premanager.SmartPageload.replaceLinks(contentTag);
+
+				var elapsedTime = responseTime - startTime;
+				var buildingTime = new Date().getTime() - responseTime;
+				var p = $('footer-time-info');
+				if (!p) {
+					var footer = $('footer');
+					var p = document.createElement('p');
+					p.id = 'footer-time-info';
+					footer.appendChild(p);
+				}
+				p.textContent = elapsedTime + ' ms' + ' + ' + buildingTime + ' ms';
 				return true;
 			} else
 				return;
