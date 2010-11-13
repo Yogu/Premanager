@@ -304,6 +304,52 @@ abstract class PageNode extends Module {
 		}
 		return $node;
 	}
+
+	/**
+	 * Prepares a nested array that can be used to generate a navigation tree
+	 * 
+	 * Every node is represented by an array whose first element is the node
+	 * itself and the second element is the array of children stored as such an
+	 * array, again
+	 * 
+	 * Example:
+	 *   array(
+	 *     root node,
+	 *     array(
+	 *       array (
+	 *         child node 1,
+	 *         array()
+	 *       ),
+	 *       array (
+	 *         child node 2,
+	 *         array()
+	 *       )
+	 *     )
+	 *   )
+	 *   
+	 * @param Premanager\Execution\PageNode $activeNode the node the navigation
+	 *   tree should be created for
+	 * @return array a nested array as described above
+	 */
+	public static function getNavigationTreeSource($activeNode) {
+		$prev = null;
+		$navigationTree = array();
+		$node = $activeNode;
+		while ($node) {
+			//TODO: replace constant count (5) by option value
+			$children = $node->getChildren(5, $prev);
+			for ($i = 0; $i < count($children); $i++) {
+				if ($prev && $children[$i]->equals($prev))
+					$children[$i] = $navigationTree;
+				else
+					$children[$i] = array($children[$i]);
+			}
+			$navigationTree = array($node, $children);
+			$prev = $node; 
+			$node = $node->getParent();
+		}
+		return $navigationTree;
+	}
 }
 
 ?>

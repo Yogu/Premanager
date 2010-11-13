@@ -3,17 +3,12 @@
 <response type="page">
 	<title>{html $page->title}</title>
 	<location>
-		{foreach $hierarchy|reverse item}
-			<node>
-				<url>{html $item->url}</url>
-				<title>{html $item->title}</title>
-			</node>
-		{/foreach}				
+		{include file='backendNavigationItem.tpl' node=$navigationTree activeNode=$node}				
 	</location>
 	<project>
-		<name>{html $pageNode->getProject()->getName()}</name>
-		<title>{html $pageNode->getProject()->getTitle()}</title>
-		<subtitle>{html $pageNode->getProject()->getSubTitle()}</subtitle>
+		<name>{html $node->getProject()->getName()}</name>
+		<title>{html $node->getProject()->getTitle()}</title>
+		<subtitle>{html $node->getProject()->getSubTitle()}</subtitle>
 	</project>
 	<content>
 		{foreach $page->blocks row}

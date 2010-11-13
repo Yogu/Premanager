@@ -43,38 +43,42 @@ class DynamicPage extends BackendPageNode {
 				substr($url, 1, strlen($url));
 		$urlInfo = new URLInfo($url);
 		$pageNode = $urlInfo->getPageNode();
-
-		$response = new XMLResponse();
-		$w = $response->writer;
-		$w->startElement('response');
 		
-		if ($pageNode instanceof PageNotFoundNode) {
-			$w->writeAttribute('type', 'not-found');
-			$w->startElement('message');
-			$w->text('This page does not exist.');
-			$w->endElement();
-		} else if (($page = $pageNode->getResponse()) instanceof Page) {
-			// Get list of node, parent of node, parent of parent of node ...
-			$hierarchy = array();
-			for ($node = $pageNode; $node != null; $node = $node->getParent()) {
-				$hierarchy[] = $node;
+		$e = Environment::getCurrent();
+		Environment::push(Environment::create($e->getUser(), $e->getSession(),
+			$pageNode, $pageNode->getProject(), $e->getLanguage(), $e->getStyle(),
+			$e->getEdition()));
+		try {
+			$response = new XMLResponse();
+			$w = $response->writer;
+			$w->startElement('response');
+			
+			if ($pageNode instanceof PageNotFoundNode) {
+				$w->writeAttribute('type', 'not-found');
+				$w->startElement('message');
+				$w->text('This page does not exist.');
+				$w->endElement();
+			} else if (($page = $pageNode->getResponse()) instanceof Page) {
+				$template = new Template('Premanager', 'dynamicPageResponse');
+				$template->set('navigationTree',
+					PageNode::getNavigationTreeSource($pageNode));
+				$template->set('node', $pageNode);
+				$template->set('page', $page);
+				
+				$response = new StringResponse($template->get(), 'text/xml');
+			} else {
+				$w->writeAttribute('type', 'no-page');
+				$w->startElement('message');
+				$w->text('This url must be accessed directly.');
+				$w->endElement();
 			}
 			
-			
-			$template = new Template('Premanager', 'dynamicPageResponse');
-			$template->set('hierarchy', $hierarchy);
-			$template->set('pageNode', $pageNode);
-			$template->set('page', $page);
-			
-			return new StringResponse($template->get(), 'text/xml');
-		} else {
-			$w->writeAttribute('type', 'no-page');
-			$w->startElement('message');
-			$w->text('This url must be accessed directly.');
 			$w->endElement();
+		} catch (\Exception $e) {
+			Environment::pop();
+			throw $e;
 		}
-		
-		$w->endElement();
+		Environment::pop();
 		return $response;
 	}
 }

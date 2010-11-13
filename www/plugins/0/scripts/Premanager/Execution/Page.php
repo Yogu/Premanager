@@ -137,23 +137,7 @@ class Page extends Response {
 			$hierarchy[] = $node;
 		}
 		
-		// Create the html navigation tree
-		$node = $this->_node;
-		$prev = null;
-		$navigationTree = array();
-		while ($node) {
-			//TODO: replace constant count (5) by option value
-			$children = $node->getChildren(5, $prev);
-			for ($i = 0; $i < count($children); $i++) {
-				if ($prev && $children[$i]->equals($prev))
-					$children[$i] = $navigationTree;
-				else
-					$children[$i] = array($children[$i]);
-			}
-			$navigationTree = array($node, $children);
-			$prev = $node; 
-			$node = $node->getparent();
-		}
+		$navigationTree = PageNode::getNavigationTreeSource($this->_node);
 		
 		$template->set('node', $this->_node);
 		$template->set('title', $this->title);

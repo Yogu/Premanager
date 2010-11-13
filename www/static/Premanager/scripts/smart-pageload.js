@@ -69,7 +69,7 @@ Premanager.SmartPageload = {
 			var projectName;
 			var projectTitle;
 			var projectSubtitle = '';
-			var location = new Array();
+			var location;
 			
 			// Title
 			if (child = getChild(node, 'title'))
@@ -98,21 +98,41 @@ Premanager.SmartPageload = {
 			
 			// Location
 			if (child = getChild(node, 'location')) {
-				for (var i = 0; i < child.childNodes.length; i++) {
-					if (child.childNodes[i].nodeName.toLowerCase() == 'node') {
-						if (child2 =  getChild(child.childNodes[i], 'url')) {
-							var url = child2.textContent;
-						} else
-							continue;
-
-						if (child2 =  getChild(child.childNodes[i], 'title')) {
-							var title = child2.textContent;
-						} else
-							continue;
+				if (child = getChild(child, 'node')) {
+					function getNodeInfo(node) {
+						var isActive = node.hasAttribute('active');
 						
-						location[location.length] = {url: url, title: title};
+						var child; 
+						if (child = getChild(node, 'url')) {
+							var url = child.textContent;
+						} else
+							return null;
+	
+						if (child = getChild(node, 'title')) {
+							var title = child.textContent;
+						} else
+							return null;
+						
+						// get children
+						var children = new Array();
+						for (var i = 0; i < node.childNodes.length; i++) {
+							if (node.childNodes[i].nodeName.toLowerCase() == 'node') {
+								var nodeInfo = getNodeInfo(node.childNodes[i]);
+								if (nodeInfo != null)
+									children[children.length] = nodeInfo;
+							}
+						}
+						
+						return {
+							url: url,
+							title: title,
+							isActive: isActive,
+							children: children
+						};
 					}
-				}
+					location = getNodeInfo(child);
+				} else
+					return;
 			} else
 				return;
 			
@@ -159,15 +179,60 @@ Premanager.SmartPageload = {
 			var navbarListTag = getChild(navbarTag, 'ul');
 			while (navbarListTag.childNodes.length)
 				navbarListTag.removeChild(navbarListTag.childNodes[0]);
-			for (var i = 0; i < location.length; i++) {
+			var nodeInfo = location;
+			while (nodeInfo != null) {
 				var itemTag = document.createElement('li');
 				navbarListTag.appendChild(itemTag);
 				var aTag = document.createElement('a');
 				itemTag.appendChild(aTag);
-				aTag.href = './' + location[i].url;
-				aTag.textContent = location[i].title;
+				aTag.href = './' + nodeInfo.url;
+				aTag.textContent = nodeInfo.title;
+				
+				function getNext() {
+					if (nodeInfo.children.length) {
+						// The main child is either an active node or has
+						// children
+						for (var i = 0; i < nodeInfo.children.length; i++) {
+							if (nodeInfo.children[i].isActive)
+								return nodeInfo.children[i];
+							if (nodeInfo.children[i].children.length > 0)
+								return nodeInfo.children[i];
+						}
+					}
+				}
+				
+				nodeInfo = getNext();
 			}
-			Premanager.SmartPageload.replaceLinks(navbarListTag);
+			
+			// Update navigation tree
+			var navtreeTag = $('navigation-tree');
+			var listTag = getChild(navtreeTag, 'ul');
+			function nodeInfoToTag(nodeInfo) {
+				var tag = document.createElement('li');
+				if (nodeInfo.isActive)
+					tag.setAttribute('class', 'active');
+				var aTag = document.createElement('a');
+				aTag.textContent = nodeInfo.title;
+				aTag.href = './' + nodeInfo.url;
+				tag.appendChild(aTag);
+				
+				if (nodeInfo.children.length > 0) {
+					var listTag = document.createElement('ul');
+					tag.appendChild(listTag);
+					for (var i = 0; i < nodeInfo.children.length; i++) {
+						var childTag = nodeInfoToTag(nodeInfo.children[i]);
+						listTag.appendChild(childTag);
+					}
+				}
+				return tag;
+			}
+			var navtreeRootTag = nodeInfoToTag(location);
+			if (navtreeRootTag == null)
+				return;
+			while (listTag.childNodes.length)
+				listTag.removeChild(listTag.childNodes[0]);
+			listTag.appendChild(navtreeRootTag);
+			Premanager.SmartPageload.replaceLinks(navtreeRootTag);
 			
 			// Update content
 			while (contentTag.childNodes.length)
