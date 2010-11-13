@@ -46,7 +46,8 @@ class Output {
 		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
 		if (!setcookie($prefix.$name, $value,
 			$expirationTime, $url->getpath(), $serverName)) {
-			throw new InvalidOperationException('Page output has already started');
+			throw new InvalidOperationException('Failed to set cookie: page output '.
+				'has already been started');
 		}
 		$_COOKIE[$prefix.$name] = $value;
 	}

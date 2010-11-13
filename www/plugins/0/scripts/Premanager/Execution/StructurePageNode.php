@@ -68,6 +68,18 @@ class StructurePageNode extends PageNode {
 	}
 	
 	/**
+	 * Gets the root node of organization
+	 * 
+	 * @return Premanager\Execution\StructurePageNode the organization's root node
+	 */
+	public static function getRootNode() {
+		static $value;
+		if (!$value)
+			$value = new self();
+		return $value;
+	}
+	
+	/**
 	 * Gets the child specified by its name
 	 * 
 	 * @param string $name the child's expected name

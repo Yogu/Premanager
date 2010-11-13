@@ -216,7 +216,8 @@ class Environment extends Module {
 		$instance->_project = $project;
 		$instance->_language = $language;
 		$instance->_style = $style;
-		$instance->_edition = $edition;		
+		$instance->_edition = $edition;
+		return $instance;
 	}
 	
 	// ===========================================================================  
@@ -245,7 +246,7 @@ class Environment extends Module {
 	 * restores the real environment
 	 */
 	public static function pop() {
-		if (count($this->_stack[]) <= 1)
+		if (count(self::$_stack) <= 1)
 			throw new InvalidOperationException('There is nothing to pop');
 		array_pop(self::$_stack);
 	}
@@ -278,7 +279,8 @@ class Environment extends Module {
 	 * @return Premanager\Models\User
 	 */
 	public function getUser() {
-		return $this->getSession() ? $this->getSession()->user : User::getGuest();
+		return
+			$this->getSession() ? $this->getSession()->getUser() : User::getGuest();
 	}
 
 	/**
@@ -362,12 +364,12 @@ class Environment extends Module {
 	public function getStyle() {
 		if (!$this->_user && $this->_isReal) {
 			if ($this->_styleLoading)
-				return StyleClass::getDefault()->getinstance();
+				return StyleClass::getDefault()->getInstance();
 			else {
 				$this->_styleLoading = true;
 				try {
 					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_style = StyleClass::getDefault()->getinstance();
+					$this->_style = StyleClass::getDefault()->getInstance();
 				} catch (\Exception $e) {
 					$this->_styleLoading = false;
 					throw $e;
@@ -434,7 +436,8 @@ class Environment extends Module {
 	public function getURLPrefix() {
 		if ($this->_urlPrefix === null)
 			$this->_urlPrefix =
-				URL::fromTemplate($this->getlanguage(), $this->getedition(), $this->getproject());
+				URL::fromTemplate($this->getLanguage(), $this->getEdition(),
+					$this->getProject());
 		return $this->_urlPrefix;
 	}
 	

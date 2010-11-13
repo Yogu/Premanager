@@ -96,7 +96,7 @@ p:first-child,
 	margin-top: 0;
 }
 
-p:last-child
+p:last-child,
 .usertext h1:last-child {
 	margin-bottom: 0;
 }

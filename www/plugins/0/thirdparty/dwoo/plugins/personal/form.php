@@ -47,10 +47,10 @@ class Dwoo_Plugin_form extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Blo
 			'Premanager\IO\Request::getRequestURL()).\'"\';'.
 			'if ('.$cparams['multipart'].') echo \' enctype="multipart/form-data"\';'.
 			'echo \'>\';'.
-			'if (Premanager\Execution\Environment::getCurrent()->session) '.
+			'if (Premanager\Execution\Environment::getCurrent()->getSession()) '.
 			'echo \'<input type="hidden" name="postValidator" '.
 			'value="\'.htmlspecialchars('.
-			'Premanager\Execution\Environment::getCurrent()->session->key).\'" />\';'.
+			'Premanager\Execution\Environment::getCurrent()->getSession()->getKey()).\'" />\';'.
 			Dwoo_Compiler::PHP_CLOSE;
 				
 		$post = '</form>';
