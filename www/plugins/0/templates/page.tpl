@@ -174,7 +174,7 @@
 					<li><a href="./info/kontakt">Kontakt</a></li>
 				</ul>			
 			</nav>*}
-			<p id="footer-time-info">{elapsedTime()}</p>
+			<p id="footer-time-info">{timeInfo()}</p>
 		</footer>
 	</body>
 </html>

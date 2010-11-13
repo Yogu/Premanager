@@ -111,12 +111,20 @@ Premanager.SmartPageload = {
 			var projectTitle;
 			var projectSubtitle = '';
 			var location;
+			var timeInfo = '';
+			var serversideTime = 0;
 			
 			// Title
 			if (child = getChild(node, 'title'))
 				pageTitle = child.textContent;
 			else
 				return;
+			
+			// Time Info
+			if (child = getChild(node, 'timeinfo')) {
+				timeInfo = child.textContent;
+				serversideTime = child.getAttribute('total');
+			}
 			
 			// Project
 			if (child = getChild(node, 'project')) {
@@ -312,8 +320,8 @@ Premanager.SmartPageload = {
 				}
 				Premanager.SmartPageload.replaceLinks(contentTag);
 
-				var elapsedTime = responseTime - startTime;
-				var buildingTime = new Date().getTime() - responseTime;
+				var totalTime = new Date().getTime() - startTime;
+				var additionalTime = totalTime - serversideTime;
 				var p = $('footer-time-info');
 				if (!p) {
 					var footer = $('footer');
@@ -321,7 +329,7 @@ Premanager.SmartPageload = {
 					p.id = 'footer-time-info';
 					footer.appendChild(p);
 				}
-				p.textContent = elapsedTime + ' ms' + ' + ' + buildingTime + ' ms';
+				p.textContent = timeInfo + ' + ' + additionalTime + ' ms';
 				
 				// History API
 				Premanager.SmartPageload.pushState(url);
@@ -353,6 +361,7 @@ Premanager.SmartPageload = {
 					} else
 						location.href = url;
 				} catch (exception) {
+					alert(exception);
 					location.href = url;
 				}
 			},

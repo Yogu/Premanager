@@ -27,4 +27,5 @@
 			</row>
 		{/foreach}	
 	</content>
+	<timeinfo total="{html timeInfo(true)}">{html timeInfo()}</timeinfo>
 </response>

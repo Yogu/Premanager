@@ -7,6 +7,8 @@ use Premanager\IO\Config;
 
 class DataBase extends Module {
 	private static $_connection;
+	private static $_queryCount;
+	private static $_queryTime;
 	
 	/**
 	 * Gets the default data base connection
@@ -96,6 +98,19 @@ class DataBase extends Module {
 	 */
 	public static function formTableName($plugin, $table) {
 		return self::getConnection()->formTableName($plugin, $table);
+	}
+	
+	public static function addQueryTime($time, $queryCountIncrement = 0) {
+		self::$_queryTime += $time;
+		self::$_queryCount += $queryCountIncrement;
+	}
+	
+	public static function getQueryTime() {
+		return self::$_queryTime;
+	}
+	
+	public static function getQueryCount() {
+		return self::$_queryCount;
 	}
 }
 
