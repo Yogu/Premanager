@@ -1,5 +1,8 @@
 <?php
 
+// Store request time
+define('REQUEST_TIME', microtime(true));
+
 // Specify how to load classes
 function autoload($className) {
 	static $paths;

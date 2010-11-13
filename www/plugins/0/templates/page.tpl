@@ -173,6 +173,7 @@
 					<li><a href="./info/kontakt">Kontakt</a></li>
 				</ul>			
 			</nav>*}
+			<p id="footer-time-info">{elapsedTime()}</p>
 		</footer>
 	</body>
 </html>
