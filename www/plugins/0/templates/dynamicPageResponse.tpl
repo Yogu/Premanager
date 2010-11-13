@@ -18,7 +18,7 @@
 						{foreach $col block}
 							<block>
 								<content>
-									{$block->html}
+									{$block->getHTML()}
 								</content>
 							</block>
 						{/foreach}

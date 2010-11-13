@@ -15,6 +15,8 @@ class DateTime extends Module {
 	private $_timestamp;
 	private $_timeZone;
 	
+	// ===========================================================================
+	
 	/**
 	 * Specifies the format __tostring() and __construct(string) use
 	 * 
@@ -22,133 +24,7 @@ class DateTime extends Module {
 	 */
 	const DEFAULT_FORMAT = 'Y-m-d H:i:s';
 	
-	/**
-	 * The year component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $year = Module::PROPERTY_GET;
-	
-	/**
-	 * The month component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $month = Module::PROPERTY_GET;
-	
-	/**
-	 * The day component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $day = Module::PROPERTY_GET;
-	
-	/**
-	 * The hour component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $hour = Module::PROPERTY_GET;
-	
-	/**
-	 * The minute component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $minute = Module::PROPERTY_GET;
-	
-	/**
-	 * The second component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $second = Module::PROPERTY_GET;
-	
-	/**
-	 * The date component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var Premanager\DateTime
-	 */
-	public $date = Module::PROPERTY_GET;
-	
-	/**
-	 * The time component
-	 *
-	 * This property is read-only.
-	 *
-	 * @var Premanager\TimeSpan
-	 */
-	public $timeOfDay = Module::PROPERTY_GET;
-	
-	/**
-	 * The day in the week
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int a Premanager\DayOfWeek value
-	 */
-	public $dayOfWeek = Module::PROPERTY_GET;
-	
-	/**
-	 * The day in the year, beginning at 1
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var DayOfWeek
-	 */
-	public $dayOfYear = Module::PROPERTY_GET;
-	
-	/**
-	 * The number of the week, specified by ISO-8601
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $week = Module::PROPERTY_GET;
-	
-	/**
-	 * A timestamp representing this DateTime object
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $timestamp = Module::PROPERTY_GET;
-	
-	/**
-	 * The time zone of this date time
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var Premanager\TimeZone
-	 */
-	public $timeZone = Module::PROPERTY_GET;
-	
-	/**
-	 * A DateTime representing the moment specified by this date time as UTC time
-	 * 
-	 * If $timeZone == TimeZone::getUTC(), this value is equal to this object.
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var Premanager\DateTime
-	 */
-	public $universalTime = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new Premanager\DateTime object
@@ -291,6 +167,27 @@ class DateTime extends Module {
 		// classes do that part.
 		date_default_timezone_set('UTC');
 	}
+
+	/**
+	 * Gets the count of days in the specified month
+	 * 
+	 * @param int $year the year component
+	 * @param int $month the month component
+	 * @return int the count of days
+	 */
+	public static function daysInMonth($year, $month) {
+		return \date('t', mktime(0, 0, 0, $month, 1, $year));
+	}
+	
+	/**
+	 * Gets the date/time which represents the current time in UTC
+	 * @return Premanager\DateTime
+	 */
+	public static function getNow() {
+		return new DateTime();
+	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets the date component
@@ -637,28 +534,32 @@ class DateTime extends Module {
 					format(TimeSpanFormat::SHORT_RELATIVE_TO_NOW);
 			
 			case DateTimeFormat::LONG_DATE:
-				$format = Environment::getCurrent()->getlanguage()->longDateFormat;
+				$format = Environment::getCurrent()->getLanguage()->getLongDateFormat();
 				break;
 				
 			case DateTimeFormat::LONG_TIME:
-				$format = Environment::getCurrent()->getlanguage()->longTimeFormat;
+				$format = Environment::getCurrent()->getLanguage()->getLongTimeFormat();
 				break;
 				
 			case DateTimeFormat::SHORT_DATE_TIME:
-				$format = Environment::getCurrent()->getlanguage()->shortDateTimeFormat;
+				$format =
+					Environment::getCurrent()->getLanguage()->getShortDateTimeFormat();
 				break;
 				
 			case DateTimeFormat::SHORT_DATE:
-				$format = Environment::getCurrent()->getlanguage()->shortDateFormat;
+				$format =
+					Environment::getCurrent()->getLanguage()->getShortDateFormat();
 				break;
 				
 			case DateTimeFormat::SHORT_TIME:
-				$format = Environment::getCurrent()->getlanguage()->shortTimeFormat;
+				$format =
+					Environment::getCurrent()->getLanguage()->getShortTimeFormat();
 				break;
 			
 			default:
 				if (!is_string($format))
-					$format = Environment::getCurrent()->getlanguage()->longDateTimeFormat;
+					$format =
+						Environment::getCurrent()->getLanguage()->getLongDateTimeFormat();
 		}
 			
 		// If we are here, an absolute format is selected.
@@ -723,25 +624,6 @@ class DateTime extends Module {
 	 */
 	public function __tostring() {
 		return date(self::DEFAULT_FORMAT, $this->_timestamp);
-	}
-
-	/**
-	 * Gets the count of days in the specified month
-	 * 
-	 * @param int $year the year component
-	 * @param int $month the month component
-	 * @return int the count of days
-	 */
-	public static function daysInMonth($year, $month) {
-		return \date('t', mktime(0, 0, 0, $month, 1, $year));
-	}
-	
-	/**
-	 * Gets the date/time which represents the current time in UTC
-	 * @return Premanager\DateTime
-	 */
-	public static function getNow() {
-		return new DateTime();
 	}
 }
 

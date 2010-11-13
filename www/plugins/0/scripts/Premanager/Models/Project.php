@@ -43,140 +43,7 @@ final class Project extends Model {
 	private static $_instances = array();
 	private static $_count;
 	private static $_descriptor;
-	private static $_queryList;
-	
-	// =========================================================================== 	      
-	
-	/**
-	 * The id of this project
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $id = Module::PROPERTY_GET;
-	
-	/**
-	 * The translated url name of this project
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $name = Module::PROPERTY_GET;         
-	
-	/**
-	 * The translated title for this project
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $title = Module::PROPERTY_GET;        
-	
-	/**
-	 * An optional subtitle
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $subTitle = Module::PROPERTY_GET;        
-	
-	/**
-	 * The author of the contents of this project
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $author = Module::PROPERTY_GET;         
-	
-	/**
-	 * The copyright for the contents of this project 
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $copyright = Module::PROPERTY_GET;             
-	
-	/**
-	 * A short plain-text description 
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $description = Module::PROPERTY_GET;            
-	
-	/**
-	 * A list of keywords, separated by commas
-	 *
-	 * Ths property is read-only.   
-	 *
-	 * @see setValues()
-	 * 
-	 * @var string
-	 */
-	public $keywords = Module::PROPERTY_GET;     
-
-	/**
-	 * The StructureNode that is the root of this project
-	 * 
-	 * @var Premanager\Models\StructureNode
-	 */
-	public $rootNode = Module::PROPERTY_GET;
-
-	/**
-	 * The user that has created this project
-	 *
-	 * Ths property is read-only.  
-	 * 
-	 * @see setValues()
-	 * 
-	 * @var Premanager\Models\User
-	 */
-	public $creator = Module::PROPERTY_GET;    
-
-	/**
-	 * The time when this project has been created
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\DateTime
-	 */
-	public $createTime = Module::PROPERTY_GET;   
-
-	/**
-	 * The user that has edited this project the last time
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\Models\User
-	 */
-	public $editor = Module::PROPERTY_GET;      
-
-	/**
-	 * The time when this project has been edited the last time
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\DateTime
-	 */
-	public $editTime = Module::PROPERTY_GET;                 
+	private static $_queryList;          
 
 	// ===========================================================================  
 	
@@ -359,7 +226,7 @@ final class Project extends Model {
 		
 		// Insert nodes for current trees
 		foreach (TreeClass::getTreeClasses() as $treeClass) {
-			$title = $treeClass->getplugin()->name . '-' . 
+			$title = $treeClass->getplugin()->getname() . '-' . 
 				\preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->getclassName());
 			$name = $rootNode->getAvailableName(Strings::toLower($title));
 			

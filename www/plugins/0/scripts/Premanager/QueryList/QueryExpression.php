@@ -61,35 +61,7 @@ class QueryExpression extends Module {
 	 */
 	private $_objectType;
 	
-	/**
-	 * The result type (enum Premanager\QueryList\DataType or a
-	 * remanager\QueryList\ModelDescriptor)
-	 * 
-	 * @var int|Premanager\QueryList\ModelDescriptor
-	 */
-	public $type = Module::PROPERTY_GET;
-	
-	/**
-	 * The expression operation
-	 * (enum Premanager\QueryList\QueryOperation)
-	 * 
-	 * @var int
-	 */
-	public $operation = Module::PROPERTY_GET;
-	
-	/**
-	 * The literal value, if $operation is NONE
-	 * 
-	 * @var mixed
-	 */
-	public $value = Module::PROPERTY_GET;
-	
-	/**
-	 * The type of "this"
-	 * 
-	 * @var Premanager\QueryList\Model
-	 */
-	public $objectType = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new QueryExpression.
@@ -336,6 +308,8 @@ class QueryExpression extends Module {
 			$this->_operation = $operation;
 		}
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets the result type

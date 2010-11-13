@@ -1,4 +1,4 @@
-<p>{string Premanager loginAlreadyLoggedIn array(userName=$environment->user->name)}</p>
+<p>{string Premanager loginAlreadyLoggedIn array(userName=$environment->getUser()->getName())}</p>
 
 {form}
 	{if $referer}

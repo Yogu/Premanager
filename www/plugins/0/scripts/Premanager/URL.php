@@ -25,77 +25,8 @@ class URL extends Module {
 	private $_fragment;
 	private $_authority;
 	private $_url;
-	
-	/**
-	 * The scheme part (e.g. "http")
-	 * 
-	 * @var string
-	 */
-	public $scheme = Module::PROPERTY_GET;
-	
-	/**
-	 * The userinfo part (e.g. "user:password")
-	 * 
-	 * @var string
-	 */
-	public $userinfo = Module::PROPERTY_GET;
-	
-	/**
-	 * The host part (e.g. "www.example.com")
-	 * 
-	 * @var string
-	 */
-	public $host = Module::PROPERTY_GET;
-	
-	/**
-	 * The port part (e.g. "80")
-	 * 
-	 * @var string
-	 */
-	public $port = Module::PROPERTY_GET;
-	
-	/**
-	 * The path part (e.g. "/gallery/index.html")
-	 * 
-	 * @var string
-	 */
-	public $path = Module::PROPERTY_GET;
-	
-	/**
-	 * The query part (e.g. "id=2&mode=show")
-	 * 
-	 * @var string
-	 */
-	public $query = Module::PROPERTY_GET;
-	
-	/**
-	 * The fragment part (e.g. "comments")
-	 * 
-	 * @var string
-	 */
-	public $fragment = Module::PROPERTY_GET;
-	
-	/**
-	 * The authority (e.g. "user:pass@www.example.com:80")
-	 * 
-	 * @var string
-	 */
-	public $authority = Module::PROPERTY_GET;
-	
-	/**
-	 * The path and query (e.g. "/gallery/index.html?id=2&mode=show")
-	 * 
-	 * @var string
-	 */
-	public $pathAndQuery = Module::PROPERTY_GET;
-	
-	/**
-	 * The complete url (e.g.
-	 * "http://user:pass@www.example.com:80/gallery/index.html?id=2&mode=show#comments")
-	 * 
-	 * @var string
-	 */
-	public $url = Module::PROPERTY_GET_ACRONYM;
+
+	// ===========================================================================
 	
 	/**
 	 * Creates a new URL using its string representation
@@ -163,6 +94,67 @@ class URL extends Module {
 		$this->_query = (string) $matches['query'];
 		$this->_fragment = (string) $matches['fragment'];
 	}
+	
+	/**
+	 * Gets a url string using the url template
+	 * 
+	 * If a paramter is null it is replaced by the environment property
+	 * 
+	 * @param Premanager\Models\Language|null $language
+	 * @param int|null $edition (enum Premanager\Execution\Edition
+	 * @return string the url
+	 */
+	public static function fromTemplate($language = null, $edition = null) {
+		if ($language === null)
+			$language = Environment::getCurrent()->getlanguage();
+		else if (!($language instanceof Language))
+			throw new ArgumentException('$language must be null or a '.
+				'Premanager\Models\Language', 'language');
+			
+		if ($edition === null)
+			$edition = Environment::getCurrent()->getedition();
+			
+		switch ($edition) {
+			case Edition::MOBILE:
+				$editionString = 'mobile';
+				break;
+			case Edition::PRINTABLE:
+				$editionString = 'print';
+				break;
+			default:
+				$editionString = '';		
+		}
+		
+		return self::fromTemplateUsingStrings($language->getname(), $editionString);
+	}
+	
+	/**
+	 * Gets a url string using the url template
+	 * 
+	 * This method is identical to fromTemplate but it expects the arguments to
+	 * be strings. These strings are directly inserted into the template.
+	 * 
+	 * @param string $language the language name
+	 * @param string $edition the edition identifier
+	 * @return string the url
+	 */
+	public static function fromTemplateUsingStrings($language, $edition) {
+		$template = Config::getURLTemplate();
+		
+		// first split scheme away
+		preg_match('/^([a-z][a-z0-9+.-]*)\:\/\/(.*)/i', $template, &$matches);
+		$scheme = $matches[1];
+		$template = $matches[2];
+		
+		$template = str_replace('{language}', $language, $template);
+		$template = str_replace('{edition}', $edition, $template);
+		$template = str_replace('..', '.', $template);            
+		$template = str_replace('//', '/', $template);
+		$template = trim($template, "./").'/';
+		return $scheme.'://'.$template;
+	}
+
+	// ===========================================================================
 	
 	/**
 	 * Gets the scheme part
@@ -269,65 +261,6 @@ class URL extends Module {
 				$this->_url .= '#'.$this->_fragment;
 		}
 		return $this->_url;
-	}
-	
-	/**
-	 * Gets a url string using the url template
-	 * 
-	 * If a paramter is null it is replaced by the environment property
-	 * 
-	 * @param Premanager\Models\Language|null $language
-	 * @param int|null $edition (enum Premanager\Execution\Edition
-	 * @return string the url
-	 */
-	public static function fromTemplate($language = null, $edition = null) {
-		if ($language === null)
-			$language = Environment::getCurrent()->getlanguage();
-		else if (!($language instanceof Language))
-			throw new ArgumentException('$language must be null or a '.
-				'Premanager\Models\Language', 'language');
-			
-		if ($edition === null)
-			$edition = Environment::getCurrent()->getedition();
-			
-		switch ($edition) {
-			case Edition::MOBILE:
-				$editionString = 'mobile';
-				break;
-			case Edition::PRINTABLE:
-				$editionString = 'print';
-				break;
-			default:
-				$editionString = '';		
-		}
-		
-		return self::fromTemplateUsingStrings($language->getname(), $editionString);
-	}
-	
-	/**
-	 * Gets a url string using the url template
-	 * 
-	 * This method is identical to fromTemplate but it expects the arguments to
-	 * be strings. These strings are directly inserted into the template.
-	 * 
-	 * @param string $language the language name
-	 * @param string $edition the edition identifier
-	 * @return string the url
-	 */
-	public static function fromTemplateUsingStrings($language, $edition) {
-		$template = Config::getURLTemplate();
-		
-		// first split scheme away
-		preg_match('/^([a-z][a-z0-9+.-]*)\:\/\/(.*)/i', $template, &$matches);
-		$scheme = $matches[1];
-		$template = $matches[2];
-		
-		$template = str_replace('{language}', $language, $template);
-		$template = str_replace('{edition}', $edition, $template);
-		$template = str_replace('..', '.', $template);            
-		$template = str_replace('//', '/', $template);
-		$template = trim($template, "./").'/';
-		return $scheme.'://'.$template;
 	}
 }
 

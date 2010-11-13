@@ -17,6 +17,8 @@ class Page extends Response {
 	 */
 	private $_node;
 	
+	// ===========================================================================
+	
 	/**
 	 * An array of rows of cols of blocks (Premanager\Execution\PageBlock)
 	 * 
@@ -50,14 +52,7 @@ class Page extends Response {
 	 */
 	public $title;
 	
-	/**
-	 * The node that has created this page
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var Premanager\Execution\PageNode
-	 */
-	public $node = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new page
@@ -71,6 +66,8 @@ class Page extends Response {
 		$this->title = $node->getTitle();
 		$this->statusCode = 200;
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Adds a new block in a new col in a new row. The value of the $title
@@ -156,9 +153,6 @@ class Page extends Response {
 		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());
-
-		//TODO: replace this when no longer needed (only for testing purpose)
-		$template->set('sidebar', '<section class="block"><header><h1>Search</h1></header><div><p>The search field.</p></div></section>');
 		
 		return $template->get();
 	}

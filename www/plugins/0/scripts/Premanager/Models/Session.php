@@ -46,112 +46,6 @@ final class Session extends Model {
 	private static $_queryList;
 
 	// ===========================================================================  
-
-	/**
-	 * The id of this session
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $id = Module::PROPERTY_GET;
-   
-	/**
-	 * The user that has logged in with this session
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\Models\User
-	 */
-	public $user = Module::PROPERTY_GET;
-	
-	/**
-	 * The key that identifies this session and that is used in the cookie
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $key = Module::PROPERTY_GET;    
-	
-	/**
-	 * The date/time when this session was started
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\DateTime
-	 */
-	public $startTime = Module::PROPERTY_GET;      
-	
-	/**
-	 * The date/time when the user of this session accessed the last time a page
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\DateTime
-	 */
-	public $lastRequestTime = Module::PROPERTY_GET;  
-	
-	/**
-	 * The ip address the session has been started from
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $ip = Module::PROPERTY_GET; 
-	
-	/**
-	 * The user agent of the browser with that the user has started the session
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $userAgent = Module::PROPERTY_GET;
-	
-	/**
-	 * Specifies whether the user has logged in with a secondary password
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var bool
-	 */
-	public $secondaryPasswordUsed = Module::PROPERTY_GET;
-	
-	/**
-	 * Specifies whether ths session should be hidden from other visitors
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var bool
-	 */
-	public $hidden = Module::PROPERTY_GET;
-	
-	/**
-	 * Specifies whether this is the first request after the login request
-	 * 
-	 * After having logged in, the client is redirected to the same page (to drop
-	 * POST data with the password). If you want to do something at the first
-	 * request that produces a page (for example a login-successful hint), use
-	 * this property.
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var bool
-	 */
-	public $isFirstRequest = Module::PROPERTY_GET;
-	
-	/**
-	 * The project this user is currently viewing
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanger\Objects\Project
-	 */
-	public $project = Module::PROPERTY_GET;
-
-	// ===========================================================================  
 	
 	protected function __construct() {
 		parent::__construct();	
@@ -302,7 +196,7 @@ final class Session extends Model {
 		$key = self::formKey($user);
 		$ip = Request::getIP();
 		$userAgent = Request::getUserAgent();
-		$projectID = Environment::getCurrent()->getproject()->id;
+		$projectID = Environment::getCurrent()->getProject()->getID();
 		$_secondaryPassowordUsed = $secondaryPassowordUsed ? '1' : '0';
 		$_hidden = $hidden ? '1' : '0';
 		DataBase::query(

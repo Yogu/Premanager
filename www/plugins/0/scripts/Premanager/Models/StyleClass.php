@@ -34,44 +34,6 @@ final class StyleClass extends Model {
 	private static $_queryList;
 
 	// ===========================================================================  
-
-	/**
-	 * The id of this style class
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $id = Module::PROPERTY_GET;
-   
-	/**
-	 * The plugin that has registered this style class
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $plugin = Module::PROPERTY_GET;
-	
-	/**
-	 * The class name of this style
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $className = Module::PROPERTY_GET;    
-	
-	/**
-	 * An instance of this style class
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var Premanager\Execution\Style
-	 */
-	public $instance = Module::PROPERTY_GET;    
-
-	// ===========================================================================  
 	
 	protected function __construct() {
 		parent::__construct();	
@@ -339,7 +301,9 @@ final class StyleClass extends Model {
 			self::$_count--;			
 	
 		$this->dispose();
-	}              
+	}      
+	
+	// ===========================================================================        
 	
 	private function load() {
 		$result = DataBase::query(

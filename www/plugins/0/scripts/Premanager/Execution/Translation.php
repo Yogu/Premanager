@@ -116,32 +116,32 @@ class Translation extends Module {
 						
 						case 'longDateTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->longDateTimeFormat) : '';
+								$this->_environment->getlanguage()->getlongDateTimeFormat()) : '';
 						break;	         				      
 						
 						case 'longDate':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->longDateFormat) : '';
+								$this->_environment->getlanguage()->getlongDateFormat()) : '';
 						break;	           				      
 						
 						case 'longTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->longTimeFormat) : '';
+								$this->_environment->getlanguage()->getlongTimeFormat()) : '';
 						break;	   				      
 						
 						case 'shortDateTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->shortDateTimeFormat) : '';
+								$this->_environment->getlanguage()->getshortDateTimeFormat()) : '';
 						break;	         				      
 						
 						case 'shortDate':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->shortDateFormat) : '';
+								$this->_environment->getlanguage()->getshortDateFormat()) : '';
 						break;	           				      
 						
 						case 'shortTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->shortTimeFormat) : '';
+								$this->_environment->getlanguage()->getshortTimeFormat()) : '';
 						break;
 						
 						default:

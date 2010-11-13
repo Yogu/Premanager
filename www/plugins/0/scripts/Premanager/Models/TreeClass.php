@@ -34,36 +34,7 @@ final class TreeClass extends Model {
 	private static $_descriptor;
 	private static $_queryList;
 
-	// ===========================================================================  
-
-	/**
-	 * The id of this tree class
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $id = Module::PROPERTY_GET;
-   
-	/**
-	 * The plugin that has registered this tree class
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $plugin = Module::PROPERTY_GET;
-	
-	/**
-	 * The class name of this tree
-	 *
-	 * Ths property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $className = Module::PROPERTY_GET;        
-
-	// ===========================================================================  
+	// ===========================================================================    
 	
 	protected function __construct() {
 		parent::__construct();	
@@ -262,7 +233,7 @@ final class TreeClass extends Model {
 		if (!class_exists($this->getclassName()))
 			throw new CorruptDataException('The class of tree class '.$this->_id.
 				' ('.$this->getclassName().') does not exist');
-		$instance = new $this->className($parent, $structureNode);
+		$instance = new $this->_className($parent, $structureNode);
 		if (!($instance instanceof PageNode))
 			throw new CorruptDataException('The class of tree class '.$this->_id.
 				' ('.$this->getclassName().') does not inherit from '.

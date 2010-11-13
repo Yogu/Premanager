@@ -18,33 +18,7 @@ class MemberInfo extends Module{
 	private $_getterName;
 	private $_fieldName;
 	
-	/**
-	 * The model that contains this member
-	 * 
-	 * @var Premanager\QueryList\ModelDescriptor
-	 */
-	public $modelDescriptor = Module::PROPERTY_GET;
-	
-	/**
-	 * The member name
-	 * 
-	 * @var string
-	 */
-	public $name = Module::PROPERTY_GET;
-	
-	/**
-	 * The member kind (enum Premanager\QueryList\MemberKind)
-	 * 
-	 * @var int
-	 */
-	public $kind = Module::PROPERTY_GET;
-	
-	/**
-	 * Result type (enum Premanager\QueryList\DataType or a class name)
-	 * 
-	 * @var int
-	 */
-	public $type = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new MemberInfo setting its properties
@@ -77,6 +51,8 @@ class MemberInfo extends Module{
 		$this->_getterName = $getterName;
 		$this->_fieldName = $fieldName;
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets the model that contains this member

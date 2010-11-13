@@ -20,26 +20,7 @@ class SortRule extends Module{
 	 */
 	private $_direction;
 	
-	/**
-	 * The expression that defines the order
-	 * 
-	 * @var Premanager\QueryList\QueryExpression
-	 */
-	public $expression = Module::PROPERTY_GET;
-	
-	/**
-	 * The direction in which to sort (enum Premanager\QueryList\SortDirection)
-	 * 
-	 * @var int
-	 */
-	public $direction = Module::PROPERTY_GET;
-	
-	/**
-	 * The type of "this"
-	 * 
-	 * @var Premanager\QueryList\Model
-	 */
-	public $objectType = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new SortRules and sets its properties
@@ -77,6 +58,8 @@ class SortRule extends Module{
 		$this->_expression = $expression;
 		$this->_direction = $direction;
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets the expression that defines the order
@@ -133,13 +116,13 @@ class SortRule extends Module{
 	 *   type
 	 */
 	public function evaluate($obj0, $obj1) {
-		$className = $this->_expression->getObjectType()->className;
+		$className = $this->_expression->getObjectType()->getclassName();
 		if (!($obj0 instanceof $className))
 			throw ArgumentException('$obj0 is of the wrong type, expected type: '.
-				$this->_expression->getobjectType()->className, 'obj0');
+				$this->_expression->getobjectType()->getclassName(), 'obj0');
 		if (!($obj1 instanceof $className))
 			throw ArgumentException('$obj1 is of the wrong type, expected type: '.
-				$this->_expression->getobjectType()->className, 'obj1');
+				$this->_expression->getobjectType()->getclassName(), 'obj1');
 				
 		$value0 = $this->_expression->evaluate($obj0);
 		$value1 = $this->_expression->evaluate($obj1);

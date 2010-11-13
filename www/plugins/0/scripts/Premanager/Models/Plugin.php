@@ -40,36 +40,6 @@ final class Plugin extends Model {
 
 	// ===========================================================================
 
-	/**
-	 * The id of this plugin
-	 *
-	 * Ths property is read-only.
-	 *
-	 * @var int
-	 */
-	public $id = Module::PROPERTY_GET;
-
-	/**
-	 * The plugin name
-	 *
-	 * Ths property is read-only.
-	 *
-	 * @var string
-	 */
-	public $name = Module::PROPERTY_GET;
-
-	/**
-	 * The class that can initialize this plugin or null if there is no
-	 * initializer used
-	 *
-	 * Ths property is read-only.
-	 *
-	 * @var Premanager\Execution\PluginInitializer
-	 */
-	public $initializer = Module::PROPERTY_GET;
-
-	// ===========================================================================
-
 	protected function __construct() {
 		parent::__construct();
 	}

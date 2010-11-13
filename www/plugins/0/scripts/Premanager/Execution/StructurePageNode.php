@@ -25,12 +25,7 @@ class StructurePageNode extends PageNode {
 	 */
 	private $_isRootNode;
 	
-	/**
-	 * The base structure node
-	 * 
-	 * @var Premanager\Models\StructureNode
-	 */
-	public $structureNode = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new page node based on a structure node or on the root node of
@@ -66,6 +61,8 @@ class StructurePageNode extends PageNode {
 		
 		$this->_project = $this->_structureNode->getProject();
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets the root node of organization

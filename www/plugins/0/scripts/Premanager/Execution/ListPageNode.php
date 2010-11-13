@@ -36,50 +36,7 @@ abstract class ListPageNode extends PageNode {
 	 */
 	private $_itemsPerPage;
 	
-	/**
-	 * The page index
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $pageIndex = Module::PROPERTY_GET;
-	
-	/**
-	 * The count of pages
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $pageCount = Module::PROPERTY_GET;
-	
-	/**
-	 * The count of items
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $itemCount = Module::PROPERTY_GET;
-	
-	/**
-	 * The count of items to show on one page
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $itemsPerPage = Module::PROPERTY_GET;
-	
-	/**
-	 * The index of the first item to include
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $startIndex = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a ListPageNode
@@ -105,6 +62,8 @@ abstract class ListPageNode extends PageNode {
 		else
 			$this->_itemsPerPage = (int)$itemsPerPage;
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets an array of names and values of the query ('page' => 7 for '?page=7')

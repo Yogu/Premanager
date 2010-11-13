@@ -12,32 +12,7 @@ class StylesheetInfo extends Module {
 	private $_url;
 	private $_media;
 	
-	/**
-	 * The absolute path and file name
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $fileName = Module::PROPERTY_GET;
-	
-	/**
-	 * The absolute url
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $url = Module::PROPERTY_GET_ACRONYM;
-	
-	/**
-	 * The media type this style sheet is created for
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $media = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new StylesheetInfo and sets its properties
@@ -54,6 +29,8 @@ class StylesheetInfo extends Module {
 		$this->_url = $url;
 		$this->_media = $media ? $media : 'all';
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Creates a new StylesheetInfo and sets its properties assuming the style

@@ -199,7 +199,7 @@ class Request {
 				self::$_postValidated = true;
 				$validator = self::getPOST('postValidator');
 				self::$_postValidated =
-					$validator == Environment::getCurrent()->getsession()->key;
+					$validator == Environment::getCurrent()->getSession()->getKey();
 			}
 		}
 		if (!self::$_postValidated )

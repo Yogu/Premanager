@@ -5,17 +5,24 @@ use Premanager\ArgumentException;
 use Premanager\Module;
 
 class DataBaseResult extends Module implements \ArrayAccess, \Countable {
-	private $_resource;
-	private $_row;
-	private $_nextCalled = false;
-	private $_eof = false;
-	
 	/**
-	 * The count of rows in this result
-	 * 
-	 * @var int
+	 * @var resource
 	 */
-	public $rowCount = Module::PROPERTY_GET;
+	private $_resource;
+	/**
+	 * @var array
+	 */
+	private $_row;
+	/**
+	 * @var bool
+	 */
+	private $_eof = false;
+	/**
+	 * @var bool
+	 */
+	private $_nextCalled = false;
+	
+	// ===========================================================================
 	
 	/**
 	 * Creates a new DataBaseResult linked to a data base result ressource
@@ -34,6 +41,8 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 			\mysql_free_result($this->_resource);
 		$this->_resource = null;
 	}
+	
+	// ===========================================================================
 
 	/**
 	 * Gets the count of rows
@@ -54,9 +63,9 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 			return false;
 			
  		$this->_nextCalled = true;
- 		$time = microtime(true);
+ 		//$time = microtime(true);
 		$this->_eof = !($this->_row = mysql_fetch_array($this->_resource));
-		DataBase::addQueryTime(microtime(true) - $time);
+		//DataBase::addQueryTime(microtime(true) - $time);
 		return (!$this->_eof);				
 	}                           
 

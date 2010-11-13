@@ -39,17 +39,6 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	// ===========================================================================
 	
 	/**
-	 * The count of items
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $count = Module::PROPERTY_GET;
-
-	// ===========================================================================
-	
-	/**
 	 * Creates a new Premanager\QueryList\QueryList
 	 * 
 	 * @param Premanager\QueryList\ModelDescriptor $modelType the type of items
@@ -392,6 +381,8 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			
 		return new QueryExpression($type, QueryOperation::MEMBER, $object, $member);
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Checks an array of sort rules for validity on this list

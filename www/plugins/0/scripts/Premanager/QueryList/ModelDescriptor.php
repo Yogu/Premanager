@@ -33,25 +33,7 @@ class ModelDescriptor extends Module {
 	 */
 	private $_getByIDCallback;
 	
-	/**
-	 * The name of the class this descriptor describes 
-	 * @var string
-	 */
-	public $className = Module::PROPERTY_GET;
-	
-	/**
-	 * The name of the plugin that contains the models
-	 * 
-	 * @var string
-	 */
-	public $pluginName = Module::PROPERTY_GET;
-	
-	/**
-	 * The name of the model's table
-	 * 
-	 * @var string
-	 */
-	public $table = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new model descriptor
@@ -95,6 +77,8 @@ class ModelDescriptor extends Module {
 					$field);
 		}
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets information about the member called $name if it exists, returns null

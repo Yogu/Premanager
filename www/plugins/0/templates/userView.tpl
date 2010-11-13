@@ -1,30 +1,30 @@
 <div class="info-list">
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager userName))}</dt>
-		<dd>{html $user->name}</dd>
+		<dd>{html $user->getName()}</dd>
 	</dl>
 
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager userTitle))}</dt>
-		<dd><span style="color: #{$user->color}">{html $user->title}</span></dd>
+		<dd><span style="color: #{$user->getColor()}">{html $user->getTitle()}</span></dd>
 	</dl>   
 
-	{if $user->hasAvatar}
+	{if $user->gethasAvatar()}
 		<dl>
 			<dt>{string Premanager label array(label=string(Premanager avatar))}</dt>
-			<dd><img alt="{string Premanager avatarOf array(userName=$user->name)}" src="./{$node->url}/avatar" /></dd>
+			<dd><img alt="{string Premanager avatarOf array(userName=$user->getName())}" src="./{$node->getURL()}/avatar" /></dd>
 		</dl>   
 	{/if}
 
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager userRegistrationTime))}</dt>
-		<dd>{$user->registrationTime->format()}</dd>
+		<dd>{$user->getRegistrationTime()->format()}</dd>
 	</dl>
 	
-	{if $user->lastVisibleLoginTime}
+	{if $user->getLastVisibleLoginTime()}
 		<dl>
 			<dt>{string Premanager label array(label=string(Premanager userLastLoginTime))}</dt>
-			<dd>{$user->lastVisibleLoginTime->format()}</dd>
+			<dd>{$user->getLastVisibleLoginTime()->format()}</dd>
 		</dl>
 	{/if}
 </div>

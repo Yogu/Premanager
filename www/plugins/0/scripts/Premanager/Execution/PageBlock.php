@@ -6,12 +6,7 @@ use Premanager\Module;
 class PageBlock extends Module {
 	private $_html;
 	
-	/**
-	 * The HTML representation of this block
-	 * 
-	 * @var string
-	 */
-	public $html = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a simple block with a title and body and optional link
@@ -49,6 +44,8 @@ class PageBlock extends Module {
 			$head.'</h1></header><div>'.$body.'</div></'.$tagName.'>';
 		return $instance;
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Creates a table block

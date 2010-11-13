@@ -8,87 +8,8 @@ use Premanager\Debug\Debug;
 
 class TimeSpan extends Module {
 	private $_timestamp;
-	
-	/**
-	 * The day component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $days = Module::PROPERTY_GET;
-	
-	/**
-	 * The hour component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $hours = Module::PROPERTY_GET;
-	
-	/**
-	 * The minute component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $minutes = Module::PROPERTY_GET;
-	
-	/**
-	 * The second component
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $seconds = Module::PROPERTY_GET;
-	
-	/**
-	 * The value of this object in whole days and fractions of days
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var float
-	 */
-	public $totalDays = Module::PROPERTY_GET;
-	
-	/**
-	 * The value of this object in whole hours and fractions of hours
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var float
-	 */
-	public $totalHours = Module::PROPERTY_GET;
-	
-	/**
-	 * The value of this object in whole minutes and fractions of minutes
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var float
-	 */
-	public $totalMinutes = Module::PROPERTY_GET;
-	
-	/**
-	 * The number of seconds representing this timespan (equivalent to $timestamp)
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var float
-	 */
-	public $totalSeconds = Module::PROPERTY_GET;
-	
-	/**
-	 * A timestamp representing this TimeSpan object (equivalent to $totalSeconds)
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $timestamp = Module::PROPERTY_GET;
+
+	// ===========================================================================
 	
 	/**
 	 * Creates a new Premanager\TimeSpan object
@@ -190,6 +111,8 @@ class TimeSpan extends Module {
 	public static function fromSeconds($value) {
 		return new TimeSpan(0, 0, $value);
 	}
+
+	// ===========================================================================
 	
 	/**
 	 * Gets the day component

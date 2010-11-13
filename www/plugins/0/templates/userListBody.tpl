@@ -1,13 +1,13 @@
 {foreach $users user}
 	<tr>
 		<td>
-			<a href="./{$node->url}/{url $user->name}">
-				<span class="avatar"><img alt="{string Premanager avatarOf array(userName=$user->name)}" src="./{$node->url}{html $user->name}/avatar" /></span>
-				<span class="user-name user" style="color: #{$user->color};">{html $user->name}</span>
-				<span class="user-title">{html $user->title}</span>
+			<a href="./{$node->geturl()}/{url $user->getName()}">
+				<span class="avatar"><img alt="{string Premanager avatarOf array(userName=$user->getName())}" src="./{$node->getURL()}{html $user->getName()}/avatar" /></span>
+				<span class="user-name user" style="color: #{$user->getColor()};">{html $user->getName()}</span>
+				<span class="user-title">{html $user->gettitle()}</span>
 			</a>
 		</td>
-		<td>{$user->registrationTime->format()}</td>
-		<td>{if $user->lastVisibleLoginTime}{$user->lastVisibleLoginTime->format()}{else}{string Premanager literalNone}{/if}</td>
+		<td>{$user->getRegistrationTime()->format()}</td>
+		<td>{if $user->getLastVisibleLoginTime()}{$user->getLastVisibleLoginTime()->format()}{else}{string Premanager literalNone}{/if}</td>
 	</tr>
 {/foreach}

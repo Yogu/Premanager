@@ -21,49 +21,7 @@ abstract class PageNode extends Module {
 	 */
 	protected $_project;
 	
-	/**
-	 * The parent node
-	 * 
-	 * @var Premanager\Execution\PageNode
-	 */
-	public $parent = Module::PROPERTY_GET;
-	
-	/**
-	 * The project that owns this node
-	 * 
-	 * @var Premanager\Models\Project
-	 */
-	public $project = Module::PROPERTY_GET;
-	
-	/**
-	 * The name that is used in urls
-	 * 
-	 * @var string
-	 */
-	public $name = Module::PROPERTY_GET;
-	
-	/**
-	 * The displayed title that is used when the titles of the parent nodes are
-	 * also displayed
-	 * 
-	 * @var string
-	 */
-	public $title = Module::PROPERTY_GET;
-	
-	/**
-	 * The url of this page relative to Environment::getCurrent()->geturlPrefix()
-	 * 
-	 * @var string
-	 */
-	public $url = Module::PROPERTY_GET_ACRONYM;
-	
-	/**
-	 * The url of this page relative to Environment::getCurrent()->geturlPrefix(),
-	 * including a query part if exists
-	 * 
-	 * @var string
-	 */
-	public $fullURL = Module::PROPERTY_GET;
+	// ===========================================================================
 	
 	/**
 	 * Creates a new page node
@@ -80,6 +38,8 @@ abstract class PageNode extends Module {
 		$this->_parent = $parent;
 		$this->_project = $parent ? $parent->_project : null;
 	}
+	
+	// ===========================================================================
 	
 	/**
 	 * Gets the parent node
@@ -195,9 +155,9 @@ abstract class PageNode extends Module {
 		// If there are two parents, one of them is _not_ root
 		if ($this->getParent() && $this->getParent()->getParent()) {
 			if ($name = $this->getName())
-				return $this->getParent()->url.'/'.rawurlencode($name);
+				return $this->getParent()->getURL().'/'.rawurlencode($name);
 			else
-				return $this->getParent()->url;
+				return $this->getParent()->getURL();
 		}
 			
 		// If there is exactly one parent, that is root

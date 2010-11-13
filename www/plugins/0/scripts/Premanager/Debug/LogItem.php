@@ -16,70 +16,8 @@ class LogItem extends Module {
 	private $_fullFunctionName;
 	private $_fileName;
 	private $_line;
-	
-	/**
-	 * The HTML-formatted message of this log item
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var string
-	 */
-	public $message = Module::PROPERTY_GET;
-	
-	/**
-	 * The time this log item has been created
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $time = Module::PROPERTY_GET;
-	
-	/**
-	 * The name of the class that has called the log function
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $className = Module::PROPERTY_GET;
-	
-	/**
-	 * The name of the function that has called the log function
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $functionName = Module::PROPERTY_GET;
-	
-	/**
-	 * The function name and class name of the function that has called the log
-	 * function
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $fullFunctionName = Module::PROPERTY_GET;
-	
-	/**
-	 * The full path to the file that has called the log function
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $fileName = Module::PROPERTY_GET;
-	
-	/**
-	 * The line number where the log function has been called
-	 * 
-	 * This property is read-only.
-	 * 
-	 * @var int
-	 */
-	public $line = Module::PROPERTY_GET;
+
+	// ===========================================================================
 	
 	/**
 	 * Creates a new LogItem

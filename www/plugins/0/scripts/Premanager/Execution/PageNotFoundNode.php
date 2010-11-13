@@ -98,11 +98,11 @@ class PageNotFoundNode extends PageNode {
 	 */
 	public function getURL() {
 		// If there are two parents, one of them is _not_ root
-		if ($this->getParent() && $this->getParent()->parent) {
+		if ($this->getParent() && $this->getParent()->getParent()) {
 			if ($this->_urlRest)
-				return $this->getParent()->url.'/'.$this->_urlRest;
+				return $this->getParent()->getURL().'/'.$this->_urlRest;
 			else
-				return $this->getParent()->url;
+				return $this->getParent()->getURL();
 		}
 			
 		// If there is exactly one parent, that is root

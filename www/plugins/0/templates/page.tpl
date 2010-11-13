@@ -1,36 +1,36 @@
 ﻿<<?php ?>?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html>
 
-<html lang="{$environment->language->name}">
+<html lang="{$environment->getlanguage()->getName()}">
 	<head>
 		<meta charset="utf-8" />
-		<title>{html $project->title}{if !$isIndexPage}{string Premanager titleDivider}{html $title}{elseif $project->subTitle}{string Premanager titleDivider}{html $project->subTitle}{/if}</title>
-		<base href="{html $environment->urlPrefix}" />
+		<title>{html $project->getTitle()}{if !$isIndexPage}{string Premanager titleDivider}{html $title}{elseif $project->getSubTitle()}{string Premanager titleDivider}{html $project->getSubTitle()}{/if}</title>
+		<base href="{html $environment->getURLPrefix()}" />
 				
-		<meta name="copyright" content="{html $organization->copyright}" />
-		<meta name="author" content="{html $project->author}" />
-		<meta name="publisher" content="{html $project->author}" />
-		<meta name="description" content="{html $project->description}" />
-		{if $project->keywords}
-			<meta name="keywords" content="{html $project->keywords}" />
-		{elseif $organization->keywords}
-			<meta name="keywords" content="{html $organization->keywords}" />
+		<meta name="copyright" content="{html $organization->getCopyright()}" />
+		<meta name="author" content="{html $project->getAuthor()}" />
+		<meta name="publisher" content="{html $project->getAuthor()}" />
+		<meta name="description" content="{html $project->getDescription()}" />
+		{if $project->getkeywords()}
+			<meta name="keywords" content="{html $project->getKeywords()}" />
+		{elseif $organization->getkeywords()}
+			<meta name="keywords" content="{html $organization->getKeywords()}" />
 		{/if}
 		
 		<meta http-equiv="Content-Script-Type" content="text/javascript" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 		
-		<link rel="canonical" title="{string Premanager canonical}" href="{html $canonicalURLPrefix}{html $node->fullURL}" />
+		<link rel="canonical" title="{string Premanager canonical}" href="{html $canonicalURLPrefix}{html $node->getFullURL()}" />
 		<link rel="top" title="{string Premanager home}" href="./" />
 		<link rel="start" title="{string Premanager home}" href="./" />
-		{if $node->parent} 
-			<link rel="up" title="{string Premanager up}" href="./{html $node->parent->url}" />
+		{if $node->getParent()} 
+			<link rel="up" title="{string Premanager up}" href="./{html $node->getParent()->getURL()}" />
 		{/if}
 		     		
 		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
-		{foreach $environment->style->getStylesheets() as stylesheet}
-			<link rel="stylesheet" type="text/css" href="{html $stylesheet->url}"{if $stylesheet->media != 'all'} media="{html $stylesheet->media}"{/if} />
+		{foreach $environment->getStyle()->getStylesheets() as stylesheet}
+			<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getmedia() != 'all'} media="{html $stylesheet->getMedia()}"{/if} />
 		{/foreach}
 		
 		{*
@@ -60,9 +60,9 @@
 	<body class="{if $sidebar}has-sidebar {/if}">
 		<header id="header">
 			<hgroup>
-				<h1 id="organization-heading"><a href="./">{html $organization->title}</a></h1>
-				{if $project->id != 0}
-					<h2 id="project-heading"><a href="./{html $project->name}">{html $project->title}</a></h2>
+				<h1 id="organization-heading"><a href="./">{html $organization->getTitle()}</a></h1>
+				{if $project->getid() != 0}
+					<h2 id="project-heading"><a href="./{html $project->getname()}">{html $project->getTitle()}</a></h2>
 				{/if}
 			</hgroup>
 		</header>
@@ -70,7 +70,7 @@
 		<nav id="navbar">
 			<ul>                         
 				{foreach $hierarchy|reverse item}
-					<li><a href="./{html $item->url}">{html $item->title}</a></li>
+					<li><a href="./{html $item->getURL()}">{html $item->getTitle()}</a></li>
 				{/foreach}			
 			</ul>		
 		</nav>
@@ -114,7 +114,7 @@
 		{if count($toolbar)}
 			<ul class="toolbar" id="toolbar">
 				{foreach $toolbar item}
-					<li><a href="{$item->url}"{if $item->description} title="{html $item->description}">{html $item->title}</a></li>
+					<li><a href="{$item->getURL()}"{if $item->getDescription()} title="{html $item->getDescription()}">{html $item->getTitle()}</a></li>
 				{/foreach}
 			</ul>
 		{/if}
@@ -142,9 +142,10 @@
 					<div>
 						<ul class="list">
 							{foreach $log item}
-								<li{if strpos($item->message, "\n") !== false} class="multi-line"{/if}>
-									<span>{html $item->fullFunctionName} ({html(basename($item->fileName))}:{html $item->line})</span>
-									<span>{$item->message}</span>
+							  {$message = $item->getMessage()}
+								<li{if (strpos($message, "\n"))} class="multi-line"{/if}>
+									<span>{html $item->getfullFunctionName()} ({html(basename($item->getfileName()))}:{html $item->getline()})</span>
+									<span>{$message}</span>
 								</li>
 							{/foreach}
 						</ul>
@@ -157,7 +158,7 @@
 					{foreach $row col}
 						<div class="block-col">
 							{foreach $col block}
-								{$block->html}
+								{$block->getHTML()}
 							{/foreach}
 						</div>
 					{/foreach}
@@ -166,7 +167,7 @@
 		</div>
 		
 		<footer id="footer">
-			<p>{html $organization->copyright}</p>
+			<p>{html $organization->getCopyright()}</p>
 			<p><a href="http://www.yogularm.de/">Premanager © Jan Melcher, 2009-2010.</a></p>
 			{*<nav id="footlinks">
 				<ul>

@@ -1,12 +1,12 @@
 <div class="info-list">
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager groupName))}</dt>
-		<dd><span style="color: #{$group->color}">{html $group->name}</span></dd>
+		<dd><span style="color: #{$group->getColor()}">{html $group->getName()}</span></dd>
 	</dl>
 
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager groupTitle))}</dt>
-		<dd>{html $group->title}</dd>
+		<dd>{html $group->getTitle()}</dd>
 	</dl>  
 
 	<dl>
@@ -16,6 +16,6 @@
 
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager groupText))}</dt>
-		<dd>{$group->text}</dd>
+		<dd>{$group->getText()}</dd>
 	</dl>
 </div>

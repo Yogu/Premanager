@@ -16,7 +16,7 @@
 {/if}         						
 {if $deepmostExistingNode}
 	<p>
-		&raquo;&nbsp;<a href="./{$deepmostExistingNode->url}">{string Premanager goToUpperPage}</a><br />
+		&raquo;&nbsp;<a href="./{$deepmostExistingNode->getURL()}">{string Premanager goToUpperPage}</a><br />
 	</p>
 {/if}
 <p>

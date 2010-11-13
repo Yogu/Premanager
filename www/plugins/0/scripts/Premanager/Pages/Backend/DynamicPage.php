@@ -53,12 +53,12 @@ class DynamicPage extends BackendPageNode {
 			$w = $response->writer;
 			$w->startElement('response');
 			
-			if ($pageNode instanceof PageNotFoundNode) {
+			/*if ($pageNode instanceof PageNotFoundNode) {
 				$w->writeAttribute('type', 'not-found');
 				$w->startElement('message');
 				$w->text('This page does not exist.');
 				$w->endElement();
-			} else if (($page = $pageNode->getResponse()) instanceof Page) {
+			} else */if (($page = $pageNode->getResponse()) instanceof Page) {
 				$template = new Template('Premanager', 'dynamicPageResponse');
 				$template->set('navigationTree',
 					PageNode::getNavigationTreeSource($pageNode));
