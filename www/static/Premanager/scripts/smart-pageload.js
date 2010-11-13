@@ -3,27 +3,46 @@
 if (typeof(Premanager) == 'undefined')
 	Premanager = {};
 
+//TODO: replace these with translated string
+Premanager.Translation = {
+	titleDivider: ' – '
+}
+
 Premanager.SmartPageload = {
-	titleDivider: ' – ', //TODO: replace this with translated string	
 		
 	replaceLinks: function(node) {
-		var getHostAndPath = function(url) {
+		function getHostAndPath(url) {
 			url = url.substring('http://'.length, url.length);
 			return url.split('/', 2);
 		}
 		
+		function isInternal(url) {
+			var hostAndPath = getHostAndPath(url);
+			return hostAndPath[0].endsWith(trunk[0]) && hostAndPath[1].startsWith(trunk[1]);
+		}
 		var trunk = getHostAndPath(Config.emptyURLPrefix);
 		
 		var crawl = function(node) {
-			if (node.nodeName == 'A') {
-				var hostAndPath = getHostAndPath(node.href);
-				if (hostAndPath[0].endsWith(trunk[0]) && hostAndPath[1].startsWith(trunk[1])) {
-					node.onclick = function() {
-						Premanager.SmartPageload.browse(node.href);
-						return false;
+			switch (node.nodeName.toLowerCase()) {
+				case 'a':
+					if (isInternal(node.href)) {
+						node.onclick = function() {
+							Premanager.SmartPageload.browse(node.href);
+							return false;
+						}
 					}
-				}
+					break;
+					
+				/*case 'form':
+					if (isInternal(node.action)) {
+						node.onsubmit = function() {
+							Premanager.SmartPageload.browse(node.action);
+							return false;
+						};
+					}
+					break;*/
 			}
+			
 			for (var i = 0; i < node.childNodes.length; i++) {
 				crawl(node.childNodes[i]);
 			}
@@ -33,7 +52,8 @@ Premanager.SmartPageload = {
 
 	browse: function(url) {
 		var startTime = new Date().getTime();
-		var loadPage = function(node) {
+		
+		function loadPage(node) {
 			var responseTime = new Date().getTime();
 			function getChild(node, name) {
 				for (var i = 0; i < node.childNodes.length; i++) {
@@ -143,9 +163,9 @@ Premanager.SmartPageload = {
 			
 			// Update title
 			if (!isIndexPage)
-				document.title = projectTitle + Premanager.SmartPageload.titleDivider + pageTitle;
+				document.title = projectTitle + Premanager.Translation.titleDivider + pageTitle;
 			else if (projectSubtitle != '')
-				document.title = projectTitle + Premanager.SmartPageload.titleDivider + projectSubtitle;
+				document.title = projectTitle + Premanager.Translation.titleDivider + projectSubtitle;
 			else
 				document.title = projectTitle;
 			
