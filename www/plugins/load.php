@@ -20,8 +20,10 @@ function autoload($className) {
 	
 	foreach ($paths as $path) {
 		$fileName = $path.'/scripts/'.str_replace('\\', '/', $className).'.php';
-		if (\file_exists($fileName) && \is_file($fileName))
+		if (\file_exists($fileName) && \is_file($fileName)) {
 			require_once($fileName);
+			break;
+		}
 	}
 }
 

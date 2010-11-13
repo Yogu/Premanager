@@ -111,6 +111,7 @@ Premanager.SmartPageload = {
 			var projectTitle;
 			var projectSubtitle = '';
 			var location;
+			var locationDepth = 0;
 			var timeInfo = '';
 			var serversideTime = 0;
 			
@@ -148,8 +149,10 @@ Premanager.SmartPageload = {
 			// Location
 			if (child = getChild(node, 'location')) {
 				if (child = getChild(child, 'node')) {
-					function getNodeInfo(node) {
+					function getNodeInfo(node, depth) {
 						var isActive = node.hasAttribute('active');
+						if (isActive)
+							locationDepth = depth;
 						
 						var child; 
 						if (child = getChild(node, 'url')) {
@@ -166,7 +169,7 @@ Premanager.SmartPageload = {
 						var children = new Array();
 						for (var i = 0; i < node.childNodes.length; i++) {
 							if (node.childNodes[i].nodeName.toLowerCase() == 'node') {
-								var nodeInfo = getNodeInfo(node.childNodes[i]);
+								var nodeInfo = getNodeInfo(node.childNodes[i], depth + 1);
 								if (nodeInfo != null)
 									children[children.length] = nodeInfo;
 							}
@@ -179,14 +182,14 @@ Premanager.SmartPageload = {
 							children: children
 						};
 					}
-					location = getNodeInfo(child);
+					location = getNodeInfo(child, 0);
 				} else
 					return;
 			} else
 				return;
 			
-			var isIndexPage = (projectName != '' && location.length <= 2) ||
-				(projectName == '' && location.length <= 1);
+			var isIndexPage = (projectName != '' && locationDepth <= 1) ||
+				(projectName == '' && locationDepth == 0);
 			
 			// Update title
 			if (!isIndexPage)

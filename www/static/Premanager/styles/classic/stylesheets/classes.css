@@ -684,3 +684,19 @@ label > input[type=checkbox] {
 	-webkit-border-radius: 5px;
 	-moz-box-shadow: 1px 1px 6px #000000;
 }   
+
+/* ========== Log ========== */
+
+#log li > span:first-child {
+	font-weight: bold;
+}
+
+#log li.multi-line > span:last-child {
+	display: block;
+	padding: 2px;
+	max-height: 300px;
+	overflow: auto;
+
+	font-family: monospace;
+	white-space: pre;
+}
