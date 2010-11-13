@@ -1,0 +1,102 @@
+body > * {
+	font-family: Verdana,sans-serif;
+	font-size: 12px;
+}
+
+a {
+	text-decoration: none;
+	color: #1175B0;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #F86C05; 
+} 
+
+.user {
+	background: url(../images/user.png) center left no-repeat;
+	padding-left: 10px;
+}    
+
+.email {
+	background: url(../images/email.png) center left no-repeat;
+	padding-left: 18px;
+}    
+
+.search {
+	background: url(../images/search.png) center left no-repeat;
+	padding-left: 12px;
+}                                 
+
+/* ========== UserText ========== */
+
+.usertext {
+	line-height: 18px;
+}
+
+.usertext h2 {
+	margin: 1em 0 0.5em;
+
+	font-size: 22px;
+	font-weight: bold;
+}      
+
+.usertext h3 {
+	margin: 0.8em 0 0.4em;
+
+	font-size: 18px;
+	font-weight: bold;
+}         
+
+.usertext h4 {
+	margin: 0.6em 0 0.3em;
+
+	font-size: 14px;
+	font-weight: bold;
+}     
+
+.usertext ul > *,
+.usertext ol > * {
+	list-style-position: outside; 	
+	margin-left: 20px;
+}        
+
+.usertext ol > li {
+	list-style-type: decimal;
+}
+
+.usertext ul > li {
+	list-style-type: disc;
+}    
+
+.usertext ol ul > li,
+.usertext ul ul > li {
+	list-style-type: circle;
+}
+
+.usertext ol ol ul > li,
+.usertext ol ul ul > li,
+.usertext ul ol ul > li,
+.usertext ul ul ul > li  {
+	list-style-type: square;
+}
+
+.usertext a:visited {
+	color: #589FCF;
+}
+
+/* ========== Block Margins ========== */
+
+p{
+	margin: 0.5em 0;
+}
+
+p:first-child,
+.usertext h1:first-child {
+	margin-top: 0;
+}
+
+p:last-child,
+.usertext h1:last-child {
+	margin-bottom: 0;
+}

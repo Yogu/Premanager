@@ -254,7 +254,7 @@ final class Session extends Model {
 		$result = DataBase::query(
 			"SELECT session.id ".            
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
-			"WHERE session.userID = '$user->getid()'");
+			"WHERE session.userID = '".$user->getID()."'");
 		if ($result->next()) {
 			return self::createFromID($result->get('id'));
 		}
@@ -309,9 +309,10 @@ final class Session extends Model {
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"(userID, startTime, lastRequestTime, `key`, ip, userAgent, ".
 				"secondaryPasswordUsed, hidden, projectID, isFirstRequest) ".
-			"VALUES ('$user->getid()', NOW(), NOW(), '".DataBase::escape($key)."', ".
-				"'".DataBase::escape($ip)."', '".DataBase::escape($userAgent)."', ".
-				"'$_secondaryPassowordUsed', '$_hidden', '$projectID', '1')");
+			"VALUES ('".$user->getID()."', NOW(), NOW(), ".
+				"'".DataBase::escape($key)."', '".DataBase::escape($ip)."', ".
+				"'".DataBase::escape($userAgent)."', '$_secondaryPassowordUsed', ".
+				"'$_hidden', '$projectID', '1')");
 		$id = DataBase::getInsertID();
 		
 		$instance = self::createFromID($id, $user->getid(), $key, new DateTime(), 
@@ -555,7 +556,7 @@ final class Session extends Model {
 			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"SET lastRequestTime = NOW(), ".
 				"isFirstRequest = '0', ".
-				"projectID = '$project->getid()'");	
+				"projectID = '".$project->getID()."'");	
 		
 		$this->_lastRequestTime = new DateTime();
 		$this->_isFirstRequest = false;

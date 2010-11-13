@@ -2,9 +2,7 @@
 namespace Premanager\Models;
 
 use Premanager\QueryList\QueryOperation;
-
 use Premanager\QueryList\QueryExpression;
-
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\DateTime;
@@ -20,7 +18,7 @@ use Premanager\Debug\AssertionFailedException;
 use Premanager\Models\StructureNode;
 use Premanager\Models\TreeClass;
 use Premanager\Models\Project;
-use Premangaer\Objects\Groups;
+use Premanaager\Models\Groups;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
 use Premanager\QueryList\DataType;
@@ -357,7 +355,7 @@ final class StructureNode extends Model {
 	/**
 	 * Gets the project that owns this structure node
 	 *
-	 * @return Premangaer\Objects\Project
+	 * @return Premanager\Models\Project
 	 */
 	public function getProject() {
 		$this->checkDisposed();
@@ -679,7 +677,7 @@ final class StructureNode extends Model {
 	 * 
 	 * If the specified group is not in list, nothing is done.
 	 * 
-	 * @param Premanage\Objects\Group $group the group to remove
+	 * @param Premanage\Models\Group $group the group to remove
 	 */
 	public function removeAuthorizedGroup(Group $group) {
 		$this->checkDisposed();
@@ -752,7 +750,7 @@ final class StructureNode extends Model {
 					break;
 				default:
 					throw new InvalidEnumArgumentException('type', $type,
-						'Premanage\Objects\StructureNodeType'); 
+						'Premanage\Models\StructureNodeType'); 
 			}
 		} else
 			$hasPanel = $this->gethasPanel();
@@ -968,7 +966,7 @@ final class StructureNode extends Model {
 			
 			default:
 				throw new InvalidEnumArgumentException('type', $type,
-					'Premanage\Objects\StructureNodeType');
+					'Premanager\Models\StructureNodeType');
 		}
 	
 		$id = DataBaseHelper::insert('Premanager_Nodes', 'nodeID',

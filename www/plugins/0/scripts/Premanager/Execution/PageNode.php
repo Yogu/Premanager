@@ -1,8 +1,9 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Models\Plugin;
+use Premanager\Strings;
 use Premanager\Models\Project;
-
 use Premanager\Model;
 use Premanager\QueryList\QueryList;
 use Premanager\DateTime;
@@ -168,9 +169,11 @@ abstract class PageNode extends Module {
 	public abstract function getTitle();
 
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public abstract function execute();
+	public abstract function getResponse();
 	
 	/**
 	 * Checks if this object represents the same page as $other (the
@@ -240,7 +243,9 @@ abstract class PageNode extends Module {
 		foreach ($query as $name => $value) {
 			if ($queryString)
 				$queryString .= '&';
-			$queryString .= rawurlencode($name).'='.rawurlencode($value);
+			$queryString .= rawurlencode($name);
+			if ($value)
+				$queryString .= '='.rawurlencode($value);
 		}
 		return $queryString;
 	}
@@ -252,16 +257,35 @@ abstract class PageNode extends Module {
 	 * @param string|array $url the relative url or an array of path elements
 	 * @param Premanager\Execution\PageNode $impact if the page node is not found,
 	 *   contains the deepmost node found
+	 * @param bool $isBackend is true, if the request ends in a backend page
 	 * @return Premanager\Execution\PageNode the found page node or null
 	 */
-	public static function fromPath($url, &$impact = null) {
+	public static function fromPath($url, &$impact = null, &$isBackend = false) {
 		if (is_array($url))
 			$path = $url;
 		else
 			$path = explode('!/!', rtrim(trim($url), '/'));
-
-		// Get the root node for the organization project
-		$node = new StructurePageNode();
+	
+		// If first character is a '!', use the backend node
+		if (count($path) && ($path[0][0] == '!' ||
+			Strings::substring($path[0], 0, 3) == '%21')) {
+			$isBackend = true;
+			
+			$pluginName = Strings::substring($path[0], $path[0][0] == '!' ? 1 : 3, 
+				Strings::length($path[0]));
+				
+			$plugin = Plugin::getByName($pluginName);
+			if ($plugin)
+				$node = $plugin->getBackendPageNode();
+			if (!$node) {
+				$impact = new StructurePageNode();
+				return null;
+			}
+			unset($path[0]);
+		} else {
+			// Get the root node for the organization project
+			$node = new StructurePageNode();
+		}
 		              
 		// Go through the path and find matching nodes 
 		foreach ($path as $name) {
@@ -279,6 +303,52 @@ abstract class PageNode extends Module {
 			}
 		}
 		return $node;
+	}
+
+	/**
+	 * Prepares a nested array that can be used to generate a navigation tree
+	 * 
+	 * Every node is represented by an array whose first element is the node
+	 * itself and the second element is the array of children stored as such an
+	 * array, again
+	 * 
+	 * Example:
+	 *   array(
+	 *     root node,
+	 *     array(
+	 *       array (
+	 *         child node 1,
+	 *         array()
+	 *       ),
+	 *       array (
+	 *         child node 2,
+	 *         array()
+	 *       )
+	 *     )
+	 *   )
+	 *   
+	 * @param Premanager\Execution\PageNode $activeNode the node the navigation
+	 *   tree should be created for
+	 * @return array a nested array as described above
+	 */
+	public static function getNavigationTreeSource($activeNode) {
+		$prev = null;
+		$navigationTree = array();
+		$node = $activeNode;
+		while ($node) {
+			//TODO: replace constant count (5) by option value
+			$children = $node->getChildren(5, $prev);
+			for ($i = 0; $i < count($children); $i++) {
+				if ($prev && $children[$i]->equals($prev))
+					$children[$i] = $navigationTree;
+				else
+					$children[$i] = array($children[$i]);
+			}
+			$navigationTree = array($node, $children);
+			$prev = $node; 
+			$node = $node->getParent();
+		}
+		return $navigationTree;
 	}
 }
 

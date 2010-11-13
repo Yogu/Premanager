@@ -1,10 +1,10 @@
 <?php
 namespace Premanager\Models;
 
+use Premanager\Execution\StructurePageNode;
+use Premanager\Execution\PageNode;
 use Premanager\IO\Config;
-
 use Premanager\Execution\PluginInitializer;
-
 use Premanager\NotImplementedException;
 use Premanager\QueryList\ModelDescriptor;
 use Premanager\QueryList\QueryList;
@@ -29,7 +29,9 @@ final class Plugin extends Model {
 	private $_id;
 	private $_name;
 	private $_initializerClassName;
+	private $_backendTreeClassName;
 	private $_initializer = false;
+	private $_backendPageNode = false;
 
 	private static $_instances = array();
 	private static $_count;
@@ -114,10 +116,25 @@ final class Plugin extends Model {
 			$instance = self::createFromID($id);
 			// Check if id is correct
 			if ($instance->load())
-			return $instance;
+				return $instance;
 			else
-			return null;
+				return null;
 		}
+	}
+
+	/**
+	 * Gets a plugin using its name
+	 *
+	 * @param string $name the name of the plugin
+	 * @return Premanager\Models\Plugin the plugin or null if there is no Plugin
+	 *   with this name
+	 */
+	public static function getByName($name) {
+		$id = self::getIDFromName($name);
+		if ($id !== null)
+			return self::getByID($id);
+		else
+			return null;
 	}
 
 	/**
@@ -126,9 +143,12 @@ final class Plugin extends Model {
 	 * @param string $name the plugin name
 	 * @param string $initializerClassName the name of a class that implements
 	 *   Premanager\Execution\PluginInitializer. Can be an empty string.
+	 * @param string $initializerClassName the name of a class that extends
+	 *   Premanager\Execution\PageNode. Can be an empty string.
 	 * @return Plugin
 	 */
-	public static function createNew($name, $initialiizerClassName) {
+	public static function createNew($name, $initialiizerClassName = '',
+		$backendTreeClassName = '') {
 		$name = \trim($name);
 
 		if (!\preg_match('/^[A-Za-z][A-Za-z0-9]*$/', $name))
@@ -144,17 +164,30 @@ final class Plugin extends Model {
 					'\' does not exist', 'initializerClassName');
 			
 			// Check if the class implements Premanager\Execution\PluginInitializer
-			$obj = new $className();
+			$obj = new $initialiizerClassName();
 			if (!($obj instanceof PluginInitializer))
 				throw new ArgumentException('The class '.$initialiizerClassName.' does '.
 					'not implement Premanager\Execution\PluginInitializer');
 		}
+	
+		if ($backendTreeClassName) {
+			if (!\class_exists($backendTreeClassName))
+				throw new ArgumentException('The class \''.$initialiizerClassName.
+					'\' does not exist', 'backendTreeClassName');
+			
+			// Check if the class implements Premanager\Execution\PluginInitializer
+			$obj = new $backendTreeClassName();
+			if (!($obj instanceof PageNode))
+				throw new ArgumentException('The class '.$backendTreeClassName.' does '.
+					'not extend Premanager\Execution\PageNode');
+		}
 
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Plugins')." ".
-			"(name, initializerClass) ".
+			"(name, initializerClass, backendTreeClass) ".
 			"VALUES ('".DataBase::escape($name)."', ".
-				"'".DataBase::escape($initialiizerClassName)."')");
+				"'".DataBase::escape($initialiizerClassName)."', ".
+				"'".DataBase::escape($backendTreeClassName)."')");
 		$id = DataBase::insertID();
 
 		$instance = self::createFromID($id, $name);
@@ -299,6 +332,39 @@ final class Plugin extends Model {
 				
 		return $this->_initializer;
 	}
+	
+	/**
+	 * Gets a PageNode that is used for backend requests or null if there is no
+	 * backend tree class specified
+	 * 
+	 * @return Premanager\Execution\PageNode
+	 */
+	public function getBackendPageNode() {
+		$this->checkDisposed();
+		
+		if ($this->_backendPageNode === false) {
+			if ($this->_backendTreeClassName === null)
+				$this->load();
+				
+			if ($this->_backendTreeClassName != '') {
+				if (!class_exists($this->_backendTreeClassName))
+					throw new CorruptDataException('The backend tree class for the '.
+						'plugin '.$this->_name.' does not exist (\''.
+						$this->_backendTreeClassName.'\')');
+				$rootNode = new StructurePageNode();
+				$obj = new $this->_backendTreeClassName($rootNode,
+					'!'.$this->getName());
+				if (!($obj instanceof PageNode))
+					throw new CorruptDataException('The backend tree class for the '.
+						'plugin '.$this->_name.' ('.$this->_backendTreeClassName.') does '.
+						'not extend Premanager\Execution\PageNode');
+				$this->_backendPageNode = $obj;
+			} else
+				$this->_backendPageNode = null;
+		}
+				
+		return $this->_backendPageNode;
+	}
 
 	/**
 	 * Deletes the reference to this plugin off the data base
@@ -324,7 +390,7 @@ final class Plugin extends Model {
 
 	private function load() {
 		$result = DataBase::query(
-			"SELECT plugin.name, plugin.initializerClass ".    
+			"SELECT plugin.name, plugin.initializerClass, plugin.backendTreeClass ".    
 			"FROM ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
 			"WHERE plugin.id = '$this->_id'");
 
@@ -333,6 +399,7 @@ final class Plugin extends Model {
 
 		$this->_name = $result->get('name');
 		$this->_initializerClassName = $result->get('initializerClass');
+		$this->_backendTreeClassName = $result->get('backendTreeClass');
 
 		return true;
 	}

@@ -1,10 +1,12 @@
 <?php 
 namespace Premanager\IO;
 
+use Premanager\DateTime;
+use Premanager\Execution\BackendPageNotFoundNode;
 use Premanager\Debug\Debug;
-
 use Premanager\Execution\PageNotFoundNode;
 use Premanager\Models\Language;
+use Premanager\Models\Plugin;
 use Premanager\Execution\Edition;
 use Premanager\Execution\Environment;
 use Premanager\Strings;
@@ -19,12 +21,9 @@ class Request {
 	private static $_userAgent;
 	private static $_ip;
 	private static $_requestURL;
-	private static $_relativeRequestURL;
+	private static $_requestURLInfo;
 	private static $_isRefererInternal;
-	private static $_pageNode;
-	private static $_project;
-	private static $_language;
-	private static $_edition;
+	private static $_refererInfo = false;
 	private static $_isValidated;
 	private static $_isValidating;
 	private static $_postValidated;
@@ -44,15 +43,24 @@ class Request {
 	}
 	
 	/**
+	 * Gets an object containing information about the request url
+	 * 
+	 * @return Premanager\IO\URLInfo the url info object
+	 */
+	public static function getRequestURLInfo() {
+		if (self::$_requestURLInfo === null) {
+			self::validateURL();
+		}
+		return self::$_requestURLInfo;
+	}
+	
+	/**
 	 * Gets the requested page node
 	 * 
 	 * @return Premanager\Execution\PageNode
 	 */
 	public static function getPageNode() {
-		if (self::$_pageNode === null) {
-			self::validateURL();
-		}
-		return self::$_pageNode;
+		return self::getRequestURLInfo()->getPageNode();
 	}
 	
 	/**
@@ -61,10 +69,7 @@ class Request {
 	 * @return Premanager\Models\Project
 	 */
 	public static function getProject() {
-		if (self::$_project === null) {
-			self::validateURL();
-		}
-		return self::$_project;
+		return self::getRequestURLInfo()->getProject();
 	}
 	
 	/**
@@ -73,10 +78,7 @@ class Request {
 	 * @return Premanager\Models\Language
 	 */
 	public static function getLanguage() {
-		if (self::$_language === null) {
-			self::validateURL();
-		}
-		return self::$_language;
+		return self::getRequestURLInfo()->getLanguage();
 	}
 	
 	/**
@@ -85,10 +87,7 @@ class Request {
 	 * @return int (enum Premanager\Execution\Edition)
 	 */
 	public static function getEdition() {
-		if (self::$_edition === null) {
-			self::validateURL();
-		}
-		return self::$_edition;
+		return self::getRequestURLInfo()->getEdition();
 	}
 	
 	/**
@@ -154,6 +153,22 @@ class Request {
 				'.*/', self::getReferer());
 		}
 		return self::$_isRefererInternal;
+	}
+	
+	/**
+	 * Gets an object containing information about the referer url
+	 * 
+	 * @return Premanager\IO\URLInfo the url info object or null if the referer is
+	 *   not internal
+	 */
+	public static function getRefererInfo() {
+		if (self::$_refererInfo === false) {
+			if (self::isRefererInternal())
+				self::$_refererInfo = null;
+			else
+				self::$_refererInfo = new URLInfo(self::getRequestURL());
+		}
+		return self::$_refererInfo;
 	}
 	
 	/**
@@ -235,129 +250,11 @@ class Request {
 			self::$_isValidating = true;
 			
 			try {
-				try {
-					$trunkURL = new URL(Config::getEmptyURLPrefix());
-				} catch (FormatException $e) {
-					throw new CorruptDataException('The url prefix is not a valid url: '.
-						Config::getEmptyURLPrefix());
-				}
-				
-				// The request url might not be a valid url...
-				try {
-					$requestURL = new URL(self::getRequestURL());
-				} catch (FormatException $e) {
-					Output::selectInputError(Translation::defaultGet('Premanager',
-						'invalidRequestURI'));
-				}
-				
-				// We can't use the URL class here because the template contains
-				// characters ({ and }) that are now allowed in a url
-				preg_match('/[^:]+\:\/\/(?P<host>[^\/]+)(?<path>.*)/i',
-					Config::getURLTemplate(), &$matches);
-				$templateHost = $matches['host'];
-				$templatePath = $matches['path'];
-					
-				// Goes through all elements and checks if they match to any available
-				// template.
-				// Returns the index of the element after the last used one
-				$walker = function($elements, $templates, $trunkElements, $breakOnFailure,
-					&$language, &$edition) {
-					if (count($elements) > count($trunkElements))
-						array_splice(&$elements, -count($trunkElements));
-					if (count($templates) > count($trunkElements))
-						array_splice(&$templates, -count($trunkElements));
-					
-					foreach ($elements as $elementKey => $element) {
-						foreach ($templates as $templateKey => $template) {
-							// Check if the lement matches the template. Test the strongest
-							// defined template at first.
-							$ok = false;
-							switch ($template) {
-								case '{edition}':
-									switch ($element) {
-										case 'mobile':
-											$edition = Edition::MOBILE;
-											$ok = true;
-											break;
-										case 'print':
-											$edition = Edition::PRINTABLE;
-											$ok = true;
-											break;
-									}
-									break;
-									
-								case '{language}':
-									$lang = Language::getByName($element);
-									if ($lang) {
-										$language = $lan;
-										$ok = true;
-									}
-									break;
-							}
-							
-							// If the element matches the template, 
-							if ($ok) {
-								unset($templates[$templateKey]);
-								break;
-							}
-						}
-						
-						if ($breakOnFailure && !$ok)
-							return $elementKey;
-					}
-					return count($elements);
-				};
-				
-				// requestURL - emptyURLPrefix = significant data
-				// urlTemplate - emptyURLPrefix = template for the data
-				
-				$edition = Edition::COMMON;
-				
-				// Domain part
-				$trunkElements = explode('.', $trunkURL->gethost());
-				$elements = explode('.', $requestURL->gethost());
-				$templates = explode('.', $templateHost);
-				call_user_func($walker, $elements, $templates, $trunkElements, false,
-					&$language, &$edition);
-				
-				// Path part
-				$trunkElements = explode('/', trim($trunkURL->getpath(), '/'));
-				$elements = explode('/', trim($requestURL->getpath(), '/'));
-				$templates = explode('/', trim($templatePath, '/'));
-				$pathElementIndex = call_user_func($walker, $elements, $templates,
-					$trunkElements, true, &$language, &$edition);
-	
-				if (!$language) {
-					foreach (self::parseHTTPLanguageHeader() as $code) {
-						if ($lang = Language::getByName($code)) {
-							$language = $lang;
-							break;
-						}
-					}
-					
-					if (!$language)
-						$language = Language::getDefault();
-				}
-					
-				self::$_language = $language;
-				self::$_edition = $edition;
-				
-				// Find the path to the page node
-				array_splice($elements, 0, $pathElementIndex);
-				
-				self::$_relativeRequestURL = implode('/', $elements);
-				
-				if (!$node = PageNode::fromPath($elements, &$impact)) {
-					$node = new PageNotFoundNode($impact,
-						Strings::substring(self::$_relativeRequestURL,
-							Strings::length($impact->getURL())));
-				}
-				self::$_pageNode = $node;
-				self::$_project = $node->getProject();
+				self::$_requestURLInfo = new URLInfo(self::getRequestURL());
 				
 				// Compare the url of the page node to the request url
-				$calculatedURL =
-					Environment::getCurrent()->geturlPrefix().self::$_pageNode->geturl();
+				$calculatedURL = Environment::getCurrent()->getURLPrefix() .
+					self::$_requestURLInfo->getPageNode()->getFullURL();
 				if ($calculatedURL != self::getRequestURL())
 					Output::redirect($calculatedURL, 301 /* moved permanently */);
 			} catch (\Exception $e) {
@@ -383,38 +280,6 @@ class Request {
 			}
 			return $value;
 		}
-	}
-	
-	/**
-	 * Gets an array of languages given by the HTTP accept-language header in the
-	 * correct order
-	 * 
-	 * @return array an array of language-country codes (e.g. 'en', 'de-at')
-	 */
-	private static function parseHTTPLanguageHeader() {
-		// Thanks to
-		// http://www.thefutureoftheweb.com/blog/use-accept-language-header
-		$langs = array();
-		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			// break up string into pieces (languages and q factors)
-			preg_match_all(
-				'/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
-				$_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
-				
-			if (count($lang_parse[1])) {
-				// create a list like "en" => 0.8
-				$langs = array_combine($lang_parse[1], $lang_parse[4]);
-				
-				// set default to 1 for any without q factor
-				foreach ($langs as $lang => $val) {
-					if ($val === '') $langs[$lang] = 1;
-				}
-				
-				// sort list based on value
-				arsort($langs, SORT_NUMERIC);
-			}
-		}
-		return array_keys($langs);
 	}
 }
 

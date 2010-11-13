@@ -15,7 +15,6 @@ class DataBaseConnection extends Module {
 	private $_user;
 	private $_dataBase;
 	private $_prefix;
-	private $_queryCount;
 	
 	/**
 	 * Creates a new data base connection.
@@ -36,6 +35,8 @@ class DataBaseConnection extends Module {
 		$this->_user = $user;
 		$this->_dataBase = $dataBase;
 		$this->_prefix = $prefix;
+		
+		$time = microtime(true);
 		
 		if (!($this->_link = @\mysql_connect($host, $user, $password)))
 			throw new DataBaseException('Could not connect to database: '.
@@ -59,7 +60,7 @@ class DataBaseConnection extends Module {
 			throw new DataBaseException("Could not select data base UTC+0 ".
 				"timezone: ".$this->getError());
 			
-		$this->_queryCount = 3;
+		DataBase::addQueryTime(microtime(true) - $time, 3);
 	}
 	
 	/**
@@ -180,14 +181,15 @@ class DataBaseConnection extends Module {
 	
 	private function internalQuery($query, $rightPart, $doLog,
 		$indirectCallDepth = 0) {
-		$this->_queryCount++;
 		
 		$query = $this->getQuery($query, $rightPart);
 
 		if ($doLog)
 			Debug::log($query, $indirectCallDepth+1);           
 		
-		$mysqlResult = @mysql_query($query, $this->_link);
+		$time = microtime(true);
+		$mysqlResult = @\mysql_query($query, $this->_link);
+		DataBase::addQueryTime(microtime(true) - $time, 1); 
 		if ($mysqlResult === false)
 			throw new SQLException($query, $this->getError());
 

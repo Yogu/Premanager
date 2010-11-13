@@ -273,15 +273,15 @@ final class Project extends Model {
 	 * Returns null if $name is not found
 	 *
 	 * @param string $name name of project
-	 * @return Premanage\Objects\Project  
+	 * @return Premanager\Models\Project  
 	 */
 	public static function getByName($name) {
 		$result = DataBase::query(
-			"SELECT name.projectID ".            
+			"SELECT name.id ".            
 			"FROM ".DataBase::formTableName('Premanager', 'ProjectsName')." AS name ".
-			"WHERE name.name = '".DataBase::escape(Strings::unitize($name)."'"));
+			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
-			$project = self::createFromID($result->get('projectID'));
+			$project = self::createFromID($result->get('id'));
 			return $project;
 		}
 		return null;
@@ -413,7 +413,8 @@ final class Project extends Model {
 		if (self::_count === null) {
 			$result = DataBase::query(
 				"SELECT COUNT(project.projectID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Projects')." AS project");
+				"FROM ".DataBase::formTableName('Premanager', 'Projects').
+					" AS project");
 			self::$_count = $result->get('count');
 		}
 		return self::$_count;

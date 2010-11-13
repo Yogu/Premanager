@@ -1,0 +1,396 @@
+@charset "UTF-8";
+
+body {
+	margin: 0;
+	padding: 20px;
+	
+	background-color: #004381;
+}                       
+
+/* ========== Header ========== */
+
+#header {
+	width: 100%;  
+	margin-bottom: 20px;  
+	padding: 5px;
+	overflow: hidden;
+}
+
+#organization-heading,
+#project-heading {
+	float: left;		
+	margin-right: 50px;
+	
+	font-size: 28px;
+	font-weight: bold;		
+	color: #FFFFFF;
+}
+
+#organization-heading a,
+#project-heading a,
+#organization-heading a:hover,
+#project-heading a:hover {
+	color: #FFFFFF;
+	text-decoration: none;
+}           
+
+/* ========== Footer ========== */
+
+#footer {
+	padding: 5px;  
+	margin-bottom: 0 !important;
+	text-align: center;
+}
+
+#footer p,
+#footlinks li {
+	margin: 0;
+	
+	font-size: 10px;
+	color: #30747C;
+	letter-spacing: -1px;
+}    
+
+#footlinks,
+#footlinks > ul,
+#footlinks > ul > li {
+	display: inline;
+} 
+
+#footlinks > ul > li {
+	padding-left: 0.5ex;
+ 	
+ 	list-style: none;
+}    
+
+#footlinks > ul > li:before {
+	position: relative;
+	left: -0.5ex;
+	
+	content: "|";
+}  
+
+
+#footlinks > ul > li:first-child:before {
+	content: "";
+}
+
+#footlinks > ul > li:first-child {
+	padding-left: 0;
+}
+
+/* ========== Content - Sidebar - Navigation Tree ========== */
+
+#content {
+	margin-bottom: 20px;
+	padding-left: 200px;
+}
+
+body.has-sidebar #content {
+	padding-right: 200px;	
+}
+
+#sidebar {
+	float: right;
+	width: 180px;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+#navigation-tree {
+	float: left;
+	width: 180px;
+	margin-bottom: 20px;
+	margin-right: 20px;	
+}
+
+/* ========== Content blocks and sidebar blocks ========== */
+
+.block {
+	margin-bottom: 20px;
+}
+
+.block:last-child {
+	margin-bottom: 0;	
+}
+
+.block > header,
+.block > table > thead > tr > th {
+	margin-bottom: 2px;    
+	padding: 5px;
+	                                                              
+	background-color: #DCEEFF;   
+	background: -moz-linear-gradient(center top, #DEEFFF, #EFF7FF 17px, #DCEEFF 17px, #DCEEFF);   
+	
+	text-align: left;
+	font-weight: bold;
+}     
+
+#sidebar > .block > header {	
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+}  
+
+.block > table > thead > tr > th {
+	border-bottom: 2px solid #004381;
+}
+
+.block > table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.block > header {     
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;     
+	-webkit-border-radius-topleft: 5px;           
+	-webkit-border-radius-topright: 5px;
+}
+
+.block > table thead > tr > th:first-child {
+	-moz-border-radius-topleft: 5px;         
+	-webkit-border-radius-topleft: 5px;
+} 
+
+.block > table thead > tr > th:last-child {
+	-moz-border-radius-topright: 5px;            
+	-webkit-border-radius-topright: 5px;
+}
+
+#main-block > header {     
+	background: -moz-linear-gradient(center top, #DEEFFF, #EFF7FF 20px, #DCEEFF 20px, #DCEEFF);     
+	
+	font-family: "Trebuchet MS",Verdana,sans-serif;
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#main-block > header a {
+	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 20px, #FFD159 20px, #FFD159); 
+}     
+
+#main-block > header a:hover {
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 20px, #FFB900 20px, #FFB900); 
+}
+
+.block > div,
+.block > table > tbody > tr > td > div {    
+	padding: 10px;
+	
+	background-color: #FFFFFF; 
+}
+
+.block > div {    
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;     
+	-webkit-border-radius-bottomleft: 5px;           
+	-webkit-border-radius-bottomright: 5px;
+}
+
+.block > header a {
+	display: block;
+	margin: -5px;      
+	padding: 4px 5px 5px 4px;     
+
+	background-color: #FFD159;   
+	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 17px, #FFD159 17px, #FFD159); 
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;     
+	-webkit-border-radius-topleft: 5px;           
+	-webkit-border-radius-topright: 5px;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	
+	text-decoration: none;
+	color: #000000;
+} 
+
+.block > header a:hover {   
+	background-color: #FFB900;   
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 17px, #FFB900 17px, #FFB900);  
+	
+	text-decoration: none;
+	color: #000000;
+}
+
+.block > header a:active {
+	outline: none;
+}
+
+#sidebar > .block > div { 
+	padding: 5px;    
+
+	font-size: 10px; 
+}     
+
+.block > table > tbody > tr:first-child > td {
+	margin-top: 2px;
+}
+
+.block.table-wrap:after {
+	display: block;
+	height: 5px;
+	overflow: hidden;
+	
+	content: "";
+
+	background: #FFFFFF;
+	-moz-border-radius: 0 0 5px 5px;
+}
+
+.block > header {
+	overflow: hidden;
+	word-wrap: break-word;
+}
+
+.block > div {
+	overflow: hidden;
+}
+
+.block-row {
+	margin-bottom: 20px;	
+}
+
+.block-row:last-child {
+	margin-bottom: 0;	
+}
+
+.block-col {
+	margin-right: 20px;	
+}
+
+.block-col:last-child {
+	margin-right: 0;	
+}
+
+/* ========== Fullsize elements ========== */
+
+.block > div > .list {
+	margin: -10px -10px 5px;
+} 
+
+#sidebar > .block > div > .list {
+	margin: -5px -5px 5px;
+}          
+
+#sidebar > .block > div > .list:last-child {
+	margin-bottom: 0;
+} 
+
+/* ========== Bars ========== */
+
+#navbar,
+#toolbar,
+#footer {
+	margin: 20px 0;
+	padding: 5px;
+	clear: both;
+	overflow: hidden;
+	
+	background-color: #DCEEFF;   
+	background: -moz-linear-gradient(center top, #DCEEFF, #EFF7FF 17px, #DCEEFF 17px, #DCEEFF);
+	-moz-border-radius: 5px;     
+	-webkit-border-radius: 5px; 
+	
+}
+
+#navbar,
+#toolbar {
+ 	font-size: 11px;
+ 	font-weight: bold;
+}     
+
+/* ========== Navbar ========== */
+
+#navbar > ul {
+	display: inline;
+}
+
+#navbar > ul > li {
+	float: left;
+	padding-left: 2ex;
+ 	
+ 	list-style: none;
+}
+
+#navbar > ul > li:before {
+	position: relative;
+	left: -1ex;
+	
+	content: "»";
+}
+
+#navbar > ul > li:first-child:before {
+	content: "";
+}
+
+#navbar > ul > li:first-child {
+	background: none;
+	padding-left: 0;
+}                  
+
+
+/* ========== Navigation Tree ========== */
+
+#navigation-tree > ul {
+	background: #EEF7FF; 
+	-moz-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+#navigation-tree > ul:after {
+	display: block;
+	height: 5px;
+	               
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;
+	background: #FFFFFF;
+	
+	content: '';
+}
+
+#navigation-tree > ul > li > ul > li {
+	margin-left: 0 !important;
+}
+
+#navigation-tree > ul > li > a {
+	padding: 4px 5px 5px 4px !important;     
+
+	background-color: #FFD159;   
+	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 17px, #FFD159 17px, #FFD159); 
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;     
+	-webkit-border-radius-topleft: 5px;           
+	-webkit-border-radius-topright: 5px;
+	border-top: 1px solid #FFFFFF !important;
+	border-left: 1px solid #FFFFFF !important;
+	border-right: none !important;
+	border-bottom: none !important;
+	
+	text-align: center;
+	
+	font-weight: bold;
+	font-size: 12px;
+}
+
+#navigation-tree > ul > li > a:hover {   
+	background-color: #FFB900 !important;   
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 17px, #FFB900 17px, #FFB900) !important;
+}
+
+#navigation-tree > ul > li.active > a {
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 17px, #FFB900 17px, #FFB900) !important;
+}
+
+#navigation-tree > ul > li > ul:before {
+	display: block;
+	margin: 0 -5px;
+	height: 2px;
+	
+	background: #004381;
+	
+	content: '';
+}  

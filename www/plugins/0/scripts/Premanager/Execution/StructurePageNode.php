@@ -17,9 +17,13 @@ class StructurePageNode extends PageNode {
 	 */
 	private $_structureNode;
 	/**
-	 * @vqr bool
+	 * @var bool
 	 */
 	private $_isProjectNode;
+	/**
+	 * @var bool
+	 */
+	private $_isRootNode;
 	
 	/**
 	 * The base structure node
@@ -39,8 +43,9 @@ class StructurePageNode extends PageNode {
 	 */
 	public function __construct($parent = null, $structureNode = null) {
 		if (!$parent) {
-			$this->_structureNode = Project::getOrganization()->getrootNode();
+			$this->_structureNode = Project::getOrganization()->getRootNode();
 			$this->_isProjectNode = true;
+			$this->_isRootNode = true;
 		} else {
 			if (!($structureNode instanceof StructureNode))
 				throw new ArgumentException('$structureNode must be an a '.
@@ -53,11 +58,25 @@ class StructurePageNode extends PageNode {
 			// If the parent is the organization node, this must be a project node
 			$this->_isProjectNode =
 				$structureNode->getProject()->getRootNode() == $structureNode;
+			$this->_isRootNode = $this->_isProjectNode &&
+				$structureNode->getProject()->getID() == 0;
 		}
 		
 		parent::__construct($parent);
 		
 		$this->_project = $this->_structureNode->getProject();
+	}
+	
+	/**
+	 * Gets the root node of organization
+	 * 
+	 * @return Premanager\Execution\StructurePageNode the organization's root node
+	 */
+	public static function getRootNode() {
+		static $value;
+		if (!$value)
+			$value = new self();
+		return $value;
 	}
 	
 	/**
@@ -67,11 +86,13 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
+		$project = Project::getByName($name);
+		if ($project)
+			return $this->getChildByStructureNode($project->getRootNode());
+		
 		$structureNode = $this->_structureNode->getChild($name);
-		if ($structureNode) {
+		if ($structureNode)
 			return $this->getChildByStructureNode($structureNode);
-		} else
-			return null;
 	}
 	
 	/**
@@ -90,9 +111,20 @@ class StructurePageNode extends PageNode {
 			$this->_structureNode->getChildren(), $referenceModel, $count);
 			
 		$list = array();
+		
+		// Projects if root node
+		if ($this->_isRootNode) {
+			foreach (Project::getProjects() as $project) {
+				if ($project->getID())
+					$list[] = $this->getChildByStructureNode($project->getRootNode());
+			}
+		}
+		
+		// Child nodes
 		foreach ($structureNodes as $structureNode) {
 			$list[] = $this->getChildByStructureNode($structureNode);
 		}
+		
 		return $list;
 	}
 	
@@ -103,7 +135,8 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the page node
 	 */
 	public function getChildByStructureNode(StructureNode $structureNode) {
-		if ($this->_structureNode != $structureNode->getParent())
+		if ($this->_structureNode != $structureNode->getParent() && 
+			!($this->_isRootNode && $structureNode->getParent() == null))
 			throw new ArgumentException('The passed structure node is not a child '.
 				'of the structure node this page node represents', 'structureNode');
 		
@@ -122,7 +155,10 @@ class StructurePageNode extends PageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_structureNode->getName();
+		// A project's root node's name is the project's name
+		return $this->_structureNode->getParent() ? 
+			$this->_structureNode->getName() :
+			$this->_structureNode->getProject()->getName();
 	}
 	
 	/**
@@ -137,11 +173,13 @@ class StructurePageNode extends PageNode {
 		else
 			return $this->_structureNode->getTitle();
 	}
-
+	
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		switch ($this->_structureNode->gettype()) {
 			case StructureNodeType::PANEL:
 				//TODO: create a panel page
@@ -159,7 +197,7 @@ class StructurePageNode extends PageNode {
 				
 				$page = new Page($this);
 				$page->createMainBlock($template->get());
-				Output::select($page);
+				return $page;
 		}
 	}
 	

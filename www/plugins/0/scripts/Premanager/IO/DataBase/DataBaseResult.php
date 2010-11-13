@@ -54,7 +54,9 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 			return false;
 			
  		$this->_nextCalled = true;
+ 		$time = microtime(true);
 		$this->_eof = !($this->_row = mysql_fetch_array($this->_resource));
+		DataBase::addQueryTime(microtime(true) - $time);
 		return (!$this->_eof);				
 	}                           
 

@@ -1,0 +1,686 @@
+/* ========== Toolbars ========== */
+						
+.toolbar {
+	padding: 3px; 	
+}						
+						
+.toolbar > li {
+	float: left;
+	margin-right: 2px;
+	
+	list-style: none;
+}
+
+.toolbar > li.new-group {
+	margin-left: 10px;
+}
+
+.toolbar > li.new-group:first-child {
+	margin-left: 0;
+}
+
+.toolbar > li > a,
+.toolbar > li > span {
+	display: block;
+	padding: 5px;
+	
+	outline: none;	
+	-moz-border-radius: 5px;     
+	-webkit-border-radius: 5px;
+
+	font-size: 11px;
+	font-weight: normal;	
+	color: #000000;  
+}
+
+.toolbar > li > a[class],
+.toolbar > li > span[class] {
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	padding-left: 30px !important;
+}
+
+.toolbar > li > a:hover,
+.toolbar > li > a.active {
+	color: #000000;
+	text-decoration: none;
+	
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.toolbar > li > span.disabled {
+	opacity: 0.5;
+	cursor: default;
+}    
+
+/* ========== Lists ========== */
+
+.list > li,
+.list > li > a,
+.block > table > tbody > tr > td {
+	padding: 7px 8px;
+
+	background-color: #DFF0FF;
+	border-bottom: 1px solid #B1DBFF;
+	border-top: 1px solid #FFFFFF;
+	list-style: none;
+	outline: none;
+}
+
+.list > li.selected,
+.list > li.selected > a,
+.block > table > tbody > tr.selected > td {
+	background-color: #FFD053;
+	border-bottom: 1px solid #F4B100;
+}    
+
+.list > li.selected:hover,
+.list > li.selected:hover > a,
+.block > table > tbody > tr.selected:hover > td {
+	background-color: #FFC836;
+}
+
+.block > table > tbody > tr > td > a {
+	padding: 7px 8px;
+	
+	outline: none;
+}
+     
+.list > li > a, 
+.block > table > tbody > tr > td > a {
+	display: block;
+}
+
+.block > table > tbody > tr > td > a {
+	overflow: hidden;
+}
+
+.list > li > a,
+.block > table > tbody > tr > td > a {
+ 	margin: -8px;
+} 
+
+.list > li > a,
+.list > li:hover > a,
+.block > table > tbody > tr > td > a,
+.block > table > tbody > tr > td > a:hover {
+ 	color: #000000;
+ 	text-decoration: none;
+}
+
+.list > li:hover,
+.list > li:hover > a,
+.block > table > tbody > tr:hover > td {
+	background-color: #CBE7FF;
+}    
+
+.list > li.group-header {
+	background-color: #FFD07C !important;
+	border: none !important;
+
+	font-size: 16px;
+	font-weight: bold;
+	color: #800000;
+}   
+
+#sidebar > .block > div > .list > li,
+#sidebar > .block > div > .list > li > a {
+	padding: 3px 4px;
+} 
+
+#sidebar > .block > div > .list > li > a {
+ 	margin: -4px;
+}            
+
+/* ========== List Toolbars ========== */
+                  
+.list > li > .toolbar,
+.block > table .toolbar {
+	float: right;
+	margin: -8px;
+}			
+          
+.list > li > .toolbar {
+	display: none;
+}
+
+.list > li:hover > .toolbar{
+	display: block;
+}    
+
+/* we can't hide a toolbar in a table because the layout would change when showing it (that looked ugly) */
+.block > table .toolbar {
+	position: relative;
+	left: -10000px;
+}  
+
+.block > table tr:hover .toolbar {
+	left: 0;
+}
+						
+.list > li > .toolbar > li,
+.block > table .toolbar > li {
+	float: left;
+	margin-right: 2px;
+	
+	list-style: none;
+}   
+						
+.list > li > .toolbar > li:last-child,
+.block > table .toolbar > li:last-child {
+	margin-right: 0;
+}
+
+.list > li > .toolbar > li.new-group,
+.block > table .toolbar > li.new-group {
+	margin-left: 10px;
+}
+
+.list > li > .toolbar > li.new-group:first-child,
+.block > table .toolbar > li.new-group:first-child {
+	margin-left: 0;
+}
+
+.list > li > .toolbar > li > a,
+.list > li > .toolbar > li > span,
+.block > table .toolbar > li > a,
+.block > table .toolbar > li > span {
+	display: block;
+	padding: 5px;
+	
+	outline: none;	
+	-moz-border-radius: 5px;     
+	-webkit-border-radius: 5px;
+
+	font-size: 11px;
+	font-weight: normal;	
+	color: #000000;  
+}
+
+.list > li > .toolbar > li > a[class],
+.list > li > .toolbar > li > span[class],
+.block > table .toolbar > li > a[class],
+.block > table .toolbar > li > span[class] {
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	padding-left: 30px !important;
+}
+
+.list > li > .toolbar > li > a:hover,
+.list > li > .toolbar > li > a.active,
+.list > li > .toolbar > li > span:hover,
+.list > li > .toolbar > li > span.active,
+.block > table .toolbar > li > a:hover,
+.block > table .toolbar > li > a.active,
+.block > table .toolbar > li > span:hover,
+.block > table .toolbar > li > span.active {
+	color: #000000;
+	text-decoration: none;
+	
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.list > li > .toolbar > li > span,
+.block > table .toolbar li > span {
+	cursor: default;
+}  
+
+.list > li > .toolbar > li > span.disabled,
+.block > table .toolbar > span.disabled {
+	opacity: 0.5;
+	background-color: transparent !important;
+}
+
+/* ========== Trees ========== */
+
+.tree li > ul > li {   
+	margin-left: 15px;
+}
+
+.tree li {
+	list-style: none;
+}                   
+
+.tree a {  
+	display: block;
+	padding: 2px; 
+	overflow: hidden;
+	white-space: nowrap;
+
+	background-color: #DFF0FF;
+	border-bottom: 1px solid #B1DBFF;     
+	border-right: 1px solid #B1DBFF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	
+ 	font-size: 11px;
+}
+
+.tree .selected > a,
+.tree > li > a {  
+	background-color: #FFD053;
+	border-bottom: 1px solid #F4B100;     
+	border-right: 1px solid #F4B100;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}        
+
+.tree .active > a {  
+	background-color: #85C5FF;
+	border-bottom: 1px solid #60B5FF;     
+	border-right: 1px solid #60B5FF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}
+
+.tree a:hover {   
+	background-color: #CBE7FF;
+}  
+
+.tree .selected > a:hover {
+	background-color: #FFC836;
+}   
+
+.tree .active > a:hover {
+	background-color: #66B8FF;
+}    
+                        
+.tree a,
+.tree a:hover {
+ 	color: #000000;
+ 	text-decoration: none; 
+	outline: none;
+}
+
+/* ========== Fieldsets ========== */
+
+fieldset {
+	background: none;
+	border: none;
+	outline: none;
+}
+
+fieldset.inputs > dl {
+	clear: both;
+}
+
+fieldset.inputs > dl > dt {
+	display: block;
+	float: left;
+	width: 155px;
+
+	text-align: left;
+	font-weight: bold;
+}
+
+fieldset.inputs.large > dl > dt {
+	width: 205px;
+}
+
+fieldset.inputs > dl > dd {
+	margin-left: 155px;
+}
+
+fieldset.inputs.large > dl > dd {
+	margin-left: 205px;
+}
+
+fieldset.inputs > dl,
+fieldset.inputs > dl > dd {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+fieldset.inputs > dl > dd > p {
+	margin-top: 2px;
+	margin-bottom: 0;
+
+	color: #666666;
+	font-size: 11px;
+}
+
+fieldset.inputs > dl > dd.float-right {
+	float: right;
+}
+
+#sidebar fieldset.inputs input {
+	width: 100%; 	      
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+#sidebar fieldset.inputs > dl > dt {
+	width: 60px;
+	
+	font-weight: normal;
+}   
+
+#sidebar fieldset.inputs > dl > dd {
+	margin-left: 60px;
+}     
+
+fieldset.buttons {
+	text-align: center;
+}
+
+fieldset.buttons input[type=submit],
+fieldset.buttons input[type=reset],
+fieldset.buttons input[type=button],
+fieldset.buttons button {
+	margin-left: 5px;
+	margin-right: 5px;
+}    
+
+fieldset.buttons input[type=submit]:first-child,
+fieldset.buttons input[type=reset]:first-child,
+fieldset.buttons input[type=button]:first-child,
+fieldset.buttons button:first-child {
+	margin-left: 0;;
+}  
+
+fieldset.buttons input[type=submit]:last-child,
+fieldset.buttons input[type=reset]:last-child,
+fieldset.buttons input[type=button]:last-child,
+fieldset.buttons button:last-child {
+	margin-right: 0;;
+}
+
+/* ========== Form Inputs ========== */
+
+input[type=text],
+input[type=password],
+textarea,
+select,
+select.fixed-size,
+div.wysiwyg > iframe {       
+	width: 400px;
+	padding: 1px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkitbox-sizing: border-box;
+	-khtml-box-sizing: border-box;
+	-o-box-sizing: border-box;
+
+	background: #FFFFFF;
+	border: 1px solid #9999FF;  
+	outline: none !important;
+	-moz-border-radius: 2px 2px 2px 2px;
+	-webkit-border-radius: 2px 2px 2px 2px;    
+	
+	font-family: Verdana,Arial,Helvetica,sans-serif;  
+	font-size: 12px !important;
+}
+
+select {
+	width: auto;
+}
+
+input[type=text].small,
+input[type=password],
+textarea.small,
+select.small {
+	width: 200px;
+}
+
+input[type=text]:hover,
+input[type=password]:hover,
+textarea:hover,
+select:hover,
+div.wysiwyg > iframe:hover {	
+	/*background-color: #E0E0FF;*/
+	border: 1px solid #000080;
+	outline: none !important;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+textarea:focus,
+select:focus,
+div.wysiwyg > iframe:focus {	
+	-moz-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}         
+
+input[type=text].error,
+input[type=password].error, 
+input[type=file].error,
+textarea.error,
+select.error {
+	background: #FF8080 !important;
+	border: 1px solid #EE6060 !important;
+}           
+
+input[type=text].error:hover,
+input[type=password].error:hover,
+textarea.error:hover,
+select.error:hover {
+	background: #FF8080 !important;
+	border: 1px solid #800000 !important;
+}          
+
+input[type=text].error:focus,
+input[type=text].error:focus:hover,
+input[type=password].error:focus,
+input[type=password].error:focus:hover,
+textarea.error:focus,
+textarea.error:focus:hover,
+select.error:focus,
+select.error:focus:hover {
+	background: #FFFFFF !important;  
+	border: 1px solid #EE6060 !important
+}
+  
+input[type=text].fullsize,  
+input[type=password].fullsize,
+textarea.fullsize,
+.wysiwyg.fullsize > iframe {
+	width: 100%;    
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;     
+	-khtml-box-sizing: border-box;
+}
+
+textarea.fullsize,
+.wysiwyg.fullsize > iframe {
+	height: 400px;
+}
+
+input[type=submit],
+input[type=reset],
+input[type=button],
+button {
+	padding: 4px 8px;
+	margin-bottom: 4px;
+	                      
+	background-color: #FFD159;      
+	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 10px, #FFD159 10px, #FFD159); 
+	border: none; 
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px; 
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
+	
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 11px !important;
+}   
+
+input[type=submit]:hover,
+input[type=reset]:hover,
+input[type=button]:hover,
+button:hover {
+	background-color: #FFB900;
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 10px, #FFB900 10px, #FFB900);  
+	border-color: #FFFFFF #DEA100 #DEA100 #FFFFFF;      
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
+}
+    
+
+input[type=submit]:active,
+input[type=submit]:focus,
+input[type=reset]:active,
+input[type=reset]:focus,
+input[type=button]:active,
+input[type=button]:focus,
+button:active,
+button:focus {
+	outline: 0 !important;  
+} 
+
+input[type=submit]:active:hover,
+input[type=reset]:active:hover,
+input[type=button]:active:hover,
+button:active:hover {
+	-moz-box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.5) inset, -0.5px -1px 2px rgba(0, 0, 0, 0.3) inset;
+	-webkit-box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.5) inset, -0.5px -1px 2px rgba(0, 0, 0, 0.3) inset;  
+	border-color: #DEA100 #FFFFFF #FFFFFF #DEA100;   
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 12px, #FFB900 12px, #FFB900); 
+}      
+          
+input[type=submit][disabled],
+input[type=reset][disabled],
+input[type=button][disabled],
+button[disabled] { 
+	color: rgba(0,0,0,0.5);
+}	
+
+input[type=submit][disabled]:hover,
+input[type=submit][disabled]:active,
+input[type=submit][disabled]:focus,
+input[type=reset][disabled]:hover, 
+input[type=reset][disabled]:active,
+input[type=reset][disabled]:focus,
+input[type=button][disabled]:hover,
+input[type=button][disabled]:active,
+input[type=button][disabled]:focus,
+button[disabled]:hover,
+button[disabled]:active,
+button[disabled]:focus {
+	background-color: #FFD159;      
+	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 10px, #FFD159 10px, #FFD159);
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset; 
+}
+
+input[type=submit].main,
+input[type=reset].main,
+input[type=button].main,
+button.main {
+	font-weight: bold;
+}        
+
+label > input[type=checkbox] {
+	margin-right: 1ex;
+}       
+
+/* ========== Input Errors ========== */
+
+.input-errors {     
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding: 5px; 
+	
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);  
+	-o-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+	-icab-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+	-khtml-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+	background: #FF8080;
+	border: 1px solid #FF0000;
+	list-style-type: disc;
+} 
+
+.input-errors li {
+	list-style-type: disc;
+	margin-left: 1.5em;
+}/* ========== Special list formats ========== */ 
+
+.user-name {
+	font-weight: bold;
+	color: #000000;         
+}
+
+.user-title {
+	display: block;
+	color: #404040;
+	font-size: 11px;
+}
+
+.avatar {
+	width: 30px;
+	height: 30px;
+ 	float: left;
+	margin-right: 10px;
+	overflow: hidden;
+
+	text-align: center;
+	vertical-align: middle;
+	font-size: 10px;
+}   
+
+.avatar > img {
+	max-width: 30px;
+	max-height: 30px;
+}
+
+.title {
+	font-weight: bold;
+}
+
+.list .detail,
+.block > table .detail {
+	margin-left: 1ex;
+	
+	font-size: 11px;
+	color: #404040;
+}
+
+/* ========== Info lists ========== */
+
+.info-list > dl {
+	clear: both;
+	overflow: hidden;
+	margin: 0.5em 0;
+}
+
+.info-list > dl:first-child {
+	margin-top: 0;
+}
+
+.info-list > dl:last-child {
+	margin-bottom: 0;
+}
+
+.info-list > dl > dt {
+	margin-right: 10px;
+	display: block;
+	float: left;
+	width: 200px;
+
+	text-align: right;
+	font-weight: bold;
+}
+
+.info-list > dl > dd {
+	margin-left: 210px;
+}   
+
+/* ========== Info Box ========== */
+
+.info-box {
+	padding: 4px;
+	padding-left: 20px;
+
+	background-color: #FFD636;     
+	background: url(../images/info-box.png) 4px center no-repeat, -moz-linear-gradient(center top, #FFD636, #FFEB9B 13px, #FFD636 13px, #FFD636);
+	border: 1px solid #FFFFFF;
+	-moz-border-radius: 5px;     
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 1px 1px 6px #000000;
+}   

@@ -63,17 +63,19 @@ class LoginPage extends TreePageNode {
 	}
 	
 	// =========================================================================== 
-
+	
 	/**
-	 * Performs a call of this page
+	 * Performs a call of this page and creates the response object
+	 * 
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function execute() {
+	public function getResponse() {
 		// helpers
 		$canRegister = 
 			Environment::getCurrent()->getuser()->hasRight('Premanager', 'register') ||
 			Environment::getCurrent()->getuser()->hasRight('Premanager', 
 				'registerWithoutEmail');
-		$referer = Request::isRefererInternal() ? Request::getReferer() : ''; 
+		$referer = Request::isRefererInternal() ? Request::getReferer() : '';
 		
 		$template = new Template('Premanager', 'loginForm');
 		$template->set('canRegister', $canRegister);
@@ -87,7 +89,8 @@ class LoginPage extends TreePageNode {
 				case LoginFailedReason::PASSWORD:
 					// Show the reason message and a login form
 					$template2 = new Template('Premanager', 'loginFailedMessage');
-					$page->title = Translation::defaultGet('Premanager', 'loginFailed');
+					$page->title =
+						Translation::defaultGet('Premanager', 'loginFailedTitle');
 					//TODO: set the password lost url
 					//$template->set('passwordLostURL', '???');
 					$text = $template2->get();
@@ -112,8 +115,7 @@ class LoginPage extends TreePageNode {
 					$template->set('referer', Request::getPOST('referer'));
 					$template->set('environment', Environment::getCurrent());
 					$page->createMainBlock($template->get());
-					Output::select($page);
-					return;
+					return $page;
 			}
 			
 			$template->set('hidePasswordLostHint', true);
@@ -127,8 +129,7 @@ class LoginPage extends TreePageNode {
 			$template->set('referer', Request::getPOST('referer'));
 			$page->title = Translation::defaultGet('Premanager', 'theLogout');
 			$page->createMainBlock($template->get());
-			Output::select($page);
-		} else  if (Environment::getCurrent()->getsession()) {
+		} else  if (Environment::getCurrent()->getSession()) {
 			// Show a logout button
 			$template = new Template('Premanager', 'logout');
 			$template->set('environment', Environment::getCurrent());
@@ -139,7 +140,7 @@ class LoginPage extends TreePageNode {
 			// Show the login form
 			$page->createMainBlock($template->get());
 		}
-		Output::select($page);
+		return $page;
 	}
 	
 	// =========================================================================== 
@@ -200,8 +201,7 @@ class LoginPage extends TreePageNode {
 	}
 
 	/**
-	 * Deletes the session specified by cookie and removes the cookie. Afterwards,
-	 * redirects to the current page to drop POST data
+	 * Deletes the session specified by cookie and removes the cookie
 	 */
 	private static function logout() {
 		$key = Request::getCookie('session');

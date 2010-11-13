@@ -1,10 +1,9 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\ArgumentException;
 use Premanager\Debug\Debug;
-
 use Premanager\URL;
-
 use Premanager\Module;
 use Premanager\Event;
 use Premanager\IO\Config;
@@ -28,6 +27,10 @@ class Environment extends Module {
 	 * @var Premanager\Models\Project
 	 */
 	private $_project;
+	/**
+	 * @var Premanager\Execution\PageNode
+	 */
+	private $_pageNode;
 	/**
 	 * @var Premanager\Models\Language
 	 */
@@ -193,14 +196,20 @@ class Environment extends Module {
 	 * 
 	 * @param Premanager\Models\User $user the logged-in user, or
 	 *   Premanager\Models\User::getGuest()
+	 * @param Premanager\Models\session $session the session object, if the user
+	 *   is logged in
+	 * @param Premanager\Models\Project $pageNode the requested node
 	 * @param Premanager\Models\Project $project the current project, or
-	 *   Premanager\Models\Project::getOrganization()
+	 *   Premanager\Models\Project::getOrganization() - MAY differ from the
+	 *   project of $pageNode
 	 * @param Premanager\Models\Language $language the current language
 	 * @param Premanager\Execution\Style $style the current style
 	 * @param int $edition enum Premanager\Execution\Edition
 	 */
-	public function create(User $user, Project $project, Language $language,
-		Style $style, $edition) {
+	public static function create(User $user, $session,
+		PageNode $pageNode, Project $project, Language $language, Style $style,
+		$edition)
+	{
 		$instance = new self();
 		switch ($edition) {
 			case Edition::COMMON:
@@ -211,12 +220,19 @@ class Environment extends Module {
 				throw new InvalidEnumArgumentException('edition', $edition,
 					'Premanager\Execution\Edition');
 		}
+		
+		if ($session !== null && !($session instanceof Session))
+			throw new ArgumentException('$session must be either null or a '.
+				'Premanager\Models\Session object', 'session');
 
 		$instance->_user = $user;
+		$instance->_session = $session;
+		$instance->_pageNode = $pageNode;
 		$instance->_project = $project;
 		$instance->_language = $language;
 		$instance->_style = $style;
-		$instance->_edition = $edition;		
+		$instance->_edition = $edition;
+		return $instance;
 	}
 	
 	// ===========================================================================  
@@ -245,7 +261,7 @@ class Environment extends Module {
 	 * restores the real environment
 	 */
 	public static function pop() {
-		if (count($this->_stack[]) <= 1)
+		if (count(self::$_stack) <= 1)
 			throw new InvalidOperationException('There is nothing to pop');
 		array_pop(self::$_stack);
 	}
@@ -278,7 +294,8 @@ class Environment extends Module {
 	 * @return Premanager\Models\User
 	 */
 	public function getUser() {
-		return $this->getSession() ? $this->getSession()->user : User::getGuest();
+		return
+			$this->getSession() ? $this->getSession()->getUser() : User::getGuest();
 	}
 
 	/**
@@ -308,6 +325,26 @@ class Environment extends Module {
 		}
 		
 		return $this->_session;
+	}
+	
+	/**
+	 * Gets the requested page node
+	 * 
+	 * This method returns StructurePageNode::getRootNode() if it is
+	 * called while the actual value for $pageNode is currently is loading. Use
+	 * isPageNodeAvailable() to check whether this is the case.
+	 * 
+	 * @return Premanager\Execution\PageNode
+	 */
+	public function getPageNode() {
+		if (!$this->_pageNode && $this->_isReal) {
+			if (Request::isAnalyzing())
+				return StructurePageNode::getRootNode();
+			else
+				$this->_pageNode = Request::getPageNode();
+		}
+		
+		return $this->_pageNode;
 	}
 	
 	/**
@@ -362,12 +399,12 @@ class Environment extends Module {
 	public function getStyle() {
 		if (!$this->_user && $this->_isReal) {
 			if ($this->_styleLoading)
-				return StyleClass::getDefault()->getinstance();
+				return StyleClass::getDefault()->getInstance();
 			else {
 				$this->_styleLoading = true;
 				try {
 					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_style = StyleClass::getDefault()->getinstance();
+					$this->_style = StyleClass::getDefault()->getInstance();
 				} catch (\Exception $e) {
 					$this->_styleLoading = false;
 					throw $e;
@@ -434,7 +471,8 @@ class Environment extends Module {
 	public function getURLPrefix() {
 		if ($this->_urlPrefix === null)
 			$this->_urlPrefix =
-				URL::fromTemplate($this->getlanguage(), $this->getedition(), $this->getproject());
+				URL::fromTemplate($this->getLanguage(), $this->getEdition(),
+					$this->getProject());
 		return $this->_urlPrefix;
 	}
 	
@@ -445,6 +483,15 @@ class Environment extends Module {
 	 */
 	public function isSessionAvailable() {
 		return !$this->_sessionLoading;
+	}
+	
+	/**
+	 * Checks if the $pageNode property contains the correct value
+	 *  
+	 * @return bool true, if $pageNode is available
+	 */
+	public function isPageNodeAvailable() {
+		return !Request::isAnalyzing();
 	}
 	
 	/**

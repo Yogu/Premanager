@@ -11,7 +11,7 @@ use Premanager\IO\Config;
 /**
  * Defines a common page that can be outputted
  */
-class Page extends Module {
+class Page extends Response {
 	/**
 	 * @var Premanager\Execution\PageNode
 	 */
@@ -25,6 +25,16 @@ class Page extends Module {
 	 * @var array
 	 */
 	public $blocks;
+	
+	/**
+	 * The HTML status code for this page.
+	 * 
+	 * Default is 200 (OK). Other possible values are for example 404 (Not Found)
+	 * or 403 (Forbidden)
+	 * 
+	 * @var int
+	 */
+	public $statusCode;
 	
 	/**
 	 * The page title (may differ from the page node title)
@@ -59,6 +69,7 @@ class Page extends Module {
 		parent::__construct();
 		$this->_node = $node;
 		$this->title = $node->getTitle();
+		$this->statusCode = 200;
 	}
 	
 	/**
@@ -76,21 +87,31 @@ class Page extends Module {
 	}
 	
 	/**
-	 * Adds the block in a new col in a new row which is placed at the end
+	 * Adds the block in the first col of the first row and places it at the end
 	 * 
 	 * @param Premanager\Execution\PageBlock $block the block to append
 	 */
 	public function appendBlock(PageBlock $block) {
-		$this->blocks[] = array(array($block));
+		if (!count($this->blocks))
+			$this->blocks[] = array(array());
+		if (!count($this->blocks[0]))
+			$this->blocks[0][] = array();
+		$this->blocks[0][0][] = $block;
 	}
 	
 	/**
-	 * Adds the block in a new col in a new row which is placed at the beginning
+	 * Adds the block in the first col of the first row and places it at the
+	 * beginning
 	 * 
 	 * @param Premanager\Execution\PageBlock $block the block to insert
 	 */
 	public function insertBlock(PageBlock $block) {
-		array_splice(&$this->blocks, 0, 0, array(array(array($block))));
+		if (!count($this->blocks))
+			$this->blocks[] = array(array());
+		if (!count($this->blocks[0]))
+			$this->blocks[0][] = array();
+		$arr &= $this->blocks[0][0];
+		array_splice(&$arr, 0, 0, array($block));
 	}
 	
 	/**
@@ -107,7 +128,7 @@ class Page extends Module {
 	 * 
 	 * @return string
 	 */
-	public function getHTML() {
+	public function getContent() {
 		$template = new Template('Premanager', 'page');
 		
 		// Get list of node, parent of node, parent of parent of node ...
@@ -116,23 +137,7 @@ class Page extends Module {
 			$hierarchy[] = $node;
 		}
 		
-		// Create the html navigation tree
-		$node = $this->_node;
-		$prev = null;
-		$navigationTree = array();
-		while ($node) {
-			//TODO: replace constant count (5) by option value
-			$children = $node->getChildren(5, $prev);
-			for ($i = 0; $i < count($children); $i++) {
-				if ($prev && $children[$i]->equals($prev))
-					$children[$i] = $navigationTree;
-				else
-					$children[$i] = array($children[$i]);
-			}
-			$navigationTree = array($node, $children);
-			$prev = $node; 
-			$node = $node->getparent();
-		}
+		$navigationTree = PageNode::getNavigationTreeSource($this->_node);
 		
 		$template->set('node', $this->_node);
 		$template->set('title', $this->title);
@@ -145,13 +150,35 @@ class Page extends Module {
 		$template->set('blocks', $this->blocks);
 		$template->set('environment', Environment::getCurrent());
 		$template->set('organization', Project::getOrganization());
-		$template->set('canonicalURLPrefix',
-			URL::fromTemplate(Environment::getCurrent()->getlanguage(), Edition::COMMON));
+		$template->set('canonicalURLPrefix', URL::fromTemplate(
+			Environment::getCurrent()->getlanguage(), Edition::COMMON));
+		$template->set('emptyURLPrefix', Config::getEmptyURLPrefix());
 		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());
+
+		//TODO: replace this when no longer needed (only for testing purpose)
+		$template->set('sidebar', '<section class="block"><header><h1>Search</h1></header><div><p>The search field.</p></div></section>');
 		
 		return $template->get();
+	}
+	
+	/**
+	 * Gets the MIME type of this response
+	 * 
+	 * @return string
+	 */
+	public function getContentType() {
+		return 'text/html';
+	}
+	
+	/**
+	 * Gets the HTML status code to be sent (e.g. 200 for OK)
+	 * 
+	 * @return int
+	 */
+	public function getStatusCode() {
+		return $this->statusCode;
 	}
 }
 
