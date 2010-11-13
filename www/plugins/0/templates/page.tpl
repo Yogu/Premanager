@@ -49,6 +49,7 @@
 		                       
 		<script type="text/javascript">var Config = \{emptyURLPrefix:'{escape $emptyURLPrefix}', staticURLPrefix:'{escape $staticURLPrefix}'};</script>                                                                                                      
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/prototype.js"></script>
+		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/modernizr-1.6.min.js"></script>
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/tools.js"></script>
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/window.js"></script>
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/smart-pageload.js"></script>

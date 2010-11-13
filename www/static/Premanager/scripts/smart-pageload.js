@@ -9,6 +9,23 @@ Premanager.Translation = {
 }
 
 Premanager.SmartPageload = {
+	init: function() {
+		Premanager.SmartPageload.replaceLinks();
+		Premanager.SmartPageload.pushState();
+
+		Event.observe(window, 'popstate', function(e) {
+			var state = e.state;
+			if (state != null) {
+				document.title = state.title;
+				$('header').innerHTML = state.headerTag;
+				$('navbar').innerHTML = state.navbarTag;
+				$('navigation-tree').innerHTML = state.navigationTreeTag;
+				$('content').innerHTML = state.contentTag;
+				$('footer').innerHTML = state.footerTag;
+				Premanager.SmartPageload.replaceLinks();
+			}
+		});
+	},
 		
 	replaceLinks: function(node) {
 		function getHostAndPath(url) {
@@ -20,6 +37,7 @@ Premanager.SmartPageload = {
 			var hostAndPath = getHostAndPath(url);
 			return hostAndPath[0].endsWith(trunk[0]) && hostAndPath[1].startsWith(trunk[1]);
 		}
+		
 		var trunk = getHostAndPath(Config.emptyURLPrefix);
 		
 		var crawl = function(node) {
@@ -55,6 +73,7 @@ Premanager.SmartPageload = {
 		
 		function loadPage(node) {
 			var responseTime = new Date().getTime();
+			
 			function getChild(node, name) {
 				for (var i = 0; i < node.childNodes.length; i++) {
 					if (node.childNodes[i].nodeName.toUpperCase() == name.toUpperCase())
@@ -303,6 +322,10 @@ Premanager.SmartPageload = {
 					footer.appendChild(p);
 				}
 				p.textContent = elapsedTime + ' ms' + ' + ' + buildingTime + ' ms';
+				
+				// History API
+				Premanager.SmartPageload.pushState(url);
+				
 				return true;
 			} else
 				return;
@@ -337,7 +360,29 @@ Premanager.SmartPageload = {
 			onFailure: function(response) {
 				location.href = url;
 			}});
+	},
+	
+	pushState: function(newURL) {
+		var urlChanged = newURL != null && newURL != location.href;
+		if (newURL == null)
+			newURL = location.href;
+		
+		// History API
+		var state = {
+			title: document.title,
+			test: {0: 'a', 1: 'b', 2: 'c'},
+			headerTag: $('header').innerHTML,
+			navbarTag: $('navbar').innerHTML,
+			navigationTreeTag: $('navigation-tree').innerHTML,
+			contentTag: $('content').innerHTML,
+			footerTag: $('footer').innerHTML
+		};
+		if (urlChanged)
+			history.pushState(state, document.title, newURL);
+		else
+			history.replaceState(state, document.title, newURL);
 	}
 }
 
-Event.observe(window, 'load', function() { Premanager.SmartPageload.replaceLinks(); });
+if (Modernizr.history)
+	Event.observe(window, 'load', function() { Premanager.SmartPageload.init(); });
