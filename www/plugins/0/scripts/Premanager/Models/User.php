@@ -221,7 +221,7 @@ final class User extends Model {
 			throw new ArgumentException('If $isBot is false, $botIdentifier must be '.
 				'null or an empty string', 'botIdentifier');  
 	
-		$id = DataBaseHelper::insert('Premanager_Users', 
+		$id = DataBaseHelper::insert('Premanager', 'Users', 
 			DataBaseHelper::UNTRANSLATED_NAME, $name,
 			array(
 				'registrationTime!' => "NOW()",
@@ -261,7 +261,7 @@ final class User extends Model {
 	 * @return bool true, if $name is available
 	 */
 	public static function staticIsNameAvailable($name) {    	
-		return DataBaseHelper::isNameAvailable('Premanager_Users', 'userID',
+		return DataBaseHelper::isNameAvailable('Premanager', 'Users', 'userID',
 			(string) $name);
 	}
 			 
@@ -902,7 +902,7 @@ final class User extends Model {
 					return false;
 			};
 		} else {
-			DataBaseHelper::update('Premanager_Users',
+			DataBaseHelper::update('Premanager', 'Users',
 				DataBaseHelper::UNTRANSLATED_NAME,
 				$this->_id, $name, array(), array());
 		}
@@ -940,7 +940,7 @@ final class User extends Model {
 					'Premanager\Models\UserStatus');
 		}
 			
-		DataBaseHelper::update('Premanager_Users',
+		DataBaseHelper::update('Premanager', 'Users',
 			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
 			array('status' => $s),
 			array()
@@ -961,7 +961,7 @@ final class User extends Model {
 			
 		$email = \trim($email);
 			
-		DataBaseHelper::update('Premanager_Users',
+		DataBaseHelper::update('Premanager', 'Users',
 			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
 			array('email' => $email),
 			array()
@@ -991,7 +991,7 @@ final class User extends Model {
 			throw new ArgumentException('If $isBot is false, $botIdentifier
 				must be null or an empty string');  
 			
-		DataBaseHelper::update('Premanager_Users',
+		DataBaseHelper::update('Premanager', 'Users',
 			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
 			array(
 				'isBot' => $isBot,
@@ -1016,7 +1016,7 @@ final class User extends Model {
 		$this->checkDisposed();
 			throw new InvalidOperationException('User is deleted');
 			 	
-		DataBaseHelper::isNameAvailable('Premanager_Users',
+		DataBaseHelper::isNameAvailable('Premanager', 'Users',
 			DataBaseHelper::IGNORE_THIS, (string) $name, $this->_id);
 	}      
 	
@@ -1029,7 +1029,7 @@ final class User extends Model {
 	public function delete() {         
 		$this->checkDisposed();
 			
-		DataBaseHelper::delete('Premanager_User', 0, $this->_id);      
+		DataBaseHelper::delete('Premanager', 'User', 0, $this->_id);      
 			    
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".

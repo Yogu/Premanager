@@ -189,7 +189,7 @@ final class Group extends Model {
 			throw new ArgumentException(
 				'$priority must be a positive integer value', 'priority');
 
-		$id = DataBaseHelper::insert('Premanager_Groups',
+		$id = DataBaseHelper::insert('Premanager', 'Groups',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
 			array(
 				'color' => $color,
@@ -226,7 +226,7 @@ final class Group extends Model {
 	 * @return bool true, if $name is available
 	 */
 	public static function staticIsNameAvailable($name) {    	
-		return DataBaseHelper::isNameAvailable('Premanager_Group', (string) $name);
+		return DataBaseHelper::isNameAvailable('Premanager', 'Group', (string) $name);
 	}       
 	    
 	/**
@@ -590,7 +590,7 @@ final class Group extends Model {
 			throw new ArgumentException(
 				'$priority must be a positive integer value', 'priority');
 			
-		DataBaseHelper::update('Premanager_Groups', 
+		DataBaseHelper::update('Premanager', 'Groups', 
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
 			$this->_id, $name,
 			array(
@@ -629,7 +629,7 @@ final class Group extends Model {
 			
 		$isLocked = !!$isLocked;
 			
-		DataBaseHelper::update('Premanager_Groups',
+		DataBaseHelper::update('Premanager', 'Groups',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
 			$this->_id, null,
 			array(
@@ -695,7 +695,7 @@ final class Group extends Model {
 	public function delete() {         
 		$this->checkDisposed();
 			
-		DataBaseHelper::delete('Premanager_Groups', 0, $this->_id);      
+		DataBaseHelper::delete('Premanager', 'Groups', 0, $this->_id);      
 			    
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
@@ -725,7 +725,7 @@ final class Group extends Model {
 	public function isNameAvailable($name) {   
 		$this->checkDisposed();
 			 	
-		DataBaseHelper::isNameAvailable('Premanager_Groups',
+		DataBaseHelper::isNameAvailable('Premanager', 'Groups',
 			DataBaseHelper::IGNORE_THIS, (string) $name, $this->_id);
 	}  
 

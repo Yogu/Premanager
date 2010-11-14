@@ -26,6 +26,7 @@ class DataBaseHelper extends Module {
 	/**
 	 * Inserts a new object into data base
 	 *
+	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
 	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime,
 	 *   creatorID and creatorIP fields; EDITOR_FIELDS: table contains editTime,
@@ -42,7 +43,7 @@ class DataBaseHelper extends Module {
 	 *   (can be omitted at values parameter)
 	 * @return int id of created item
 	 */
-	public static function insert($table, $flags, $name,
+	public static function insert($plugin, $table, $flags, $name,
 		array $values, array $translatedValues, $parentID = null) {
 		$user = Environment::getCurrent()->getuser()->getid();
 		$ip = Request::getIP();
@@ -97,7 +98,7 @@ class DataBaseHelper extends Module {
 	
 		// Execute query
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName($table)." ".
+			"INSERT INTO ".DataBase::formTableName($plugin, $table)." ".
 			"($nameString) ".
 			"VALUES ($valueString)");
 		$id = DataBase::getInsertID();
@@ -127,13 +128,13 @@ class DataBaseHelper extends Module {
 		
 		// Execute query
 		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName($table.'Translation')." ".
+			"INSERT INTO ".DataBase::formTableName($plugin, $table.'Translation')." ".
 			"($nameString) ".
 			"VALUES ($valueString)");
 
 		// -------------- Name ------------
 		
-		self::insertName($table, $flags, $id, $name, $parentID);
+		self::insertName($plugin, $table, $flags, $id, $name, $parentID);
 		
 		return $id;
 	}
@@ -145,31 +146,33 @@ class DataBaseHelper extends Module {
 	 * Deletes an item, its translations and names assigned to it, but does _not_
 	 * delete children (in a tree) 
 	 *
+	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
 	 * @param int $flags always 0 (reserved for future use)
 	 * @param int $id id of item to delete
 	 * @return int id of created item
 	 */
-	public static function delete($table, $flags, $id) {
+	public static function delete($plugin, $table, $flags, $id) {
 		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
 		
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName($table)." ".
+			"DELETE FROM ".DataBase::formTableName($plugin, $table)." ".
 			"WHERE id = '$id'");
 
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName($table.'Translation')." ".
+			"DELETE FROM ".DataBase::formTableName($plugin, $table.'Translation')." ".
 			"WHERE id = '$id'");	
 			
 		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName($table.'Name')." ".
+			"DELETE FROM ".DataBase::formTableName($plugin, $table.'Name')." ".
 			"WHERE id = '$id'");	
 	}   
 	
 	/**
 	 * Updates values of an existing item
 	 *
+	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
 	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime,
 	 *   creatorID and creatorIP fields; EDITOR_FIELDS: table contains editTime,
@@ -188,7 +191,7 @@ class DataBaseHelper extends Module {
 	 * @param callback|null $isNameInuseCallback callback function that specifies
 	 *   whether a name is still in use, or null to use the default method
 	 */
-	public static function update($table, $flags, $id, $name,
+	public static function update($plugin, $table, $flags, $id, $name,
 		array $values, array $translatedValues, $parentID = null,
 		$isNameInUseCallback = null) {
 		$user = Environment::getCurrent()->getuser()->getid();
@@ -237,7 +240,7 @@ class DataBaseHelper extends Module {
 		// Execute query
 		if ($queryString) {
 			DataBase::query(
-				"UPDATE ".DataBase::formTableName($table)." ".
+				"UPDATE ".DataBase::formTableName($plugin, $table)." ".
 				"SET $queryString ".
 				"WHERE id = '$id'");
 		}		
@@ -247,7 +250,7 @@ class DataBaseHelper extends Module {
 		// Check if translation already exists
 		$result = DataBase::query(
 			"SELECT languageID ".
-			"FROM ".DataBase::formTableName($table.'Translation')." translation ".
+			"FROM ".DataBase::formTableName($plugin, $table.'Translation')." translation ".
 			"WHERE translation.id = '$id' ".
 				"AND translation.languageID = '$lang'");
 		if ($result->next()) {
@@ -267,7 +270,7 @@ class DataBaseHelper extends Module {
 			// Execute query   
 			if ($queryString) {
 				DataBase::query(
-					"UPDATE ".DataBase::formTableName($table.'Translation')." ".
+					"UPDATE ".DataBase::formTableName($plugin, $table.'Translation')." ".
 					"SET $queryString ".
 					"WHERE id = '$id' ".
 						"AND languageID = '$lang'");
@@ -297,7 +300,7 @@ class DataBaseHelper extends Module {
 			// Execute query
 			if ($nameString) {
 				DataBase::query(
-					"INSERT INTO ".DataBase::formTableName($table.'Translation')." ".
+					"INSERT INTO ".DataBase::formTableName($plugin, $table.'Translation')." ".
 					"($nameString) ".
 					"VALUES ($valueString)");
 			}
@@ -305,13 +308,13 @@ class DataBaseHelper extends Module {
 	
 		if ($name !== null) {
 			// -------------- Name ------------
-			$this->insertName($table, $flags, $id, $name, $parentID);
+			$this->insertName($plugin, $table, $flags, $id, $name, $parentID);
 			
 			// Check names assigned to this item, check if they are still in use and
 			// update, if neccessary, their language
 			$result = DataBase::query(
 				"SELECT name.nameID, name.name, name.languageID ".
-				"FROM ".DataBase::formTableName($table.'Name')." AS name ".
+				"FROM ".DataBase::formTableName($plugin, $table.'Name')." AS name ".
 				"WHERE name.id = '$id' ".
 					"AND name.inUse = '1'");
 			while ($result->next()) {
@@ -326,7 +329,7 @@ class DataBaseHelper extends Module {
 				else if ($flags & self::UNTRANSLATED_NAME) {
 					$result2 = DataBase::query(
 						"SELECT item.id ".
-						"FROM ".DataBase::formTableName($table)." AS item ".   
+						"FROM ".DataBase::formTableName($plugin, $table)." AS item ".   
 						"WHERE item.id = '$id' ".
 							"AND LOWER(item.name) = '$name'");
 					$isInUse = $result2->next();
@@ -334,7 +337,7 @@ class DataBaseHelper extends Module {
 				} else {
 					$result2 = DataBase::query(
 						"SELECT translation.languageID ".
-						"FROM ".DataBase::formTableName($table.'Translation').
+						"FROM ".DataBase::formTableName($plugin, $table.'Translation').
 							" AS translation ".
 						"WHERE translation.id = '$id' ".
 							"AND LOWER(translation.name) = '$name'");  
@@ -345,7 +348,7 @@ class DataBaseHelper extends Module {
 				// If there is no translation with this name, set inUse
 				if (!$isInUse) {
 					DataBase::query(
-						"UPDATE ".DataBase::formTableName($table.'Name')." ".
+						"UPDATE ".DataBase::formTableName($plugin, $table.'Name')." ".
 						"SET inUse = '0' ".
 						"WHERE nameID = '$nameID'");
 				
@@ -353,7 +356,7 @@ class DataBaseHelper extends Module {
 				} else if (!($flags & self::UNTRANSLATED_NAME) &&
 					$result->get('languageID') != $languageID) {
 					DataBase::query(
-						"UPDATE ".DataBase::formTableName($table.'Name')." ".
+						"UPDATE ".DataBase::formTableName($plugin, $table.'Name')." ".
 						"SET languageID = '$languageID' ".
 						"WHERE nameID = '$nameID'");  							
 				}			
@@ -364,6 +367,7 @@ class DataBaseHelper extends Module {
 	/**
 	 * Checks if a name is available for a type of items
 	 *
+	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
 	 * @param int $flags a set (IS_TREE: table is a tree table; IGNORE_THIS: names
 	 *   that are assigned to $id should be ignored)   
@@ -373,7 +377,7 @@ class DataBaseHelper extends Module {
 	 * @param int|null $parentID id of parent item, if $flags contains IS_TREE
 	 * @return bool true, if this name is available, otherwise, false
 	 */
-	public static function isNameAvailable($table, $flags, $name,
+	public static function isNameAvailable($plugin, $table, $flags, $name,
 		$id = null, $parentID = null) {
 		
 		if (($flags & self::IGNORE_THIS)) {
@@ -390,8 +394,8 @@ class DataBaseHelper extends Module {
 		
 		$result = DataBase::query(
 			"SELECT name.nameID ".
-			"FROM ".DataBase::formTableName($table.'Name')." name ".
-			"INNER JOIN ".DataBase::formTableName($table)." item ".
+			"FROM ".DataBase::formTableName($plugin, $table.'Name')." name ".
+			"INNER JOIN ".DataBase::formTableName($plugin, $table)." item ".
 				"ON name.id = item.id ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."' ".
 				($flags & self::IS_TREE ? "AND item.parentID = '$parentID' " : '').
@@ -408,7 +412,7 @@ class DataBaseHelper extends Module {
 	 *   name field is in item table instead of translation table)
 	 * @param int $id id of item whose items should be updated
 	 */
-	public static function rebuildNameTable($table, $flags, $id) {    
+	public static function rebuildNameTable($plugin, $table, $flags, $id) {    
 		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
 				
@@ -416,11 +420,11 @@ class DataBaseHelper extends Module {
 			"SELECT ".
 				($flags & self::IS_TREE ? "item.parentID, " : '').
 				($flags & self::UNTRANSLATED_NAME ? "item.name, " : "translation.name").
-			"FROM ".DataBase::formTableName($table)." AS item ",
+			"FROM ".DataBase::formTableName($plugin, $table)." AS item ",
 			/* translating */
 			"WHERE item.id = '$id'");
 		while ($result->next()) {
-			self::insertName($table, $flags, $id, $result->get('name'),
+			self::insertName($plugin, $table, $flags, $id, $result->get('name'),
 				$flags & self::IS_TREE ? $result-->value('parentID') : null);
 		}
 	}      
@@ -432,13 +436,14 @@ class DataBaseHelper extends Module {
 	 *
 	 * If this name does already exist, it is moved to the specified item.
 	 *
+	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
 	 * @param int $flags a set (IS_TREE: table is a tree table) 
 	 * @param int $id id of item to which the name has to be assigned
 	 * @param string $name name to assign
 	 * @param int|null $parentID id of parent item, if $flags contains IS_TREE
 	 */
-	private static function insertName($table, $flags, $id, $name,
+	private static function insertName($plugin, $table, $flags, $id, $name,
 		$parentID = null) {  
 		$lang = Environment::getCurrent()->getlanguage()->getid();
 		$name = DataBase::escape(unitize($name));
@@ -453,28 +458,28 @@ class DataBaseHelper extends Module {
 					
 			$result = DataBase::query(
 				"SELECT nameID ".
-				"FROM ".DataBase::formTableName($table.'Name')." AS name ".
-				"INNER JOIN ".DataBase::formTableName($table)." AS item ".
+				"FROM ".DataBase::formTableName($plugin, $table.'Name')." AS name ".
+				"INNER JOIN ".DataBase::formTableName($plugin, $table)." AS item ".
 					"ON name.id = item.id ".
 				"WHERE item.parentID = '$parentID' ".
 					"AND LOWER(name.name) = '$name'");
 		} else {
 			$result = DataBase::query(
 				"SELECT nameID ".
-				"FROM ".DataBase::formTableName($table.'Name')." AS name ".
+				"FROM ".DataBase::formTableName($plugin, $table.'Name')." AS name ".
 				"WHERE LOWER(name.name) = '$name'");
 		}
 			
 		if ($result->next()) {
 			DataBase::query(
-				"UPDATE ".DataBase::formTableName($table.'Name')." ".
+				"UPDATE ".DataBase::formTableName($plugin, $table.'Name')." ".
 				"SET inUse = '1', ".
 					"languageID = '$lang', ".
 					"id = '$id' ".
 				"WHERE nameID = '".$result->get('nameID')."'");
 		} else {
 			DataBase::query(
-				"INSERT INTO ".DataBase::formTableName($table.'Name')." ".
+				"INSERT INTO ".DataBase::formTableName($plugin, $table.'Name')." ".
 				"(id, name, languageID, inUse) ".
 				"VALUES ('$id', '$name', '$lang', '1')");           	
 		}

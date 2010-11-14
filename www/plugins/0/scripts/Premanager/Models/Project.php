@@ -197,7 +197,7 @@ final class Project extends Model {
 			throw new ArgumentException('$description is an empty string or '.
 				'contains only whitespaces', 'description');
 	
-		$id = DataBaseHelper::insert('Premanager_Projects', 'projectID',
+		$id = DataBaseHelper::insert('Premanager', 'Projects', 'projectID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::UNTRANSLATED_NAME, $name,
 			array(), 
@@ -213,7 +213,7 @@ final class Project extends Model {
 		// Insert root node (we can't use StructureNode because that class does not
 		// provide a createNew method (it does not because one can use createChild
 		// instead for common node creation)
-		$rootNodeID = DataBaseHelper::insert('Premanager_Nodes', 'nodeID',
+		$rootNodeID = DataBaseHelper::insert('Premanager', 'Nodes', 'nodeID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, '',
 			array(
 				'noAccessRestriction' => true,
@@ -231,7 +231,7 @@ final class Project extends Model {
 			$name = $rootNode->getAvailableName(Strings::toLower($title));
 			
 			// Now we can't use createChild because we want to create a TREE node
-			$rootNodeID = DataBaseHelper::insert('Premanager_Nodes', 'nodeID',
+			$rootNodeID = DataBaseHelper::insert('Premanager', 'Nodes', 'nodeID',
 				DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
 				array(
 					'noAccessRestriction' => true,
@@ -518,7 +518,7 @@ final class Project extends Model {
 	public function delete() {         
 		$this->checkDisposed();
 			
-		DataBaseHelper::delete('Premanager_Projects', 'projectID', 0, $this->_id);
+		DataBaseHelper::delete('Premanager', 'Projects', 'projectID', 0, $this->_id);
 			    
 		// Delete project-specified options
 		DataBase::query(
@@ -532,7 +532,7 @@ final class Project extends Model {
 			"WHERE node.projectID = '$this->_id'");
 		while ($result->next()) {
 			// Delete this node
-			DataBaseHelper::delete('Premanager_StructureNodes', 'nodeID',
+			DataBaseHelper::delete('Premanager', 'StructureNodes', 'nodeID',
 				DataBaseHelper::IS_TREE,
 				$result->get('nodeID'));      
 				    
@@ -590,7 +590,7 @@ final class Project extends Model {
 			throw new ArgumentException('$description is an empty string or '.
 				'contains only whitespaces', 'description');
 			
-		DataBaseHelper::update('Premanager_Projects', 'projectID',
+		DataBaseHelper::update('Premanager', 'Projects', 'projectID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, $name,
 			array(),

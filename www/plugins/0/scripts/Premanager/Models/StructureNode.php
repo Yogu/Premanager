@@ -635,7 +635,7 @@ final class StructureNode extends Model {
 		} else
 			$hasPanel = $this->gethasPanel();
 			
-		DataBaseHelper::update('Premanager_StructureNodes', 'nodeID',
+		DataBaseHelper::update('Premanager', 'StructureNodes', 'nodeID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE,
 			$this->_id, $name,
@@ -699,11 +699,11 @@ final class StructureNode extends Model {
 			"WHERE nodeID = '$this->_id'");
 			
 		// Re-insert up-to-date names
-		DataBaseHelper::rebuildNameTable('Premanager_Nodes', 'nodeID', 
+		DataBaseHelper::rebuildNameTable('Premanager', 'Nodes', 'nodeID', 
 			DataBaseHelper::IS_TREE, $this->_id);
 			
 		// Now update parent id
-		DataBaseHelper::update('Premanager_StructureNode', 'nodeID',
+		DataBaseHelper::update('Premanager', 'StructureNode', 'nodeID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE , $this->_id, null,
 			array(
@@ -737,7 +737,7 @@ final class StructureNode extends Model {
 			
 		$noAccessRestriction = !!$noAccessRestriction;
 			
-		DataBaseHelper::update('Premanager_StructureNodes', 'nodeID',
+		DataBaseHelper::update('Premanager', 'StructureNodes', 'nodeID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE,
 			$this->_id, null,
@@ -789,7 +789,7 @@ final class StructureNode extends Model {
 		if ($hasPanel == $this->gethasPanel())
 			return;
 			
-		DataBaseHelper::update('Premanager_StructureNodes', 'nodeID',
+		DataBaseHelper::update('Premanager', 'StructureNodes', 'nodeID',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE,
 			$this->_id, null,
@@ -849,7 +849,7 @@ final class StructureNode extends Model {
 					'Premanager\Models\StructureNodeType');
 		}
 	
-		$id = DataBaseHelper::insert('Premanager_Nodes', 'nodeID',
+		$id = DataBaseHelper::insert('Premanager', 'Nodes', 'nodeID',
 			DataBaseHelepr::CREATOR_FIELDS | DataBaseHelepr::EDITOR_FIELDS, $name,
 			array(
 				'noAccessRestriction' => $noAccessRestriction,
@@ -895,7 +895,7 @@ final class StructureNode extends Model {
 		}
 
 		// Delete this node
-		DataBaseHelper::delete('Premanager_StructureNodes', 'nodeID',
+		DataBaseHelper::delete('Premanager', 'StructureNodes', 'nodeID',
 			DataBaseHelper::IS_TREE,
 			$this->_id);      
 			    
@@ -945,7 +945,7 @@ final class StructureNode extends Model {
 	public function isNameAvailable($name, StructureNode $node = null) {   
 		$this->checkDisposed();
 
-		DataBaseHelper::isNameAvailable('Premanager_Nodes', 'nodeID',
+		DataBaseHelper::isNameAvailable('Premanager', 'Nodes', 'nodeID',
 			($node ? DataBaseHelper::IGNORE_THIS : 0) | DataBaseHelper::IS_TREE,
 			\trim($name), $node ? $node->_id : null, $this->_id);
 	}  
@@ -966,7 +966,7 @@ final class StructureNode extends Model {
 			"WHERE name.nodeID = '$this->_id' ".
 				"AND name.inUse = '1'");
 		while ($result->next()) {
-			if (!DataBaseHelper::isNameAvailable('Premanager_Nodes', 'nodeID',
+			if (!DataBaseHelper::isNameAvailable('Premanager', 'Nodes', 'nodeID',
 				DataBaseHelper::IS_TREE,
 				\trim($result->get($name)), null, $this->_id))
 					return false;

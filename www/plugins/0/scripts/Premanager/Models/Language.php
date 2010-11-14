@@ -608,7 +608,7 @@ final class Language extends Model {
 			self::setInternationalLanguage($arr[0]);
 		}
 
-		DataBaseHelper::delete('Premanager_Languages', 0, $this->_id);
+		DataBaseHelper::delete('Premanager', 'Languages', 0, $this->_id);
 			
 		unset(self::$_instances[$this->_id]);
 		self::$_count = 0;
