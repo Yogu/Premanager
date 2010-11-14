@@ -21,7 +21,7 @@ class Redirection extends Response {
 		if ($location === null)
 			$location = Request::getRequestURL();
 		elseif (preg_match('/^[a-zA-Z0-9+.-]\:/', $location) === false)
-			$location = Environment::getCurrent()->geturlPrefix().$location;
+			$location = Environment::getCurrent()->getURLPrefix().$location;
 		$this->_location = $location;
 	}
 	

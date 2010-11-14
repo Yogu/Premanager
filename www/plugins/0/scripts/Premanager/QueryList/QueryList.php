@@ -354,6 +354,23 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	}
 	
 	/**
+	 * Gets an OR expression
+	 * 
+	 * @param mixed $operand0 the first operand
+	 * @param mixed the second operand
+	 * @return Premanager\QueryList\QueryExpression
+	 */
+	public function exprOr($operand0, $operand1) {
+		if (!($operand0 instanceof QueryExpression))
+			$operand0 = new QueryExpression($this->_modelType, $operand0);
+		if (!($operand1 instanceof QueryExpression))
+			$operand1 = new QueryExpression($this->_modelType, $operand1);
+			
+		return new QueryExpression($this->_modelType, QueryOperation::LOGICAL_OR,
+			$operand0, $operand1);
+	}
+	
+	/**
 	 * Gets an MEMBER expression
 	 * 
 	 * @param Premanager\QueryList\QueryExpression|string $arg0 a MODEL expression

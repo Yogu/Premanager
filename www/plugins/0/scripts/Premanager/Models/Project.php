@@ -1,6 +1,7 @@
 <?php                      
 namespace Premanager\Models;
 
+use Premanager\Execution\Translation;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\NameConflictException;
@@ -197,7 +198,7 @@ final class Project extends Model {
 			throw new ArgumentException('$description is an empty string or '.
 				'contains only whitespaces', 'description');
 	
-		$id = DataBaseHelper::insert('Premanager', 'Projects', 'projectID',
+		$id = DataBaseHelper::insert('Premanager', 'Projects',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::UNTRANSLATED_NAME, $name,
 			array(), 
@@ -213,15 +214,16 @@ final class Project extends Model {
 		// Insert root node (we can't use StructureNode because that class does not
 		// provide a createNew method (it does not because one can use createChild
 		// instead for common node creation)
-		$rootNodeID = DataBaseHelper::insert('Premanager', 'Nodes', 'nodeID',
+		$rootNodeID = DataBaseHelper::insert('Premanager', 'Nodes',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, '',
 			array(
 				'noAccessRestriction' => true,
 				'parentID' => 0,
 				'hasPanel' => 0,
+				'projectID' => $id,
 				'treeID' => 0),
 			array(
-				'title' => $Strigns::get('Premanager', 'home'))
+				'title' => Translation::defaultGet('Premanager', 'home'))
 		);
 		
 		// Insert nodes for current trees
@@ -336,9 +338,8 @@ final class Project extends Model {
 	 *   the name; it is excluded
 	 * @return bool true, if $name is available
 	 */
-	public static function isNameAvailable($name, $ignoreThis) {
-		return DataBaseHelper::isNameAvailable('Premanager', 'Projects', 'projectID',
-			(string) $name,
+	public static function isNameAvailable($name, $ignoreThis = null) {
+		return DataBaseHelper::isNameAvailable('Premanager', 'Projects', 0, $name,
 			($ignoreThis instanceof Project ? $ignoreThis->_id : null));
 	}
 

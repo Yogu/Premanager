@@ -44,8 +44,8 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 		default:
 			$type = "Error";
 	}
-	echo "<b>$type:</b> ".$errfile.':'.$errline.': '.$errstr.'<br />';
-	//throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+	//echo "<b>$type:</b> ".$errfile.':'.$errline.': '.$errstr.'<br />';
+	throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
 set_error_handler("exception_error_handler", (E_ALL | E_STRICT) & ~E_NOTICE);
 

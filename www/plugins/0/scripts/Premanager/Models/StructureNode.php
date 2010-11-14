@@ -1,6 +1,7 @@
 <?php                 
 namespace Premanager\Models;
 
+use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\QueryList\QueryOperation;
 use Premanager\QueryList\QueryExpression;
 use Premanager\Module;
@@ -172,6 +173,19 @@ final class StructureNode extends Model {
 				'Premanager', 'Nodes', array(__CLASS__, 'getByID'), true);
 		}
 		return self::$_descriptor;
+	}
+
+	/**
+	 * Checks whether the name is a valid structure node name
+	 * 
+	 * Note: this does NOT check whether the name is available
+	 * (see isNameAvailable())
+	 * 
+	 * @param string $name the name to check
+	 * @return bool true, if the name is valid
+	 */
+	public static function isValidName($name) {
+		return strpos('/', $name) === false;
 	}
 
 	// ===========================================================================
@@ -584,6 +598,7 @@ final class StructureNode extends Model {
 	 * @param bool $noAccessRestriction speicifies if all users can access this
 	 *   node   
 	 * @param int $type TYPE_SIMPLE, TYPE_PANEL or TYPE_TREE
+	 * @throws Premanager\NameConflictException $name is not available
 	 */
 	public function setValues($name, $title, $noAccessRestriction = null,
 		$type = null) {
@@ -599,11 +614,11 @@ final class StructureNode extends Model {
 		if (!$name)
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
-		if (strpos('/', $name) !== false)
+		if (!self::isValidName($name))
 			throw new ArgumentException('$name must not contain slashes', 'name');
 		if (!isNameAvailable($name))
-			throw new ArgumentException('There is already a structure node with that'.
-				'name', 'name');
+			throw new NameConflictException('There is already a structure node with '.
+				'the same parent and that name', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');
@@ -816,20 +831,21 @@ final class StructureNode extends Model {
 	 * @param int $type content type (StructureNodeType::SIMPLE or ~::PANEL) 
 	 * @param StructureTree $tree if $type is TYPE_TREE, the structure tree
 	 * @return StructureNode
+	 * @throws Premanager\NameConflictException $name is not available
 	 */
 	public function createChild($name, $title, $noAccessRestriction, $type) {
 		$name = Strings::normalize($name);
-		$title = \trim($title);
+		$title = trim($title);
 		$noAccessRestriction = !!$noAccessRestriction;
 		
 		if (!$name)
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
-		if (strpos('/', $name) !== false)
+		if (!self::isValidName($name))
 			throw new ArgumentException('$name must not contain slashes', 'name');
 		if (!$this->isNameAvailable($name))
-			throw new NameConflictException('There is already a structure node with '.
-				'the same name', $name);
+			throw new NameConflictException('There is already a child node with the '.
+				'same name', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');  
@@ -929,25 +945,25 @@ final class StructureNode extends Model {
 					return false;
 			}
 		return true;
-	}
+	} 
 
 	/**
-	 * Checks if a name is available
+	 * Checks if a name is not already assigned to a child node
+	 * 
+	 * Note: this does NOT check whether the name is valid (see isValidName())
 	 *
-	 * Checks, if $name is not already assigned to a group. If $node is specified,
-	 * the names of $node are excluded.
-	 *
-	 * @param $name name to check
-	 * @param Premanager\Models\StructureNode $node a nodes whose names to be
-	 *   excluded 
+	 * @param $name name to check 
+	 * @param Premanager\Models\StructureNode|null $ignoreThis a node which may
+	 *   have the name; it is excluded
 	 * @return bool true, if $name is available
 	 */
-	public function isNameAvailable($name, StructureNode $node = null) {   
+	public function isNameAvailable($name, $ignoreThis = null) {   
 		$this->checkDisposed();
 
-		DataBaseHelper::isNameAvailable('Premanager', 'Nodes', 'nodeID',
-			($node ? DataBaseHelper::IGNORE_THIS : 0) | DataBaseHelper::IS_TREE,
-			\trim($name), $node ? $node->_id : null, $this->_id);
+		return DataBaseHelper::isNameAvailable('Premanager', 'Nodes',
+			DataBaseHelper::IS_TREE, $name,
+			($ignoreThis instanceof StructureNode ? $ignoreThis->_id : null),
+			$this->_id);
 	}  
 
 	/**
@@ -957,7 +973,7 @@ final class StructureNode extends Model {
 	 *   checked 
 	 * @return bool true, if all names are available
 	 */
-	public function areNamesAvailalbe($name, StructureNode $node = null) {   
+	public function areNamesAvailalbe($name, StructureNode $node) {   
 		$this->checkDisposed();
 
 		$result = DataBase::query(
@@ -966,9 +982,9 @@ final class StructureNode extends Model {
 			"WHERE name.nodeID = '$this->_id' ".
 				"AND name.inUse = '1'");
 		while ($result->next()) {
-			if (!DataBaseHelper::isNameAvailable('Premanager', 'Nodes', 'nodeID',
+			if (!DataBaseHelper::isNameAvailable('Premanager', 'Nodes',
 				DataBaseHelper::IS_TREE,
-				\trim($result->get($name)), null, $this->_id))
+				$result->get($name), null, $this->_id))
 					return false;
 		}
 		return true;

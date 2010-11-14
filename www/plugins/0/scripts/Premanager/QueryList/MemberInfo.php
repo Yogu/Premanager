@@ -124,15 +124,16 @@ class MemberInfo extends Module{
 			$field = $this->_fieldName;
 			if ($isTranslated = $field[0] == '*')
 				$field = substr($field, 1);
-			if ($p0 = strpos('!', $field) !== false) {
+			$p0 = strpos($field, '!');
+			if ($p0 !== false) {
 				$expression = $field;
 				// Extract the field name
-				$pre = substr($field, 0, $p0-1);
+				$pre = substr($field, 0, $p0);
 				$field = substr($field, $p0+1);
-				$p1 = strpos('!', $field)-1;
+				$p1 = strpos($field, '!')-1;
 				if ($p1 !== false) {
-					$field = substr($field, 0, $p1);
-					$post = substr($field, $p1);
+					$post = substr($field, $p1+2);
+					$field = substr($field, 0, $p1+1);
 				}
 			} 
 			return $pre . ($isTranslated ? 'translation' : 'item') . '.`' .

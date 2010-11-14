@@ -1,14 +1,11 @@
 <?php
 namespace Premanager\IO\DataBase;
 
+use Premanager\Types;
 use Premanager\Strings;
-
 use Premanager\ArgumentException;
-
 use Premanager\Execution\Environment;
-
 use Premanager\IO\Request;
-
 use Premanager\Module;
 
 /**
@@ -85,7 +82,7 @@ class DataBaseHelper extends Module {
 		foreach ($values as $n => $v) {
 			if (is_bool($v)) $v = $v ? '1' : '0';
 			if ($n[Strings::length($n)-1] == '!') {
-				$n = Strings::substring($name, 0, Strings::length($name)-1);
+				$n = Strings::substring($n, 0, Strings::length($n)-1);
 				$nameString .= ", $n";
 				$valueString .= ", $v";
 			} else {
@@ -369,22 +366,15 @@ class DataBaseHelper extends Module {
 	 *
 	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
-	 * @param int $flags a set (IS_TREE: table is a tree table; IGNORE_THIS: names
-	 *   that are assigned to $id should be ignored)   
+	 * @param int $flags a set (IS_TREE: table is a tree table)   
 	 * @param string $name: name to be checked       
-	 * @param int|null $id: if $flags contains IGNORE_THIS, specifies the item
-	 *   whose names should be ignored
+	 * @param int|null $ignoreID: the id of the item whose names should be
+	 * 	ignored; specify null to ignore no item 
 	 * @param int|null $parentID id of parent item, if $flags contains IS_TREE
 	 * @return bool true, if this name is available, otherwise, false
 	 */
 	public static function isNameAvailable($plugin, $table, $flags, $name,
-		$id = null, $parentID = null) {
-		
-		if (($flags & self::IGNORE_THIS)) {
-			if (!Types::isInteger($id) || $id < 0)
-				throw new ArgumentException(
-					'$flags contains IGNORE_THIS, but $id is not a nonnegative integer');
-		}
+		$ignoreID = null, $parentID = null) {
 		
 		if (($flags & self::IS_TREE)) {
 			if (!Types::isInteger($parentID) || $parentID < 0)
@@ -400,7 +390,7 @@ class DataBaseHelper extends Module {
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."' ".
 				($flags & self::IS_TREE ? "AND item.parentID = '$parentID' " : '').
 				"AND inUse ".
-				($flags & self::IGNORE_THIS ? "AND item.id != '$id'" : ''));
+				($ignoreID !== null ? "AND item.id != '$ignoreID'" : ''));
 		return !$result->next();
 	}
 	         
@@ -427,7 +417,34 @@ class DataBaseHelper extends Module {
 			self::insertName($plugin, $table, $flags, $id, $result->get('name'),
 				$flags & self::IS_TREE ? $result-->value('parentID') : null);
 		}
-	}      
+	}    
+	
+	/**
+	 * Checks whether a name is available. If not, generates an available name
+	 * that consists the preferred name and a number
+	 * 
+	 * @param callback $isAvailableNameCallback the callback for the
+	 *   isNameAvailable method
+	 * @param string $preferredName the preferred name
+	 * @param Premanager\Model|null $ignoreThis a model which may have the name;
+	 *   it is excluded
+	 */
+	public static function getAvailableName($isNameAvailableCallback,
+		$preferredName, $ignoreThis = null)
+	{
+		if (!is_callable($isNameAvailableCallback))
+			throw new ArgumentException('$isNameAvailableCallback must be a vaild '.
+				'callback', 'isNameAvailableCallback');
+		
+		if (call_user_func($isNameAvailableCallback, $preferredName))
+			return $preferredName;
+		else {
+			$index = 2;
+			while (!call_user_func($isNameAvailableCallback, $preferredName.$index))
+				$index++;
+			return $preferredName.$index;		
+		}	
+	}  
 
 	// ===========================================================================
 	
@@ -446,7 +463,7 @@ class DataBaseHelper extends Module {
 	private static function insertName($plugin, $table, $flags, $id, $name,
 		$parentID = null) {  
 		$lang = Environment::getCurrent()->getlanguage()->getid();
-		$name = DataBase::escape(unitize($name));
+		$name = DataBase::escape(Strings::unitize($name));
 		
 		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
@@ -484,29 +501,6 @@ class DataBaseHelper extends Module {
 				"VALUES ('$id', '$name', '$lang', '1')");           	
 		}
 	}
-	
-	//??? Has to be implemented seperately into each model class
-	/*// Returns $request, if it is available, otherwise returns $request plus a
-	//   suffix          
-	// string request: This name will probably be returned, or something similar      
-	// set flags: set of
-	//   IGNORE_THIS: names of this.id has to be ignored
-	// Throws Exception, if this object does not have an implementation of
-	//   isNameAvailable method  
-	public static function getAvailableName($request, $flags) {
-		if (!method_exists($this, 'isNameAvailable'))
-			throw new Exception('getAvailableName was called on an object that does '.
-				'not implement isNameAvailable() method');
-
-		if ($this->isNameAvailable($request))
-			return $request;
-		else {
-			$index = 2;
-			while (!$this->isNameAvailable($request.$index))
-				$index++;
-			return $request.$index;		
-		}	
-	}*/
 }
 
 ?>

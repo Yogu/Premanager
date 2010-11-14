@@ -27,6 +27,7 @@ class Request {
 	private static $_isValidated;
 	private static $_isValidating;
 	private static $_postValidated;
+	private static $_postValues;
 	
 	/**
 	 * Gets the complete url the user requested (e.g. http://example.com/forum/)
@@ -187,10 +188,20 @@ class Request {
 	/**
 	 * Gets the value of a POST parameter
 	 * 
-	 * @param string $name
-	 * @return string
+	 * @param string $name the name
+	 * @return string the value
 	 */
 	public static function getPOST($name) {
+		$post = self::getPOSTValues();
+		return array_key_exists($name, $post) ? $post[$name] : null;
+	}
+	
+	/**
+	 * Gets an array of all POST parameters
+	 * 
+	 * @return array an array(name => value) of all POST parameters
+	 */
+	public static function getPOSTValues() {
 		if (self::$_postValidated === null) {
 			if (!Environment::getCurrent()->getsession())
 				self::$_postValidated = true;
@@ -204,11 +215,12 @@ class Request {
 		}
 		if (!self::$_postValidated )
 			return null;
-		
-		$value = array_key_exists($name, $_POST) ? $_POST[$name] : null;
-		if (\function_exists('get_magic_quotes_gpc') && \get_magic_quotes_gpc())
-			$value = $this->deepStripslashes($value);
-		return $value;	
+			
+		static $post;
+		if (!is_array($post)) {
+			$post = self::deepStripslashes($_POST);
+		}
+		return $post;
 	}
 	
 	/**
@@ -272,14 +284,13 @@ class Request {
 	 * @return string
 	 */
 	public static function deepStripslashes($value) {
-		if (\is_array($value))
-			return \stripslashes($value);
-		else {
+		if (is_array($value)) {
 			foreach ($value as &$item) {
-				$item = $this->deepStripslashes($item);
+				$item = self::deepStripslashes($item);
 			}
 			return $value;
-		}
+		} else
+			return stripslashes($value);
 	}
 }
 
