@@ -1,10 +1,9 @@
 <?php                      
 namespace Premanager\Models;
 
+use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\IO\DataBase\DataBase;
-
 use Premanager\NameConflictException;
-
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\DateTime;
@@ -44,6 +43,8 @@ final class Project extends Model {
 	private static $_count;
 	private static $_descriptor;
 	private static $_queryList;          
+	
+	const NAME_REGEXP = '/^[0-9a-z](?:[0-9a-z-]*[0-9a-z])?$/';
 
 	// ===========================================================================  
 	
@@ -178,12 +179,11 @@ final class Project extends Model {
 
 		if (!$name)
 			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');    
-		if (Strings.indexOf($name, '/') !== false)
-			throw new ArgumentException('$name must not contain slashes', 'name');
-		if (!self::staticIsNameAvailable($name))
-			throw new NameConflictException('There is already a project with this '.
-				'name', $name);
+				'$name is an empty string or contains only whitespaces', 'name');
+		if (!self::isValidName($name))
+			throw new ArgumentException('$name is not a valid project name', 'name');
+		if (!self::isNameAvailable($name))
+			throw new NameConflictException('This name is already in use', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');
@@ -246,19 +246,6 @@ final class Project extends Model {
 		return Project::createFromID($id, $name, $title, $subTitle, $author,
 			$copyright, $description, $keywords);
 	}      
-
-	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a project.
-	 *
-	 * @param $name name to check 
-	 * @return bool true, if $name is available
-	 */
-	public static function staticIsNameAvailable($name) {    	
-		return DataBaseHelper::isNameAvailable('Premanager_Projects', 'projectID',
-			(string) $name);
-	}
 			 
 	/**
 	 * Gets a Project representing the organization
@@ -323,7 +310,37 @@ final class Project extends Model {
 				'Premanager', 'Projects', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
-	}                
+	}            
+
+	/**
+	 * Checks whether the name is a valid project name
+	 * 
+	 * Note: this does NOT check whether the name is available
+	 * (see isNameAvailable())
+	 * 
+	 * @param string $name the name to check
+	 * @return bool true, if the name is valid
+	 */
+	public static function isValidName($name) {
+		$name = Strings::normalize($name);
+		return $name && preg_match(self::NAME_REGEXP, $name);
+	}
+
+	/**
+	 * Checks if a name is not already assigned to a project
+	 * 
+	 * Note: this does NOT check whether the name is valid (see isValidName())
+	 *
+	 * @param $name name to check 
+	 * @param Premanager\Models\Project|null $ignoreThis a project which may have
+	 *   the name; it is excluded
+	 * @return bool true, if $name is available
+	 */
+	public static function isNameAvailable($name, $ignoreThis) {
+		return DataBaseHelper::isNameAvailable('Premanager', 'Projects', 'projectID',
+			(string) $name,
+			($ignoreThis instanceof Project ? $ignoreThis->_id : null));
+	}
 
 	// ===========================================================================
 	
@@ -566,7 +583,7 @@ final class Project extends Model {
 		$description, $keywords) {     
 		$this->checkDisposed();
 			
-		$name = \trim($name);
+		$name = Strings::normalize($name);
 		$title = \trim($title);
 		$subTitle = \trim($subTitle);
 		$author = \trim($author);
@@ -576,7 +593,11 @@ final class Project extends Model {
 		
 		if (!$name)
 			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');   
+				'$name is an empty string or contains only whitespaces', 'name');
+		if (!self::isValidName($name))
+			throw new ArgumentException('$name is not a valid project name', 'name');
+		if (!self::isNameAvailable($name, $this))
+			throw new NameConflictException('This name is already in use', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');   
@@ -615,22 +636,6 @@ final class Project extends Model {
 		$this->_editorID = $this->_editor->getid();
 		$this->_editTime = new DateTime();
 	}     
-
-	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a project. This project's
-	 * names are excluded, they are available.
-	 *
-	 * @param $name name to check 
-	 * @return bool true, if $name is available
-	 */
-	public function isNameAvailable($name) {   
-		$this->checkDisposed();
-			 	
-		DataBaseHelper::isNameAvailable('Premanager_Projects', 'projectID',
-			DataBaseHelper::IGNORE_THIS, (string) $name, $this->_id);
-	}   
 
 	// ===========================================================================
 	

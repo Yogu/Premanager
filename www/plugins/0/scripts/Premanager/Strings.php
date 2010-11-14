@@ -85,10 +85,11 @@ class Strings {
 			preg_replace('/[\s]+/', ' ', $name)));
 	}
 	
-	// Returns a lower-case, trimmed and escaped version of $name which can be
-	// compared to LOWER()-converted data base names
 	/**
 	 * Gets the normalizes lower-case variant of a string
+	 * 
+	 * Returns a lower-case and trimmed version of $name which can be -
+	 * ESCAPED (!) - compared to LOWER()-converted data base names
 	 * 
 	 * @param string $name
 	 * @return string
