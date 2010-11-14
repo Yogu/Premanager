@@ -19,7 +19,7 @@ abstract class PageNode extends Module {
 	/**
 	 * @var Premanager\Models\Project
 	 */
-	protected $_project;
+	protected $project;
 	
 	// ===========================================================================
 	
@@ -36,7 +36,7 @@ abstract class PageNode extends Module {
 				'Premanager\Execution\PageNode.', 'parent');
 		
 		$this->_parent = $parent;
-		$this->_project = $parent ? $parent->_project : null;
+		$this->project = $parent ? $parent->project : null;
 	}
 	
 	// ===========================================================================
@@ -56,7 +56,7 @@ abstract class PageNode extends Module {
 	 * @var Premanager\Models\Project
 	 */
 	public function getProject() {
-		return $this->_project;
+		return $this->project;
 	}
 	
 	/**

@@ -59,7 +59,7 @@ class StructurePageNode extends PageNode {
 		
 		parent::__construct($parent);
 		
-		$this->_project = $this->_structureNode->getProject();
+		$this->project = $this->_structureNode->getProject();
 	}
 	
 	// ===========================================================================
@@ -166,7 +166,7 @@ class StructurePageNode extends PageNode {
 	 */
 	public function getTitle() {
 		if ($this->_isProjectNode)
-			return $this->_project->gettitle();
+			return $this->project->gettitle();
 		else
 			return $this->_structureNode->getTitle();
 	}
