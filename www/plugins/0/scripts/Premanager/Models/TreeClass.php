@@ -1,6 +1,7 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\InvalidEnumArgumentException;
 use Premanager\Execution\PageNode;
 use Premanager\Execution\StructurePageNode;
 use Premanager\IO\CorruptDataException;
@@ -28,10 +29,17 @@ final class TreeClass extends Model {
 	private $_pluginID;
 	private $_plugin;
 	private $_className;
+	private $_scope;
 	
 	private static $_instances = array();
 	private static $_count;
+	/**
+	 * @var Premanager\QueryList\ModelDescriptor
+	 */
 	private static $_descriptor;
+	/**
+	 * @var Premanager\QueryList\QueryList
+	 */
 	private static $_queryList;
 
 	// ===========================================================================    
@@ -41,7 +49,7 @@ final class TreeClass extends Model {
 	}
 	
 	private static function createFromID($id, $pluginID = null,
-		$className = null) {
+		$className = null, $scope = null) {
 		
 		if (\array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
@@ -49,6 +57,8 @@ final class TreeClass extends Model {
 				$instance->_pluginID = $pluginID;
 			if ($instance->_className === null)
 				$instance->_className = $className;
+			if ($instance->_scope === null)
+				$instance->_scope = $scope;
 				
 			return $instance;
 		}
@@ -61,6 +71,7 @@ final class TreeClass extends Model {
 		$instance->_id = $id;
 		$instance->_pluginID = $pluginID;
 		$instance->_className = $className;
+		$instance->_scope = $scope;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -98,10 +109,11 @@ final class TreeClass extends Model {
 	 *
 	 * @param Premanager\Models\Plugin $plugin the plugin that registers this
 	 *   tree class             
-	 * @param string $className the class name for the tree 
+	 * @param string $className the class name for the tree
+	 * @param int $scope enum Premanager\Models\TreeClassScope
 	 * @return Premanager\Models\TreeClass
 	 */
-	public static function createNew(Plugin $plugin, $className) {
+	public static function createNew(Plugin $plugin, $className, $scope) {
 		$className = \trim($className);
 		
 		if (!$plugin)
@@ -120,10 +132,26 @@ final class TreeClass extends Model {
 					'does not inherit from Premanager\Execution\PageNode', 'className');
 		}
 	
+		switch ($scope) {
+			case TreeClassScope::BOTH:
+				$dbScope = 'both';
+				break;
+			case TreeClassScope::ORGANIZATION:
+				$dbScope = 'organization';
+				break;
+			case TreeClassScope::PROJECTS:
+				$dbScope = 'projects';
+				break;
+			default:
+				throw new InvalidEnumArgumentException('scope', $scope,
+					'Premanager\TreeClassScope');
+		}
+		
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Trees')." ".
-			"(pluginID, class) ".
-			"VALUES ('$plugin->getid()', '".DataBase::escape($className)."'");
+			"(pluginID, class, scope) ".
+			"VALUES ('$plugin->getid()', '".DataBase::escape($className)."', ".
+				"'$dbScope'");
 		$id = DataBase::insertID();
 		
 		$instance = self::createFromID($id, $plugin, $className);
@@ -172,8 +200,11 @@ final class TreeClass extends Model {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => array(DataType::NUMBER, 'getID', 'id'),
 				'plugin' => array(Plugin::getDescriptor(), 'getPlugin', 'pluginID'),
-				'className' => array(DataType::STRING, 'getClassName', 'class')),
-				'Premanager', 'Trees', array(__CLASS__, 'getByID'));
+				'className' => array(DataType::STRING, 'getClassName', 'class'),
+				'scope' => array(DataType::NUMBER, 'getScope',
+					"CASE !scope! WHEN 'organization' THEN 0 WHEN 'projects' THEN 1 ".
+					"ELSE 2 END")),
+				'Premanager', 'Trees', array(__CLASS__, 'getByID'), false);
 		}
 		return self::$_descriptor;
 	}                                           
@@ -218,7 +249,20 @@ final class TreeClass extends Model {
 		if ($this->_className === null)
 			$this->load();
 		return $this->_className;	
-	}    
+	}        
+
+	/**
+	 * Gets the scope
+	 *
+	 * @return int the scope (enum Premanager\Models\TreeClassScope)
+	 */
+	public function getScope() {
+		$this->checkDisposed();
+			
+		if ($this->_scope === null)
+			$this->load();
+		return $this->_scope;	
+	}   
 
 	/**
 	 * Creates a new instance of this tree class
@@ -277,7 +321,7 @@ final class TreeClass extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT tree.pluginID, tree.class ".    
+			"SELECT tree.pluginID, tree.class, tree.scope ".    
 			"FROM ".DataBase::formTableName('Premanager', 'Trees')." AS tree ".
 			"WHERE tree.id = '$this->_id'");
 		
@@ -286,6 +330,18 @@ final class TreeClass extends Model {
 		
 		$this->_pluginID = $result->get('pluginID');
 		$this->_className = $result->get('class');
+		
+		$dbScope = $result->get('scope');
+		switch ($dbScope) {
+			case 'organization':
+				$this->_scope = TreeClassScope::ORGANIZATION;
+				break;
+			case 'projects':
+				$this->_scope = TreeClassScope::PROJECTS;
+				break;
+			default:
+				$this->_scope = TreeClassScope::BOTH;
+		}
 		
 		return true;
 	}      

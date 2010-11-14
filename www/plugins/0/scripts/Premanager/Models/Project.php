@@ -225,23 +225,33 @@ final class Project extends Model {
 			array(
 				'title' => Translation::defaultGet('Premanager', 'home'))
 		);
+		$rootNode = StructureNode::getByID($rootNodeID);
 		
-		// Insert nodes for current trees
-		foreach (TreeClass::getTreeClasses() as $treeClass) {
-			$title = $treeClass->getplugin()->getname() . '-' . 
-				\preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->getclassName());
-			$name = $rootNode->getAvailableName(Strings::toLower($title));
+		// Insert nodes for trees with the scope 'projects' or 'both'
+		$list = TreeClass::getTreeClasses();
+		$list = $list->filter(
+			$list->exprUnEqual(
+				$list->exprMember('scope'),
+				TreeClassScope::ORGANIZATION));
+					
+		foreach ($list as $treeClass) {
+			$nodeTitle = $treeClass->getPlugin()->getName() . '-' . 
+				preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->getClassName());
+			$nodeName = DataBaseHelper::getAvailableName(
+				array($rootNode, 'isNameAvailable'), Strings::toLower($nodeTitle));
 			
 			// Now we can't use createChild because we want to create a TREE node
-			$rootNodeID = DataBaseHelper::insert('Premanager', 'Nodes', 'nodeID',
-				DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
+			DataBaseHelper::insert('Premanager', 'Nodes',
+				DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
+				$nodeName,
 				array(
 					'noAccessRestriction' => true,
 					'parentID' => $rootNodeID,
+					'projectID' => $id,
 					'hasPanel' => 0,
-					'treeID' => $treeClass->getid()),
+					'treeID' => $treeClass->getID()),
 				array(
-					'title' => $title)
+					'title' => $nodeTitle)
 			);
 		}
 		
