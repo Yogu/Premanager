@@ -594,12 +594,57 @@ label > input[type=checkbox] {
 	background: #FF8080;
 	border: 1px solid #FF0000;
 	list-style-type: disc;
-} 
+}
+
+.input-errors:first-child {
+	margin-top: 0;
+}
+
+fieldset > dl > dd > .input-errors { 
+	-moz-border-radius: 0; 
+	-webkit-border-radius: 0;
+	-moz-box-shadow: none;  
+	-o-box-shadow: none;
+	-icab-box-shadow: none;
+	-khtml-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	background: transparent;
+	border: none;
+	list-style-type: disc;
+	
+	margin: 5px 0;
+	padding: 0;
+	padding-left: 20px;
+	list-style: none;
+	border-bottom: 1px solid #800000;
+}
 
 .input-errors li {
 	list-style-type: disc;
+	margin: 0.5em 0;
 	margin-left: 1.5em;
-}/* ========== Special list formats ========== */ 
+}
+
+.input-errors li:first-child {
+	margin-top: 0;
+}
+
+.input-errors li:last-child {
+	margin-bottom: 0;
+}
+
+fieldset > dl > dd > .input-errors li {
+	padding: 2px;
+	margin: 0;
+	
+	list-style-type: disc;
+	
+	font-size: 10px;
+	color: #800000;
+}
+
+/* ========== Special list formats ========== */ 
 
 .user-name {
 	font-weight: bold;

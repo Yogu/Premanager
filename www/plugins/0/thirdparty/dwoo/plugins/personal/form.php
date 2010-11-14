@@ -25,7 +25,7 @@ use Premanager\IO\Request;
  * </form>
  */
 class Dwoo_Plugin_form extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Block {
-	public function init($action = '', $multipart = false)
+	public function init($action = '', $multipart = false, $showErrors = false)
 	{
 	}
 
@@ -41,6 +41,7 @@ class Dwoo_Plugin_form extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Blo
 		
 		$action = $cparams['action'];
 		$multipart = $cparams['multipart'];
+		$showErrors = $cparams['showErrors'];
 		
 		$pre = '<form method="post" action="'.Dwoo_Compiler::PHP_OPEN.
 			'echo htmlspecialchars('.$action.' ? '.$action.' : '.
@@ -51,6 +52,10 @@ class Dwoo_Plugin_form extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Blo
 			'echo \'<input type="hidden" name="postValidator" '.
 			'value="\'.htmlspecialchars('.
 			'Premanager\Execution\Environment::getCurrent()->getSession()->getKey()).\'" />\';'.
+			"if ($showErrors && \$this->scope['errors'] && count(\$this->scope['errors'])) ".
+			"echo '<ul class=\"input-errors\"><li>'.".
+			"implode('</li><li>', array_map(function(\$e){return implode('</li><li>', \$e);},\$this->scope['errors'])).".
+			"'</li></ul>'".
 			Dwoo_Compiler::PHP_CLOSE;
 				
 		$post = '</form>';
