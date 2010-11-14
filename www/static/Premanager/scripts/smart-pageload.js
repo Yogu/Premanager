@@ -308,17 +308,15 @@ Premanager.SmartPageload = {
 						var colTag = document.createElement('div');
 						colTag.className = 'block-col';
 						rowTag.appendChild(colTag);
+						var colInnerHTML = '';
 
 						for (var k = 0; k < col.childNodes.length; k++) {
 							if (col.childNodes[k].nodeName.toLowerCase() != 'block')
 								continue;
 							var block = col.childNodes[k];
-							if (content = getChild(block, 'content')) {
-								for (var l = 0; l < content.childNodes.length; l++) {
-									colTag.appendChild(clone(content.childNodes[l]));
-								}
-							}
+							colInnerHTML += block.textContent;
 						}
+						colTag.innerHTML = colInnerHTML;
 					}
 				}
 				Premanager.SmartPageload.replaceLinks(contentTag);
