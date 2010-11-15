@@ -110,7 +110,7 @@ class DataBaseHelper extends Module {
 		$nameString = '';
 		$valueString = '';
 		foreach ($translatedValues as $n => $v) {
-			if (is_bool($value)) $v = $v ? '1' : '0';
+			if (is_bool($v)) $v = $v ? '1' : '0';
 			if ($n[Strings::length($n)-1] == '!') {
 				$n = Strings::substring($n, 0, Strings::length($n)-1);
 				$nameString .= ", $n";
@@ -224,10 +224,10 @@ class DataBaseHelper extends Module {
 		// Prepare query
 		$queryString = '';
 		foreach ($values as $n => $v) {
-			if (is_bool($value)) $v = $v ? '1' : '0';
+			if (is_bool($v)) $v = $v ? '1' : '0';
 			if ($n[Strings::length($n)-1] == '!') {
 				$n = Strings::substring($n, 0, Strings::length($n)-1);
-				$queryString .= ", $n = $value";
+				$queryString .= ", $n = $v";
 			} else {
 				$queryString .= ", $n = '".DataBase::escape($v)."'";
 			}
@@ -255,7 +255,7 @@ class DataBaseHelper extends Module {
 			$queryString = '';
 			foreach ($translatedValues as $n => $v) {
 				if (is_bool($v)) $v = $v ? '1' : '0';
-				if ($n[String::length($n)-1] == '!') {
+				if ($n[Strings::length($n)-1] == '!') {
 					$n = Strings::substring($n, 0, String::length($n)-1);
 					$queryString .= ", $n = $v";
 				} else {
@@ -305,7 +305,7 @@ class DataBaseHelper extends Module {
 	
 		if ($name !== null) {
 			// -------------- Name ------------
-			$this->insertName($plugin, $table, $flags, $id, $name, $parentID);
+			self::insertName($plugin, $table, $flags, $id, $name, $parentID);
 			
 			// Check names assigned to this item, check if they are still in use and
 			// update, if neccessary, their language
@@ -330,7 +330,7 @@ class DataBaseHelper extends Module {
 						"WHERE item.id = '$id' ".
 							"AND LOWER(item.name) = '$name'");
 					$isInUse = $result2->next();
-					$languageID = $result2->value('languageID');				
+					$languageID = 0;				
 				} else {
 					$result2 = DataBase::query(
 						"SELECT translation.languageID ".
@@ -339,7 +339,7 @@ class DataBaseHelper extends Module {
 						"WHERE translation.id = '$id' ".
 							"AND LOWER(translation.name) = '$name'");  
 					$isInUse = $result2->next();
-					$languageID = $result2->value('languageID');
+					$languageID = $result2->get('languageID');
 				}  
 						
 				// If there is no translation with this name, set inUse
@@ -415,7 +415,7 @@ class DataBaseHelper extends Module {
 			"WHERE item.id = '$id'");
 		while ($result->next()) {
 			self::insertName($plugin, $table, $flags, $id, $result->get('name'),
-				$flags & self::IS_TREE ? $result-->value('parentID') : null);
+				$flags & self::IS_TREE ? $result->get('parentID') : null);
 		}
 	}    
 	

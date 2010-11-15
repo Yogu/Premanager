@@ -20,7 +20,7 @@ class Redirection extends Response {
 	public function __construct($location = null, $code = 303) {
 		if ($location === null)
 			$location = Request::getRequestURL();
-		elseif (preg_match('/^[a-zA-Z0-9+.-]\:/', $location) === false)
+		elseif (!preg_match('/^[a-zA-Z0-9+.-]+\:/', $location))
 			$location = Environment::getCurrent()->getURLPrefix().$location;
 		$this->_location = $location;
 	}

@@ -1,6 +1,7 @@
 <?php                      
 namespace Premanager\Models;
 
+use Premanager\Execution\Environment;
 use Premanager\Execution\Translation;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\IO\DataBase\DataBase;
@@ -594,7 +595,6 @@ final class Project extends Model {
 		$description, $keywords) {     
 		$this->checkDisposed();
 			
-		$name = Strings::normalize($name);
 		$title = \trim($title);
 		$subTitle = \trim($subTitle);
 		$author = \trim($author);
@@ -602,13 +602,18 @@ final class Project extends Model {
 		$description = \trim($description);
 		$keywords = \trim($keywords);
 		
-		if (!$name)
-			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');
-		if (!self::isValidName($name))
-			throw new ArgumentException('$name is not a valid project name', 'name');
-		if (!self::isNameAvailable($name, $this))
-			throw new NameConflictException('This name is already in use', $name);
+		if ($this->_id) {
+			$name = Strings::normalize($name);
+			if (!$name)
+				throw new ArgumentException(
+					'$name is an empty string or contains only whitespaces', 'name');
+			if (!self::isValidName($name))
+				throw new ArgumentException('$name is not a valid project name', 'name');
+			if (!self::isNameAvailable($name, $this))
+				throw new NameConflictException('This name is already in use', $name);
+		} else
+			$name = '';
+		
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');   
@@ -622,12 +627,11 @@ final class Project extends Model {
 			throw new ArgumentException('$description is an empty string or '.
 				'contains only whitespaces', 'description');
 			
-		DataBaseHelper::update('Premanager', 'Projects', 'projectID',
+		DataBaseHelper::update('Premanager', 'Projects', 
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, $name,
 			array(),
 			array(
-				'name' => $name,
 				'title' => $title,
 				'subTitle' => $subTitle,
 				'author' => $author,

@@ -26,7 +26,7 @@ class Page extends Response {
 	 * 
 	 * @var array
 	 */
-	public $blocks;
+	public $blocks = array();
 	
 	/**
 	 * The HTML status code for this page.
@@ -145,7 +145,7 @@ class Page extends Response {
 		
 		$template->set('node', $this->_node);
 		$template->set('title', $this->title);
-		$template->set('project', $this->_node->getproject());
+		$template->set('project', $this->_node->getProject());
 		$template->set('projectNode', $projectNode);
 		$template->set('isIndexPage', $this->_node instanceof StructurePageNode &&
 			$this->_node->isProjectNode());
