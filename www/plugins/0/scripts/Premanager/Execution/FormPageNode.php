@@ -21,7 +21,6 @@ use Premanager\IO\Output;
  * A page that contains a form
  */
 abstract class FormPageNode extends PageNode {
-	private $_model;
 	private $_values = array();
 	private $_errors = array();
 
@@ -32,10 +31,8 @@ abstract class FormPageNode extends PageNode {
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
 	 */
-	public function __construct($parent, $model = null) {
+	public function __construct($parent) {
 		parent::__construct($parent);
-
-		$this->_model = $model;
 	} 
 
 	// ===========================================================================
@@ -59,29 +56,16 @@ abstract class FormPageNode extends PageNode {
 				return $this->applyValues($this->_values);
 			}
 		} else {
-			if ($model)
-				$this->_values = $this->getValuesFromModel($model);
-			else
-				$this->_values = $this->getDefaultValues();
+			$this->_values = $this->getDefaultValues();
 		}
 		
 		$template = $this->getTemplate();
 		$template->set('node', $this);
 		$template->set('values', $this->_values);
 		$template->set('errors', $this->_errors);
-		$template->set('model', $this->_model);
 		
 		return $this->getFormPage($template->get());
 		return $page;
-	}
-
-	/**
-	 * Gets the model that is edited in this form
-	 * 
-	 * @return mixed the model
-	 */
-	public function getModel() {
-		return $this->_model;
 	}
 
 	// ===========================================================================
@@ -117,17 +101,7 @@ abstract class FormPageNode extends PageNode {
 	 * 
 	 * @return array the array of values
 	 */
-	protected function getDefaultValues() {
-		return array();
-	}
-	
-	/**
-	 * Loads the values from a model
-	 * 
-	 * @param mixed $model the model
-	 * @return array the array of values
-	 */
-	protected abstract function getValuesFromModel($model);
+	protected abstract function getDefaultValues();
 	
 	/**
 	 * Applies the values and gets the response

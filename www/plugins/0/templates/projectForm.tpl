@@ -7,7 +7,7 @@
 			type=text
 		}
 		
-		{if !$model || $model->getID()}
+		{if !$project || $project->getID()}
 			{formElement
 				name="name"
 				label=string(Premanager projectName)

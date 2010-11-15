@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Premanager;
@@ -19,17 +20,23 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that allows to add a new project
+ * A page that allows to edit an existing project
  */
-class AddProjectPage extends ProjectFormPage {	
+class EditProjectPage extends ProjectFormPage {	
+	private $_project;
+
+	// ===========================================================================
 	
 	/**
 	 * Creates a new EditProjectPage
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
+	 * @param Premanager\Models\Project $project the project to edit
 	 */
-	public function __construct($parent) {
-		parent::__construct($parent, true ); // name needed
+	public function __construct($parent, Project $project) {
+		parent::__construct($parent, $project->getID() != 0);
+
+		$this->_project = $project;
 	} 
 
 	// ===========================================================================
@@ -40,7 +47,7 @@ class AddProjectPage extends ProjectFormPage {
 	 * @return string
 	 */
 	public function getName() {
-		return 'add';
+		return 'edit';
 	}
 	
 	/**
@@ -50,16 +57,7 @@ class AddProjectPage extends ProjectFormPage {
 	 * @return string
 	 */
 	public function getTitle() {
-		return Translation::defaultGet('Premanager', 'addProject');
-	}
-	
-	/**
-	 * Gets the values for a form without POST data
-	 * 
-	 * @return array the array of values
-	 */
-	protected function getDefaultValues() {
-		return array();
+		return Translation::defaultGet('Premanager', 'editProject');
 	}
 	
 	/**
@@ -71,11 +69,37 @@ class AddProjectPage extends ProjectFormPage {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
-		$project = Project::createNew($values['name'], $values['title'],
+		$this->_project->setValues($values['name'], $values['title'],
 			$values['subTitle'], $values['author'], $values['copyright'],
 			$values['description'], $values['keywords']);
-		return new Redirection(
-			$this->getParent()->getURL() . '/' . $project->getName());
+		return new Redirection($this->getParent()->getURL());
+	}
+	
+	/**
+	 * Gets the values for a form without POST data
+	 * 
+	 * @return array the array of values
+	 */
+	protected function getDefaultValues() {
+		return array(
+			'name' => $this->_project->getName(),
+			'title' => $this->_project->getTitle(),
+			'subTitle' => $this->_project->getSubTitle(),
+			'author' => $this->_project->getAuthor(),
+			'copyright' => $this->_project->getCopyright(),
+			'description' => $this->_project->getDescription(),
+			'keywords' => $this->_project->getKeywords());
+	}
+	
+	/**
+	 * Gets the template used for the form
+	 * 
+	 * @return Premanager\Execution\Template the template
+	 */
+	protected function getTemplate() {
+		$template = parent::getTemplate();
+		$template->set('project', $this->_project);
+		return $template;
 	}
 	
 	/**
@@ -84,7 +108,8 @@ class AddProjectPage extends ProjectFormPage {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof AddProjectPage;
+		return $other instanceof EditProjectPage &&
+			$other->_project == $this->_project; 
 	}	    
 }
 
