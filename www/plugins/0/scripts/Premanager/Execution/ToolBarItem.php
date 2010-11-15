@@ -44,9 +44,9 @@ class ToolBarItem extends Module {
 			$this->_html .= '<a href="./'.htmlspecialchars($url).'"';
 		}
 		if ($description)
-			$this->_html .=  'title="'.htmlspecialchars($description).'"';
+			$this->_html .=  ' title="'.htmlspecialchars($description).'"';
 		if ($iconURL)
-			$this->_html .= ' style="background-image:url('.
+			$this->_html .= ' style="background-image: url('.
 				htmlspecialchars(Config::getStaticURLPrefix().$iconURL).');"';
 		$this->_html .= '>'.htmlspecialchars($title).'</'.$tag.'></li>';
 	}

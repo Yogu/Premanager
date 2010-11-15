@@ -107,17 +107,16 @@ class ProjectPage extends PageNode {
 			
 		return $page;
 	}
-
-	// ===========================================================================
-
+	
 	/**
-	 * Gets the project represented by this page
+	 * Checks if this object represents the same page as $other
 	 * 
-	 * @return Premanager\Models\Project the project represented by this page
+	 * @param Premanager\Execution\PageNode $other
 	 */
-	public function getProject() {
-		return $this->_project;
-	}
+	public function equals(PageNode $other) {
+		return $other instanceof ProjectPage &&
+			$other->_project == $this->_project; 
+	}	    
 }
 
 ?>

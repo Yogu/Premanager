@@ -74,8 +74,6 @@ class UserPage extends PageNode {
 		return $page;
 	}
 
-	// ===========================================================================
-
 	/**
 	 * Gets the user represented by this page
 	 * 
@@ -84,6 +82,16 @@ class UserPage extends PageNode {
 	public function getUser() {
 		return $this->_user;
 	}
+	
+	/**
+	 * Checks if this object represents the same page as $other
+	 * 
+	 * @param Premanager\Execution\PageNode $other
+	 */
+	public function equals(PageNode $other) {
+		return $other instanceof UserPage &&
+			$other->_user == $this->_user; 
+	}	    
 }
 
 ?>

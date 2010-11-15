@@ -25,6 +25,24 @@ use Premanager\IO\Output;
  * A page for adding or editing a project
  */
 abstract class ProjectFormPage extends FormPageNode {
+	private $_nameNeeded;
+
+	// ===========================================================================
+	
+	/**
+	 * Creates a new EditProjectPage
+	 * 
+	 * @param Premanager\Execution\ParentNode $parent the parent node
+	 * @param bool $nameNeeded specifies whether the project has a name
+	 */
+	public function __construct($parent, $nameNeeded) {
+		parent::__construct($parent);
+
+		$this->_nameNeeded = !!$nameNeeded;
+	} 
+
+	// ===========================================================================
+	
 	/**
 	 * Loads the values from POST parameters and validates them
 	 * 
@@ -40,7 +58,7 @@ abstract class ProjectFormPage extends FormPageNode {
 	protected function getValuesFromPOST(array &$errors) {
 		$name = Strings::normalize(Request::getPOST('name'));
 		// Editing or adding a project (not editing the organization)?
-		if (!$this->getModel() || !$this->getModel()->getID()) {
+		if ($nameNeeded) {
 			if (!$name)
 				$errors[] = array('name',
 					Translation::defaultGet('Premanager', 'noProjectNameInputtedError'));
@@ -93,51 +111,6 @@ abstract class ProjectFormPage extends FormPageNode {
 	 */
 	protected function getDefaultValues() {
 		return array();
-	}
-	
-	/**
-	 * Loads the values from a model
-	 * 
-	 * @param mixed $model the model
-	 * @return array the array of values
-	 */
-	protected function getValuesFromModel($model) {
-		return array(
-			'name' => $model->getName(),
-			'title' => $model->getTitle(),
-			'subTitle' => $model->getSubTitle(),
-			'author' => $model->getAuthor(),
-			'copyright' => $model->getCopyright(),
-			'description' => $model->getDescription(),
-			'keywords' => $model->getKeywords());
-	}
-	
-	/**
-	 * Applies the values and gets the response
-	 * 
-	 * Is called when the form is submitted and validated. 
-	 * 
-	 * @param array $values the array of values
-	 * @return Premanager\Execution\Response the response to send
-	 */
-	protected function applyValues(array $values) {
-		// TODO: replace with tree url
-		$projectsURL = $this->getModel() ? $this->getParent()->getParent() :
-			$this->getParent();
-		$projectsURL = $projectsURL->getURL();
-		
-		if ($project = $this->getModel()) {
-			$project->setValues($values['name'], $values['title'],
-				$values['subTitle'], $values['author'], $values['copyright'],
-				$values['description'], $values['keywords']);
-			return new Redirection($projectsURL . '/' .
-				($project->getID() ? rawurlencode($project->getName()) : '-'));
-		} else {
-			$project = Project::createNew($values['name'], $values['title'],
-				$values['subTitle'], $values['author'], $values['copyright'],
-				$values['description'], $values['keywords']);
-			return new Redirection($projectsURL.'/'.$project->getName());
-		}
 	}
 	
 	/**

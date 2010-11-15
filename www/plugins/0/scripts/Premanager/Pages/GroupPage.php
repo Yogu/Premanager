@@ -74,8 +74,6 @@ class GroupPage extends PageNode {
 		return $page;
 	}
 
-	// ===========================================================================
-
 	/**
 	 * Gets the group represented by this page
 	 * 
@@ -84,6 +82,16 @@ class GroupPage extends PageNode {
 	public function getGroup() {
 		return $this->_group;
 	}
+	
+	/**
+	 * Checks if this object represents the same page as $other
+	 * 
+	 * @param Premanager\Execution\PageNode $other
+	 */
+	public function equals(PageNode $other) {
+		return $other instanceof GroupPage &&
+			$other->_group == $this->_group; 
+	}	    
 }
 
 ?>
