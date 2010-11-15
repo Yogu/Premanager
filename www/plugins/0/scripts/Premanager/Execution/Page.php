@@ -52,6 +52,13 @@ class Page extends Response {
 	 */
 	public $title;
 	
+	/**
+	 * An array of tool bar items (Premanager\Execution\ToolBarItem)
+	 * 
+	 * @var array
+	 */
+	public $toolbar = array();
+	
 	// ===========================================================================
 	
 	/**
@@ -145,6 +152,7 @@ class Page extends Response {
 		$template->set('hierarchy', $hierarchy);
 		$template->set('navigationTree', $navigationTree);
 		$template->set('blocks', $this->blocks);
+		$template->set('toolbar', $this->toolbar);
 		$template->set('environment', Environment::getCurrent());
 		$template->set('organization', Project::getOrganization());
 		$template->set('canonicalURLPrefix', URL::fromTemplate(

@@ -22,6 +22,7 @@ Premanager.SmartPageload = {
 				$('navigation-tree').innerHTML = state.navigationTreeTag;
 				$('content').innerHTML = state.contentTag;
 				$('footer').innerHTML = state.footerTag;
+				Premanager.SmartPageload.updateToolBar(state.toolBarTag);
 				Premanager.SmartPageload.replaceLinks();
 			}
 		});
@@ -114,6 +115,7 @@ Premanager.SmartPageload = {
 			var locationDepth = 0;
 			var timeInfo = '';
 			var serversideTime = 0;
+			var toolBar = '';
 			
 			// Title
 			if (child = getChild(node, 'title'))
@@ -125,6 +127,11 @@ Premanager.SmartPageload = {
 			if (child = getChild(node, 'timeinfo')) {
 				timeInfo = child.textContent;
 				serversideTime = child.getAttribute('total');
+			}
+			
+			// Toolbar
+			if (child = getChild(node, 'toolbar')) {
+				toolBar = child.textContent.trim();
 			}
 			
 			// Project
@@ -321,6 +328,7 @@ Premanager.SmartPageload = {
 				}
 				Premanager.SmartPageload.replaceLinks(contentTag);
 
+				// Time Info
 				var totalTime = new Date().getTime() - startTime;
 				var additionalTime = totalTime - serversideTime;
 				var p = $('footer-time-info');
@@ -331,6 +339,9 @@ Premanager.SmartPageload = {
 					footer.appendChild(p);
 				}
 				p.textContent = timeInfo + ' + ' + additionalTime + ' ms';
+
+				// Toolbar
+				Premanager.SmartPageload.updateToolBar(toolBar);
 				
 				// History API
 				Premanager.SmartPageload.pushState(url);
@@ -362,7 +373,6 @@ Premanager.SmartPageload = {
 					} else
 						location.href = url;
 				} catch (exception) {
-					alert(exception);
 					location.href = url;
 				}
 			},
@@ -385,12 +395,30 @@ Premanager.SmartPageload = {
 			navbarTag: $('navbar').innerHTML,
 			navigationTreeTag: $('navigation-tree').innerHTML,
 			contentTag: $('content').innerHTML,
+			toolBarTag: $('toolbar') ? $('toolbar').innerHTML : '',
 			footerTag: $('footer').innerHTML
 		};
 		if (urlChanged)
 			history.pushState(state, document.title, newURL);
 		else
 			history.replaceState(state, document.title, newURL);
+	},
+	
+	updateToolBar: function(html) {
+		var toolBarTag = $('toolbar');
+		if (html != '') {
+			if (!toolBarTag) {
+				toolBarTag = document.createElement('ul');
+				document.body.insertBefore(toolBarTag,
+					$('navigation-tree'));
+				toolBarTag.id = 'toolbar';
+				toolBarTag.className = 'toolbar';
+			}
+				
+			toolBarTag.innerHTML = html;
+			Premanager.SmartPageload.replaceLinks(toolBarTag);
+		} else if (html == '' && toolBarTag != null)
+			toolBarTag.parentNode.removeChild(toolBarTag);
 	}
 }
 

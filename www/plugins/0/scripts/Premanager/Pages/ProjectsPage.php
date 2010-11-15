@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
 use Premanager\QueryList\SortDirection;
@@ -87,6 +88,12 @@ class ProjectsPage extends TreeListPageNode {
 		$body = $template->get();
 		
 		$page->appendBlock(PageBlock::createTable($head, $body));
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/add',
+			Translation::defaultGet('Premanager', 'addProject'), 
+			Translation::defaultGet('Premanager', 'addProjectDescription'),
+			'Premanager/images/tools/add-project.png');
+		
 		return $page;
 	} 
 	

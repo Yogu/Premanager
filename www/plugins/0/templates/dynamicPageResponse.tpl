@@ -27,5 +27,10 @@
 			</row>
 		{/foreach}	
 	</content>
+	<toolbar>
+		{foreach $page->toolbar item}
+			{html $item->getHTML()}
+		{/foreach}
+	</toolbar>
 	<timeinfo total="{html timeInfo(true)}">{html timeInfo()}</timeinfo>
 </response>

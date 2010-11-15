@@ -114,7 +114,7 @@
 		{if count($toolbar)}
 			<ul class="toolbar" id="toolbar">
 				{foreach $toolbar item}
-					<li><a href="{$item->getURL()}"{if $item->getDescription()} title="{html $item->getDescription()}">{html $item->getTitle()}</a></li>
+					{$item->getHTML()}
 				{/foreach}
 			</ul>
 		{/if}
