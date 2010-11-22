@@ -2785,8 +2785,8 @@ INSERT INTO `premanager_0_styles` (`id`, `pluginID`, `isDefault`, `class`, `time
 --
 -- Tabellenstruktur für Tabelle `premanager_0_trees`
 --
--- Erzeugt am: 14. November 2010 um 21:19
--- Aktualisiert am: 14. November 2010 um 21:52
+-- Erzeugt am: 22. November 2010 um 19:31
+-- Aktualisiert am: 22. November 2010 um 19:32
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
@@ -2794,6 +2794,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
   `pluginID` int(10) unsigned NOT NULL,
   `class` varchar(255) COLLATE utf8_bin NOT NULL,
   `scope` enum('organization','projects','both') COLLATE utf8_bin NOT NULL DEFAULT 'both',
+  `key` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`),
@@ -2810,11 +2811,11 @@ CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
 -- Daten für Tabelle `premanager_0_trees`
 --
 
-INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `timestamp`) VALUES
-(1, 0, 'Premanager\\Pages\\UsersPage', 'organization', '2010-11-14 21:12:09'),
-(4, 0, 'Premanager\\Pages\\LoginPage', 'organization', '2010-11-14 21:12:09'),
-(15, 0, 'Premanager\\Pages\\GroupsPage', 'organization', '2010-11-14 21:12:09'),
-(16, 0, 'Premanager\\Pages\\ProjectsPage', 'organization', '2010-11-14 21:12:09');
+INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `key`, `timestamp`) VALUES
+(1, 0, 'Premanager\\Pages\\UsersPage', 'organization', 'users', '2010-11-22 19:31:51'),
+(4, 0, 'Premanager\\Pages\\LoginPage', 'organization', 'login', '2010-11-22 19:31:51'),
+(15, 0, 'Premanager\\Pages\\GroupsPage', 'organization', 'groups', '2010-11-22 19:31:51'),
+(16, 0, 'Premanager\\Pages\\ProjectsPage', 'organization', 'projects', '2010-11-22 19:31:51');
 
 -- --------------------------------------------------------
 

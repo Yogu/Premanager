@@ -30,6 +30,7 @@ final class TreeClass extends Model {
 	private $_plugin;
 	private $_className;
 	private $_scope;
+	private $_key;
 	
 	private static $_instances = array();
 	private static $_count;
@@ -49,7 +50,7 @@ final class TreeClass extends Model {
 	}
 	
 	private static function createFromID($id, $pluginID = null,
-		$className = null, $scope = null) {
+		$className = null, $scope = null, $key = null) {
 		
 		if (\array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
@@ -59,6 +60,8 @@ final class TreeClass extends Model {
 				$instance->_className = $className;
 			if ($instance->_scope === null)
 				$instance->_scope = $scope;
+			if ($instance->_key === null)
+				$instance->_key = $key;
 				
 			return $instance;
 		}
@@ -72,6 +75,7 @@ final class TreeClass extends Model {
 		$instance->_pluginID = $pluginID;
 		$instance->_className = $className;
 		$instance->_scope = $scope;
+		$instance->_key = $key;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -105,15 +109,37 @@ final class TreeClass extends Model {
 	}
 	
 	/**
+	 * Gets a tree class using its key
+	 * 
+	 * @param string $pluginName the plugin name
+	 * @param string $key the key
+	 * @return Premanager\Models\TreeClass
+	 */
+	public static function getByKey($pluginName, $key) {
+		$pluginID = Plugin::getIDFromName($pluginName);
+		$result = DataBase::query(
+			"SELECT tree.id ".
+			"FROM ".DataBase::formTableName('Premanager', 'Trees')." AS tree ".
+			"WHERE tree.pluginID = '$pluginID' AND ".
+				"tree.key = '".DataBase::escape($key)."'");
+		if ($result->next())
+			return self::getByID($result->get('id'));
+		else
+			return null;
+	}
+	
+	/**
 	 * Creates a new tree class and inserts it into data base
 	 *
 	 * @param Premanager\Models\Plugin $plugin the plugin that registers this
 	 *   tree class             
 	 * @param string $className the class name for the tree
 	 * @param int $scope enum Premanager\Models\TreeClassScope
+	 * @param string $key a unique string to identify the tree class within plugin
+	 *   context
 	 * @return Premanager\Models\TreeClass
 	 */
-	public static function createNew(Plugin $plugin, $className, $scope) {
+	public static function createNew(Plugin $plugin, $className, $scope, $key) {
 		$className = \trim($className);
 		
 		if (!$plugin)
@@ -131,6 +157,11 @@ final class TreeClass extends Model {
 				throw new ArgumentException('The class specified by $className '.
 					'does not inherit from Premanager\Execution\PageNode', 'className');
 		}
+		
+		// Check if the key already exists
+		if ($key && self::getByKey($plugin->getName(), $key))
+			throw new ArgumentException('The key \''.$key.'\' already exists for '.
+				'plugin '.$plugin->getName(), 'key');
 	
 		switch ($scope) {
 			case TreeClassScope::BOTH:
@@ -154,7 +185,7 @@ final class TreeClass extends Model {
 				"'$dbScope'");
 		$id = DataBase::insertID();
 		
-		$instance = self::createFromID($id, $plugin, $className);
+		$instance = self::createFromID($id, $plugin, $className, $key);
 
 		if (self::$_count !== null)
 			self::$_count++;	
@@ -321,7 +352,7 @@ final class TreeClass extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT tree.pluginID, tree.class, tree.scope ".    
+			"SELECT tree.pluginID, tree.class, tree.scope, tree.key ".    
 			"FROM ".DataBase::formTableName('Premanager', 'Trees')." AS tree ".
 			"WHERE tree.id = '$this->_id'");
 		
@@ -330,6 +361,7 @@ final class TreeClass extends Model {
 		
 		$this->_pluginID = $result->get('pluginID');
 		$this->_className = $result->get('class');
+		$this->_key = $result->get('key');
 		
 		$dbScope = $result->get('scope');
 		switch ($dbScope) {

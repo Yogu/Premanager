@@ -1,6 +1,9 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\IO\DataBase\DataBase;
+use Premanager\Models\TreeClassScope;
+use Premanager\Models\TreeClass;
 use Premanager\Models\Plugin;
 use Premanager\Strings;
 use Premanager\Models\Project;
@@ -310,6 +313,72 @@ abstract class PageNode extends Module {
 		}
 		return $navigationTree;
 	}
+	
+	/**
+	 * Gets the url to a page node that contains the specified tree
+	 * 
+	 * @param string $pluginName the name of the plugin that owns the tree class
+	 * @param string $treeClassKey the key for the key class
+	 * @param Premanager\Models\Project $project the project for the page node
+	 * @return string the url
+	 * @throws ArgumentException the tree class is PROJECTS, but $project is not
+	 *   specified or the organization project
+	 */
+	public static function getTreeURL($pluginName, $treeClassKey, $project = null)
+	{
+		$treeClass = TreeClass::getByKey($pluginName,$treeClassKey);
+		
+		if (!($project instanceof Project)) {
+			$project = Project::getOrganization();
+		}
+		
+		if (!$project->getID() &&
+			$treeClass->getScope() == TreeClassScope::PROJECTS)
+		{
+			throw new ArgumentException('$project must be a '.
+				'Premanager\Models\Project and not the organization when the tree '.
+				'class scope is PROJECTS');
+		}
+		
+		static $cache;
+		if (!$cache)
+			$cache = array();
+
+		$key = $treeClass->getID().'_'.$project->getID();
+		if (array_key_exists($key, $cache))
+			return $cache[$key];
+		else {     
+			$result = DataBase::query(				
+				"SELECT node.id, node.parentID ".
+				"FROM ".DataBase::formTableName('Premanager', 'Trees')." AS tree ".
+				"INNER JOIN ".DataBase::formTableName('Premanager', 'Nodes').
+					" AS node ".
+					"ON node.treeID = tree.id ".
+					"AND node.projectID = '".$project->getID()."' ".
+				"WHERE tree.id = '".$treeClass->getID()."'");
+					
+			$nodeID = $result->get('id');
+			$url = '';
+			while ($node) {   
+				$result = DataBase::query(
+					"SELECT node.parentID, translation.name ".
+					"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ",
+					/* translating */
+					"WHERE node.id = '$nodeID' ".
+						"AND node.parentID != '0'");
+				if ($result->next()) {
+					if ($url)
+						$url = '/'.$url;
+					$url = rawurlencode($result->get('name')).$url;
+					$nodeID = $result->get('parentID');
+				} else
+					break;
+			}           
+		}
+		
+		$cache[$key] = $url;
+		return $url;	
+	} 
 }
 
 ?>
