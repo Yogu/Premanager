@@ -20,9 +20,9 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that allows to edit an existing project
+ * A page that asks whether to delete a project
  */
-class EditProjectPage extends ProjectFormPage {	
+class DeleteProjectPage extends PageNode {	
 	private $_project;
 
 	// ===========================================================================
@@ -34,7 +34,10 @@ class EditProjectPage extends ProjectFormPage {
 	 * @param Premanager\Models\Project $project the project to edit
 	 */
 	public function __construct($parent, Project $project) {
-		parent::__construct($parent, $project);
+		if (!$project->getID())
+			throw new ArgumentException('The organization can not be deleted');
+		
+		parent::__construct($parent, $project->getID() != 0);
 
 		$this->_project = $project;
 	} 
@@ -47,7 +50,7 @@ class EditProjectPage extends ProjectFormPage {
 	 * @return string
 	 */
 	public function getName() {
-		return 'edit';
+		return 'delete';
 	}
 	
 	/**
@@ -57,49 +60,27 @@ class EditProjectPage extends ProjectFormPage {
 	 * @return string
 	 */
 	public function getTitle() {
-		return Translation::defaultGet('Premanager', 'editProject');
+		return Translation::defaultGet('Premanager', 'deleteProject');
 	}
 	
 	/**
-	 * Applies the values and gets the response
+	 * Performs a call of this page and creates the response object
 	 * 
-	 * Is called when the form is submitted and validated. 
-	 * 
-	 * @param array $values the array of values
-	 * @return Premanager\Execution\Response the response to send
+	 * @return Premanager\Execution\Response the response object to send
 	 */
-	protected function applyValues(array $values) {
-		$this->_project->setValues($values['name'], $values['title'],
-			$values['subTitle'], $values['author'], $values['copyright'],
-			$values['description'], $values['keywords']);
-		return new Redirection($this->getParent()->getURL());
-	}
-	
-	/**
-	 * Gets the values for a form without POST data
-	 * 
-	 * @return array the array of values
-	 */
-	protected function getDefaultValues() {
-		return array(
-			'name' => $this->_project->getName(),
-			'title' => $this->_project->getTitle(),
-			'subTitle' => $this->_project->getSubTitle(),
-			'author' => $this->_project->getAuthor(),
-			'copyright' => $this->_project->getCopyright(),
-			'description' => $this->_project->getDescription(),
-			'keywords' => $this->_project->getKeywords());
-	}
-	
-	/**
-	 * Gets the template used for the form
-	 * 
-	 * @return Premanager\Execution\Template the template
-	 */
-	protected function getTemplate() {
-		$template = parent::getTemplate();
-		$template->set('project', $this->_project);
-		return $template;
+	public function getResponse() {
+		if (Request::getPOST('confirm')) {	
+			$this->_project->delete();
+			return new Redirection($this->getParent()->getParent()->getURL());
+		} else {
+			$page = new Page($this);
+			$template = new Template('Premanager', 'confirmation');
+			$template->set('message', Translation::defaultGet('Premanager',
+				'deleteProjectMessage', array('title' => $this->_project->getTitle(),
+				'url' => $this->getParent()->getURL())));
+			$page->createMainBlock($template->get());
+			return $page;
+		}
 	}
 	
 	/**
@@ -108,7 +89,7 @@ class EditProjectPage extends ProjectFormPage {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof EditProjectPage &&
+		return $other instanceof DeleteProjectPage &&
 			$other->_project == $this->_project; 
 	}	    
 }

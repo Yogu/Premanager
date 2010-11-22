@@ -25,7 +25,7 @@ use Premanager\IO\Output;
  * A page for adding or editing a project
  */
 abstract class ProjectFormPage extends FormPageNode {
-	private $_nameNeeded;
+	private $_project;
 
 	// ===========================================================================
 	
@@ -33,12 +33,12 @@ abstract class ProjectFormPage extends FormPageNode {
 	 * Creates a new EditProjectPage
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
-	 * @param bool $nameNeeded specifies whether the project has a name
+	 * @param Premanager\Models\Project the edited project, if editing a project
 	 */
-	public function __construct($parent, $nameNeeded) {
+	public function __construct($parent, $project) {
 		parent::__construct($parent);
 
-		$this->_nameNeeded = !!$nameNeeded;
+		$this->_project = $project;
 	} 
 
 	// ===========================================================================
@@ -58,14 +58,14 @@ abstract class ProjectFormPage extends FormPageNode {
 	protected function getValuesFromPOST(array &$errors) {
 		$name = Strings::normalize(Request::getPOST('name'));
 		// Editing or adding a project (not editing the organization)?
-		if ($nameNeeded) {
+		if (!$this->_project || $this->_project->getID()) {
 			if (!$name)
 				$errors[] = array('name',
 					Translation::defaultGet('Premanager', 'noProjectNameInputtedError'));
 			else if (!Project::isValidName($name))
 				$errors[] = array('name',
 					Translation::defaultGet('Premanager', 'projectNameInvalidError'));
-			else if (!Project::isNameAvailable($name, $this->getModel()))
+			else if (!Project::isNameAvailable($name, $this->_project))
 				$errors[] = array('name', Translation::defaultGet('Premanager',
 					'projectNameAlreadyExistsError'));
 		}

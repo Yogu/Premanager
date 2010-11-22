@@ -30,10 +30,10 @@ class ProjectPage extends PageNode {
 	// ===========================================================================
 	
 	/**
-	 * Creates a new page node
+	 * Creates a new ProjectPage
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
-	 * @param Premanager\Models\Group $parent the group to view
+	 * @param Premanager\Models\Project $project the displayed project
 	 */
 	public function __construct($parent, Project $project) {
 		parent::__construct($parent);
@@ -52,6 +52,8 @@ class ProjectPage extends PageNode {
 	public function getChildByName($name) {
 		if ($name == 'edit')
 			return new EditProjectPage($this, $this->_project);
+		if ($name == 'delete' && $this->_project->getID())
+			return new DeleteProjectPage($this, $this->_project);
 	}
 	
 	/**
@@ -64,7 +66,11 @@ class ProjectPage extends PageNode {
 	 * @return array an array of the child Premanager\Execution\PageNode's
 	 */
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
-		return array(new EditProjectPage($this, $this->_project));
+		$list = array();
+		$list[] = new EditProjectPage($this, $this->_project);
+		if ($this->_project->getID())
+			$list[] = new DeleteProjectPage($this, $this->_project);
+		return $list;
 	}
 	
 	/**
@@ -104,6 +110,12 @@ class ProjectPage extends PageNode {
 			Translation::defaultGet('Premanager', 'editProject'), 
 			Translation::defaultGet('Premanager', 'editProjectDescription'),
 			'Premanager/images/tools/edit.png');
+		
+		if ($this->_project->getID())
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/delete',
+				Translation::defaultGet('Premanager', 'deleteProject'), 
+				Translation::defaultGet('Premanager', 'deleteProjectDescription'),
+				'Premanager/images/tools/delete.png');
 			
 		return $page;
 	}

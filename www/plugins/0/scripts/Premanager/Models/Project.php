@@ -307,7 +307,7 @@ final class Project extends Model {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'name' => array(DataType::STRING, 'getName', '*name'),
+				'name' => array(DataType::STRING, 'getName', 'name'),
 				'title' => array(DataType::STRING, 'getTitle', '*title'),
 				'subTitle' => array(DataType::STRING, 'getSubTitle', '*subTitle'),
 				'author' => array(DataType::STRING, 'getAuthor', '*author'),
@@ -538,16 +538,12 @@ final class Project extends Model {
 	}      
 	
 	/**
-	 * Deletes this project
-	 *
-	 * This object will afterwards "seem to be deleted", its methods will not 
-	 * work. Make sure that there are no other instances of Project containing
-	 * this deleted object, because they will not be notified.
+	 * Deletes and disposes this project
 	 */
 	public function delete() {         
 		$this->checkDisposed();
 			
-		DataBaseHelper::delete('Premanager', 'Projects', 'projectID', 0, $this->_id);
+		DataBaseHelper::delete('Premanager', 'Projects', 0, $this->_id);
 			    
 		// Delete project-specified options
 		DataBase::query(
@@ -556,26 +552,36 @@ final class Project extends Model {
 			
 		// Delete structure
 		$result = DataBase::query(
-			"SELECT node.nodeID ".
+			"SELECT node.id ".
 			"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
 			"WHERE node.projectID = '$this->_id'");
 		while ($result->next()) {
 			// Delete this node
-			DataBaseHelper::delete('Premanager', 'StructureNodes', 'nodeID',
+			DataBaseHelper::delete('Premanager', 'Nodes',
 				DataBaseHelper::IS_TREE,
-				$result->get('nodeID'));      
+				$result->get('id'));      
 				    
 			// Delete group permissions
 			DataBase::query(
 				"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
-				"WHERE nodeID = '".$result->get('nodeID')."'");
+				"WHERE nodeID = '".$result->get('id')."'");
+		}
+		
+		// Delete groups
+		$list = Group::getGroups();
+		$list = $list->filter(
+			$list->exprEqual(
+				$list->exprMember('project'),
+				$this));
+		foreach ($list as $group) {
+			$group->delete();
 		}
 
 		unset(self::$_instances[$this->_id]);
 		if (self::$_count !== null)
 			self::$_count--;	
 			
-		$this->_dispose();
+		$this->dispose();
 	}
 	
 	/**

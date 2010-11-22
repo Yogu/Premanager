@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Premanager;
@@ -29,7 +30,7 @@ class AddProjectPage extends ProjectFormPage {
 	 * @param Premanager\Execution\ParentNode $parent the parent node
 	 */
 	public function __construct($parent) {
-		parent::__construct($parent, true ); // name needed
+		parent::__construct($parent, null); // not editing a project
 	} 
 
 	// ===========================================================================
