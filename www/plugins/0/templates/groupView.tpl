@@ -10,6 +10,11 @@
 	</dl>  
 
 	<dl>
+		<dt>{string Premanager label array(label=string(Premanager groupProject))}</dt>
+		<dd><a href="./admin/projekte/{if $group->getProject()->getID()}{url $group->getProject()->getName()}{else}-{/if}">{html $group->getProject()->getTitle()}</a></dd>
+	</dl> 
+
+	<dl>
 		<dt>{string Premanager label array(label=string(Premanager groupMemberCountLabel))}</dt>
 		<dd>{$group->getMemberCount()}</dd>
 	</dl>

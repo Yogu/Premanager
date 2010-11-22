@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Project;
 use Premanager\Debug\Debug;
 use Premanager\QueryList\SortRule;
 use Premanager\Execution\TreeListPageNode;
@@ -29,9 +30,13 @@ class GroupsPage extends TreeListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		$group = Group::getByName($name);
-		if ($group)
-			return new GroupPage($this, $group);
+		if ($name == '-')
+			return new ProjectGroupsPage($this, Project::getOrganization());
+		else {
+			$project = Project::getByName($name);
+			if ($project)
+			return new ProjectGroupsPage($this, $project);
+		}
 	}
 	
 	/**
@@ -46,12 +51,12 @@ class GroupsPage extends TreeListPageNode {
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
 		$referenceModel = $referenceNode instanceof GroupPage ?
 			$referenceNode->getGroup() : null;
-		$models = $this->getChildrenHelper(self::getList(), $referenceModel,
+		$models = $this->getChildrenHelper(self::getProjectList(), $referenceModel,
 			$count);
 			
 		$list = array();
 		foreach ($models as $model) {
-			$list[] = new GroupPage($this, $model);
+			$list[] = new ProjectGroupsPage($this, $model);
 		}
 		return $list;
 	}
@@ -88,11 +93,11 @@ class GroupsPage extends TreeListPageNode {
 	 * @return int
 	 */
 	protected function countItems() {
-		return self::getList()->getcount();
+		return self::getList()->getCount();
 	}
 	
 	/**
-	 * Gets the list of groups sorted by name
+	 * Gets the list of groups sorted by project and name
 	 * 
 	 * @return Premanager\QueryList\QueryList the list of groups
 	 */
@@ -100,6 +105,22 @@ class GroupsPage extends TreeListPageNode {
 		static $cache;
 		if (!$cache) {
 			$cache = Group::getGroups();
+			$cache = $cache->sort(array(
+				new SortRule($cache->exprMember('project')),
+				new SortRule($cache->exprMember('name'))));
+		}
+		return $cache;
+	}
+	
+	/**
+	 * Gets the list of projects sorted by name
+	 * 
+	 * @return Premanager\QueryList\QueryList the list of projects
+	 */
+	private static function getProjectList() {
+		static $cache;
+		if (!$cache) {
+			$cache = Project::getProjects();
 			$cache = $cache->sort(array(new SortRule($cache->exprMember('name'))));
 		}
 		return $cache;

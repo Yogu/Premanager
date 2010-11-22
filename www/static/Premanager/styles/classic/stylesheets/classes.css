@@ -114,14 +114,20 @@
 	background-color: #CBE7FF;
 }    
 
-.list > li.group-header {
+.list > li.group-header,
+.block > table > tbody > tr.group-header > td {
 	background-color: #FFD07C !important;
 	border: none !important;
 
 	font-size: 16px;
 	font-weight: bold;
 	color: #800000;
-}   
+}
+
+.list > li.group-header > a,
+.block > table > tbody > tr.group-header > td > a {
+	color: #800000;
+}
 
 #sidebar > .block > div > .list > li,
 #sidebar > .block > div > .list > li > a {

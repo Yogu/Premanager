@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 14. November 2010 um 22:16
+-- Erstellungszeit: 22. November 2010 um 20:33
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.1
 
@@ -75,13 +75,13 @@ INSERT INTO `premanager_0_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groups`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 22. November 2010 um 17:33
+-- Aktualisiert am: 22. November 2010 um 17:33
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `projectID` int(10) unsigned NOT NULL,
   `color` char(6) COLLATE utf8_bin NOT NULL,
   `priority` int(10) unsigned NOT NULL,
   `autoJoin` tinyint(1) NOT NULL DEFAULT '0',
@@ -105,19 +105,21 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
 --       `premanager_0_users` -> `id`
 --   `editorID`
 --       `premanager_0_users` -> `id`
+--   `projectID`
+--       `premanager_0_projects` -> `id`
 --
 
 --
 -- Daten für Tabelle `premanager_0_groups`
 --
 
-INSERT INTO `premanager_0_groups` (`id`, `color`, `priority`, `autoJoin`, `isLocked`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
-(1, '5C5C5C', 0, 0, 0, '2010-02-14 00:41:15', '2010-04-24 15:10:06', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:45'),
-(2, '000000', 1, 1, 0, '2010-02-14 00:42:55', '2010-04-24 01:18:01', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:37'),
-(3, '006600', 10, 0, 1, '2010-03-05 23:55:33', '2010-04-24 01:16:54', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-04-29 16:45:54'),
-(6, '339933', 9, 0, 1, '2010-04-26 21:05:08', '2010-05-12 21:51:26', 6, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-12 21:51:26'),
-(11, '000080', 0, 0, 0, '2010-06-11 13:48:24', '2010-07-04 10:28:52', 2, 2, '127.0.0.1', 2, '127.0.0.1', '2010-07-04 12:28:28'),
-(12, 'a04000', 0, 0, 0, '2010-06-11 13:53:56', '2010-06-11 13:57:12', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-11 15:57:12');
+INSERT INTO `premanager_0_groups` (`id`, `projectID`, `color`, `priority`, `autoJoin`, `isLocked`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
+(1, 0, '5C5C5C', 0, 0, 0, '2010-02-14 00:41:15', '2010-04-24 15:10:06', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:45'),
+(2, 0, '000000', 1, 1, 0, '2010-02-14 00:42:55', '2010-04-24 01:18:01', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:37'),
+(3, 0, '006600', 10, 0, 1, '2010-03-05 23:55:33', '2010-04-24 01:16:54', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-04-29 16:45:54'),
+(6, 0, '339933', 9, 0, 1, '2010-04-26 21:05:08', '2010-05-12 21:51:26', 6, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-12 21:51:26'),
+(11, 0, '000080', 0, 0, 0, '2010-06-11 13:48:24', '2010-07-04 10:28:52', 2, 2, '127.0.0.1', 2, '127.0.0.1', '2010-07-04 12:28:28'),
+(12, 0, 'a04000', 0, 0, 0, '2010-06-11 13:53:56', '2010-06-11 13:57:12', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-11 15:57:12');
 
 -- --------------------------------------------------------
 
@@ -711,7 +713,7 @@ INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 14. November 2010 um 21:52
+-- Aktualisiert am: 22. November 2010 um 18:34
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -734,7 +736,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
   KEY `parentID` (`parentID`),
   KEY `projectID` (`projectID`),
   KEY `treeID` (`treeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=145 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=153 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodes`:
@@ -779,7 +781,7 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 -- Tabellenstruktur für Tabelle `premanager_0_nodesname`
 --
 -- Erzeugt am: 14. November 2010 um 22:10
--- Aktualisiert am: 14. November 2010 um 22:14
+-- Aktualisiert am: 22. November 2010 um 18:34
 -- Letzter Check am: 14. November 2010 um 22:10
 --
 
@@ -795,7 +797,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
   KEY `languageID` (`languageID`),
   KEY `name` (`name`),
   KEY `nodeID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=20 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodesname`:
@@ -816,7 +818,6 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (4, 90, 'anmeldungsdaten', 1, 1, '2010-11-14 22:11:44'),
 (5, 92, 'admin', 1, 1, '2010-11-14 22:11:44'),
 (6, 90, 'benutzer', 1, 1, '2010-11-14 22:11:44'),
-(7, 95, '', 1, 1, '2010-11-14 22:11:44'),
 (8, 88, 'struktur', 1, 1, '2010-11-14 22:15:19'),
 (9, 94, 'mein-konto', 1, 1, '2010-11-14 22:11:44'),
 (10, 84, 'passwort-vergessen', 1, 1, '2010-11-14 22:11:44'),
@@ -824,9 +825,7 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (12, 83, 'anmeldung', 1, 1, '2010-11-14 22:14:02'),
 (13, 81, 'gruppen', 1, 1, '2010-11-14 22:14:02'),
 (14, 80, 'benutzer', 1, 1, '2010-11-14 22:14:02'),
-(15, 111, 'avatar', 1, 1, '2010-11-14 22:14:02'),
-(16, 79, '', 1, 1, '2010-11-14 22:14:02'),
-(17, 139, '', 1, 1, '2010-11-14 22:14:02');
+(15, 111, 'avatar', 1, 1, '2010-11-14 22:14:02');
 
 -- --------------------------------------------------------
 
@@ -834,7 +833,7 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_nodestranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 14. November 2010 um 21:52
+-- Aktualisiert am: 22. November 2010 um 18:34
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodestranslation` (
@@ -873,8 +872,9 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (83, 1, 'anmeldung', 'Anmeldung', '2010-06-09 22:28:58'),
 (81, 1, 'gruppen', 'Gruppen', '2010-06-09 22:28:51'),
 (80, 1, 'benutzer', 'Benutzerliste', '2010-06-09 22:29:34'),
-(79, 1, '', 'Startseite', '2010-06-09 22:21:34'),
-(139, 1, '', 'Startseite', '2010-11-14 21:06:08'),
+(144, 1, '', 'Startseite', '2010-11-22 20:32:34'),
+(139, 1, '', 'Startseite', '2010-11-22 20:32:43'),
+(79, 1, '', 'Startseite', '2010-11-22 20:32:34'),
 (111, 1, 'avatar', 'Avatar', '2010-06-26 21:07:54');
 
 -- --------------------------------------------------------
@@ -1039,7 +1039,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projectoptions` (
 -- Tabellenstruktur für Tabelle `premanager_0_projects`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 14. November 2010 um 21:52
+-- Aktualisiert am: 22. November 2010 um 18:34
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projects` (
@@ -1054,7 +1054,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projects` (
   `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=119 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=127 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_projects`:
@@ -1070,9 +1070,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projects` (
 
 INSERT INTO `premanager_0_projects` (`id`, `name`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
 (17, 'zwei-gesichter', '2010-06-09 20:34:29', '2010-07-03 22:12:56', 5, 2, '127.0.0.1', 2, '127.0.0.1', '2010-11-07 21:24:55'),
-(0, '', '2010-07-03 22:17:10', '2010-07-03 22:17:10', 0, 2, '127.0.0.1', 2, '127.0.0.1', '2010-10-07 21:30:37'),
-(118, 'das-puzzle-der-waisen', '2010-11-14 20:51:53', '2010-11-14 20:51:53', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-11-14 21:51:29'),
-(117, 'nightmare', '2010-11-14 20:06:32', '2010-11-14 20:06:32', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-11-14 21:06:08');
+(0, '', '2010-11-22 17:04:27', '2010-11-22 17:04:27', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-11-22 18:04:32'),
+(118, 'das-puzzle-der-waisen', '2010-11-14 20:51:53', '2010-11-15 21:46:54', 2, 0, '127.0.0.1', 0, '127.0.0.1', '2010-11-15 22:46:30'),
+(117, 'nightmare', '2010-11-14 20:06:32', '2010-11-15 21:47:53', 4, 0, '127.0.0.1', 0, '127.0.0.1', '2010-11-15 22:47:29');
 
 -- --------------------------------------------------------
 
@@ -1080,7 +1080,7 @@ INSERT INTO `premanager_0_projects` (`id`, `name`, `createTime`, `editTime`, `ed
 -- Tabellenstruktur für Tabelle `premanager_0_projectsname`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 14. November 2010 um 21:52
+-- Aktualisiert am: 22. November 2010 um 18:34
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -1096,7 +1096,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projectsname` (
   KEY `name` (`name`),
   KEY `inUse` (`inUse`),
   KEY `languageID` (`languageID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=39 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=49 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_projectsname`:
@@ -1112,9 +1112,10 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projectsname` (
 
 INSERT INTO `premanager_0_projectsname` (`nameID`, `id`, `name`, `inUse`, `languageID`, `timestamp`) VALUES
 (21, 17, 'zwei-gesichter', 1, 1, '2010-11-14 01:44:39'),
-(20, 0, '', 1, 1, '2010-06-09 22:27:46'),
-(38, 118, 'das-puzzle-der-waisen', 1, 1, '2010-11-14 21:51:29'),
-(37, 117, 'nightmare', 1, 1, '2010-11-14 21:06:08');
+(40, 118, 'daspuzzlederwaisen', 0, 1, '2010-11-15 22:46:30'),
+(39, 117, 'nightmare-ein-albtraum-wird-wahr', 0, 1, '2010-11-15 22:46:14'),
+(38, 118, 'das-puzzle-der-waisen', 1, 1, '2010-11-15 22:46:30'),
+(37, 117, 'nightmare', 1, 1, '2010-11-15 22:46:14');
 
 -- --------------------------------------------------------
 
@@ -1122,7 +1123,7 @@ INSERT INTO `premanager_0_projectsname` (`nameID`, `id`, `name`, `inUse`, `langu
 -- Tabellenstruktur für Tabelle `premanager_0_projectstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 14. November 2010 um 21:52
+-- Aktualisiert am: 22. November 2010 um 18:34
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projectstranslation` (
@@ -1152,9 +1153,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projectstranslation` (
 
 INSERT INTO `premanager_0_projectstranslation` (`id`, `languageID`, `title`, `subTitle`, `author`, `copyright`, `description`, `keywords`, `timestamp`) VALUES
 (17, 1, 'Zwei Gesichter', 'Trau, schau wem!', 'Jacob Tremmel und Jan Melcher', '© Jacob Tremmel und Jan Melcher, 2009-2010', 'Andrej wurde entführt! Ein anonymes Beweisvideo führt die zwei Detektivinnen Katja und Lena auf eine heiße Spur. Obwohl sie den kindischen Angeber überhaupt nicht leiden können, bleibt ihnen nichts anderes übrig, als diesen Konflikt zu begraben und nach weiteren Hinweisen zu fahnden. Doch dann lernen sie Andrejs zweites Gesicht kennen...', 'Krimi, Detektive, Konflikte, Streich', '2010-11-07 21:35:12'),
-(0, 1, 'Juvenile Studios', '', 'Jacob Tremmel und Jan Melcher', '© Jacob Tremmel und Jan Melcher, 2009-2010', 'Eine Gruppe von filmbegeisterten Kindern und Jugendlichen', 'Film, Jugendliche, Kinder', '2010-11-07 21:36:25'),
+(0, 1, 'Juvenile Studios', '', 'Jacob Tremmel und Jan Melcher', '© Jacob Tremmel und Jan Melcher, 2007-2010', 'Eine Gruppe von jugendlichen Filmemachern im Bottwartal', 'Studio, Filmemacher, Jugendlich, Kind', '2010-11-22 18:04:42'),
 (118, 1, 'Das Puzzle der Waisen', '', 'Jacob Tremmel und Jan Melcher', '© Jacob Tremmel und Jan Melcher, 2007-2010', 'Neun Waisen, in zwei sich konkur­rierenden Straßenbanden, geraten in einen Diebstahl eines vertvollen Mes­sers und eines Bankschlüssels. Gleich­zeitig sind ein Junge der einen Bande, Martin, und ein Mädchen der anderen, Laura, miteinander befreundet, kön­nen aber durch die Rivalitäten der bei­den Banden nicht richtig zueinander finden. Ein spannendes Abenteuer mit vielen Verfolgungen und Streiten beginnt ...', 'Waisen, Straßenbanden, Banden, Rache, Freundschaft', '2010-11-14 21:51:29'),
-(117, 1, 'Nightmare', 'Ein Albtraum wird wahr', 'Jacob Tremmel und Jan Melcher', '© Jacob Tremmel und Jan Melcher, 2007-2010', 'Tine Treibmeier kann es nicht fassen: Jemand ist in ihr Zimmer eingebrochen und hat die Edelsteine geklaut, die sie tags zuvor gefunden hat. Wer ist der Dieb? Zusammen mit ihren Geschwistern Dennie und Charlie macht sie sich auf die Suche ...', 'Edelsteine, Dieb, Kurzfilm', '2010-11-14 21:06:08');
+(117, 1, 'Nightmare', 'Ein Albtraum wird wahr', 'Jacob Tremmel und Jan Melcher', '© Jacob Tremmel und Jan Melcher, 2007-2010', 'Tine Treibmeier kann es nicht fassen: Jemand ist in ihr Zimmer eingebrochen und hat die Edelsteine geklaut, die sie tags zuvor gefunden hat. Wer ist der Dieb? Zusammen mit ihren Geschwistern Dennie und Charlie macht sie sich auf die Suche ...', 'Edelsteine, Dieb, Kurzfilm', '2010-11-15 22:47:29');
 
 -- --------------------------------------------------------
 
@@ -1345,7 +1346,7 @@ INSERT INTO `premanager_0_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) 
 -- Tabellenstruktur für Tabelle `premanager_0_strings`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 13. November 2010 um 21:28
+-- Aktualisiert am: 22. November 2010 um 19:34
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -1356,7 +1357,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=567 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=573 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_strings`:
@@ -1891,7 +1892,13 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (563, 0, 'groupMemberCountLabel', '2010-10-07 21:04:52'),
 (564, 0, 'backendPageTitle', '2010-11-03 13:33:43'),
 (565, 0, 'projects', '2010-11-13 21:14:56'),
-(566, 0, 'projectListMessage', '2010-11-13 21:16:06');
+(566, 0, 'projectListMessage', '2010-11-13 21:16:06'),
+(567, 0, 'projectGroupsTitle', '2010-11-22 18:44:54'),
+(568, 0, 'projectGroupsMessage', '2010-11-22 18:48:28'),
+(569, 0, 'organizationGroupsMessage', '2010-11-22 18:48:55'),
+(570, 0, 'organizationGroupsEmptyMessage', '2010-11-22 18:49:50'),
+(571, 0, 'projectGroupsEmptyMessage', '2010-11-22 18:50:09'),
+(572, 0, 'groupProject', '2010-11-22 19:20:23');
 
 -- --------------------------------------------------------
 
@@ -1899,7 +1906,7 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 13. November 2010 um 21:28
+-- Aktualisiert am: 22. November 2010 um 19:34
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
@@ -2721,31 +2728,37 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (530, 1, 'in {num} Minute{''n if(num!=1)}', '2010-09-10 18:16:43'),
 (529, 1, 'in {num} Sekunde{''n if(num!=1)}', '2010-09-10 18:16:43'),
 (541, 1, '{num} Sekunde{''n if(num!=1)}', '2010-09-10 21:21:11'),
-(542, 1, '{num} Minute{\\''n if(num!=1)}', '2010-09-10 21:25:08'),
+(542, 1, '{num} Minute{''n if(num!=1)}', '2010-11-22 18:54:32'),
 (543, 1, '{num} Stunde{\\''n if(num!=1)}', '2010-09-10 21:25:18'),
-(544, 1, '{num} Tag{\\''e if(num!=1)}', '2010-09-10 21:25:28'),
-(545, 1, '{num} Monat{\\''e if(num!=1)}', '2010-09-10 21:25:36'),
-(546, 1, '{num} Jahr{\\''e if(num!=1)}', '2010-09-10 21:25:43'),
+(544, 1, '{num} Tag{''e if(num!=1)}', '2010-11-22 18:54:32'),
+(545, 1, '{num} Monat{''e if(num!=1)}', '2010-11-22 18:54:32'),
+(546, 1, '{num} Jahr{''e if(num!=1)}', '2010-11-22 18:54:32'),
 (547, 1, '{num} Sek', '2010-09-10 21:26:04'),
 (548, 1, '{num} Min', '2010-09-10 21:26:12'),
 (549, 1, '{num} Std', '2010-09-10 21:26:20'),
-(550, 1, '{num} Tag{\\''e if(num!=1)}', '2010-09-10 21:26:28'),
-(551, 1, '{num} Monat{\\''e if(num!=1)}', '2010-09-10 21:26:34'),
-(552, 1, '{num} Jahr{\\''e if(num!=1)}', '2010-09-10 21:26:42'),
+(550, 1, '{num} Tag{''e if(num!=1)}', '2010-11-22 18:54:32'),
+(551, 1, '{num} Monat{''e if(num!=1)}', '2010-11-22 18:54:32'),
+(552, 1, '{num} Jahr{''e if(num!=1)}', '2010-11-22 18:54:32'),
 (553, 1, 'Du bist momentan als {userName html} angemeldet. Wenn du dich unter einem anderen Namen anmelden willst, musst du dich zuerst abmelden.', '2010-09-26 18:16:55'),
 (554, 1, 'Abmelden', '2010-09-26 18:18:52'),
 (555, 1, 'Zurück zur zuletzt besuchten Seite', '2010-09-26 19:23:37'),
-(556, 1, 'Du bist jetzt als "{userName html}" angemeldet.', '2010-09-26 18:40:57'),
+(556, 1, 'Du bist jetzt als &quot;{userName html}&quot; angemeldet.', '2010-11-22 18:58:46'),
 (558, 1, 'Anmeldung', '2010-10-06 21:30:16'),
 (557, 1, 'Du bist jetzt abgemeldet.', '2010-09-26 19:20:13'),
 (559, 1, 'Abmeldung', '2010-10-06 21:30:22'),
-(560, 1, 'Hier sind alle Benutzergruppen aufgelistet.', '2010-10-06 21:39:36'),
+(560, 1, 'Hier sind die Benutzergruppen aller Projekte aufgelistet. Klicke auf einen Projekttitel, um nur die Gruppen anzuzeigen, die zu diesem Projekt gehören.', '2010-11-22 18:47:37'),
 (561, 1, 'Gruppenname', '2010-10-06 21:43:01'),
 (562, 1, 'Anzahl der Mitglieder', '2010-10-06 21:43:07'),
 (563, 1, 'Anzahl der Mitglieder', '2010-10-06 21:54:12'),
 (564, 1, '(Backend-Seite)', '2010-11-03 13:33:43'),
 (565, 1, 'Projekte', '2010-11-13 21:14:56'),
-(566, 1, 'Auf dieser Seite können die Projekte verwaltet werden.', '2010-11-13 21:15:42');
+(566, 1, 'Auf dieser Seite können die Projekte verwaltet werden.', '2010-11-13 21:15:42'),
+(567, 1, 'Benutzergruppen von {projectTitle}', '2010-11-22 18:44:54'),
+(568, 1, 'Hier sind die Benutzergruppen des Projekts &quot;{projectTitle html}&quot; aufgelistet.', '2010-11-22 18:58:33'),
+(569, 1, 'Hier sind die Benutzergruppen aufgelistet, die keinem Projekt, sondern der Organisation zugeordnet wurden.', '2010-11-22 18:48:55'),
+(570, 1, 'Es wurden noch keine Benutzergruppen für die Organisation erstellt.', '2010-11-22 18:49:50'),
+(571, 1, 'Für das Projekt &quot;{projectTitle html}&quot; wurden noch keine Benutzergruppen erstellt.', '2010-11-22 18:58:33'),
+(572, 1, 'Projekt', '2010-11-22 19:20:23');
 
 -- --------------------------------------------------------
 

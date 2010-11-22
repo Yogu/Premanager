@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\TreeClass;
+
 use Premanager\Premanager;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Execution\PageBlock;
@@ -69,6 +71,8 @@ class GroupPage extends PageNode {
 		$template = new Template('Premanager', 'groupView');
 		$template->set('node', $this);
 		$template->set('group', $this->_group);
+		$template->set('projectsURL',
+			PageNode::getTreeURL('Premanager', 'projects'));
 		
 		$page->createMainBlock($template->get());
 		return $page;

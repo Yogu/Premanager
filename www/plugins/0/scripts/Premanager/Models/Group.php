@@ -24,6 +24,8 @@ use Premanager\QueryList\DataType;
  */
 final class Group extends Model {
 	private $_id;
+	private $_projectID;
+	private $_project;
 	private $_name;
 	private $_title;  
 	private $_color;
@@ -51,7 +53,8 @@ final class Group extends Model {
 	}
 	
 	private static function createFromID($id, $name = null, $title = null,
-		$color = null, $priority = null, $autoJoin = null, $isLocked = null) {
+		$color = null, $priority = null, $autoJoin = null, $isLocked = null,
+		$projectID = null) {
 		
 		if ($name !== null)
 			$name = \trim($name);
@@ -83,6 +86,8 @@ final class Group extends Model {
 				$instance->_hasAvatar = $autoJoin;
 			if ($instance->_isLocked === null)
 				$instance->_isLocked = $isLocked;
+			if ($instance->_projectID === null)
+				$instance->_projectID = $projectID;
 				
 			return $instance;
 		}
@@ -99,6 +104,7 @@ final class Group extends Model {
 		$instance->_priority = $priority;
 		$instance->_autoJoin = $autoJoin;	 
 		$instance->_isLocked = $isLocked;
+		$instance->_projectID = $projectID;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -129,18 +135,23 @@ final class Group extends Model {
 	} 
                                
 	/**
-	 * Gets a group using its name
+	 * Gets a group using its name and the project it is contained by
 	 *
 	 * Returns null if $name is not found
 	 *
+	 * @param Premanager\Models\Project $project the project the group is
+	 *   contained by
 	 * @param string $name name of user
 	 * @return Premanager\Models\Group  
 	 */
-	public static function getByName($name) {
+	public static function getByName(Project $project, $name) {
 		$result = DataBase::query(
 			"SELECT name.id ".            
 			"FROM ".DataBase::formTableName('Premanager', 'GroupsName')." AS name ".
-			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Groups').
+				" AS grp ON grp.id = name.id ".
+			"WHERE grp.projectID = '".$project->getID()."' AND ".
+				"name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$user = self::createFromID($result->get('id'));
 			return $user;
@@ -160,7 +171,7 @@ final class Group extends Model {
 	 * @return Premanager\Models\Group
 	 */
 	public static function createNew($name, $title, $color, $text, $priority,
-		$autoJoin = false, $isLocked = false) {
+		Project $project, $autoJoin = false, $isLocked = false) {
 		$name = Strings::normalize($name);
 		$title = \trim($title);
 		$color = \trim($color);
@@ -192,6 +203,7 @@ final class Group extends Model {
 		$id = DataBaseHelper::insert('Premanager', 'Groups',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
 			array(
+				'projetID' => $project->getID(),
 				'color' => $color,
 				'priority' => $priority,
 				'autoJoin' => $autoJoin,
@@ -203,7 +215,7 @@ final class Group extends Model {
 		);
 		
 		$group = self::createFromID($id, $name, $title, $color, $priority,
-			$autoJoin, $isLocked);
+			$autoJoin, $isLocked, $project->getID());
 		$group->_creator = Premanager::$user;
 		$group->_createTime = new DateTime();
 		$group->_editor = Premanager::$user;
@@ -264,6 +276,7 @@ final class Group extends Model {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => array(DataType::NUMBER, 'getID', 'id'),
+				'project' => array(Project::getDescriptor(), 'getProject', 'projectID'),
 				'name' => array(DataType::STRING, 'getName', '*name'),
 				'title' => array(DataType::STRING, 'getTitle', '*title'),
 				'color' => array(DataType::STRING, 'getColor', 'color'),
@@ -293,6 +306,26 @@ final class Group extends Model {
 	
 		return $this->_id;
 	}
+
+	/**
+	 * Gets the project that contains this group
+	 *
+	 * @return string
+	 */
+	public function getProject() {
+		$this->checkDisposed();
+			
+		if ($this->_project === null) {
+			if ($this->_projectID == null)
+				$this->load();
+			$this->_project = Project::getByID($this->_projectID);
+			if (!$this->_project)
+				throw new CorruptDataException('The project assigned to group '.
+					$this->_id.' (project id: '.$this->_projectID.') does not exist');
+		}
+		$this->load();
+		return $this->_project;	
+	}    
 
 	/**
 	 * Gets the name of this group
@@ -699,6 +732,10 @@ final class Group extends Model {
 			    
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
+			"WHERE groupID = '$this->_id'");     
+			    
+		DataBase::query(
+			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"WHERE groupID = '$this->_id'");   
 			
 		// User's color and title might have changed
@@ -734,8 +771,8 @@ final class Group extends Model {
 	private function load() {
 		$result = DataBase::query(
 			"SELECT translation.name, translation.title, grp.color, grp.priority, ".
-				"grp.autoJoin, grp.isLocked, grp.creatorID, grp.editorID, ".
-				"grp.createTime, grp.editTime ".
+				"grp.autoJoin, grp.isLocked, grp.projectID, grp.creatorID, ".
+				"grp.editorID, grp.createTime, grp.editTime ".
 			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
 			/* translating */
 			"WHERE grp.id = '$this->_id'");
@@ -749,6 +786,7 @@ final class Group extends Model {
 		$this->_priority = $result->get('priority');
 		$this->_autoJoin = !!$result->get('autoJoin');
 		$this->_isLocked = !!$result->get('isLocked');
+		$this->_projectID = $result->get('projectID');
 		$this->_creatorID = $result->get('creatorID');
 		$this->_editorID = $result->get('editorID');
 		$this->_createTime = new DateTime($result->get('createTime'));

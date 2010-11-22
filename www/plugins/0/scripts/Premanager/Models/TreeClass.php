@@ -85,9 +85,6 @@ final class TreeClass extends Model {
 	/**
 	 * Gets a tree class using its id
 	 * 
-	 * Make sure that there is a tree class with this id. Otherwise, the returned
-	 * object will not work as expected.
-	 * 
 	 * @param int $id the id of the tree class
 	 * @return Premanager\Models\TreeClass
 	 */
