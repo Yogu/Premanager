@@ -53,7 +53,7 @@
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/tools.js"></script>
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/window.js"></script>
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/smart-pageload.js"></script>
-		
+		<script type="text/javascript" src="{$staticURLPrefix}Premanager/thirdparty/jscolor/jscolor.js"></script>
 		{$head}
 	</head>
 	

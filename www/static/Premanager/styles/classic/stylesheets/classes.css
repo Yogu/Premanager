@@ -394,8 +394,11 @@ fieldset.buttons button:last-child {
 
 /* ========== Form Inputs ========== */
 
-input[type=text],
-input[type=password],
+input[type=hidden] {
+	display: none;
+}
+
+input,
 textarea,
 select,
 select.fixed-size,
@@ -422,15 +425,14 @@ select {
 	width: auto;
 }
 
-input[type=text].small,
+input.small,
 input[type=password],
 textarea.small,
 select.small {
 	width: 200px;
 }
 
-input[type=text]:hover,
-input[type=password]:hover,
+input:hover,
 textarea:hover,
 select:hover,
 div.wysiwyg > iframe:hover {	
@@ -439,8 +441,7 @@ div.wysiwyg > iframe:hover {
 	outline: none !important;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
+input:focus,
 textarea:focus,
 select:focus,
 div.wysiwyg > iframe:focus {	
@@ -448,27 +449,22 @@ div.wysiwyg > iframe:focus {
 	-webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }         
 
-input[type=text].error,
-input[type=password].error, 
-input[type=file].error,
+input.error,
 textarea.error,
 select.error {
 	background: #FF8080 !important;
 	border: 1px solid #EE6060 !important;
 }           
 
-input[type=text].error:hover,
-input[type=password].error:hover,
+input.error:hover,
 textarea.error:hover,
 select.error:hover {
 	background: #FF8080 !important;
 	border: 1px solid #800000 !important;
 }          
 
-input[type=text].error:focus,
-input[type=text].error:focus:hover,
-input[type=password].error:focus,
-input[type=password].error:focus:hover,
+input.error:focus,
+input.error:focus:hover,
 textarea.error:focus,
 textarea.error:focus:hover,
 select.error:focus,
@@ -477,8 +473,7 @@ select.error:focus:hover {
 	border: 1px solid #EE6060 !important
 }
   
-input[type=text].fullsize,  
-input[type=password].fullsize,
+input.fullsize,  
 textarea.fullsize,
 .wysiwyg.fullsize > iframe {
 	width: 100%;    
@@ -494,12 +489,25 @@ textarea.fullsize,
 	height: 400px;
 }
 
+input[type=checkbox] {
+	width: auto;
+	
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+label > input[type=checkbox] {
+	margin-right: 1ex;
+}       
+
 input[type=submit],
 input[type=reset],
 input[type=button],
 button {
 	padding: 4px 8px;
 	margin-bottom: 4px;
+	width: auto;
 	                      
 	background-color: #FFD159;      
 	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 10px, #FFD159 10px, #FFD159); 
@@ -576,11 +584,7 @@ input[type=reset].main,
 input[type=button].main,
 button.main {
 	font-weight: bold;
-}        
-
-label > input[type=checkbox] {
-	margin-right: 1ex;
-}       
+}     
 
 /* ========== Input Errors ========== */
 
