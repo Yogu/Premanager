@@ -67,8 +67,8 @@ class UsersPage extends TreeListPageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		$list = self::getList()->getRange($this->getstartIndex(), $this->getitemsPerPage(),
-			true);
+		$list = self::getList()->getRange($this->getStartIndex(),
+			$this->getItemsPerPage(), true);
 		
 		$page = new Page($this);
 		$page->title = Translation::defaultGet('Premanager', 'users');

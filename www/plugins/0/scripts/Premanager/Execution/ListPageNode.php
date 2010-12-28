@@ -114,8 +114,11 @@ abstract class ListPageNode extends PageNode {
 	 * @return int
 	 */
 	public function getStartIndex() {
-		if ($this->_startIndex === null)
-			$this->_startIndex = ($this->getpageIndex()-1) * $this->_itemsPerPage;
+		if ($this->_startIndex === null) {
+			$this->_startIndex = ($this->getPageIndex()-1) * $this->_itemsPerPage;
+			if ($this->_startIndex < 0)
+				$this->_startIndex = 0;
+		}
 		return $this->_startIndex;
 	}
 	
@@ -127,8 +130,8 @@ abstract class ListPageNode extends PageNode {
 	public function getPageIndex() {
 		if ($this->_pageIndex === null) {
 			// Check that current page is in page range  
-			if ($this->_pageIndex > $this->getpageCount())
-				$this->_pageIndex = $this->getpageCount();
+			if ($this->_pageIndex > $this->getPageCount())
+				$this->_pageIndex = $this->getPageCount();
 			if ($this->_pageIndex < 1)
 				$this->_pageIndex = 1;
 		}

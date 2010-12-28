@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Debug\Debug;
+
 use Premanager\Execution\ToolBarItem;
 use Premanager\Premanager;
 use Premanager\Execution\TreeListPageNode;
@@ -54,23 +56,6 @@ class UserPage extends PageNode {
 	}
 	
 	/**
-	 * Gets an array of all child page nodes
-	 * 
-	 * @param int $count the number of items the array should contain at most or
-	 *   -1 if all available items should be contained
-	 * @param Premanager\Execution\PageNode $referenceNode the page node that
-	 *   should be always in the array
-	 * @return array an array of the child Premanager\Execution\PageNode's
-	 */
-	public function getChildren($count = -1, PageNode $referenceNode = null) {
-		$list = array();
-		$list[] = new EditUserPage($this, $this->_user);
-		if ($this->_user->getID())
-			$list[] = new DeleteUserPage($this, $this->_user);
-		return $list;
-	}
-	
-	/**
 	 * Gets the name that is used in urls
 	 * 
 	 * @return string
@@ -102,6 +87,17 @@ class UserPage extends PageNode {
 		$template->set('user', $this->_user);
 		
 		$page->createMainBlock($template->get());
+		
+		// Groups		
+		$groups = $this->_user->getGroups();
+		if (count($groups)) {
+			$template = new Template('Premanager', 'userGroupsList');
+			$template->set('groups', $groups);
+			$template->set('node', $this);
+			$page->appendBlock(PageBlock::createSimple(
+				Translation::defaultGet('Premanager', 'userGroupList'),
+				$template->get()));
+		}
 		
 		$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
 			Translation::defaultGet('Premanager', 'editUser'), 

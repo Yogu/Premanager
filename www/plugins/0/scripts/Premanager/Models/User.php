@@ -699,16 +699,13 @@ final class User extends Model {
 		
 		//TODO: implement this with QueryList (problem: queries do not support 
 		// a CONTIANS operator yet)
-			
-		$start = $start ? $start : 0;
-		$count = $count ? $count : 0;
 		
-		if (($start !== null && $count == null) ||
+		if (($start !== null && $count === null) ||
 			($count !== null && $start === null))
 			throw new ArgumentException('Either both $start and $count must '.
 				'be specified or none of them');
 				
-		if ($start === null || $count === null) {
+		if ($start !== null || $count !== null) {
 			if (!Types::isInteger($start) || $start < 0)
 				throw new ArgumentException(
 					'$start must be a positive integer value or null');
@@ -720,15 +717,15 @@ final class User extends Model {
 		$list = array();
 		$result = DataBase::query(
 			"SELECT grp.id ".
-			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
-			/* translating */
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
 				" AS userGroup ".
 				"ON userGroup.groupID = grp.id ".
-				"AND userGroup.userID = '$this->_id' ". 
+				"AND userGroup.userID = '$this->_id' ",
+			/* translating */
 			"ORDER BY LOWER(translation.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = '';
+		$list = array();
 		while ($result->next()) {
 			$group = Group::getByID($result->get('id'));
 			$list[] = $group;

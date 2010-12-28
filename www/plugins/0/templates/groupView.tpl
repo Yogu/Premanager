@@ -11,7 +11,7 @@
 
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager groupProject))}</dt>
-		<dd><a href="./admin/projekte/{if $group->getProject()->getID()}{url $group->getProject()->getName()}{else}-{/if}">{html $group->getProject()->getTitle()}</a></dd>
+		<dd><a href="./{treeURL Premanager projects}/{if $group->getProject()->getID()}{url $group->getProject()->getName()}{else}-{/if}">{html $group->getProject()->getTitle()}</a></dd>
 	</dl> 
 
 	<dl>

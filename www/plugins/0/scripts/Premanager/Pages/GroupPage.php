@@ -21,7 +21,7 @@ use Premanager\IO\Output;
 /**
  * A page that shows information about a group
  */
-class GroupPage extends PageNode {
+class GroupPage extends ListPageNode {
 	/**
 	 * @var Premanager\Models\Group
 	 */
@@ -86,8 +86,20 @@ class GroupPage extends PageNode {
 		$template->set('group', $this->_group);
 		$template->set('projectsURL',
 			PageNode::getTreeURL('Premanager', 'projects'));
-		
 		$page->createMainBlock($template->get());
+		
+		// Members
+		$members = $this->_group->getMembers($this->getStartIndex(),
+			$this->getItemsPerPage());
+			if (count($members)) {
+			$template = new Template('Premanager', 'groupMemberList');
+			$template->set('members', $members);
+			$template->set('node', $this);
+			$body = $template->get();
+			$page->appendBlock(PageBlock::createSimple(
+				Translation::defaultGet('Premanager', 'groupMemberHeader'),
+				$template->get()));
+		}
 		
 		$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
 			Translation::defaultGet('Premanager', 'editGroup'), 
@@ -120,6 +132,15 @@ class GroupPage extends PageNode {
 		return $other instanceof GroupPage &&
 			$other->_group == $this->_group; 
 	}	    
+	
+	/**
+	 * Counts the items
+	 * 
+	 * @return int
+	 */
+	protected function countItems() {
+		return $this->_group->getMemberCount();
+	}
 }
 
 ?>

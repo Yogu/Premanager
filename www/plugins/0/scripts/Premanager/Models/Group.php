@@ -529,37 +529,39 @@ final class Group extends Model {
 	 * @param int $count count of users to return
 	 * @return array
 	 */
-	public function getMembers($start = null, $count = null) {
-		$start = $start ? $start : 0;
-		$count = $count ? $count : 0;
+	public function getMembers($start = null, $count = null) {  
+		$this->checkDisposed();
 		
-		if (($start !== null && $count == null) ||
+		//TODO: implement this with QueryList (problem: queries do not support 
+		// a CONTIANS operator yet)
+		
+		if (($start !== null && $count === null) ||
 			($count !== null && $start === null))
 			throw new ArgumentException('Either both $start and $count must '.
 				'be specified or none of them');
 				
-		if ($start === null || $count === null) {
+		if ($start !== null || $count !== null) {
 			if (!Types::isInteger($start) || $start < 0)
 				throw new ArgumentException(
-					'$start must be a positive integer value or null', 'start');
+					'$start must be a positive integer value or null');
 			if (!Types::isInteger($count) || $count < 0)
 				throw new ArgumentException(
-					'$count must be a positive integer value or null', 'count');
+					'$count must be a positive integer value or null');		
 		}  
 	
 		$list = array();
 		$result = DataBase::query(
-			"SELECT user.userID ".
+			"SELECT user.id ".
 			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 				"AS userGroup ".
 				"ON userGroup.groupID = '$this->_id' ".
-				"AND userGroup.userID = user.userID ".
+				"AND userGroup.userID = user.id ".
 			"ORDER BY LOWER(user.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = '';
+		$list = array();
 		while ($result->next()) {
-			$user = User::getByID($result->get('userID'));
+			$user = User::getByID($result->get('id'));
 			$list[] = $user;
 		}
 		return $list;

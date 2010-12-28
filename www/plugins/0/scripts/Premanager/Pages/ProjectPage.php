@@ -42,20 +42,7 @@ class ProjectPage extends PageNode {
 	}
 
 	// ===========================================================================
-	
-	/**
-	 * Gets the child specified by its name
-	 * 
-	 * @param string $name the child's expected name
-	 * @return Premanager\Execution\PageNode the child node or null if not found
-	 */
-	public function getChildByName($name) {
-		if ($name == 'edit')
-			return new EditProjectPage($this, $this->_project);
-		if ($name == 'delete' && $this->_project->getID())
-			return new DeleteProjectPage($this, $this->_project);
-	}
-	
+		
 	/**
 	 * Gets an array of all child page nodes
 	 * 

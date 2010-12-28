@@ -326,7 +326,10 @@ abstract class PageNode extends Module {
 	 */
 	public static function getTreeURL($pluginName, $treeClassKey, $project = null)
 	{
-		$treeClass = TreeClass::getByKey($pluginName,$treeClassKey);
+		$treeClass = TreeClass::getByKey($pluginName, $treeClassKey);
+		if (!$treeClass)
+			throw new ArgumentException('There is no tree class assigned to the key '.
+				$pluginName.'.'.$treeClassKey);
 		
 		if (!($project instanceof Project)) {
 			$project = Project::getOrganization();
@@ -343,7 +346,6 @@ abstract class PageNode extends Module {
 		static $cache;
 		if (!$cache)
 			$cache = array();
-
 		$key = $treeClass->getID().'_'.$project->getID();
 		if (array_key_exists($key, $cache))
 			return $cache[$key];
@@ -359,7 +361,7 @@ abstract class PageNode extends Module {
 					
 			$nodeID = $result->get('id');
 			$url = '';
-			while ($node) {   
+			while ($nodeID) {
 				$result = DataBase::query(
 					"SELECT node.parentID, translation.name ".
 					"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ",
@@ -377,7 +379,7 @@ abstract class PageNode extends Module {
 		}
 		
 		$cache[$key] = $url;
-		return $url;	
+		return $url;
 	} 
 }
 

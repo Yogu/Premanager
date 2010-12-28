@@ -126,6 +126,7 @@
 
 .list > li.group-header > a,
 .block > table > tbody > tr.group-header > td > a {
+	background-color: #FFD07C !important;
 	color: #800000;
 }
 

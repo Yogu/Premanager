@@ -1,7 +1,7 @@
 <?php
 
-function Dwoo_Plugin_treeURL(Dwoo $dwoo, $plugin, $tree)
+function Dwoo_Plugin_treeURL(Dwoo $dwoo, $pluginName, $treeClassKey)
 {
-  return Node::getTreeNodeURL($plugin, $tree);
+  return Premanager\Execution\PageNode::getTreeURL($pluginName, $treeClassKey);
 }
 ?>

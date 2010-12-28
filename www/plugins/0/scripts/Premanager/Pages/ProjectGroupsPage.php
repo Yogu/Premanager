@@ -136,7 +136,7 @@ class ProjectGroupsPage extends ListPageNode {
 			$template = new Template('Premanager', 'groupListBody');
 			$template->set('groups', $list);
 			$template->set('node', $this);
-			$template->set('isProjectView', true); // no group headers
+			$template->set('isProjectView', true); // no project headers
 			$body = $template->get();
 			
 			$page->appendBlock(PageBlock::createTable($head, $body));
