@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
 use Premanager\QueryList\SortRule;
@@ -48,6 +49,8 @@ class ProjectGroupsPage extends ListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
+		if ($name == '+')
+			return new AddGroupPage($this, $this->_project);
 		$group = Group::getByName($this->_project, $name);
 		if ($group)
 			return new GroupPage($this, $group);
@@ -138,6 +141,11 @@ class ProjectGroupsPage extends ListPageNode {
 			
 			$page->appendBlock(PageBlock::createTable($head, $body));
 		}
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
+			Translation::defaultGet('Premanager', 'addGroup'), 
+			Translation::defaultGet('Premanager', 'addGroupDescription'),
+			'Premanager/images/tools/add-group.png');
 		
 		return $page;
 	} 

@@ -1,8 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\ToolBarItem;
 use Premanager\Models\TreeClass;
-
 use Premanager\Premanager;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Execution\PageBlock;
@@ -61,6 +61,19 @@ class GroupPage extends PageNode {
 	}
 	
 	/**
+	 * Gets the child specified by its name
+	 * 
+	 * @param string $name the child's expected name
+	 * @return Premanager\Execution\PageNode the child node or null if not found
+	 */
+	public function getChildByName($name) {
+		if ($name == 'edit')
+			return new EditGroupPage($this, $this->_group);
+		if ($name == 'delete' && $this->_group->getID())
+			return new DeleteGroupPage($this, $this->_group);
+	}
+	
+	/**
 	 * Performs a call of this page and creates the response object
 	 * 
 	 * @return Premanager\Execution\Response the response object to send
@@ -75,6 +88,17 @@ class GroupPage extends PageNode {
 			PageNode::getTreeURL('Premanager', 'projects'));
 		
 		$page->createMainBlock($template->get());
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
+			Translation::defaultGet('Premanager', 'editGroup'), 
+			Translation::defaultGet('Premanager', 'editGroupDescription'),
+			'Premanager/images/tools/edit.png');
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/delete',
+			Translation::defaultGet('Premanager', 'deleteGroup'), 
+			Translation::defaultGet('Premanager', 'deleteGroupDescription'),
+			'Premanager/images/tools/delete.png');
+				
 		return $page;
 	}
 

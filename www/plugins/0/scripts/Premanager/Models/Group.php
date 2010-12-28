@@ -192,10 +192,12 @@ final class Group extends Model {
 				'$color is an empty string or contains only whitespaces', 'color');
 		if (!self::isValidColor($color))
 			throw new FormatException(
-				'$color is not a valid hexadecimal RRGGBB color', 'color');      
-		if (!Types::isInteger($priority) || $priority < 0)
+				'$color is not a valid hexadecimal RRGGBB color', 'color');    
+		if ($project->getID())
+			$priority = 0;  
+		else if (!Types::isInteger($priority) || $priority < 0)
 			throw new ArgumentException(
-				'$priority must be a positive integer value', 'priority');
+				'$priority must be a nonnegative integer value', 'priority');
 
 		$id = DataBaseHelper::insert('Premanager', 'Groups',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
@@ -253,9 +255,9 @@ final class Group extends Model {
 	 * Note: this does NOT check whether the name is valid (see isValidName())
 	 *
 	 * @param $name name to check 
+	 * @param Premanager\Models\Project $project the project whose groups to scan
 	 * @param Premanager\Models\Group|null $ignoreThis a group which may have
 	 *   the name; it is excluded
-	 * @param Premanager\Models\Project $project the project whose groups to scan
 	 * @return bool true, if $name is available
 	 */
 	public static function isNameAvailable($name, Project $project,
@@ -600,10 +602,12 @@ final class Group extends Model {
 		$title = \trim($title);
 		$color = \trim($color);
 		$text = \trim($text);
-		if ($priority === null)
-			$priority = $this->getpriority();  
+		if ($this->getProject()->getID())
+			$priority = 0;
+		else if ($priority === null)
+			$priority = $this->getPriority();
 		if ($autoJoin === null)
-			$autoJoin = $this->getautoJoin();
+			$autoJoin = $this->getAutoJoin();
 		else			
 			$autoJoin = !!$autoJoin;
 		
@@ -629,7 +633,7 @@ final class Group extends Model {
 				'$color is not a valid hexadecimal RRGGBB color', 'color');
 		if (!Types::isInteger($priority) || $priority < 0)
 			throw new ArgumentException(
-				'$priority must be a positive integer value', 'priority');
+				'$priority must be a nonnegative integer value', 'priority');
 			
 		DataBaseHelper::update('Premanager', 'Groups', 
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
@@ -643,7 +647,7 @@ final class Group extends Model {
 				'title' => $title,
 				'text' => $text),
 			$this->getProject()->getID()
-		);           
+		);
 		
 		$this->_name = $name;
 		$this->_title = $title;	
@@ -651,9 +655,11 @@ final class Group extends Model {
 		$this->_text = $text;     
 		$this->_priority = $priority;	
 		$this->_autoJoin = $autoJoin;
-		
 		$this->_editTime = new DateTime();
 		$this->_editor = Environment::getCurrent()->getUser();
+		
+		// User's color and title might have changed
+		User::clearAllCache();
 	}     
 	   
 	/**
