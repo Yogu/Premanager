@@ -1,26 +1,29 @@
 <?php
 
 function Dwoo_Plugin_formElement_compile(Dwoo_Compiler $compiler, $name, $label,
-	$description = '', $type = '')
+	$description = '', $type = '', $attributes = array())
 {
 	$error = "\$this->scope['errors'][$name]";
 	$value = "htmlspecialchars(\$this->scope['values'][$name])";
-	$attributes = "'name=\"'.".$name.".'\" id=\"form-'.".$name.".'\"'.".
-		"($error ? ' class=\"error\"' : '')";
+	$attr = "'name=\"'.".$name.".'\" id=\"form-'.".$name.".'\"'.".
+		"($error ? ' class=\"error\"' : '').".
+		"' '.implode(' ', array_map(function(\$k, \$v){".
+		"return \$k.'=\"'.htmlspecialchars(\$v).'\"';}, array_keys($attributes), ".
+		"$attributes))";
 	
 	switch ($type) {
 		case "'textarea'":
-			$element = "'<textarea '.$attributes.'>'.$value.'</textarea>'";
+			$element = "'<textarea '.$attr.'>'.$value.'</textarea>'";
 			break;
 		case "'checkbox'":
 			$element =
 				"'<label for=\"form-'.$name.'\">'.".
-				"'<input '.$attributes.' type=\"checkbox\"'.".
+				"'<input '.$attr.' type=\"checkbox\"'.".
 				"($value ? ' checked=\"checked\"' : '').' />'.$label.'</label>'";
 			$hideDT = true;
 			break;
 		default:
-			$element = "'<input '.$attributes.' type=\"'.$type.'\" ".
+			$element = "'<input '.$attr.' type=\"'.$type.'\" ".
 				"value=\"'.$value.'\" />'";
 	}
 	
