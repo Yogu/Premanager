@@ -1,10 +1,9 @@
 <?php                 
 namespace Premanager\Models;
 
+use Premanager\Execution\Environment;
 use Premanager\NameConflictException;
-
 use Premanager\IO\DataBase\DataBaseHelper;
-
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\DateTime;
@@ -199,7 +198,8 @@ final class Group extends Model {
 				'$priority must be a positive integer value', 'priority');
 
 		$id = DataBaseHelper::insert('Premanager', 'Groups',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
+			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
+			DataBaseHelper::IS_TREE /* for project */, $name,
 			array(
 				'color' => $color,
 				'priority' => $priority,
@@ -213,15 +213,13 @@ final class Group extends Model {
 		
 		$group = self::createFromID($id, $name, $title, $color, $priority,
 			$autoJoin, $project->getID());
-		$group->_creator = Premanager::$user;
+		$group->_creator = Environment::getCurrent()->getUser();
 		$group->_createTime = new DateTime();
-		$group->_editor = Premanager::$user;
+		$group->_editor = Environment::getCurrent()->getUser();
 		$group->_editTime = new DateTime();
 
 		if (self::$_count !== null)
 			self::$_count++;
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;	
 		
 		return $group;
 	}      
@@ -263,7 +261,7 @@ final class Group extends Model {
 	public static function isNameAvailable($name, Project $project,
 		$ignoreThis = null)
 	{
-		return DataBaseHelper::isNameAvailable('Premanager', 'Group',
+		return DataBaseHelper::isNameAvailable('Premanager', 'Groups',
 			DataBaseHelper::IS_TREE, /* for project id */ $name,
 			($ignoreThis instanceof Group ? $ignoreThis->_id : null),
 			$project->getID());
@@ -655,7 +653,7 @@ final class Group extends Model {
 		$this->_autoJoin = $autoJoin;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Premanager::$user;
+		$this->_editor = Environment::getCurrent()->getUser();
 	}     
 	   
 	/**

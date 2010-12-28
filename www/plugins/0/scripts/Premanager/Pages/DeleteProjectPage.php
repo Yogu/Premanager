@@ -28,16 +28,16 @@ class DeleteProjectPage extends PageNode {
 	// ===========================================================================
 	
 	/**
-	 * Creates a new EditProjectPage
+	 * Creates a new DeleteProjectPage
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
-	 * @param Premanager\Models\Project $project the project to edit
+	 * @param Premanager\Models\Project $project the project to delete
 	 */
 	public function __construct($parent, Project $project) {
 		if (!$project->getID())
 			throw new ArgumentException('The organization can not be deleted');
 		
-		parent::__construct($parent, $project->getID() != 0);
+		parent::__construct($parent);
 
 		$this->_project = $project;
 	} 

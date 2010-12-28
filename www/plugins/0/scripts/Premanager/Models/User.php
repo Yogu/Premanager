@@ -1411,10 +1411,10 @@ final class User extends Model {
 
 		// Update _all_ languages
 		$result = DataBase::query(
-			"SELECT language.languageID ".
+			"SELECT language.id ".
 			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language");
 		while ($result->next()) {
-			$id = $result->get('languageID');
+			$id = $result->get('id');
 			DataBase::query(
 				"INSERT INTO ".
 					DataBase::formTableName('Premanager', 'UsersTranslation')." ".
