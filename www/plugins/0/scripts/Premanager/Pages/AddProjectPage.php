@@ -41,7 +41,7 @@ class AddProjectPage extends ProjectFormPage {
 	 * @return string
 	 */
 	public function getName() {
-		return 'add';
+		return '+';
 	}
 	
 	/**

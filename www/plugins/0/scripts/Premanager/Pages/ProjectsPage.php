@@ -33,7 +33,7 @@ class ProjectsPage extends TreeListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($name == 'add')
+		if ($name == '+')
 			return new AddProjectPage($this);
 		if ($name == '-')
 			return new ProjectPage($this, Project::getOrganization());
@@ -89,7 +89,7 @@ class ProjectsPage extends TreeListPageNode {
 		
 		$page->appendBlock(PageBlock::createTable($head, $body));
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/add',
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
 			Translation::defaultGet('Premanager', 'addProject'), 
 			Translation::defaultGet('Premanager', 'addProjectDescription'),
 			'Premanager/images/tools/add-project.png');
