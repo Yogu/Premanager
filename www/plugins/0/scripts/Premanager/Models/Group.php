@@ -1,6 +1,8 @@
 <?php                 
 namespace Premanager\Models;
 
+use Premanager\NameConflictException;
+
 use Premanager\IO\DataBase\DataBaseHelper;
 
 use Premanager\Module;
@@ -32,7 +34,6 @@ final class Group extends Model {
 	private $_text;
 	private $_priority;
 	private $_autoJoin;
-	private $_isLocked;
 	private $_rights;
 	private $_creator;   
 	private $_creatorID;
@@ -44,7 +45,7 @@ final class Group extends Model {
 	private static $_instances = array();
 	private static $_count;
 	private static $_descriptor;
-	private static $_queryList;             
+	private static $_queryList;
 
 	// ===========================================================================  
 	
@@ -53,8 +54,7 @@ final class Group extends Model {
 	}
 	
 	private static function createFromID($id, $name = null, $title = null,
-		$color = null, $priority = null, $autoJoin = null, $isLocked = null,
-		$projectID = null) {
+		$color = null, $priority = null, $autoJoin = null, $projectID = null) {
 		
 		if ($name !== null)
 			$name = \trim($name);
@@ -63,9 +63,7 @@ final class Group extends Model {
 		if ($color !== null)
 			$color = \trim($color);  
 		if ($autoJoin !== null)
-			$autoJoin = !!$autoJoin;   
-		if ($isLocked !== null)
-			$isLocked = !!$isLocked;      
+			$autoJoin = !!$autoJoin;      
 				
 		if ($priority !== null && (!Types::isInteger($priority) || $priority < 0))
 			throw new ArgumentException(
@@ -84,8 +82,6 @@ final class Group extends Model {
 				$instance->_priority = $priority;
 			if ($instance->_autoJoin === null)
 				$instance->_hasAvatar = $autoJoin;
-			if ($instance->_isLocked === null)
-				$instance->_isLocked = $isLocked;
 			if ($instance->_projectID === null)
 				$instance->_projectID = $projectID;
 				
@@ -103,7 +99,6 @@ final class Group extends Model {
 		$instance->_color = $color;    
 		$instance->_priority = $priority;
 		$instance->_autoJoin = $autoJoin;	 
-		$instance->_isLocked = $isLocked;
 		$instance->_projectID = $projectID;
 		self::$_instances[$id] = $instance;
 		return $instance;
@@ -150,7 +145,7 @@ final class Group extends Model {
 			"FROM ".DataBase::formTableName('Premanager', 'GroupsName')." AS name ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Groups').
 				" AS grp ON grp.id = name.id ".
-			"WHERE grp.projectID = '".$project->getID()."' AND ".
+			"WHERE grp.parentID = '".$project->getID()."' AND ".
 				"name.name = '".DataBase::escape(Strings::unitize($name))."'");
 		if ($result->next()) {
 			$user = self::createFromID($result->get('id'));
@@ -166,24 +161,27 @@ final class Group extends Model {
 	 * @param string $title user title
 	 * @param string $color hexadecimal RRGGBB 
 	 * @param string $text description
+	 * @param int $priority the priority
+	 * @param Premanager\Models\Project $project the project that contains the group
 	 * @param bool $autoJoin
-	 * @param bool $isLocked
 	 * @return Premanager\Models\Group
 	 */
 	public static function createNew($name, $title, $color, $text, $priority,
-		Project $project, $autoJoin = false, $isLocked = false) {
+		Project $project, $autoJoin = false) {
 		$name = Strings::normalize($name);
 		$title = \trim($title);
 		$color = \trim($color);
 		$text = \trim($text);      
 		$autoJoin = !!$autoJoin;  
-		$isLocked = !!$isLocked;
 		
 		if (!$name)
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
-		if (Strings::indexOf($name, '/') !== false)
+		if (!self::isValidName($name))
 			throw new ArgumentException('$name must not contain slashes', 'name');
+		if (!self::isNameAvailable($name, $project))
+			throw new NameConflictException('This name is already assigned to a '.
+				'group in the same project', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');  
@@ -193,8 +191,8 @@ final class Group extends Model {
 		if (!$color)
 			throw new ArgumentException(
 				'$color is an empty string or contains only whitespaces', 'color');
-		if (\preg_match('/[0-9a-f]{6}/i', $color))
-			throw new ArgumentException(
+		if (!self::isValidColor($color))
+			throw new FormatException(
 				'$color is not a valid hexadecimal RRGGBB color', 'color');      
 		if (!Types::isInteger($priority) || $priority < 0)
 			throw new ArgumentException(
@@ -203,19 +201,18 @@ final class Group extends Model {
 		$id = DataBaseHelper::insert('Premanager', 'Groups',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
 			array(
-				'projetID' => $project->getID(),
 				'color' => $color,
 				'priority' => $priority,
-				'autoJoin' => $autoJoin,
-				'isLocked' => $isLocked),
+				'autoJoin' => $autoJoin),
 			array(
 				'name' => $name,
 				'title' => $title,
-				'text' => $text)
+				'text' => $text),
+			$project->getID()
 		);
 		
 		$group = self::createFromID($id, $name, $title, $color, $priority,
-			$autoJoin, $isLocked, $project->getID());
+			$autoJoin, $project->getID());
 		$group->_creator = Premanager::$user;
 		$group->_createTime = new DateTime();
 		$group->_editor = Premanager::$user;
@@ -227,19 +224,50 @@ final class Group extends Model {
 			$instance::$_index = null;	
 		
 		return $group;
+	}      
+
+	/**
+	 * Checks whether the name is a valid group name
+	 * 
+	 * Note: this does NOT check whether the name is available
+	 * (see isNameAvailable())
+	 * 
+	 * @param string $name the name to check
+	 * @return bool true, if the name is valid
+	 */
+	public static function isValidName($name) {
+		return $name && strpos($name, '/') === false;
+	}
+	
+	/**
+	 * Checks whether a string is a valid group color identifier
+	 * 
+	 * @param string $color the color string to check
+	 * @return bool true, if the color string is valid
+	 */
+	public static function isValidColor($color) {
+		return preg_match('/[0-9a-f]{6}/i', $color) == 1;
 	}
 
 	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a group.
+	 * Checks if a name is not already assigned to a group
+	 * 
+	 * Note: this does NOT check whether the name is valid (see isValidName())
 	 *
 	 * @param $name name to check 
+	 * @param Premanager\Models\Group|null $ignoreThis a group which may have
+	 *   the name; it is excluded
+	 * @param Premanager\Models\Project $project the project whose groups to scan
 	 * @return bool true, if $name is available
 	 */
-	public static function staticIsNameAvailable($name) {    	
-		return DataBaseHelper::isNameAvailable('Premanager', 'Group', (string) $name);
-	}       
+	public static function isNameAvailable($name, Project $project,
+		$ignoreThis = null)
+	{
+		return DataBaseHelper::isNameAvailable('Premanager', 'Group',
+			DataBaseHelper::IS_TREE, /* for project id */ $name,
+			($ignoreThis instanceof Group ? $ignoreThis->_id : null),
+			$project->getID());
+	}
 	    
 	/**
 	 * Gets the count of groups
@@ -276,14 +304,13 @@ final class Group extends Model {
 		if (self::$_descriptor === null) {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'project' => array(Project::getDescriptor(), 'getProject', 'projectID'),
+				'project' => array(Project::getDescriptor(), 'getProject', 'parentID'),
 				'name' => array(DataType::STRING, 'getName', '*name'),
 				'title' => array(DataType::STRING, 'getTitle', '*title'),
 				'color' => array(DataType::STRING, 'getColor', 'color'),
 				'text' => array(DataType::STRING, 'getText', '*text'),
 				'priority' => array(DataType::NUMBER, 'getPriority', 'priority'),
 				'autoJoin' => array(DataType::BOOLEAN, 'getAutoJoin', 'autoJoin'),
-				'isLocked' => array(DataType::BOOLEAN, 'getIsLocked', 'isLocked'),
 				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
 				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
 					'createTime'),
@@ -411,21 +438,7 @@ final class Group extends Model {
 		if ($this->_autoJoin === null)
 			$this->load();
 		return $this->_autoJoin;	
-	}                       
-
-	/**
-	 * Gets the true, if this group can only be edited by users with the
-	 * 'lockGrous' right
-	 *
-	 * @return bool
-	 */
-	public function getIsLocked() {
-		$this->checkDisposed();
-			
-		if ($this->_isLocked === null)
-			$this->load();
-		return $this->_isLocked;	
-	}                          
+	}                           
 
 	/**
 	 * Gets all the rights members of this group have
@@ -580,11 +593,9 @@ final class Group extends Model {
 	 * @param int $priority the priority of this group
 	 * @param bool $autoJoin specifies wheater new users automatically join this
 	 *   group
-	 * @param string $isLocked specifies wheater only users with the 'lockGroups'
-	 *   right can edit this group
 	 */
 	public function setValues($name, $title, $color, $text, $priority = null,
-		$autoJoin = null, $isLocked = null) {
+		$autoJoin = null) {
 		$this->checkDisposed();
 			
 		$name = Strings::normalize($name);
@@ -597,16 +608,15 @@ final class Group extends Model {
 			$autoJoin = $this->getautoJoin();
 		else			
 			$autoJoin = !!$autoJoin;
-		if ($isLocked === null)
-			$isLocked = $this->getisLocked();
-		else
-			$isLocked = !!$isLocked;
 		
 		if (!$name)
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
-		if (strpos('/', $name) !== false)
+		if (!self::isValidName($name))
 			throw new ArgumentException('$name must not contain slashes', 'name');
+		if (!self::isNameAvailable($name, $this->getProject(), $this))
+			throw new NameConflictException('This name is already assigned to a '.
+				'group of the same project', $name);
 		if (!$title)
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');
@@ -616,9 +626,9 @@ final class Group extends Model {
 		if (!$color)
 			throw new ArgumentException(
 				'$color is an empty string or contains only whitespaces', 'color');
-		if (!preg_match('/[0-9a-f]{6}/i', $color))
+		if (!self::isValidColor($color))
 			throw new FormatException(
-				'$color is not a valid hexadecimal RRGGBB color');   
+				'$color is not a valid hexadecimal RRGGBB color', 'color');
 		if (!Types::isInteger($priority) || $priority < 0)
 			throw new ArgumentException(
 				'$priority must be a positive integer value', 'priority');
@@ -629,12 +639,12 @@ final class Group extends Model {
 			array(
 				'color' => $color,
 				'priority' => $priority,
-				'autoJoin' => $autoJoin,
-				'isLocked' => $isLocked),
+				'autoJoin' => $autoJoin),
 			array(
 				'name' => $name,
 				'title' => $title,
-				'text' => $text)
+				'text' => $text),
+			$this->getProject()->getID()
 		);           
 		
 		$this->_name = $name;
@@ -643,38 +653,10 @@ final class Group extends Model {
 		$this->_text = $text;     
 		$this->_priority = $priority;	
 		$this->_autoJoin = $autoJoin;
-		$this->_isLocked = $isLocked;  
 		
 		$this->_editTime = new DateTime();
 		$this->_editor = Premanager::$user;
 	}     
-	
-	/**
-	 * Sets wheater this group is locked or not
-	 * 
-	 * This value will be changed in data base and in this object.
-	 *
-	 * @param string $isLocked specifies wheater only users with the 'lockGroups'
-	 *   right can edit this group
-	 */
-	public function setIsLocked($isLocked) {
-		$this->checkDisposed();
-			
-		$isLocked = !!$isLocked;
-			
-		DataBaseHelper::update('Premanager', 'Groups',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
-			$this->_id, null,
-			array(
-				'isLocked' => $isLocked),
-			array()
-		);           
-		
-		$this->_isLocked = $isLocked;
-		
-		$this->_editTime = new DateTime();
-		$this->_editor = Premanager::$user;
-	}   
 	   
 	/**
 	 * Changes the group's rights
@@ -750,28 +732,12 @@ final class Group extends Model {
 		$this->dispose();
 	}  
 
-	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a group. This group's name
-	 * names are excluded, they are available.
-	 *
-	 * @param $name name to check 
-	 * @return bool true, if $name is available
-	 */
-	public function isNameAvailable($name) {   
-		$this->checkDisposed();
-			 	
-		DataBaseHelper::isNameAvailable('Premanager', 'Groups',
-			DataBaseHelper::IGNORE_THIS, (string) $name, $this->_id);
-	}  
-
 	// ===========================================================================       
 	
 	private function load() {
 		$result = DataBase::query(
 			"SELECT translation.name, translation.title, grp.color, grp.priority, ".
-				"grp.autoJoin, grp.isLocked, grp.projectID, grp.creatorID, ".
+				"grp.autoJoin, grp.parentID, grp.creatorID, ".
 				"grp.editorID, grp.createTime, grp.editTime ".
 			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
 			/* translating */
@@ -785,8 +751,7 @@ final class Group extends Model {
 		$this->_color = $result->get('color');
 		$this->_priority = $result->get('priority');
 		$this->_autoJoin = !!$result->get('autoJoin');
-		$this->_isLocked = !!$result->get('isLocked');
-		$this->_projectID = $result->get('projectID');
+		$this->_projectID = $result->get('parentID');
 		$this->_creatorID = $result->get('creatorID');
 		$this->_editorID = $result->get('editorID');
 		$this->_createTime = new DateTime($result->get('createTime'));
@@ -801,9 +766,11 @@ final class Group extends Model {
 		$result = DataBase::query(
 			"SELECT rght.name, plugin.name AS pluginName ".
 			"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." ".
+				"AS plugin ".
 				"ON plugin.pluginID = rght.pluginID ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight')." AS groupRight ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight')." ".
+				"AS groupRight ".
 				"ON groupRight.groupI = '$this->_id' ".
 			"GROUP BY rght.rightID ".
 			"ORDER BY plugin.name ASC, ".

@@ -1386,6 +1386,7 @@ final class User extends Model {
 				"ON userGroup.groupID = grp.id ",
 			/* translating */
 			"WHERE userGroup.userID = '$this->_id' ".
+				"AND grp.parentID = 0 ". // only chose groups of organization
 			"ORDER BY grp.priority DESC ".
 			"LIMIT 0,1");
 		if ($result->next()) {

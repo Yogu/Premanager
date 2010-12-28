@@ -220,6 +220,9 @@ class DataBaseHelper extends Module {
 			else
 				$translatedValues['name'] = $name;
 		}
+		
+		if ($flags & self::IS_TREE)
+			$values['parentID'] = $parentID;
 		   
 		// Prepare query
 		$queryString = '';

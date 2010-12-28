@@ -659,7 +659,8 @@ final class StructureNode extends Model {
 				'hasPanel' => $hasPanel),
 			array(
 				'name' => $name,
-				'title' => $title)
+				'title' => $title),
+			$this->getParent() ? $this->getParent()->getID() : 0
 		);
 		
 		$this->_name = $name;
