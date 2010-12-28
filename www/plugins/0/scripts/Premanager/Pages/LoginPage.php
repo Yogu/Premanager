@@ -4,7 +4,6 @@ namespace Premanager\Pages;
 use Premanager\Models\Session;
 use Premanager\Debug\Debug;
 use Premanager\Event;
-use Premanager\Models\UserStatus;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Execution\Environment;
 use Premanager\Models\StructureNode;
@@ -97,16 +96,12 @@ class LoginPage extends TreePageNode {
 					break;
 				case LoginFailedReason::STATUS:
 					// Show the reason message and a login form
-					switch ($user->getstatus()) {
-						case UserStatus::DISABLED:
-							$text = Translation::defaultGet('Premanager',
-								'loginFailedAccountDisabledMessage');
-							break;
-						case UserStatus::WAIT_FOR_EMAIL:
-							$text = Translation::defaultGet('Premanager',
-								'loginFailedWaitForEmailMessage');
-							break;
-					}
+					if ($user->getEnableOnEmailConfirmation())
+						$text = Translation::defaultGet('Premanager',
+							'loginFailedWaitForEmailMessage');
+					else
+						$text = Translation::defaultGet('Premanager',
+							'loginFailedAccountDisabledMessage');
 					break;
 					
 				case LoginFailedReason::SUCCESSFUL:
@@ -161,7 +156,7 @@ class LoginPage extends TreePageNode {
 		$hidden = (bool) Request::getPOST('hidden');
 		$user = User::getByName($userName);
 		if ($user) {
-			if ($user->getstatus() == UserStatus::ENABLED) {
+			if ($user->isEnabled()) {
 				if ($user->checkPassword($password, $isSecondaryPassword)) {
 					// If there is a session of this user, delete it		
 					$session = Session::getByUser($user);

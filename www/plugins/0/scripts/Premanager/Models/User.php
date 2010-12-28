@@ -1,6 +1,7 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\Execution\Environment;
 use Premanager\IO\Config;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\NameConflictException;
@@ -39,8 +40,6 @@ final class User extends Model {
 	private $_hasAvatar; 
 	private $_avatarMIME;
 	private $_status;   
-	private $_isBot;
-	private $_botIdentifier;
 	private $_hasPersonalSidebar;    
 	private $_email;             
 	private $_unconfirmedEmail;    
@@ -61,7 +60,9 @@ final class User extends Model {
 	private static $_instances = array();
 	private static $_count;
 	private static $_descriptor;
-	private static $_queryList;     
+	private static $_queryList;
+	
+	const EMAIL_PATTERN = '[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]{0,2}[a-z0-9])?';
 
 	// ===========================================================================  
 	
@@ -70,7 +71,7 @@ final class User extends Model {
 	}
 	
 	private static function createFromID($id, $name = null, $title = null,
-		$color = null, $hasAvatar = null, $status = null, $isBot = null) {
+		$color = null, $hasAvatar = null, $status = null) {
 		
 		if ($name !== null)
 			$name = trim($name);
@@ -79,20 +80,7 @@ final class User extends Model {
 		if ($color !== null)
 			$color = trim($color);
 		if ($hasAvatar !== null)
-			$hasAvatar = !!$hasAvatar;    
-		if ($isBot !== null)
-			$isBot = !!$isBot;
-		if ($status !== null) {
-			switch ($status) {
-				case UserStatus::ENABLED:
-				case UserStatus::DISABLED:
-				case UserStatus::WAIT_FOR_EMAIL:
-					break;
-				default:
-					throw new InvalidEnumArgumentException('status', $status,
-						'Premanager\Models\UserStatus');
-			}
-		}   
+			$hasAvatar = !!$hasAvatar;
 		
 		if (array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
@@ -105,9 +93,7 @@ final class User extends Model {
 			if ($hasAvatar !== null)
 				$instance->_hasAvatar = $hasAvatar;
 			if ($status !== null)                
-				$instance->_status = $status;      
-			if ($isBot !== null)
-				$instance->_isBot = $isBot;
+				$instance->_status = $status;    
 				
 			return $instance;
 		}
@@ -123,7 +109,6 @@ final class User extends Model {
 		$instance->_color = $color;    
 		$instance->_hasAvatar = $hasAvatar;	 
 		$instance->_status = $status;	
-		$instance->_isBot = $isBot;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -177,65 +162,46 @@ final class User extends Model {
 	 * Creates a new user and inserts it into data base
 	 *
 	 * @param string $name user name                         
-	 * @param string $password unencoded password 
-	 * @param int $status a Premanager\Objedts\User::STATUS_* value   
-	 * @param string $email the user's email address   
-	 * @param bool $isBot specifies wheater this user is a bot  
-	 * @param string $botIdentfier if $isBot, specifies a regular expression that
-	 *   matches on the bot's user agent (without modifiers and case insensitive) 
-	 * @return Premanager\Models\User
+	 * @param string $password unencoded password    
+	 * @param string $email the user's email address
+	 * @param bool $isEnabled true, if this account can be used to login
+	 * @return Premanager\Models\User the new user
+	 * @throws Premanage\NameConflictOperation the name is already assigned to a
+	 *   user
 	 */
-	public static function createNew($name, $password, $status, $email = '',
-		$isBot = false, $botIdentifier = '') {
+	public static function createNew($name, $password, $email = '',
+		$isEnabled = true)
+	{
 		$name = Strings::normalize($name);
-		$password = \trim($password);
-		$email = \trim($email); 
-		$isBot = !!$isBot;       
-		$botIdentifier = \trim($botIdentifier);
+		$password = trim($password);
+		$email = trim($email);
+		$status = $isEnabled ? 'enabled' : 'disabled';       
 		
 		if (!$name)
 			throw new ArgumentException('$name is an empty string or contains only '.
 				'whitespaces', 'name');
-		if (!self::staticIsNameAvailable($name))
-			throw new NameConflictException('There is already a user with this name',
+		if (!self::isValidName($name))
+			throw new ArgumentException('$name is not a valid user name');
+		if (!self::isNameAvailable($name, $this))
+			throw new NameConflictException('This name is already assigned to a user',
 				$name);
-		if (strpos('/', $name) !== false)
-			throw new ArgumentException('$name must not contain slashes', 'name');   
 		if (!$password)
 			throw new ArgumentException('$password is an empty string or contains '.
 				'only whitespaces', 'password');
-		switch ($status) {
-			case UserStatus::ENABLED:
-			case UserStatus::DISABLED:
-				break;
-			case UserStatus::WAIT_FOR_EMAIL:
-				throw new ArgumentException('WAIT_FOR_EMAIL is only available if '.
-					'there is a unconfirmed email', 'status');
-			default:
-				throw new InvalidEnumArgumentException('status', $status,
-					'Premanager\Models\UserStatus');
-				
-		} 
-				
-		if ($isBot && $botIdentifier != '')
-			throw new ArgumentException('If $isBot is false, $botIdentifier must be '.
-				'null or an empty string', 'botIdentifier');  
 	
 		$id = DataBaseHelper::insert('Premanager', 'Users', 
 			DataBaseHelper::UNTRANSLATED_NAME, $name,
 			array(
 				'registrationTime!' => "NOW()",
-				'registrationIP' => Client::$ip,
-				'password' => $this->encodePassword($password),
+				'registrationIP' => Request::getIP(),
+				'password' => self::encodePassword($password),
 				'email' => $email,
-				'isBot' => $isBot,
-				'botIdentifier' => $botIdentifier,
 				'status' => $status), 
 			array(
 				'title' => '')
 		);
 		
-		$user = self::createFromID($id, $name, null, null, false, $status, $isBot);
+		$user = self::createFromID($id, $name, null, null, false, $status);
 		$user->joinAutoJoinGroups();
 		
 		// Set color and title fields
@@ -246,23 +212,46 @@ final class User extends Model {
 			
 		if (self::$_count !== null)
 			self::$_count++;
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;	
-		
+
 		return $user;
 	}
 
 	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a user.
+	 * Checks whether the name is a valid user name
+	 * 
+	 * Note: this does NOT check whether the name is available
+	 * (see isNameAvailable())
+	 * 
+	 * @param string $name the name to check
+	 * @return bool true, if the name is valid
+	 */
+	public static function isValidName($name) {
+		return $name && strpos($name, '/') === false;
+	}
+
+	/**
+	 * Checks whether the string is a valid email address
+	 * 
+	 * @param string $email the email address to check
+	 * @return bool true, if the email address is valid
+	 */
+	public static function isValidEmail($email) {
+		return preg_match('/^'.self::EMAIL_PATTERN.'$/i', $email) == 1;
+	}
+
+	/**
+	 * Checks if a name is not already assigned to a user
+	 * 
+	 * Note: this does NOT check whether the name is valid (see isValidName())
 	 *
 	 * @param $name name to check 
+	 * @param Premanager\Models\User|null $ignoreThis a user which may have
+	 *   the name; it is excluded
 	 * @return bool true, if $name is available
 	 */
-	public static function staticIsNameAvailable($name) {    	
-		return DataBaseHelper::isNameAvailable('Premanager', 'Users', 'userID',
-			(string) $name);
+	public static function isNameAvailable($name, $ignoreThis = null) {
+		return DataBaseHelper::isNameAvailable('Premanager', 'Users', 0, $name,
+			($ignoreThis instanceof User ? $ignoreThis->_id : null));
 	}
 			 
 	/**
@@ -324,10 +313,8 @@ final class User extends Model {
 				'color' => array(DataType::STRING, 'getColor', 'color'),
 				'hasAvatar' => array(DataType::BOOLEAN, 'getHasAvatar', 'hasAvatar'),
 				'avatarMIME' => array(DataType::STRING, 'getAvatarMIME', 'avatarMIME'),
-				'status' => array(DataType::NUMBER, 'getStatus', 'status'),
-				'isBot' => array(DataType::BOOLEAN, 'getIsBot', 'isBot'),
-				'botIdentifier' => array(DataType::STRING, 'getBotIdentifier',
-					'botIdentifier'),
+				'enabled' => array(DataType::BOOLEAN, 'isEnabled',
+					'!status! = "enabled"'),
 				'hasPersonalSidebar' => array(DataType::BOOLEAN,
 					'getHasPersonalSidebar', 'hasPersonalSidebar'),
 				'email' => array(DataType::STRING, 'getEmail', 'email'),
@@ -337,6 +324,8 @@ final class User extends Model {
 					'getUnconfirmedEmailStartTime', 'unconfirmedEmailStartTime'),
 				'unconfirmedEmailKey' => array(DataType::STRING,
 					'getUnconfirmedEmailKey', 'unconfirmedEmailKey'),
+				'enableOnEmailConfirmation' => array(DataType::BOOLEAN,
+					'getEnableOnEmailConfirmation', '!status! = "waitForEmail"'),
 				'registrationTime' => array(DataType::DATE_TIME, 'getRegistrationTime',
 					'registrationTime'),
 				'registrationIP' => array(DataType::STRING, 'getRegistrationIP',
@@ -444,50 +433,32 @@ final class User extends Model {
 	}                  
 
 	/**
-	 * Gets the current status of this user
+	 * Checks whether this user can be used for login
 	 *
-	 * Enabled user can be used for loggin in, disabled not. WAIT_FOR_EMAIL
-	 * means disabled until the unconfirmed email address is confirmed (then it's 
-	 * automatically changed to ENABLED)
-	 *
-	 * @return int enum (Premanager\Models\UserStatus)
+	 * @return bool true, if the user can be used for login
 	 */
-	public function getStatus() {
+	public function isEnabled() {
 		$this->checkDisposed();
 			
 		if ($this->_status === null)
 			$this->load();
-		return $this->_status;	
-	}                  
+		return $this->_status == 'enabled';	
+	}              
 
 	/**
-	 * Gets true, if this user is a bot
+	 * Checks whether the user is automatically enabled when the email address
+	 * is confirmed
 	 *
-	 * @return bool
+	 * @return bool true, if the user is automatically enabled when the email
+	 *   address is enabled
 	 */
-	public function getIsBot() {
+	public function getEnableOnEmailConfirmation() {
 		$this->checkDisposed();
 			
-		if ($this->_isBot === null)
+		if ($this->_status === null)
 			$this->load();
-		return $this->_isBot;	
-	}                     
-
-	/**
-	 * Gets a regular expressions that matches on the bot's user agent
-	 *
-	 * This regular expression does not contain delimiters or modifiers and is
-	 * always case-insensitive.
-	 *
-	 * @return string
-	 */
-	public function getBotIdentifier() {
-		$this->checkDisposed();
-			
-		if ($this->_botIdentifier === null)
-			$this->load();
-		return $this->_botIdentifier;	
-	}                      
+		return $this->_status == 'waitForEmail';	
+	}
 
 	/**
 	 * Gets true, if this user has its own sidebar
@@ -783,24 +754,7 @@ final class User extends Model {
 			$this->_groupCount = $result->get('count');
 		}
 		return $this->_groupCount;
-	}          
-	
-	/**
-	 * Specifies whether this user is a leader in the specified group
-	 *
-	 * @param Group $group group to chedk
-	 * @return bool
-	 */
-	public function isGroupLeader(Group $group) {      
-		$this->checkDisposed();
-			
-		$result = DataBase::query(
-			"SELECT userGroup.isGroupLeader ".
-			"FROM ".DataBase::formTableName('Premanager', 'UsersGroup')." AS userGroup ".
-			"WHERE userGroup.userID = '$this->_id' ".
-				"AND userGroup.groupID = '$group->getid()'");
-		return $result->get('isGroupLeader');
-	} 
+	}      
 	
 	/**
 	 * Checks if the specifies password is correct for this user
@@ -844,15 +798,22 @@ final class User extends Model {
 	 * This value will be changed in data base and in this object.
 	 *
 	 * @param string $name new user name
+	 * @throws Premanage\NameConflictOperation the name is already assigned to a
+	 *   user
 	 */
 	public function setName($name) {
 		$this->checkDisposed();
 
-		$name = \trim($name);
+		$name = trim($name);
 		
 		if (!$name)
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
+		if (!self::isValidName($name))
+			throw new ArgumentException('$name is not a valid user name');
+		if (!self::isNameAvailable($name, $this))
+			throw new NameConflictException('This name is already assigned to a user',
+				$name);
 
 		// Update guest's name
 	  if (!$this->_id) {
@@ -901,11 +862,12 @@ final class User extends Model {
 				} else
 					return false;
 			};
-		} else {
-			DataBaseHelper::update('Premanager', 'Users',
-				DataBaseHelper::UNTRANSLATED_NAME,
-				$this->_id, $name, array(), array());
-		}
+		} else
+			$data = array('name' => $this->name);
+			
+		DataBaseHelper::update('Premanager', 'Users',
+			DataBaseHelper::UNTRANSLATED_NAME,
+			$this->_id, $name, $data, array(), $callback);
 		
 		$this->_name = $name;
 	}   
@@ -913,40 +875,32 @@ final class User extends Model {
 	/**
 	 * Changes the status
 	 * 
-	 * This value will be changed in data base and in this object.
+	 * Only if an user is enabled it can be used for login.
 	 *
-	 * STATUS_WAIT_FOR_EMAIL can only be used if there is an unconfirmed email
-	 * address set for this user
-	 *
-	 * @param int $status a Premanager\Models\User::STATUS_* value
+	 * @param bool true to enable the user, false to disable it
+	 * @throws Premanager\InvalidOperationException this is the guest account
 	 */
-	public function setStatus($status) {     
+	public function setIsEnabled($value) {     
 		$this->checkDisposed();
-
-		switch ($status) {
-			case UserStatus::ENABLED:
-				$s = 'enabled';
-				break;
-			case UserStatus::DISABLED:
-				$s = 'disabled';
-				break;
-			case UserStatus::WAIT_FOR_EMAIL:
-				if (!$this->getunconfirmedEmail())
-					throw new ArgumentException('WAIT_FOR_EMAIL is only '.
-						'available if there is a unconfirmed email', 'status');
-				$s = 'waitForEmail';
-			default:
-				throw new InvalidEnumArgumentException('status', $status,
-					'Premanager\Models\UserStatus');
-		}
-			
-		DataBaseHelper::update('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
-			array('status' => $s),
-			array()
-		);           
 		
-		$this->_status = $status;
+		if (!$value && !$this->_id)
+			throw new InvalidOperationException(
+				'The guest account can not be disabled');
+		
+		if ($value)
+			$status = "enabled";
+		else
+			$status = "IF(user.status = waitForEmail, waitForEmail, disabled)";
+		
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." AS user ".
+			"SET user.status = ".$status." ".
+			"WHERE user.id = $this->_id");
+		
+		if ($value)
+			$this->_status = 'enabled';
+		else if (!$this->getEnableOnEmailConfirmation())
+			$this->_status = 'disabled';
 	}
 	
 	/**
@@ -971,63 +925,16 @@ final class User extends Model {
 	}     
 	
 	/**
-	 * Changes $isBot and $botIdentifier properties
+	 * Deletes and disposes this user
 	 * 
-	 * This values will be changed in data base and in this object.
-	 *
-	 * If $isBot is false, $botIdentifier must be null.
-	 *
-	 * @param bool $isBot true, if this user is a bot
-	 * @param string|null $botIdentifier if $isBot is true, a regular expression
-	 *   that matches on the bot's user agent
-	 */
-	public function setBotValues($isBot, $botIdentifier = null) {     
-		$this->checkDisposed();
-			
-		$isBot = !!$isBot;
-		$botIdentifier = \trim($botIdentifier);
-		
-		if ($isBot && $botIdentifier != '')
-			throw new ArgumentException('If $isBot is false, $botIdentifier
-				must be null or an empty string');  
-			
-		DataBaseHelper::update('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
-			array(
-				'isBot' => $isBot,
-				'botIdentifier' => $botIdentifier),
-			array()
-		);           
-		
-		$this->_isBot = $isBot;
-		$this->_botIdentifier = $botIdentifier;
-	} 
-
-	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a user. This user's name
-	 * names are excluded, they are available.
-	 *
-	 * @param $name name to check 
-	 * @return bool true, if $name is available
-	 */
-	public function isNameAvailable($name) {   
-		$this->checkDisposed();
-			throw new InvalidOperationException('User is deleted');
-			 	
-		DataBaseHelper::isNameAvailable('Premanager', 'Users',
-			DataBaseHelper::IGNORE_THIS, (string) $name, $this->_id);
-	}      
-	
-	/**
-	 * Deletes this user
-	 *
-	 * This object will afterwards "seem to be deleted", its methods will not 
-	 * work.
+	 * @throws Premanager\InvalidOperationException this user is the guest account
 	 */
 	public function delete() {         
 		$this->checkDisposed();
+		
+		if (!$this->_id)
+			throw new InvalidOperationException(
+				'The guest accoutn can not be deleted');
 			
 		DataBaseHelper::delete('Premanager', 'User', 0, $this->_id);      
 			    
@@ -1065,10 +972,11 @@ final class User extends Model {
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"(userID, groupID, isLeader, joinTime, joinIP) ".
-			"VALUES ('$this->_id', '$group->getid()', '0', NOW(), '".Client::$ip."') ".
-			"ON DUPLICATE KEY UPDATE 0+0");
+			"VALUES ('$this->_id', '".$group->getID()."', '0', NOW(), ".
+				"'".Request::getIP()."') ".
+			"ON DUPLICATE KEY UPDATE userID = userID");
 			
-		if (DataBase::getAffectedRows() && $this->_groupCount !== null)
+		if (DataBase::getAffectedRowCount() && $this->_groupCount !== null)
 			$this->_groupCount++;
 			
 		// Title and color might have changed
@@ -1099,52 +1007,6 @@ final class User extends Model {
 		// Title and color might have changed
 		$this->clearCache(); 
 	}
-	
-	/**
-	 * Makes this user a leader of a group
-	 *
-	 * If this user is not a member of that group, nothing is done.
-	 *
-	 * @param Group $group
-	 */
-	public function promote(Group $group) {
-		$this->checkDisposed();
-			
-		if (!$group)
-			throw new ArgumentNullException('group');
-
-		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager', 'UserGroup')." ".
-			"SET isLeader = '1' ".
-			"WHERE userID = '$this->_id' ".
-				"AND groupID = '$group->getid()'");
-
-		// Title and color might have changed
-		$this->clearCache(); 
-	}       
-	
-	/**
-	 * Makes this user a normal member (not a leader) of a group
-	 *
-	 * If this user is not a member of that group, nothing is done.
-	 *
-	 * @param Group $group
-	 */
-	public function demote(Group $group) {
-		$this->checkDisposed();
-			
-		if (!$group)
-			throw new ArgumentNullException('group');
-
-		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager', 'UserGroup')." ".
-			"SET isLeader = '0' ".
-			"WHERE userID = '$this->_id' ".
-				"AND groupID = '$group->getid()'");
-
-		// Title and color might have changed
-		$this->clearCache(); 
-	}   
 	
 	/**
 	 * Sets an unconfirmed email address
@@ -1218,7 +1080,7 @@ final class User extends Model {
 			throw new ArgumentException('$email is null or an empty string', 'email');
 			
 		// Store unconfirmed email before it's lost
-		$email = $this->getunconfirmedEmail();
+		$email = $this->getUnconfirmedEmail();
 		
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
@@ -1232,9 +1094,38 @@ final class User extends Model {
 		$this->_unconfirmedEmailKey = '';       
 		$this->_unconfirmedEmail = '';          
 		$this->_unconfirmedEmailStartTime = null;
-		if ($this->_status == UserStatus::WAIT_FOR_EMAIL)
-			$this->_status = UserStatus::ENABLED;
-	}             
+		if ($this->getEnableOnEmailConfirmation())
+			$this->_status = 'enabled';
+	}           
+
+	
+	/**
+	 * Sets whether the user is automatically enabled when the email address
+	 * is confirmed
+	 * 
+	 * Only if an user is enabled it can be used for login.
+	 *
+	 * @param bool true to automatically enable the user when the email adress is
+	 *   confirmed
+	 */
+	public function setEnableOnEmailConfirmation($value) {     
+		$this->checkDisposed();
+		
+		if ($this->_status === null)
+			$this->load();
+			
+		if ($value && $this->_status != 'enabled')
+			$status = 'waitForEmail';
+		else if (!$value && $this->_status == 'waitForEmail')
+			$status = 'disabled';
+		
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." AS user ".
+			"SET user.status = ".$status." ".
+			"WHERE user.id = $this->_id");
+		
+		$this->_status = $status;
+	}  
 	
 	/**
 	 * Changes the password
@@ -1285,7 +1176,7 @@ final class User extends Model {
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET secondaryPassword = '".DataBase::escape($encodedPassword)."', ".
 				"secondaryPasswordStartTime = NOW(), ".
-				"secondaryPasswordStartIP = '".DataBase::escape(Client::$ip)."', ".
+				"secondaryPasswordStartIP = '".DataBase::escape(Request::getIP())."', ".
 				"secondaryPasswordExpirationTime = ".
 					"NOW() + INTERVAL $expirationTime->getseconds() SECOND ".
 			"WHERE id = '$this->_id'");
@@ -1294,7 +1185,7 @@ final class User extends Model {
 		$this->_secondaryPasswordStartTime = new DateTime();
 		$this->_secondaryPasswordExpirationTime = DateTime::getNow()->
 			add($expirationInterval);
-		$this->_secondaryPasswordStartIP = Client::$ip;
+		$this->_secondaryPasswordStartIP = Request::getIP();
 	}
 	
 	/**
@@ -1379,7 +1270,7 @@ final class User extends Model {
 	 */
 	public function clearCache() {
 		$result = DataBase::query(
-			"SELECT grp.color, translation.title ".
+			"SELECT grp.id, grp.color, translation.title ".
 			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
 				" AS userGroup ".
@@ -1387,17 +1278,19 @@ final class User extends Model {
 			/* translating */
 			"WHERE userGroup.userID = '$this->_id' ".
 				"AND grp.parentID = 0 ". // only chose groups of organization
+				"AND grp.priority > 0 ".
 			"ORDER BY grp.priority DESC ".
 			"LIMIT 0,1");
 		if ($result->next()) {
+			$groupID = $result->get('id');		
 			$this->_color = $result->get('color');
-			$this->_title = $result->get('title');		
+			$this->_title = $result->get('title');
 		} else {
 			$this->_color = '000000';
 			$this->_title =
 				Translation::defaultGet('Premanager', 'defaultUserTitle');
 		}
-		
+			
 		// Update color
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
@@ -1408,19 +1301,42 @@ final class User extends Model {
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UsersTranslation')." ".
 			"WHERE id = '$this->_id'");
-
-		// Update _all_ languages
-		$result = DataBase::query(
-			"SELECT language.id ".
-			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language");
-		while ($result->next()) {
-			$id = $result->get('id');
+		
+		// Update all languages
+		foreach (Language::getLanguages() as $language) {
+			// Get title
+			Environment::push(Environment::create(
+				Environment::getCurrent()->getUser(),
+				Environment::getCurrent()->getSession(),
+				Environment::getCurrent()->getPageNode(),
+				Environment::getCurrent()->getProject(),
+				$language,
+				Environment::getCurrent()->getStyle(),
+				Environment::getCurrent()->getEdition()));
+			try {
+				if ($groupID) {
+					$result = DataBase::query(
+						"SELECT translation.title ".
+						"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
+						/* translating */
+						"WHERE grp.id = '$groupID'");
+					$title = $result->get('title');
+				} else 
+					$title = Translation::defaultGet('Premanager', 'defaultUserTitle');
+				Environment::pop();
+			} catch (\Exception $e) {
+				Environment::pop();
+				throw $e;
+			}
+				
+			// Update title
 			DataBase::query(
 				"INSERT INTO ".
 					DataBase::formTableName('Premanager', 'UsersTranslation')." ".
 				"(id, languageID, title) ".
-				"VALUES ('$this->_id', '$id', '".DataBase::escape($this->_title)."')");
-		} 	
+				"VALUES ('$this->_id', '".$language->getID()."', ".
+					"'".DataBase::escape($title)."')");
+		}
 	}
 	
 	/**
@@ -1453,11 +1369,11 @@ final class User extends Model {
 	 * @param string $password the plain password
 	 * @return string the ecnoded password 
 	 */
-	private function encodePassword($password) {
-		return \hash('sha256',
+	private static function encodePassword($password) {
+		return hash('sha256',
 			Config::getSecurityCode().
 			'89c54dcc6124c96115f3c0733ff8072299e7305f7a36902ea5f5cfee0f7939a6'.
-			\hash('sha256',
+			hash('sha256',
 				'9e4d3431361375e515abd82e261ceb04b14cf517426a8ce74ffbdde9239da356'.
 				Config::getSecurityCode().$password));
 	}        
@@ -1465,7 +1381,7 @@ final class User extends Model {
 	private function load() {
 		$result = DataBase::query(
 			"SELECT user.name, user.color, translation.title, user.hasAvatar, ". 
-				"user.avatarMIME, user.status, user.isBot, user.hasPersonalSidebar, ".
+				"user.avatarMIME, user.status, user.hasPersonalSidebar, ".
 				"user.email, user.unconfirmedEmail, user.unconfirmedEmailStartTime, ".
 				"user.unconfirmedEmailKey, user.registrationTime, ".
 				"user.registrationIP, user.lastLoginTime, user.lastLoginIP, ".
@@ -1488,18 +1404,7 @@ final class User extends Model {
 		$this->_title = $result->get('title');
 		$this->_hasAvatar = !!$result->get('hasAvatar');
 		$this->_avatarMIME = $result->get('avatarMIME');
-		switch ($result->get('status')) {
-			case 'enabled':
-				$this->_status = UserStatus::ENABLED;
-				break;
-			case 'disabled':
-				$this->_status = UserStatus::DISABLED;
-				break;
-			case 'waitForEmail':
-				$this->_status = UserStatus::WAIT_FOR_EMAIL;
-				break;
-		}
-		$this->_isBot = $result->get('isBot');  
+		$this->_status = $result->get('status');
 		$this->_hasPersonalSidebar = $result->get('hasPersonalSidebar');  
 		$this->_email = $result->get('email');                              
 		$this->_unconfirmedEmail = $result->get('unconfirmedEmail');        
@@ -1574,7 +1479,7 @@ final class User extends Model {
 			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
 			"WHERE grp.autoJoin");
 		while ($result->next()) {
-			$this->joinGroup(Group::getByID($result->get('groupID')));
+			$this->joinGroup(Group::getByID($result->get('id')));
 		}	
 	}  
 }
