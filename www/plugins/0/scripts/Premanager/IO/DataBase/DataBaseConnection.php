@@ -123,9 +123,9 @@ class DataBaseConnection extends Module {
 		// Translating query?
 		if ($rightPart !== null) {
 			$rightPart = trim($rightPart);
-			if (\preg_match( 
+			if (preg_match( 
 				'/FROM\s+(?P<table>\S+)\s+AS\s+(?P<shortTable>\S+)/i',
-				$query, &$matches))
+				$query, $matches))
 			{
 				$table = $matches['table'];
 				$shortTable = $matches['shortTable'];  

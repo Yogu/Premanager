@@ -115,7 +115,7 @@ class Page extends Response {
 		if (!count($this->blocks[0]))
 			$this->blocks[0][] = array();
 		$arr &= $this->blocks[0][0];
-		array_splice(&$arr, 0, 0, array($block));
+		array_splice($arr, 0, 0, array($block));
 	}
 	
 	/**

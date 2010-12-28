@@ -141,7 +141,7 @@ class URLInfo {
 				// We can't use the URL class here because the template contains
 				// characters ({ and }) that are now allowed in a url
 				preg_match('/[^:]+\:\/\/(?P<host>[^\/]+)(?<path>.*)/i',
-					Config::getURLTemplate(), &$matches);
+					Config::getURLTemplate(), $matches);
 				$templateHost = $matches['host'];
 				$templatePath = $matches['path'];
 					
@@ -149,12 +149,12 @@ class URLInfo {
 				// template.
 				// Returns the index of the element after the last used one
 				$walker = function($elements, $templates, $trunkElements,
-					$breakOnFailure, &$language, &$edition)
+					$breakOnFailure, $language, $edition)
 				{
 					if (count($elements) > count($trunkElements))
-						array_splice(&$elements, -count($trunkElements));
+						array_splice($elements, -count($trunkElements));
 					if (count($templates) > count($trunkElements))
-						array_splice(&$templates, -count($trunkElements));
+						array_splice($templates, -count($trunkElements));
 					
 					foreach ($elements as $elementKey => $element) {
 						foreach ($templates as $templateKey => $template) {
@@ -207,14 +207,14 @@ class URLInfo {
 				$elements = explode('.', $requestURL->getHost());
 				$templates = explode('.', $templateHost);
 				call_user_func($walker, $elements, $templates, $trunkElements, false,
-					&$language, &$edition);
+					$language, $edition);
 				
 				// Path part
 				$trunkElements = explode('/', trim($trunkURL->getPath(), '/'));
 				$elements = explode('/', trim($requestURL->getPath(), '/'));
 				$templates = explode('/', trim($templatePath, '/'));
 				$pathElementIndex = call_user_func($walker, $elements, $templates,
-					$trunkElements, true, &$language, &$edition);
+					$trunkElements, true, $language, $edition);
 	
 				if (!$language) {
 					foreach (self::parseHTTPLanguageHeader() as $code) {
@@ -236,7 +236,7 @@ class URLInfo {
 				
 				$this->_relativeRequestURL = implode('/', $elements);
 				
-				if (!$node = PageNode::fromPath($elements, &$impact, &$isBackend)) {
+				if (!$node = PageNode::fromPath($elements, $impact, $isBackend)) {
 					if ($isBackend) {
 						$rest = $this->_relativeRequestURL;
 						if ($impact)

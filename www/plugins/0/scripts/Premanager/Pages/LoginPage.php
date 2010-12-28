@@ -84,7 +84,7 @@ class LoginPage extends TreePageNode {
 		$page->title = Translation::defaultGet('Premanager', 'theLogin');;
 			
 		if (Request::getPOST('login')) {
-			switch (self::login(&$user)) {
+			switch (self::login($user)) {
 				case LoginFailedReason::USER:
 				case LoginFailedReason::PASSWORD:
 					// Show the reason message and a login form
@@ -162,7 +162,7 @@ class LoginPage extends TreePageNode {
 		$user = User::getByName($userName);
 		if ($user) {
 			if ($user->getstatus() == UserStatus::ENABLED) {
-				if ($user->checkPassword($password, &$isSecondaryPassword)) {
+				if ($user->checkPassword($password, $isSecondaryPassword)) {
 					// If there is a session of this user, delete it		
 					$session = Session::getByUser($user);
 					if ($session)

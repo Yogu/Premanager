@@ -84,7 +84,7 @@ class URL extends Module {
 			'#(?P<fragment>(?:[0-9a-z_\\.~\\-\\!\\$\\&\'\\(\\)\\*\\+\\,\\;\\=\\:\\@'.
 			'\\/\\?]|(?:%[a-f0-9])))*)?$/i';
 		
-		if (!preg_match($pattern, $url, &$matches))
+		if (!preg_match($pattern, $url, $matches))
 			throw new FormatException('Invalid url: '.$url);
 		$this->_scheme = (string) $matches['scheme'];
 		$this->_userinfo = (string) $matches['userinfo'];
@@ -142,7 +142,7 @@ class URL extends Module {
 		$template = Config::getURLTemplate();
 		
 		// first split scheme away
-		preg_match('/^([a-z][a-z0-9+.-]*)\:\/\/(.*)/i', $template, &$matches);
+		preg_match('/^([a-z][a-z0-9+.-]*)\:\/\/(.*)/i', $template, $matches);
 		$scheme = $matches[1];
 		$template = $matches[2];
 		

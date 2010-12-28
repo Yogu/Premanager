@@ -322,7 +322,7 @@ class DataBaseHelper extends Module {
 				$languageID = null;
 	
 				if (is_callable($isNameInUseCallback))
-					$isInUse = $isNameInUseCallback($name, &$languageID);
+					$isInUse = $isNameInUseCallback($name, $languageID);
 				else if ($flags & self::UNTRANSLATED_NAME) {
 					$result2 = DataBase::query(
 						"SELECT item.id ".
@@ -388,7 +388,7 @@ class DataBaseHelper extends Module {
 			"INNER JOIN ".DataBase::formTableName($plugin, $table)." item ".
 				"ON name.id = item.id ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."' ".
-				($flags & self::IS_TREE ? "AND item.parentID = '$parentID' " : '').
+				($flags & self::IS_TREE ? "AND item.parentID = '$parentID' " :'').
 				"AND inUse ".
 				($ignoreID !== null ? "AND item.id != '$ignoreID'" : ''));
 		return !$result->next();

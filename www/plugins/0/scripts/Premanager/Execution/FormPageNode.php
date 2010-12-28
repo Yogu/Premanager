@@ -45,7 +45,7 @@ abstract class FormPageNode extends PageNode {
 	public function getResponse() {
 		if (Request::getPOST('form-submit')) {
 			$errors = array();
-			$this->_values = $this->getValuesFromPOST(&$errors);
+			$this->_values = $this->getValuesFromPOST($errors);
 			if (count($errors)) {
 				foreach ($errors as $error) {
 					if (!is_array($this->_errors[$error[0]]))
