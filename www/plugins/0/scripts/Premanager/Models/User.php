@@ -936,7 +936,7 @@ final class User extends Model {
 			throw new InvalidOperationException(
 				'The guest accoutn can not be deleted');
 			
-		DataBaseHelper::delete('Premanager', 'User', 0, $this->_id);      
+		DataBaseHelper::delete('Premanager', 'Users', 0, $this->_id);      
 			    
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
@@ -948,9 +948,7 @@ final class User extends Model {
 			
 		unset(self::$_instances[$this->_id]);
 		if (self::$_count !== null)
-			self::$_count--;
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;		
+			self::$_count--;	
 	
 		$this->dispose();
 	}        

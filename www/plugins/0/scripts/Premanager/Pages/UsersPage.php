@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\ToolBarItem;
 use Premanager\Debug\Debug;
 use Premanager\QueryList\SortDirection;
 use Premanager\QueryList\QueryOperation;
@@ -31,6 +32,8 @@ class UsersPage extends TreeListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
+		if ($name == '+')
+			return new AddUserPage($this);
 		$user = User::getByName($name);
 		if ($user)
 			return new UserPage($this, $user);
@@ -81,6 +84,12 @@ class UsersPage extends TreeListPageNode {
 		$body = $template->get();
 		
 		$page->appendBlock(PageBlock::createTable($head, $body));
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
+			Translation::defaultGet('Premanager', 'addUser'), 
+			Translation::defaultGet('Premanager', 'addUserDescription'),
+			'Premanager/images/tools/add-user.png');
+		
 		return $page;
 	} 
 	
