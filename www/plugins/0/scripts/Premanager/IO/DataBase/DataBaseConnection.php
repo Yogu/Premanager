@@ -171,8 +171,8 @@ class DataBaseConnection extends Module {
 	 * 
 	 * @return int
 	 */
-	public static function getAffectedRowCount() {
-		return \mysql_affected_rows($this->_link);
+	public function getAffectedRowCount() {
+		return mysql_affected_rows($this->_link);
 	}
 	
 	private function getError() {

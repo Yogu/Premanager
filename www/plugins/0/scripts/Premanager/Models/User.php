@@ -503,7 +503,7 @@ final class User extends Model {
 	}                       
 
 	/**
-	 * Gets the email address of this user (may be '')
+	 * Gets the email address of this user (may be an empty string)
 	 *
 	 * @return string
 	 */

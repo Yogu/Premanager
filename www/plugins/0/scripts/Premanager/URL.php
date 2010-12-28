@@ -73,7 +73,7 @@ class URL extends Module {
 		 *
 		 */
 		
-		// the compiled and optimazed url regular expression pattern
+		// the compiled and optimized url regular expression pattern
 		$pattern =
 			'/^(?:(?P<scheme>[a-z][a-z0-9+.-]*)\\:\\/\\/)(?:(?P<userinfo>(?:[0-9a-z_'.
 			'\\.~\\-\\!\\$\\&\'\\(\\)\\*\\+\\,\\;\\=]|(?:%[a-f0-9])|\\:)*)\\@)?(?P<h'.

@@ -41,6 +41,7 @@ final class Language extends Model {
 	private static $_instances = array();
 	private static $_count;   
 	private static $_descriptor;   
+	private static $_queryList;
 	
 	// ===========================================================================
 	
@@ -200,46 +201,15 @@ final class Language extends Model {
 	}  
 	
 	/**
-	 * Gets a list of languages in a specified range
-	 *
-	 * @param int $start index of first user
-	 * @param int $count count of users to return
-	 * @return array
+	 * Gets a list of languages
+	 * 
+	 * @return Premanager\QueryList\QueryList
 	 */
-	public static function getLanguages($start = null, $count = null) {
-		$start = $start ? $start : 0;
-		$count = $count ? $count : 0;
-		
-		if (($start !== null && $count == null) ||
-			($count !== null && $start === null))
-			throw new ArgumentException('Either both $start and $count must '.
-				'be specified or none of them');
-				
-		if ($start === null || $count === null) {
-			if (!Types::isInteger($start) || $start < 0)
-				throw new ArgumentException(
-					'$start must be a positive integer value or null', 'start');
-			if (!Types::isInteger($count) || $count < 0)
-				throw new ArgumentException(
-					'$count must be a positive integer value or null', 'count');		
-		}  
-	
-		$list = array();
-		$result = DataBase::query(
-			"SELECT language.id, language.name, language.title, ".
-				"language.englishTitle ".
-			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
-			"ORDER BY LOWER(language.name) ASC ".
-			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = '';
-		while ($result->next()) {
-			$instance = self::createFromID($result->get('id'),
-				$result->get('name'), $result->get('title'),
-				$result->get('englishTitle'));
-			$list[] = $instance;
-		}
-		return $list;
-	}   
+	public static function getLanguages() {
+		if (!self::$_queryList)
+			self::$_queryList = new QueryList(self::getDescriptor());
+		return self::$_queryList;
+	}     
 
 	/**
 	 * Checks if a name is available
