@@ -77,22 +77,32 @@ abstract class UserFormPage extends FormPageNode {
 			if (!$password)
 				$errors[] = array('password',
 					Translation::defaultGet('Premanager', 'noPasswordInputtedError'));
-			if (!$passwordConfirmation)
-				$errors[] = array('passwordConfirmation',
-					Translation::defaultGet('Premanager',
-					'noPasswordConfirmationInputtedError'));
-			if ($password && $passwordConfirmation &&
-				$password != $passwordConfirmation)
-				$errors[] = array('passwordConfirmation',
-					Translation::defaultGet('Premanager',
-					'passwordConfirmationInvalidError'));
+			else {
+				if (!$passwordConfirmation)
+					$errors[] = array('passwordConfirmation',
+						Translation::defaultGet('Premanager',
+						'noPasswordConfirmationInputtedError'));
+				if ($password && $passwordConfirmation &&
+					$password != $passwordConfirmation)
+					$errors[] = array('passwordConfirmation',
+						Translation::defaultGet('Premanager',
+						'passwordConfirmationInvalidError'));
+			}
 		}
 				
 		$email = Strings::normalize(Request::getPOST('email'));
+		$emailConfirmation =
+			Strings::normalize(Request::getPOST('emailConfirmation'));
 		if ($email) {
 			if (!User::isValidEmail($email))
 				$errors[] = array('email',
 					Translation::defaultGet('Premanager', 'invalidEmailAddressError'));
+			else if (!$emailConfirmation)
+				$errors[] = array('emailConfirmation', Translation::defaultGet(
+					'Premanager', 'noEmailConfirmationInputtedError'));
+			else if ($emailConfirmation != $email)
+				$errors[] = array('emailConfirmation', Translation::defaultGet(
+					'Premanager', 'emailConfirmationInvalidError'));
 		}
 		
 		if (!$this->_user || $this->_user->getID())
@@ -103,6 +113,7 @@ abstract class UserFormPage extends FormPageNode {
 		return array(
 			'name' => $name,
 			'email' => $email,
+			'emailConfirmation' => $emailConfirmation,
 			'password' => $password,
 			'passwordConfirmation' => $passwordConfirmation,
 			'isEnabled' => $isEnabled);

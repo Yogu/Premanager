@@ -202,24 +202,27 @@ class Request {
 	 * @return array an array(name => value) of all POST parameters
 	 */
 	public static function getPOSTValues() {
-		if (self::$_postValidated === null) {
-			if (!Environment::getCurrent()->getsession())
-				self::$_postValidated = true;
-			else {
-				// pretend post data to be validated for accessing the validator
-				self::$_postValidated = true;
-				$validator = self::getPOST('postValidator');
-				self::$_postValidated =
-					$validator == Environment::getCurrent()->getSession()->getKey();
-			}
-		}
-		if (!self::$_postValidated )
-			return null;
-			
 		static $post;
 		if (!is_array($post)) {
-			$post = self::deepStripslashes($_POST);
+			if (self::$_postValidated === null) {
+				if (!Environment::getCurrent()->getsession())
+					self::$_postValidated = true;
+				else {
+					// pretend post data to be validated for accessing the validator
+					self::$_postValidated = true;
+					$validator = self::getPOST('postValidator');
+					self::$_postValidated =
+						$validator == Environment::getCurrent()->getSession()->getKey();
+				}
+			}
+			if (!self::$_postValidated )
+				return null;
+			
+			$post = $_POST;
+			if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
+				$post = self::deepStripslashes($post);
 		}
+		
 		return $post;
 	}
 	

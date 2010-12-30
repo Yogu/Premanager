@@ -53,6 +53,8 @@ class UserPage extends PageNode {
 			return new EditUserPage($this, $this->_user);
 		if ($name == 'delete' && $this->_user->getID())
 			return new DeleteUserPage($this, $this->_user);
+		if ($name == 'join-group')
+			return new UserJoinGroupPage($this, $this->_user);
 	}
 	
 	/**
@@ -88,7 +90,7 @@ class UserPage extends PageNode {
 		
 		$page->createMainBlock($template->get());
 		
-		// Groups		
+		// Groups
 		$groups = $this->_user->getGroups();
 		if (count($groups)) {
 			$template = new Template('Premanager', 'userGroupsList');
@@ -109,6 +111,11 @@ class UserPage extends PageNode {
 				Translation::defaultGet('Premanager', 'deleteUser'), 
 				Translation::defaultGet('Premanager', 'deleteUserDescription'),
 				'Premanager/images/tools/delete.png');
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/join-group',
+			Translation::defaultGet('Premanager', 'userJoinGroup'), 
+			Translation::defaultGet('Premanager', 'userJoinGroupDescription'),
+			'Premanager/images/tools/join-group.png');
 			
 		return $page;
 	}

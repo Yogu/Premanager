@@ -476,6 +476,7 @@ select.error:focus:hover {
   
 input.fullsize,  
 textarea.fullsize,
+select.fullsize,
 .wysiwyg.fullsize > iframe {
 	width: 100%;    
 	box-sizing: border-box;

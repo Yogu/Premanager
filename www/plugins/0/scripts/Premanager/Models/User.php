@@ -723,7 +723,9 @@ final class User extends Model {
 				"ON userGroup.groupID = grp.id ".
 				"AND userGroup.userID = '$this->_id' ",
 			/* translating */
-			"ORDER BY LOWER(translation.name) ASC ".
+			"ORDER BY grp.parentID = 0 DESC, ".
+				"grp.parentID ASC, ".
+				"LOWER(translation.name) ASC ".
 			($start !== null ? "LIMIT $start, $count" : ''));
 		$list = array();
 		while ($result->next()) {
@@ -751,6 +753,23 @@ final class User extends Model {
 			$this->_groupCount = $result->get('count');
 		}
 		return $this->_groupCount;
+	}         
+	
+	/**
+	 * Checks whether this user is member of a specified group
+	 *
+	 * @return bool
+	 */
+	public function isInGroup(Group $group) {          
+		$this->checkDisposed();
+		
+		$result = DataBase::query(
+			"SELECT userGroup.groupID ".
+			"FROM ".DataBase::formTableName('Premanager', 'UserGroup').
+				" AS userGroup ".
+			"WHERE userGroup.userID = $this->_id ".
+				"AND userGroup.groupID = ".$group->getID());
+		return $result->next();
 	}      
 	
 	/**
@@ -887,7 +906,7 @@ final class User extends Model {
 		if ($value)
 			$status = "enabled";
 		else
-			$status = "IF(user.status = waitForEmail, waitForEmail, disabled)";
+			$status = "IF(user.status = 'waitForEmail', 'waitForEmail', 'disabled')";
 		
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." AS user ".
@@ -966,8 +985,8 @@ final class User extends Model {
 		// If user is already in that group, just add 0 to 0 (do "nothing")
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'UserGroup')." ".
-			"(userID, groupID, isLeader, joinTime, joinIP) ".
-			"VALUES ('$this->_id', '".$group->getID()."', '0', NOW(), ".
+			"(userID, groupID, joinTime, joinIP) ".
+			"VALUES ('$this->_id', '".$group->getID()."', NOW(), ".
 				"'".Request::getIP()."') ".
 			"ON DUPLICATE KEY UPDATE userID = userID");
 			
@@ -1116,7 +1135,7 @@ final class User extends Model {
 		
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." AS user ".
-			"SET user.status = ".$status." ".
+			"SET user.status = '$status' ".
 			"WHERE user.id = $this->_id");
 		
 		$this->_status = $status;

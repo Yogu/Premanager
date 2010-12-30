@@ -72,7 +72,7 @@ class EditUserPage extends UserFormPage {
 			$this->_user->setName($values['name']);
 		if ($values['email'] != $this->_user->getEmail())
 			$this->_user->setEmail($values['email']);
-		if ($values['password']);
+		if ($values['password'])
 			$this->_user->setPassword($values['password']);
 		if ($values['isEnabled]'] != $this->_user->isEnabled())
 			$this->_user->setIsEnabled($values['isEnabled']);

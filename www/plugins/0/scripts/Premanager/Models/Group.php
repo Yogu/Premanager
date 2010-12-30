@@ -116,7 +116,7 @@ final class Group extends Model {
 			throw new ArgumentException(
 				'$id must be a nonnegative integer value', 'id');
 			
-		if (\array_key_exists($id, self::$_instances)) {
+		if (array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];
 		} else {
 			$instance = self::createFromID($id);

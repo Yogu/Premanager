@@ -7,10 +7,20 @@
 			type=text
 		}
 		
+		{if $user}
+			{$description1 = changePasswordDescription}
+			{$description2 = changePasswordConfirmationDescription}
+			{$description3 = emailConfirmationDescription}
+		{else}
+			{$description1 = passwordDescription}
+			{$description2 = passwordConfirmationDescription}
+			{$description3 = registerEmailConfirmationDescription}
+		{/if}
+			
 		{formElement
 			name="password"
 			label=string(Premanager passwordLabel)
-			description=string(Premanager passwordDescription)
+			description=string(Premanager, $description1)
 			type=password
 			attributes=array(autocomplete='off')
 		}
@@ -18,7 +28,7 @@
 		{formElement
 			name="passwordConfirmation"
 			label=string(Premanager passwordConfirmationLabel)
-			description=string(Premanager passwordConfirmationDescription)
+			description=string(Premanager, $description2)
 			type=password
 			attributes=array(autocomplete='off')
 		}
@@ -27,6 +37,13 @@
 			name="email"
 			label=string(Premanager registrationEmailLabel)
 			description=string(Premanager registrationEmailDescription)
+			type=text
+		}
+		
+		{formElement
+			name="emailConfirmation"
+			label=string(Premanager registerEmailConfirmationLabel)
+			description=string(Premanager $description3)
 			type=text
 		}
 		

@@ -106,7 +106,7 @@ abstract class PageNode extends Module {
 		if ($model && $count >= 0) {
 			$index = $list->indexOf($model);
 			if ($index >= 0)
-				$startIndex = max($index - floor(($count-1) / 2), 0); 		
+				$startIndex = max($index - floor(($count-1) / 2), 0);
 		}
 		
 		// If not all items should be contained, select the speicified range
