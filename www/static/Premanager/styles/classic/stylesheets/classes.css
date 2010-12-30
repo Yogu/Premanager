@@ -126,8 +126,11 @@
 
 .list > li.group-header > a,
 .block > table > tbody > tr.group-header > td > a {
+ 	margin: -7px -8px;
+	
 	background-color: #FFD07C !important;
 	color: #800000;
+	border: none !important;
 }
 
 #sidebar > .block > div > .list > li,
