@@ -55,6 +55,8 @@ class UserPage extends PageNode {
 			return new DeleteUserPage($this, $this->_user);
 		if ($name == 'join-group')
 			return new UserJoinGroupPage($this, $this->_user);
+		if ($name == 'leave-group')
+			return new UserLeaveGroupPage($this, $this->_user);
 	}
 	
 	/**

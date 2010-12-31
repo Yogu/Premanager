@@ -992,9 +992,11 @@ final class User extends Model {
 			
 		if (DataBase::getAffectedRowCount() && $this->_groupCount !== null)
 			$this->_groupCount++;
-			
-		// Title and color might have changed
-		$this->clearCache(); 
+
+		// If group is of organization and has a priority, title and color might
+		// have changed
+		if (!$group->getProject()->getID() && $group->getPriority())
+			$this->clearCache(); 
 	}         
 	
 	/**
@@ -1013,13 +1015,15 @@ final class User extends Model {
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"WHERE userID = '$this->_id' ".
-				"AND groupID = '$group->getid()'");   
+				"AND groupID = '".$group->getID()."'");   
 				   
-		if (DataBase::getAffectedRows() && $this->_groupCount !== null)
+		if (DataBase::getAffectedRowCount() && $this->_groupCount !== null)
 			$this->_groupCount--;
 
-		// Title and color might have changed
-		$this->clearCache(); 
+		// If group is of organization and has a priority, title and color might
+		// have changed
+		if (!$group->getProject()->getID() && $group->getPriority())
+			$this->clearCache(); 
 	}
 	
 	/**

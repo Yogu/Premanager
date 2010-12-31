@@ -36,7 +36,7 @@ class ToolBarItem extends Module {
 		$this->_enabled = !!$enabled;
 		
 		$this->_html = '<li>';
-		if ($disabled) {
+		if (!$enabled) {
 			$tag = 'span';
 			$this->_html .= '<span class="disabled"';
 		} else {
