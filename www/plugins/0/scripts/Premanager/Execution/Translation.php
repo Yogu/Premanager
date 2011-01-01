@@ -85,12 +85,18 @@ class Translation extends Module {
 			if (!$isExpression)
 				$value = $part;
 			else {
-				$modifiers = explode(' ', $part);
-				$name = array_shift($modifiers);
-				if ($name[0] == '\'')
-					$value = Strings::substring($name, 1);
-				else
+				if ($part[0] == '\'') {
+					$part = substr($part, 1);
+					if (($pos = strpos($part, '\'')) === false)
+						$pos = strpos($part, ' ');
+					$value = substr($part, 0, $pos);
+					$part = substr($part, $pos+1);
+					$modifiers = explode(' ', $part);
+				} else {
+					$modifiers = explode(' ', $part);
+					$name = array_shift($modifiers);
 					$value = $params[$name];
+				}
 
 				foreach ($modifiers as $modifier) {
 					switch ($modifier) {

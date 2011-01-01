@@ -69,8 +69,10 @@ class GroupPage extends ListPageNode {
 	public function getChildByName($name) {
 		if ($name == 'edit')
 			return new EditGroupPage($this, $this->_group);
-		if ($name == 'delete' && $this->_group->getID())
+		if ($name == 'delete')
 			return new DeleteGroupPage($this, $this->_group);
+		if ($name == 'rights')
+			return new GroupRightsPage($this, $this->_group);
 	}
 	
 	/**
@@ -110,6 +112,11 @@ class GroupPage extends ListPageNode {
 			Translation::defaultGet('Premanager', 'deleteGroup'), 
 			Translation::defaultGet('Premanager', 'deleteGroupDescription'),
 			'Premanager/images/tools/delete.png');
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/rights',
+			Translation::defaultGet('Premanager', 'editGroupRights'), 
+			Translation::defaultGet('Premanager', 'editGroupRightsDescription'),
+			'Premanager/images/tools/rights.png');
 				
 		return $page;
 	}

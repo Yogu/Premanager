@@ -2,7 +2,7 @@
 namespace Premanager\Execution;
 
 use Premanager\IO\DataBase\DataBase;
-use Premanager\Models\TreeClassScope;
+use Premanager\Models\Scope;
 use Premanager\Models\TreeClass;
 use Premanager\Models\Plugin;
 use Premanager\Strings;
@@ -336,7 +336,7 @@ abstract class PageNode extends Module {
 		}
 		
 		if (!$project->getID() &&
-			$treeClass->getScope() == TreeClassScope::PROJECTS)
+			$treeClass->getScope() == Scope::PROJECTS)
 		{
 			throw new ArgumentException('$project must be a '.
 				'Premanager\Models\Project and not the organization when the tree '.

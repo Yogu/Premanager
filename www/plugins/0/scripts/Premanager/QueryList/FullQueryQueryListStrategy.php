@@ -317,7 +317,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			if ($this->_filterQuery)
 				$rightPart .= 'WHERE ' . $this->_filterQuery;
 			if (count($this->_sortQueries))
-				$rightPart .= 'ORDER BY ' . implode($this->_sortQueries, ', ') . ' '; 
+				$rightPart .= ' ORDER BY ' . implode($this->_sortQueries, ', ') . ' '; 
 			
 			$table = DataBase::formTableName($t->getPluginName(), $t->getTable());
 			// we only need to translate if there is a filter or sort rule that might

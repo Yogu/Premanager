@@ -56,7 +56,11 @@ function Dwoo_Plugin_formElement(Dwoo $dwoo, $name, $label = '',
 				"<label for=\"form-$name\">".
 				"<input $attr type=\"checkbox\"".
 				($value ? ' checked="checked"' : '').' />'.$label.'</label>';
-			$hideDT = true;
+			if (is_string($leftColumn)) {
+				$label = $leftColumn;
+				$labelNoFor = true;
+			} else
+				$hideDT = true;
 			break;
 		case 'select':
 			$element = "<select $attr size=\"$size\"".
@@ -72,7 +76,7 @@ function Dwoo_Plugin_formElement(Dwoo $dwoo, $name, $label = '',
 	if ($leftColumn) {
 		$html = "<dl>";
 		if (!$hideDT || !$label)
-			$html .= "<dt><label for=\"form-$name\">".
+			$html .= "<dt><label".($labelNoFor? '' : " for=\"form-$name")."\">".
 				Premanager\Execution\Translation::defaultGet('Premanager', 'label', 
 				array('label' => $label))."</label></dt>";
 		$html .= "<dd>";

@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\QueryList\SortRule;
+
 use Premanager\Debug\Debug;
 use Premanager\IO\Output;
 use Premanager\Execution\Template;
@@ -24,6 +26,10 @@ class StructurePageNode extends PageNode {
 	 * @var bool
 	 */
 	private $_isRootNode;
+	/**
+	 * @var Premanager\QueryList\QueryList
+	 */
+	private $_listCache;
 	
 	// ===========================================================================
 	
@@ -104,8 +110,8 @@ class StructurePageNode extends PageNode {
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
 		$referenceModel = $referenceNode instanceof StructurePageNode ?
 			$referenceNode->getStructureNode() : null;
-		$structureNodes = $this->getChildrenHelper(
-			$this->_structureNode->getChildren(), $referenceModel, $count);
+		$structureNodes = $this->getChildrenHelper($this->getList(),
+			$referenceModel, $count);
 			
 		$list = array();
 		
@@ -184,7 +190,7 @@ class StructurePageNode extends PageNode {
 				
 			default:
 				$subNodes = array();
-				foreach ($this->_structureNode->getChildren() as $structureNode) {
+				foreach ($this->getList() as $structureNode) {
 					$subNodes[] = $this->getChildByStructureNode($structureNode);
 				}
 				
@@ -233,6 +239,15 @@ class StructurePageNode extends PageNode {
 	 */
 	public function getURLQuery() {
 		return array();
+	}
+	
+	private function getList() {
+		if ($this->_listCache === null) {
+			$this->_listCache = $this->_structureNode->getChildren();
+			$this->_listCache = $this->_listCache->sort(array(
+				new SortRule($this->_listCache->exprMember('title'))));
+		}
+		return $this->_listCache;
 	}
 }
 

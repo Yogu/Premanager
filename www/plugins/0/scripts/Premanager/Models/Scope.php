@@ -2,10 +2,10 @@
 namespace Premanager\Models;
 
 /**
- * Specifies whether a tree class is available for the organization, for
- * projects, or for both organization and projects
+ * Specifies whether a tree class or right is available for the organization,
+ * for projects, or for both organization and projects
  */
-class TreeClassScope {
+class Scope {
 	/**
 	 * The tree class is only available for the organization
 	 */

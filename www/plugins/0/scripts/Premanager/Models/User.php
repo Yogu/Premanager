@@ -55,7 +55,7 @@ final class User extends Model {
 	private $_secondaryPasswordExpirationTime = false;
 	private $_secondaryPasswordStartIP;
 	private $_groupCount;
-	private $_rights;
+	private $_rights = array();
 	
 	private static $_instances = array();
 	private static $_count;
@@ -647,44 +647,36 @@ final class User extends Model {
 	}                          
 
 	/**
-	 * Gets all the rights of this user
-	 *
-	 * Returns an array of plugins which contain each an array of string with
-	 * the right names. Example: getRights()['Premanager']['register'] is true,
-	 * if the right 'register' of the plugin 'Premanager' is set.
-	 *
-	 * Warning: getRights[plugin] might be null if there are no rights of this
-	 * plugins. Accessing it as an array will generate a warning by php.
-	 *
-	 * If you change the returned array, this property will not be affected.
+	 * Gets all rights this user has in the specified project
 	 *
 	 * @see hasRight()
 	 *
-	 * @return array
+	 * @param Premanager\Modles\Project $project the project
+	 * @return array an array of Premanager\Models\Right objects
 	 */
-	public function getRights() {
+	public function getRights(Project $project) {
 		$this->checkDisposed();
 			
-		if ($this->_rights === null)
-			$this->loadRights();
-		return $this->_rights;	
+		if ($this->_rights[$project->getID()] === null)
+			$this->loadRights($project);
+		return $this->_rights[$project->getID()];	
 	}   
 	                        
 	/**
 	 * Checks if this user has the specified right
 	 *
-	 * @param string $plugin the plugin that registered the right
-	 * @param string $right the right's name
-	 * @return bool true, if this user has the specified right
+	 * @param Premanager\Models\Right $right the right to check
+	 * @param Premanager\Models\Projecr $project the project in which the user
+	 *   should have this right. By default the project in the environment
+	 * @return bool true, if this user has the specified right in the project
 	 */
-	public function hasRight($plugin, $right) {      
+	public function hasRight(Right $right, Project $project = null) {      
 		$this->checkDisposed();
+		
+		if (!$project)
+			$project = Environment::getCurrent()->getProject();
 			
-		if ($this->_rights === null)
-			$this->loadRights();
-						
-		return Types::isArray($this->_rights[$plugin]) &&
-			$this->_rights[$plugin][$right];
+		return array_search($plugin, $this->getRights($project)) !== false;
 	}     
 	
 	/**
@@ -1459,33 +1451,29 @@ final class User extends Model {
 	/**
 	 * Loads the rights of this user into $_rights field
 	 */
-	private function loadRights() {
-		$this->_rights = array();
+	private function loadRights(Project $project) {
+		$this->_rights[$project->getID()] = array();
 		
 		$result = DataBase::query(
-			"SELECT rght.name, plugin.name AS pluginName ".
-			"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
-				"ON plugin.id = rght.pluginID ". 
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight').
-				" AS groupRight ".
-				"ON groupRight.rightID = rght.id ".
+			"SELECT rght.id ".
+			"FROM ".DataBase::formTableName('Premanager', 'Groups').
+				" AS grp ".
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
 				" AS userGroup ".
-				"ON userGroup.groupID = groupRight.groupID ".
+				"ON grp.id = userGroup.groupID ".
 				"AND userGroup.userID = '$this->_id' ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight').
+				" AS groupRight ".
+				"ON groupRight.groupID = grp.id ". 
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Rights').
+				" AS rght ".
+				"ON groupRight.rightID = rght.id ". 
+			"WHERE grp.parentID = 0 OR grp.parentID = ".$project->getID()." ".
 			"GROUP BY rght.id ".
-			"ORDER BY plugin.name ASC, ".
+			"ORDER BY rght.pluginID ASC, ".
 				"rght.name ASC");
-		while ($result->next()) {
-			$plugin = $result->get('pluginName');
-			$right = $result->get('name');
-
-			if (!Types::isArray($this->_rights[$plugin]))
-				$this->_rights[$plugin] = array();
-
-			$this->_rights[$plugin][$right] = true;
-		}
+		while ($result->next())
+			$this->_rights[$project->getID()][] = Right::getByID($result->get('id'));
 	}
 	
 	/**

@@ -57,6 +57,8 @@ class UserPage extends PageNode {
 			return new UserJoinGroupPage($this, $this->_user);
 		if ($name == 'leave-group')
 			return new UserLeaveGroupPage($this, $this->_user);
+		if ($name == 'rights')
+			return new UserRightsPage($this, $this->_user);
 	}
 	
 	/**
@@ -118,6 +120,11 @@ class UserPage extends PageNode {
 			Translation::defaultGet('Premanager', 'userJoinGroup'), 
 			Translation::defaultGet('Premanager', 'userJoinGroupDescription'),
 			'Premanager/images/tools/join-group.png');
+		
+		$page->toolbar[] = new ToolBarItem($this->getURL().'/rights',
+			Translation::defaultGet('Premanager', 'viewUserRights'), 
+			Translation::defaultGet('Premanager', 'viewUserRightsDescription'),
+			'Premanager/images/tools/rights.png');
 			
 		return $page;
 	}

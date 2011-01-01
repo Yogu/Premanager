@@ -131,7 +131,7 @@ final class TreeClass extends Model {
 	 * @param Premanager\Models\Plugin $plugin the plugin that registers this
 	 *   tree class             
 	 * @param string $className the class name for the tree
-	 * @param int $scope enum Premanager\Models\TreeClassScope
+	 * @param int $scope enum Premanager\Models\Scope
 	 * @param string $key a unique string to identify the tree class within plugin
 	 *   context
 	 * @return Premanager\Models\TreeClass
@@ -161,18 +161,18 @@ final class TreeClass extends Model {
 				'plugin '.$plugin->getName(), 'key');
 	
 		switch ($scope) {
-			case TreeClassScope::BOTH:
+			case Scope::BOTH:
 				$dbScope = 'both';
 				break;
-			case TreeClassScope::ORGANIZATION:
+			case Scope::ORGANIZATION:
 				$dbScope = 'organization';
 				break;
-			case TreeClassScope::PROJECTS:
+			case Scope::PROJECTS:
 				$dbScope = 'projects';
 				break;
 			default:
 				throw new InvalidEnumArgumentException('scope', $scope,
-					'Premanager\TreeClassScope');
+					'Premanager\Scope');
 		}
 		
 		DataBase::query(
@@ -282,7 +282,7 @@ final class TreeClass extends Model {
 	/**
 	 * Gets the scope
 	 *
-	 * @return int the scope (enum Premanager\Models\TreeClassScope)
+	 * @return int the scope (enum Premanager\Models\Scope)
 	 */
 	public function getScope() {
 		$this->checkDisposed();
@@ -363,13 +363,13 @@ final class TreeClass extends Model {
 		$dbScope = $result->get('scope');
 		switch ($dbScope) {
 			case 'organization':
-				$this->_scope = TreeClassScope::ORGANIZATION;
+				$this->_scope = Scope::ORGANIZATION;
 				break;
 			case 'projects':
-				$this->_scope = TreeClassScope::PROJECTS;
+				$this->_scope = Scope::PROJECTS;
 				break;
 			default:
-				$this->_scope = TreeClassScope::BOTH;
+				$this->_scope = Scope::BOTH;
 		}
 		
 		return true;

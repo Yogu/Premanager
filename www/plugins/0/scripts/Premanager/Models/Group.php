@@ -34,6 +34,7 @@ final class Group extends Model {
 	private $_priority;
 	private $_autoJoin;
 	private $_rights;
+	private $_simpleRightList;
 	private $_creator;   
 	private $_creatorID;
 	private $_createTime;
@@ -438,23 +439,14 @@ final class Group extends Model {
 		if ($this->_autoJoin === null)
 			$this->load();
 		return $this->_autoJoin;	
-	}                           
+	}                               
 
 	/**
-	 * Gets all the rights members of this group have
+	 * Gets all the rights of this group
 	 *
-	 * Returns an array of plugins which contain each an array of string with
-	 * the right names. Example: getRights()['Premanager']['register'] is true,
-	 * if the right 'register' of the plugin 'Premanager' is set.
+	 * @see hasRight()
 	 *
-	 * Warning: getRights[plugin] might be null if there are no rights of this
-	 * plugins. Accessing it as an array will generate a warning by php. 
-	 *
-	 * If you change the returned array, this property will not be affected.
-	 *
-	 * @see hasRight() 
-	 *
-	 * @return array
+	 * @return array an array of Premanager\Models\Right objects
 	 */
 	public function getRights() {
 		$this->checkDisposed();
@@ -462,7 +454,52 @@ final class Group extends Model {
 		if ($this->_rights === null)
 			$this->loadRights();
 		return $this->_rights;	
-	}                          
+	}                           
+
+	/**
+	 * Gets all the rights of this group
+	 *
+	 * Returns an array of plugins which contain each an array of string with
+	 * the right names. Example: getRights()['Premanager']['register'] is true,
+	 * if the right 'register' of the plugin 'Premanager' is set.
+	 *
+	 * Warning: getRights[plugin] might be null if there are no rights of this
+	 * plugins. Accessing it as an array will generate a warning by php.
+	 *
+	 * If you change the returned array, this property will not be affected.
+	 *
+	 * @see hasRight()
+	 *
+	 * @return array
+	 */
+	public function getSimpleRightList() {
+		$this->checkDisposed();
+			
+		if ($this->_simpleRightList === null)
+			$this->loadRights();
+		return $this->_simpleRightList;	
+	}     
+	                        
+	/**
+	 * Checks if this group has the specified right
+	 *
+	 * @param string $plugin the plugin that registered the right - or -
+	 *   an instance of Premanager\Models\Right
+	 * @param string $right the right's name, if the first argument is a string
+	 * @return bool true, if this group has the specified right
+	 */
+	public function hasRight($plugin, $right = null) {      
+		$this->checkDisposed();
+			
+		if ($plugin instanceof Right)
+			return array_search($plugin, $this->getRights()) !== false;
+		else {
+			if ($this->_simpleRightList === null)
+				$this->loadRights();
+			return Types::isArray($this->_simpleRightList[$plugin]) &&
+				$this->_simpleRightList[$plugin][$right];
+		}
+	}               
 
 	/**
 	 * Gets the user that has created this group
@@ -669,12 +706,7 @@ final class Group extends Model {
 	 * 
 	 * This values will be changed in data base and in this object.
 	 *
-	 * Expects an array of plugins which contain each an array of string with
-	 * the right names. Example: $rights['Premanager']['register'] must be true,
-	 * if the right 'register' of the plugin 'Premanager' should be set.
-	 *
-	 * @param array $rights an array with plugin names as keys and arrays as
-	 *   values that contain the right names
+	 * @param array $rights an array of Premanager\Models\Right objects
 	 */
 	public function setRights(array $rights) {
 		$this->checkDisposed();
@@ -683,28 +715,20 @@ final class Group extends Model {
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'GroupRight')." ".
 			"WHERE groupID = '$this->_id'");
-	    
-	  // Insert selected rights
-	  $result = DataBase::query(
-	  	"SELECT plugin.name AS pluginName, rght.rightID, rght.name ".
-	  	"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ".
-	  	"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." AS plugin ".
-	  		"ON rght.pluginID = plugin.pluginID");
-	  while ($result->next()) {
-	  	$id = $result->get('rightID');
-	  	$plugin = $result->get('pluginName');
-	  	$right = $result->get('name');
-	  	if (is_array($rights[$plugin]) && $rights[$plugin][$right]) {
-				DataBase::query(
-					"INSERT INTO ".DataBase::formTableName('Premanager', 'GroupRight')." ".
-					"(groupID, rightID) ".
-					"VALUES ('$this->_id', '$id')");	  	
-	  	}
-	  }
-	  
-	  // We can not be sure that the array was correct; it could contain rights
-	  // that don't exist.
-	  $this->_rights = null;
+		
+		$this->_simpleRightList = array();
+		foreach ($rights as $right) {
+			DataBase::query(
+				"INSERT INTO ".DataBase::formTableName('Premanager', 'GroupRight')." ".
+				"(groupID, rightID) ".
+				"VALUES ('$this->_id', '".$right->getID()."')");
+
+			$plugin = $right->getPlugin()->getName();
+			if (!Types::isArray($this->_simpleRightList[$plugin]))
+				$this->_simpleRightList[$plugin] = array();
+			$this->_simpleRightList[$plugin][$right->getName()] = true;
+		}
+	  $this->_rights = $rights;
 	}  
 	
 	/**
@@ -768,27 +792,31 @@ final class Group extends Model {
 	
 	private function loadRights() {
 		$this->_rights = array();
+		$this->_simpleRightList = array();
 		
 		$result = DataBase::query(
-			"SELECT rght.name, plugin.name AS pluginName ".
+			"SELECT rght.id, rght.name, plugin.name AS pluginName ".
 			"FROM ".DataBase::formTableName('Premanager', 'Rights')." AS rght ". 
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Plugins')." ".
 				"AS plugin ".
-				"ON plugin.pluginID = rght.pluginID ". 
+				"ON plugin.id = rght.pluginID ". 
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'GroupRight')." ".
 				"AS groupRight ".
-				"ON groupRight.groupI = '$this->_id' ".
-			"GROUP BY rght.rightID ".
+				"ON groupRight.groupID = '$this->_id' ".
+				"AND groupRight.rightID = rght.id ".
+			"GROUP BY rght.id ".
 			"ORDER BY plugin.name ASC, ".
 				"rght.name ASC");
 		while ($result->next()) {
 			$plugin = $result->get('pluginName');
 			$right = $result->get('name');
+			$id = $result->get('id');
 
-			if (!Types::isArray($this->_rights[$plugin]))
-				$this->_rights[$plugin] = array();
-
-			$this->_rights[$plugin][$right] = true;
+			if (!Types::isArray($this->_simpleRightList[$plugin]))
+				$this->_simpleRightList[$plugin] = array();
+			$this->_simpleRightList[$plugin][$right] = true;
+			
+			$this->_rights[] = Right::getByID($id);
 		}
 	}
 }

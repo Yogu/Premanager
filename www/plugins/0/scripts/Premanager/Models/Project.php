@@ -233,7 +233,7 @@ final class Project extends Model {
 		$list = $list->filter(
 			$list->exprUnEqual(
 				$list->exprMember('scope'),
-				TreeClassScope::ORGANIZATION));
+				Scope::ORGANIZATION));
 					
 		foreach ($list as $treeClass) {
 			$nodeTitle = $treeClass->getPlugin()->getName() . '-' . 
