@@ -33,6 +33,7 @@ final class Group extends Model {
 	private $_text;
 	private $_priority;
 	private $_autoJoin;
+	private $_loginConfirmationRequired;
 	private $_rights;
 	private $_simpleRightList;
 	private $_creator;   
@@ -162,17 +163,22 @@ final class Group extends Model {
 	 * @param string $color hexadecimal RRGGBB 
 	 * @param string $text description
 	 * @param int $priority the priority
-	 * @param Premanager\Models\Project $project the project that contains the group
-	 * @param bool $autoJoin
+	 * @param Premanager\Models\Project $project the project that contains the
+	 *   group
+	 * @param bool $autoJoin specifies wheater new users automatically join this
+	 *   group
+	 * @param bool $loginConfirmationRequired specifies whether users have to
+	 *   re-enter their password if a right of this group is needed 
 	 * @return Premanager\Models\Group
 	 */
 	public static function createNew($name, $title, $color, $text, $priority,
-		Project $project, $autoJoin = false) {
+		Project $project, $autoJoin = false, $loginConfirmationRequired = false) {
 		$name = Strings::normalize($name);
 		$title = \trim($title);
 		$color = \trim($color);
 		$text = \trim($text);      
 		$autoJoin = !!$autoJoin;  
+		$loginConfirmationRequired = !!$loginConfirmationRequired;
 		
 		if (!$name)
 			throw new ArgumentException(
@@ -206,7 +212,8 @@ final class Group extends Model {
 			array(
 				'color' => $color,
 				'priority' => $priority,
-				'autoJoin' => $autoJoin),
+				'autoJoin' => $autoJoin,
+				'loginConfirmationRequired' => $loginConfirmationRequired),
 			array(
 				'name' => $name,
 				'title' => $title,
@@ -216,6 +223,7 @@ final class Group extends Model {
 		
 		$group = self::createFromID($id, $name, $title, $color, $priority,
 			$autoJoin, $project->getID());
+		$group->_loginConfirmationRequired = $loginConfirmationRequired;
 		$group->_creator = Environment::getCurrent()->getUser();
 		$group->_createTime = new DateTime();
 		$group->_editor = Environment::getCurrent()->getUser();
@@ -338,7 +346,7 @@ final class Group extends Model {
 	/**
 	 * Gets the project that contains this group
 	 *
-	 * @return string
+	 * @return Premanager\Models\Project
 	 */
 	public function getProject() {
 		$this->checkDisposed();
@@ -439,7 +447,21 @@ final class Group extends Model {
 		if ($this->_autoJoin === null)
 			$this->load();
 		return $this->_autoJoin;	
-	}                               
+	}                         
+
+	/**
+	 * Checks whether users have to re-enter their password if a right of this
+	 * group is needed 
+	 *
+	 * @return bool
+	 */
+	public function getLoginConfirmationRequired() {
+		$this->checkDisposed();
+			
+		if ($this->_loginConfirmationRequired === null)
+			$this->load();
+		return $this->_loginConfirmationRequired;	
+	}                            
 
 	/**
 	 * Gets all the rights of this group
@@ -632,9 +654,11 @@ final class Group extends Model {
 	 * @param int $priority the priority of this group
 	 * @param bool $autoJoin specifies wheater new users automatically join this
 	 *   group
+	 * @param bool $loginConfirmationRequired specifies whether users have to
+	 *   re-enter their password if a right of this group is needed 
 	 */
 	public function setValues($name, $title, $color, $text, $priority = null,
-		$autoJoin = null) {
+		$autoJoin = null, $loginConfirmationRequired) {
 		$this->checkDisposed();
 			
 		$name = Strings::normalize($name);
@@ -649,6 +673,11 @@ final class Group extends Model {
 			$autoJoin = $this->getAutoJoin();
 		else			
 			$autoJoin = !!$autoJoin;
+		if ($loginConfirmationRequired === null)
+			$loginConfirmationRequired = $this->getLoginConfirmationRequired();
+		else			
+			$loginConfirmationRequired = !!$loginConfirmationRequired;
+		
 		
 		if (!$name)
 			throw new ArgumentException(
@@ -680,7 +709,8 @@ final class Group extends Model {
 			array(
 				'color' => $color,
 				'priority' => $priority,
-				'autoJoin' => $autoJoin),
+				'autoJoin' => $autoJoin,
+				'loginConfirmationRequired' => $loginConfirmationRequired),
 			array(
 				'name' => $name,
 				'title' => $title,
@@ -694,6 +724,7 @@ final class Group extends Model {
 		$this->_text = $text;     
 		$this->_priority = $priority;	
 		$this->_autoJoin = $autoJoin;
+		$this->_loginConfirmationRequired = $loginConfirmationRequired;
 		$this->_editTime = new DateTime();
 		$this->_editor = Environment::getCurrent()->getUser();
 		
@@ -768,7 +799,8 @@ final class Group extends Model {
 		$result = DataBase::query(
 			"SELECT translation.name, translation.title, grp.color, grp.priority, ".
 				"grp.autoJoin, grp.parentID, grp.creatorID, ".
-				"grp.editorID, grp.createTime, grp.editTime ".
+				"grp.editorID, grp.createTime, grp.editTime, ".
+				"grp.loginConfirmationRequired ".
 			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
 			/* translating */
 			"WHERE grp.id = '$this->_id'");
@@ -781,6 +813,8 @@ final class Group extends Model {
 		$this->_color = $result->get('color');
 		$this->_priority = $result->get('priority');
 		$this->_autoJoin = !!$result->get('autoJoin');
+		$this->_loginConfirmationRequired =
+			!!$result->get('loginConfirmationRequired');
 		$this->_projectID = $result->get('parentID');
 		$this->_creatorID = $result->get('creatorID');
 		$this->_editorID = $result->get('editorID');

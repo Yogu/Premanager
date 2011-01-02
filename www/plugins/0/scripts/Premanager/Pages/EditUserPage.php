@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\User;
@@ -68,13 +70,17 @@ class EditUserPage extends UserFormPage {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'editUsers'),
+			null, $errorResponse))
+			return $errorResponse;
+			
 		if ($values['name'] != $this->_user->getName())
 			$this->_user->setName($values['name']);
 		if ($values['email'] != $this->_user->getEmail())
 			$this->_user->setEmail($values['email']);
 		if ($values['password'])
 			$this->_user->setPassword($values['password']);
-		if ($values['isEnabled]'] != $this->_user->isEnabled())
+		if ($values['isEnabled'] != $this->_user->isEnabled())
 			$this->_user->setIsEnabled($values['isEnabled']);
 		return new Redirection($this->getParent()->getURL());
 	}

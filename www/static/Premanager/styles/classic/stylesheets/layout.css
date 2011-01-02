@@ -5,7 +5,13 @@ body {
 	padding: 20px;
 	
 	background-color: #004381;
-}                       
+}
+
+body.simple {
+	background-color: #FFFFFF;
+	
+	padding: 10px;
+}
 
 /* ========== Header ========== */
 

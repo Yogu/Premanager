@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\User;
@@ -69,7 +71,11 @@ class DeleteUserPage extends PageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		if (Request::getPOST('confirm')) {	
+		if (Request::getPOST('confirm')) {
+			if (!Rights::requireRight(Right::getByName('Premanager', 'deleteUsers'),
+				null, $errorResponse))
+				return $errorResponse;
+			
 			$this->_user->delete();
 			return new Redirection($this->getParent()->getParent()->getURL());
 		} else {

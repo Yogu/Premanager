@@ -12,7 +12,12 @@ function Dwoo_Plugin_toolBarItem_compile(Dwoo_Compiler $compiler, $url, $title,
 	switch ($method) {
 		case "'POST'":
 			return "'<li><form action=\"./'.htmlspecialchars($url).'\" ".
-				"method=\"POST\"><input type=\"submit\" '.".
+				"method=\"POST\">'.".
+				"(Premanager\Execution\Environment::getCurrent()->getSession() ? ".
+				"'<input type=\"hidden\" name=\"postValidator\" value=\"'.".
+				"htmlspecialchars(Premanager\Execution\Environment::getCurrent()->".
+				"getSession()->getKey()).'\" />' : '').".
+				"'<input type=\"submit\" '.".
 				"($postName ? 'name=\"'.htmlspecialchars($postName).'\" ' : '').".
 				"(!$enabled ? 'disabled=\"disabled\" ' : '').".
 				"'value=\"'.htmlspecialchars($title).'\"'.$descriptionCode.$iconCode.".

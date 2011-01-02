@@ -112,7 +112,9 @@ abstract class GroupFormPage extends FormPageNode {
 			$errors[] = array('text', 
 				Translation::defaultGet('Premanager', 'noGroupTextInputtedError'));
 
-		$autoJoin = !! Request::getPOST('autoJoin');
+		$autoJoin = !!Request::getPOST('autoJoin');
+		$loginConfirmationRequired =
+			!!Request::getPOST('loginConfirmationRequired');
 		
 		return array(
 			'name' => $name,
@@ -120,7 +122,8 @@ abstract class GroupFormPage extends FormPageNode {
 			'color' => $color,
 			'priority' => $priority,
 			'text' => $text,
-			'autoJoin' => $autoJoin);
+			'autoJoin' => $autoJoin,
+			'loginConfirmationRequired' => $loginConfirmationRequired);
 	}
 	
 	/**
@@ -135,7 +138,8 @@ abstract class GroupFormPage extends FormPageNode {
 			'color' => '000000',
 			'priority' => '0',
 			'text' => '',
-			'autoJoin' => false);
+			'autoJoin' => false,
+			'loginConfirmationRequired' => false);
 	}
 	
 	/**

@@ -1,8 +1,9 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Debug\Debug;
-
 use Premanager\Execution\ToolBarItem;
 use Premanager\Premanager;
 use Premanager\Execution\TreeListPageNode;
@@ -49,15 +50,26 @@ class UserPage extends PageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($name == 'edit')
+		if ($name == 'edit' &&
+			Rights::hasRight(Right::getByName('Premanager', 'editUsers')))
 			return new EditUserPage($this, $this->_user);
-		if ($name == 'delete' && $this->_user->getID())
+		if ($name == 'delete' && $this->_user->getID() &&
+			Rights::hasRight(Right::getByName('Premanager', 'deleteUsers')))
 			return new DeleteUserPage($this, $this->_user);
-		if ($name == 'join-group')
+		if ($name == 'join-group' && 
+			(Rights::hasRightInAnyProject(Right::getByName(
+				'Premanager', 'manageGroupMemberships')) ||
+			Rights::hasRightInAnyProject(Right::getByName(
+				'Premanager', 'manageGroupMembershipsOfProjectMembers'))))
 			return new UserJoinGroupPage($this, $this->_user);
-		if ($name == 'leave-group')
+		if ($name == 'leave-group' &&  
+			(Rights::hasRightInAnyProject(Right::getByName(
+				'Premanager', 'manageGroupMemberships')) ||
+			Rights::hasRightInAnyProject(Right::getByName(
+				'Premanager', 'manageGroupMembershipsOfProjectMembers'))))
 			return new UserLeaveGroupPage($this, $this->_user);
-		if ($name == 'rights')
+		if ($name == 'rights' &&
+			Rights::hasRight(Right::getByName('Premanager', 'manageRights')))
 			return new UserRightsPage($this, $this->_user);
 	}
 	
@@ -105,26 +117,34 @@ class UserPage extends PageNode {
 				$template->get()));
 		}
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
-			Translation::defaultGet('Premanager', 'editUser'), 
-			Translation::defaultGet('Premanager', 'editUserDescription'),
-			'Premanager/images/tools/edit.png');
+		if (Rights::hasRight(Right::getByName('Premanager', 'editUsers')))
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
+				Translation::defaultGet('Premanager', 'editUser'), 
+				Translation::defaultGet('Premanager', 'editUserDescription'),
+				'Premanager/images/tools/edit.png');
 		
-		if ($this->_user->getID())
+		if ($this->_user->getID() &&
+			Rights::hasRight(Right::getByName('Premanager', 'deleteUsers')))
 			$page->toolbar[] = new ToolBarItem($this->getURL().'/delete',
 				Translation::defaultGet('Premanager', 'deleteUser'), 
 				Translation::defaultGet('Premanager', 'deleteUserDescription'),
 				'Premanager/images/tools/delete.png');
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/join-group',
-			Translation::defaultGet('Premanager', 'userJoinGroup'), 
-			Translation::defaultGet('Premanager', 'userJoinGroupDescription'),
-			'Premanager/images/tools/join-group.png');
+		if (Rights::hasRightInAnyProject(Right::getByName(
+				'Premanager', 'manageGroupMemberships')) ||
+			Rights::hasRightInAnyProject(Right::getByName(
+				'Premanager', 'manageGroupMembershipsOfProjectMembers')))
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/join-group',
+				Translation::defaultGet('Premanager', 'userJoinGroup'), 
+				Translation::defaultGet('Premanager', 'userJoinGroupDescription'),
+				'Premanager/images/tools/join-group.png');
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/rights',
-			Translation::defaultGet('Premanager', 'viewUserRights'), 
-			Translation::defaultGet('Premanager', 'viewUserRightsDescription'),
-			'Premanager/images/tools/rights.png');
+		if (Rights::hasRightInAnyProject(
+			Right::getByName('Premanager', 'manageRights')))
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/rights',
+				Translation::defaultGet('Premanager', 'viewUserRights'), 
+				Translation::defaultGet('Premanager', 'viewUserRightsDescription'),
+				'Premanager/images/tools/rights.png');
 			
 		return $page;
 	}

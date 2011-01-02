@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
@@ -67,6 +69,10 @@ class DeleteGroupPage extends PageNode {
 	 */
 	public function getResponse() {
 		if (Request::getPOST('confirm')) {	
+			if (!Rights::requireRight(Right::getByName('Premanager', 'manageGroups'),
+				$this->_group->getProject(), $errorResponse))
+				return $errorResponse;
+				
 			$this->_group->delete();
 			return new Redirection($this->getParent()->getParent()->getURL());
 		} else {

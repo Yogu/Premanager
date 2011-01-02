@@ -9,17 +9,28 @@
 		{/if}
 		{$lastProject = $group->getProject()}
 		<li>
-			<ul class="toolbar">
-				{$var = $node->getURL()}
-				{toolBarItem
-					title=string(Premanager userLeaveGroup)
-					description=string(Premanager userLeaveGroupDescription)
-					url=concat($var, '/leave-group')
-					method='POST'
-					postName=concat('leave-group-', $group->getID())
-					iconURL='Premanager/images/tools/leave-group.png'
+			<?php 
+				$right = Premanager\Models\Right::getByName('Premanager', 'manageGroupMemberships');
+				if (Premanager\Execution\Rights::hasRight($right, $this->scope['group']->getProject()))
+					$this->scope['canLeave'] = true;
+				else if ($this->scope['group']->getProject()->getID()) {
+					$right = Premanager\Models\Right::getByName('Premanager', 'manageGroupMembershipsOfProjectMembers');
+					$this->scope['canLeave'] = Premanager\Execution\Rights::hasRight($right, $this->scope['group']->getProject());
 				}
-			</ul>
+			?>
+			{if $canLeave}
+				<ul class="toolbar">
+					{$var = $node->getURL()}
+					{toolBarItem
+						title=string(Premanager userLeaveGroup)
+						description=string(Premanager userLeaveGroupDescription)
+						url=concat($var, '/leave-group')
+						method='POST'
+						postName=concat('leave-group-', $group->getID())
+						iconURL='Premanager/images/tools/leave-group.png'
+					}
+				</ul>
+			{/if}
 			<a href="./{treeURL Premanager groups}/{if $group->getProject()->getID()}{url $group->getProject()->getName()}{else}-{/if}/{url $group->getName()}" style="color: #{$group->getColor()};">{html $group->getName()}</a></td>
 		</li>
 	{/foreach}

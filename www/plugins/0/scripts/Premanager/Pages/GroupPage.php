@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\TreeClass;
 use Premanager\Premanager;
@@ -67,11 +69,16 @@ class GroupPage extends ListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($name == 'edit')
+		if ($name == 'edit' &&
+			Rights::hasRight(Right::getByName('Premanager', 'manageGroups'),
+			$this->_group->getProject()))
 			return new EditGroupPage($this, $this->_group);
-		if ($name == 'delete')
+		if ($name == 'delete' &&
+			Rights::hasRight(Right::getByName('Premanager', 'manageGroups'),
+			$this->_group->getProject()))
 			return new DeleteGroupPage($this, $this->_group);
-		if ($name == 'rights')
+		if ($name == 'rights' &&
+			Rights::hasRight(Right::getByName('Premanager', 'manageRights')))
 			return new GroupRightsPage($this, $this->_group);
 	}
 	
@@ -103,20 +110,26 @@ class GroupPage extends ListPageNode {
 				$template->get()));
 		}
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
-			Translation::defaultGet('Premanager', 'editGroup'), 
-			Translation::defaultGet('Premanager', 'editGroupDescription'),
-			'Premanager/images/tools/edit.png');
+		if (Rights::hasRight(Right::getByName('Premanager', 'manageGroups'),
+			$this->_group->getProject())) {
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/edit',
+				Translation::defaultGet('Premanager', 'editGroup'), 
+				Translation::defaultGet('Premanager', 'editGroupDescription'),
+				'Premanager/images/tools/edit.png');
+			
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/delete',
+				Translation::defaultGet('Premanager', 'deleteGroup'), 
+				Translation::defaultGet('Premanager', 'deleteGroupDescription'),
+				'Premanager/images/tools/delete.png');
+		}
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/delete',
-			Translation::defaultGet('Premanager', 'deleteGroup'), 
-			Translation::defaultGet('Premanager', 'deleteGroupDescription'),
-			'Premanager/images/tools/delete.png');
-		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/rights',
-			Translation::defaultGet('Premanager', 'editGroupRights'), 
-			Translation::defaultGet('Premanager', 'editGroupRightsDescription'),
-			'Premanager/images/tools/rights.png');
+		if (Rights::hasRight(Right::getByName('Premanager', 'manageRights'),
+			$this->_group->getProject())) {
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/rights',
+				Translation::defaultGet('Premanager', 'editGroupRights'), 
+				Translation::defaultGet('Premanager', 'editGroupRightsDescription'),
+				'Premanager/images/tools/rights.png');
+		}
 				
 		return $page;
 	}

@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+
+use Premanager\Execution\Rights;
+
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
@@ -25,27 +29,31 @@ use Premanager\IO\Output;
 /**
  * A page that allows the user to add a group displaying a list of all projects
  */
-class AddGroupHomePage extends ListPageNode {
+class AddGroupHomePage extends PageNode {
 	/**
 	 * Performs a call of this page and creates the response object
 	 * 
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		$list = self::getList()->getRange($this->getStartIndex(),
-			$this->getItemsPerPage(), true);
+		$list = self::getList();
+		if (count($list))
+			$message = 'addGroupProjectListMessage';
+		else
+			$message = 'addGroupProjectListEmptyMessage';
 		
 		$page = new Page($this);
 		$page->title = Translation::defaultGet('Premanager', 'addGroup');
 		$page->createMainBlock(
-			Translation::defaultGet('Premanager', 'addGroupProjectListMessage'));
+			Translation::defaultGet('Premanager', $message));
 		
-		$template = new Template('Premanager', 'addGroupProjectList');
-		$template->set('list', $list);
-		$template->set('node', $this);
-		
-		$page->appendBlock(PageBlock::createSimple(
-			Translation::defaultGet('Premanager', 'projects'), $template->get()));
+		if (count($list)) {
+			$template = new Template('Premanager', 'addGroupProjectList');
+			$template->set('list', $list);
+			$template->set('node', $this);
+			$page->appendBlock(PageBlock::createSimple(
+				Translation::defaultGet('Premanager', 'projects'), $template->get()));
+		}
 		
 		return $page;
 	} 
@@ -70,15 +78,6 @@ class AddGroupHomePage extends ListPageNode {
 	}
 	
 	/**
-	 * Counts the items
-	 * 
-	 * @return int
-	 */
-	protected function countItems() {
-		return self::getList()->getcount();
-	}
-	
-	/**
 	 * Gets the list of projects sorted by title
 	 * 
 	 * @return Premanager\QueryList\QueryList the list of users
@@ -86,11 +85,22 @@ class AddGroupHomePage extends ListPageNode {
 	private static function getList() {
 		static $list;
 		if (!$list) {
-			$list = Project::getProjects();
-			$list = $list->sort(array(
-				new SortRule($list->exprEqual($list->exprMember('id'), 0),
+			$l = Project::getProjects();
+			$l = $l->sort(array(
+				new SortRule($l->exprEqual($l->exprMember('id'), 0),
 					SortDirection::DESCENDING),
-				new SortRule($list->exprMember('title'))));
+				new SortRule($l->exprMember('title'))));
+				
+			$right = Right::getByName('Premanager', 'manageGroups');
+			if (Rights::hasRight($right, Project::getOrganization()))
+				$list = $l;
+			else {
+				$list = array();
+				foreach ($l as $item) {
+					if (Rights::hasRight($right, $item))
+						$list[] = $item;
+				}
+			}
 		}
 		return $list;
 	}

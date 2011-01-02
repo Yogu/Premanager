@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Rights;
+
 use Premanager\Models\Scope;
 use Premanager\Models\Right;
 use Premanager\Execution\Redirection;
@@ -98,15 +100,18 @@ class UserRightsPage extends PageNode {
 		$headTemplate->set('user', $this->_user);
 		$blocks = array();
 		
+		$right = Right::getByName('Premanager', 'manageRights');
 		foreach ($projects as $project) {
-			$rights = $this->_user->getRights($project);
-			if (count($rights)) {
-				$headTemplate->set('project', $project);
-				$headTemplate->set('rights', $rights);
-				$bodyTemplate->set('project', $project);
-				$bodyTemplate->set('rights', $rights);
-				$blocks[] =
-					PageBlock::createTable($headTemplate->get(), $bodyTemplate->get());
+			if (Rights::hasRight($right, $project)) {
+				$rights = $this->_user->getRights($project);
+				if (count($rights)) {
+					$headTemplate->set('project', $project);
+					$headTemplate->set('rights', $rights);
+					$bodyTemplate->set('project', $project);
+					$bodyTemplate->set('rights', $rights);
+					$blocks[] =
+						PageBlock::createTable($headTemplate->get(), $bodyTemplate->get());
+				}
 			}
 		}
 		

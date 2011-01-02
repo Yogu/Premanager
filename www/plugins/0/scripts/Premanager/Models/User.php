@@ -651,15 +651,25 @@ final class User extends Model {
 	 *
 	 * @see hasRight()
 	 *
-	 * @param Premanager\Modles\Project $project the project
+	 * @param Premanager\Modles\Project $project the project or null to select
+	 *   rights of all projects
+	 * @param bool $loginConfirmed if false, only rights of groups that do not
+	 *   require login confirmation are included. By default true.
 	 * @return array an array of Premanager\Models\Right objects
 	 */
-	public function getRights(Project $project) {
+	public function getRights($project, $loginConfirmed = true) {
 		$this->checkDisposed();
+		
+		if ($project instanceof Project)
+			$key = $project->getID();
+		else
+			$key = '_';
+		if ($loginConfirmed)
+			$key .=  '*';
 			
-		if ($this->_rights[$project->getID()] === null)
-			$this->loadRights($project);
-		return $this->_rights[$project->getID()];	
+		if ($this->_rights[$key] === null)
+			$this->loadRights($project, $loginConfirmed);
+		return $this->_rights[$key];	
 	}   
 	                        
 	/**
@@ -667,16 +677,17 @@ final class User extends Model {
 	 *
 	 * @param Premanager\Models\Right $right the right to check
 	 * @param Premanager\Models\Projecr $project the project in which the user
-	 *   should have this right. By default the project in the environment
+	 *   should have this right, or null to search in all projects
+	 * @param bool $loginConfirmed if false, only rights of groups that do not
+	 *   require login confirmation are included. By default true
 	 * @return bool true, if this user has the specified right in the project
 	 */
-	public function hasRight(Right $right, Project $project = null) {      
-		$this->checkDisposed();
-		
-		if (!$project)
-			$project = Environment::getCurrent()->getProject();
-			
-		return array_search($plugin, $this->getRights($project)) !== false;
+	public function hasRight(Right $right, $project = null,
+		$loginConfirmed = true)
+	{      
+		$this->checkDisposed();			
+		return array_search($right, $this->getRights($project, $loginConfirmed))
+			!== false;
 	}     
 	
 	/**
@@ -762,7 +773,26 @@ final class User extends Model {
 			"WHERE userGroup.userID = $this->_id ".
 				"AND userGroup.groupID = ".$group->getID());
 		return $result->next();
-	}      
+	}           
+	
+	/**
+	 * Checks whether this user is member of a group of the specified project
+	 *
+	 * @return bool
+	 */
+	public function isProjectMemberOf(Project $project) {          
+		$this->checkDisposed();
+		
+		$result = DataBase::query(
+			"SELECT userGroup.groupID ".
+			"FROM ".DataBase::formTableName('Premanager', 'UserGroup').
+				" AS userGroup ".
+			"INNER JOIN ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
+				"ON userGroup.groupID = grp.id ".
+			"WHERE userGroup.userID = $this->_id ".
+				"AND grp.parentID = ".$project->getID());
+		return $result->next();
+	}   
 	
 	/**
 	 * Checks if the specifies password is correct for this user
@@ -896,7 +926,7 @@ final class User extends Model {
 				'The guest account can not be disabled');
 		
 		if ($value)
-			$status = "enabled";
+			$status = "'enabled'";
 		else
 			$status = "IF(user.status = 'waitForEmail', 'waitForEmail', 'disabled')";
 		
@@ -1451,8 +1481,25 @@ final class User extends Model {
 	/**
 	 * Loads the rights of this user into $_rights field
 	 */
-	private function loadRights(Project $project) {
-		$this->_rights[$project->getID()] = array();
+	private function loadRights($project, $loginConfirmed) {
+		if ($project instanceof Project)
+			$key = $project->getID();
+		else
+			$key = '_';
+		if ($loginConfirmed)
+			$key .=  '*';
+		$this->_rights[$key] = array();
+		
+		if ($project)
+			$where =
+				"WHERE (grp.parentID = 0 OR grp.parentID = ".$project->getID().")";
+		if (!$loginConfirmed) {
+			if ($where)
+				$where .= " AND ";
+			else 
+				$where = "WHERE ";
+			$where .= "NOT grp.loginConfirmationRequired ";
+		}
 		
 		$result = DataBase::query(
 			"SELECT rght.id ".
@@ -1468,12 +1515,12 @@ final class User extends Model {
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Rights').
 				" AS rght ".
 				"ON groupRight.rightID = rght.id ". 
-			"WHERE grp.parentID = 0 OR grp.parentID = ".$project->getID()." ".
+			$where.
 			"GROUP BY rght.id ".
 			"ORDER BY rght.pluginID ASC, ".
 				"rght.name ASC");
 		while ($result->next())
-			$this->_rights[$project->getID()][] = Right::getByID($result->get('id'));
+			$this->_rights[$key][] = Right::getByID($result->get('id'));
 	}
 	
 	/**

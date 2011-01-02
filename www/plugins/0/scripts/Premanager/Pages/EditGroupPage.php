@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Group;
@@ -68,9 +70,13 @@ class EditGroupPage extends GroupFormPage {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'manageGroups'),
+			$this->_group->getProject(), $errorResponse))
+			return $errorResponse;
+			
 		$this->_group->setValues($values['name'], $values['title'],
 			$values['color'], $values['text'], $values['priority'],
-			$values['autoJoin']);
+			$values['autoJoin'], $values['loginConfirmationRequired']);
 		return new Redirection($this->getParent()->getURL());
 	}
 	
@@ -86,7 +92,9 @@ class EditGroupPage extends GroupFormPage {
 			'color' => $this->_group->getColor(),
 			'text' => $this->_group->getText(),
 			'priority' => $this->_group->getPriority(),
-			'autoJoin' => $this->_group->getAutoJoin());
+			'autoJoin' => $this->_group->getAutoJoin(),
+			'loginConfirmationRequired' =>
+				$this->_group->getLoginConfirmationRequired());
 	}
 	
 	/**

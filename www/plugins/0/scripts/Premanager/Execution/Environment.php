@@ -373,6 +373,16 @@ class Environment extends Module {
 	}
 	
 	/**
+	 * Has to be called after logout
+	 * 
+	 * @return string
+	 */
+	public function notfifyLoggedOut() {
+		$this->_session = null;
+		$this->_sessionLoading = false;
+	}
+	
+	/**
 	 * Checks if the $session and $user properties contain the correct values  
 	 *  
 	 * @return bool true, if $session and $user are available

@@ -205,7 +205,7 @@ class Request {
 		static $post;
 		if (!is_array($post)) {
 			if (self::$_postValidated === null) {
-				if (!Environment::getCurrent()->getsession())
+				if (!Environment::getCurrent()->getSession())
 					self::$_postValidated = true;
 				else {
 					// pretend post data to be validated for accessing the validator
@@ -215,8 +215,8 @@ class Request {
 						$validator == Environment::getCurrent()->getSession()->getKey();
 				}
 			}
-			if (!self::$_postValidated )
-				return null;
+			if (!self::$_postValidated)
+				return array();
 			
 			$post = $_POST;
 			if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())

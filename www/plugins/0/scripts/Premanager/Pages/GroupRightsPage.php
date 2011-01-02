@@ -1,10 +1,9 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Rights;
 use Premanager\Models\Scope;
-
 use Premanager\Models\Right;
-
 use Premanager\Execution\Redirection;
 use Premanager\Types;
 use Premanager\Execution\FormPageNode;
@@ -136,17 +135,19 @@ class GroupRightsPage extends FormPageNode {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'manageRights'),
+			$this->_group->getProject(), $errorResponse))
+			return $errorResponse;
+				
 		$rights = array();
 		foreach ($values as $rightID => $foo) {
 			if (Types::isInteger($rightID)) {
 				$right = Right::getByID($rightID);
 				if ($right) {
-					$scope = $right->getScope();
-					$org = !$this->_group->getProject()->getID();
-					if (!(($scope == Scope::ORGANIZATION && !$org) ||
-						($scope == Scope::PROJECTS && $org))) {
+					$isOrganization = !$this->_group->getProject()->getID();
+					// organizations can have project rights. Grants right to all projects.
+					if ($isOrganization || $right->getScope() != Scope::ORGANIZATION)
 						$rights[] = $right;
-					}
 				}
 			}
 		}
@@ -163,10 +164,9 @@ class GroupRightsPage extends FormPageNode {
 	protected function getTemplate() {
 		$rights = array();
 		foreach (Right::getRights() as $right) {
-			$scope = $right->getScope();
-			$org = !$this->_group->getProject()->getID();
-			if (!(($scope == Scope::ORGANIZATION && !$org) ||
-				($scope == Scope::PROJECTS && $org)))
+			$isOrganization = !$this->_group->getProject()->getID();
+			// organizations can have project rights. Grants right to all projects.
+			if ($isOrganization || $right->getScope() != Scope::ORGANIZATION)
 				$rights[] = $right;
 		}
 		

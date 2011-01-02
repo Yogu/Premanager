@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+
+use Premanager\Execution\Rights;
+
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
@@ -49,7 +53,8 @@ class ProjectGroupsPage extends ListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($name == '+')
+		if ($name == '+' && Rights::hasRight(Right::getByName('Premanager',
+			'manageGroups'), $this->_project))
 			return new AddGroupPage($this, $this->_project);
 		$group = Group::getByName($this->_project, $name);
 		if ($group)
@@ -142,10 +147,12 @@ class ProjectGroupsPage extends ListPageNode {
 			$page->appendBlock(PageBlock::createTable($head, $body));
 		}
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
-			Translation::defaultGet('Premanager', 'addGroup'), 
-			Translation::defaultGet('Premanager', 'addGroupDescription'),
-			'Premanager/images/tools/add-group.png');
+		if (Rights::hasRight(
+			Right::getByName('Premanager', 'manageGroups'), $this->_project))
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
+				Translation::defaultGet('Premanager', 'addGroup'), 
+				Translation::defaultGet('Premanager', 'addGroupDescription'),
+				'Premanager/images/tools/add-group.png');
 		
 		return $page;
 	} 

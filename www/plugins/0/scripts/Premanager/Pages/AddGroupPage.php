@@ -1,10 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Debug\Debug;
-
 use Premanager\Models\Project;
-
 use Premanager\Execution\Redirection;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Group;
@@ -62,15 +62,6 @@ class AddGroupPage extends GroupFormPage {
 	}
 	
 	/**
-	 * Gets the values for a form without POST data
-	 * 
-	 * @return array the array of values
-	 */
-	protected function getDefaultValues() {
-		return array();
-	}
-	
-	/**
 	 * Applies the values and gets the response
 	 * 
 	 * Is called when the form is submitted and validated. 
@@ -79,6 +70,10 @@ class AddGroupPage extends GroupFormPage {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'manageGroups'),
+			$this->_project, $errorResponse))
+			return $errorResponse;
+		
 		$group = Group::createNew($values['name'], $values['title'],
 			$values['color'], $values['text'], $values['priority'],
 			$this->_project, $values['autoJoin']);

@@ -24,6 +24,7 @@ class Right {
 	 * @var array
 	 */
 	private static $_rights;
+	private static $_rightsByName;
 	
 	private function __construct($id, $plugin, $name, $title, $description,
 		$scope) {
@@ -78,6 +79,7 @@ class Right {
 	public static function getRights() {
 		if (self::$_rights === null) {
 			self::$_rights = array();
+			self::$_rightsByName = array();
 			
 			$result = DataBase::query(
 				"SELECT rght.id, rght.pluginID, rght.name, translation.title, ".
@@ -101,9 +103,12 @@ class Right {
 					default:
 						$scope = Scope::BOTH;
 				}
-				self::$_rights[$result->get('id')] = new Right($result->get('id'),
+				$right = new Right($result->get('id'),
 					Plugin::getByID($result->get('pluginID')), $result->get('name'),
 					$result->get('title'), $result->get('description'), $scope);
+				self::$_rights[$result->get('id')] = $right;
+				self::$_rightsByName[$right->_plugin->getName().'/'.$right->_name] =
+					$right;
 			}
 		}
 		return self::$_rights;
@@ -122,6 +127,19 @@ class Right {
 			
 		$rights = self::getRights();
 		return $rights[$id];
+	}
+	
+	/**
+	 * Gets a right using its name and the name of its plugin. Case sensitive.
+	 * 
+	 * @param string $pluginName the name of the plugin that contains the right
+	 * @param string $rightName the name of the right
+	 * @return Premanager\Models\Right the right or null, if there is no
+	 *   right with the specified name
+	 */
+	public static function getByName($pluginName, $rightName) {
+		self::getRights();
+		return self::$_rightsByName[$pluginName.'/'.$rightName];
 	}
 	
 	/**

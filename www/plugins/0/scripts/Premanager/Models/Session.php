@@ -39,6 +39,8 @@ final class Session extends Model {
 	private $_isFirstRequest;
 	private $_project;
 	private $_projectID;
+	private $_confirmationExpirationTime;
+	private $_isConfirmed;
 	
 	private static $_instances = array();
 	private static $_count;
@@ -62,7 +64,7 @@ final class Session extends Model {
 	private static function createFromID($id, $userID = null, $key = null, 
 		$startTime = null, $lastRequestTime = null, $ip = null, $userAgent = null,
 		$secondaryPasswordUsed = null, $hidden = null, $isFirstRequest = null,
-		$projectID = null) {
+		$projectID = null, $isConfirmed = null) {
 		
 		if (array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
@@ -86,6 +88,8 @@ final class Session extends Model {
 				$instance->_isFirstRequest = $isFirstRequest;
 			if ($instance->_projectID === null)
 				$instance->_projectID = $projectID;
+			if ($instance->_isConfirmed === null)
+				$instance->_isConfirmed = $isConfirmed;
 				
 			return $instance;
 		}
@@ -106,6 +110,7 @@ final class Session extends Model {
 		$instance->_hidden = $hidden;
 		$instance->_isFirstRequest = $isFirstRequest;
 		$instance->_projectID = $projectID;
+		$instance->_isConfirmed = $isConfirmed;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	}
@@ -212,6 +217,8 @@ final class Session extends Model {
 		$instance = self::createFromID($id, $user->getid(), $key, new DateTime(), 
 			new DateTime(), $ip, $userAgent, $secondaryPasswordUsed, $hidden, true,
 			$projectID);
+		$instance->_confirmationExpirationTime = null;
+		$instance->_isConfirmed = false;
 
 		if (self::$_count !== null)
 			self::$_count++;	
@@ -266,7 +273,11 @@ final class Session extends Model {
 				'hidden' => array(DataType::BOOLEAN, 'getHidden', 'hidden'),
 				'isFirstRequest' => array(DataType::BOOLEAN, 'getIsFirstRequest',
 					'isFirstRequest'),
-				'project' => array(Project::getDescriptor(), 'getProject', 'project')),
+				'project' => array(Project::getDescriptor(), 'getProject', 'project'),
+				'isConfirmed' => array(Project::getDescriptor(), 'isConfirmed',
+					'!confirmationExpirationTime! > NOW()'),
+				'confirmationExpirationTime' => array(Project::getDescriptor(),
+					'getConfirmationExpirationTime', 'confirmationExpirationTime')),
 				'Premanager', 'Sessions', array(__CLASS__, 'getByID'));
 		}
 		return self::$_descriptor;
@@ -419,7 +430,34 @@ final class Session extends Model {
 			$this->_project = Project::getById($this->_projectID);
 		}
 		return $this->_project;
-	}     
+	}   
+
+	/**
+	 * Indicates whether user has re-entered their password to enable rights of
+	 *   groups that require login confirmation
+	 * 
+	 * @return bool
+	 */
+	public function isConfirmed() {
+		$this->checkDisposed();
+			
+		if ($this->_isConfirmed === null)
+			$this->load();
+		return $this->_isConfirmed;
+	}  
+
+	/**
+	 * The date/time when this session is no longer confirmed
+	 * 
+	 * @return Premanager\DateTime or null, if this session is not confirmed
+	 */
+	public function getConfirmationExpirationTime() {
+		$this->checkDisposed();
+			
+		if ($this->_confirmationExpirationTime === false)
+			$this->load();
+		return $this->_confirmationExpirationTime;
+	}  
 	
 	/**
 	 * Deletes and disposes this session
@@ -457,6 +495,31 @@ final class Session extends Model {
 		$this->_project = $project;
 		$this->_projectID = $project->getid();
 	}
+	
+	public function confirm()  {
+		$this->checkDisposed();
+		
+		$length = Options::defaultGet('Premanager', 'loginConfirmationLength');
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
+			"SET confirmationExpirationTime = ".
+				"DATE_ADD(NOW(), INTERVAL $length SECOND) ".
+			"WHERE id = $this->_id");
+		$this->_confirmationExpirationTime =
+			DateTime::getNow()->addSeconds($length);
+		$this->_isConfirmed = true;
+	}
+	
+	public function unconfirm()  {
+		$this->checkDisposed();
+		
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
+			"SET confirmationExpirationTime = '0000-00-00 00:00:00' ".
+			"WHERE id = $this->_id");
+		$this->_confirmationExpirationTime = null;
+		$this->_isConfirmed = false;
+	}
 
 	// ===========================================================================
 	
@@ -465,7 +528,8 @@ final class Session extends Model {
 			"SELECT session.userID, session.key, session.startTime, ".
 				"session.lastRequestTime, session.ip, session.userAgent, ".
 				"session.secondaryPasswordUsed, session.hidden, ".
-				"session.isFirstRequest, session.projectID ".
+				"session.isFirstRequest, session.projectID, ".
+				"session.confirmationExpirationTime ".
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.id = '$this->_id'");
 		
@@ -482,6 +546,15 @@ final class Session extends Model {
 		$this->_hidden = $result->get('hidden');
 		$this->_isFirstRequest = $result->get('isFirstRequest');
 		$this->_projectID = $result->get('projectID');
+		if ($result->get('confirmationExpirationTime') != '0000-00-00 00:00:00') {
+			$this->_confirmationExpirationTime = new DateTime(
+				$result->get('confirmationExpirationTime'));
+			$this->_isConfirmed =
+				$this->_confirmationExpirationTime->compareTo(DateTime::getNow()) > 0;
+		} else {
+			$this->_confirmationExpirationTime = null;
+			$this->_isConfirmed = false;
+		} 
 		
 		return true;
 	}

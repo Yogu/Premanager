@@ -1,6 +1,16 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Redirection;
+
+use Premanager\Execution\SimplePage;
+
+use Premanager\Execution\StringResponse;
+
+use Premanager\Models\Right;
+
+use Premanager\Execution\Rights;
+
 use Premanager\Models\Session;
 use Premanager\Debug\Debug;
 use Premanager\Event;
@@ -71,10 +81,11 @@ class LoginPage extends TreePageNode {
 	public function getResponse() {
 		// helpers
 		$canRegister = 
-			Environment::getCurrent()->getuser()->hasRight('Premanager', 'register') ||
-			Environment::getCurrent()->getuser()->hasRight('Premanager', 
-				'registerWithoutEmail');
+			Rights::hasRight(Right::getByName('Premanager', 'register')) ||
+			Rights::hasRight(Right::getByName('Premanager', 'registerWithoutEmail'));
 		$referer = Request::isRefererInternal() ? Request::getReferer() : '';
+		if ($referer == Request::getRequestURL())
+			$referer = '';
 		
 		$template = new Template('Premanager', 'loginForm');
 		$template->set('canRegister', $canRegister);
@@ -120,22 +131,70 @@ class LoginPage extends TreePageNode {
 		} else if (Request::getPOST('logout')) {
 			// Logout and show a link to the referer
 			self::logout();
-			$template = new Template('Premanager', 'logoutSuccessful');
-			$template->set('referer', Request::getPOST('referer'));
+			$template2 = new Template('Premanager', 'logoutSuccessful');
+			$template2->set('referer', Request::getPOST('referer'));
 			$page->title = Translation::defaultGet('Premanager', 'theLogout');
-			$page->createMainBlock($template->get());
+			$page->createMainBlock($template2->get());
+				
+			// Login again?
+			$page->appendBlock(PageBlock::createSimple(Translation::defaultGet(
+				'Premanager', 'loggedOutLoginTitle'), $template->get()));
 		} else  if (Environment::getCurrent()->getSession()) {
-			// Show a logout button
-			$template = new Template('Premanager', 'logout');
-			$template->set('environment', Environment::getCurrent());
-			$template->set('referer', $referer);
-			$page->title = Translation::defaultGet('Premanager', 'theLogout');
-			$page->createMainBlock($template->get());
+			if (Request::getGET('type') == 'login-confirmation') {
+				$template = new Template('Premanager', 'loginConfirmation');
+				$template->set('referer', $referer);
+				$template->set('userName',
+					Environment::getCurrent()->getUser()->getName());
+				if ($password = Request::getPOST('password')) {
+					if (Environment::getCurrent()->getUser()->checkPassword($password,
+						$foo))
+					{
+						Environment::getCurrent()->getSession()->confirm();
+						$state = 'finished';
+					} else {
+						$state = 'error';
+					}
+				}
+				$template->set('state', $state);
+				$template->set('mode', Request::getGET('mode'));
+				if (Request::getGET('mode') == 'iframe') {
+					$page = new SimplePage($this);
+					$page->content = $template->get();
+				} else {
+					if ($state == 'finished' && $referer)
+						return new Redirection($referer);
+					$page->appendBlock(PageBlock::createSimple(
+						Translation::defaultGet('Premanager', 'loginConfirmationPageTitle'),
+						$template->get()));
+				}
+			} else {
+				// Show a logout button
+				$template = new Template('Premanager', 'logout');
+				$template->set('environment', Environment::getCurrent());
+				$template->set('referer', $referer);
+				$page->title = Translation::defaultGet('Premanager', 'theLogout');
+				$page->createMainBlock($template->get());
+			}
 		} else {
 			// Show the login form
 			$page->createMainBlock($template->get());
 		}
 		return $page;
+	}
+	
+	/**
+	 * Gets an array of names and values of the query ('page' => 7 for '?page=7')
+	 * 
+	 * @return array
+	 */
+	public function getURLQuery() {
+		$query = array();
+		if (Request::getGET('type') == 'login-confirmation') {
+			$query['type'] = 'login-confirmation';
+			if (Request::getGET('mode') == 'iframe')
+				$query['mode'] = 'iframe';
+		}
+		return $query;
 	}
 	
 	// =========================================================================== 
@@ -204,6 +263,7 @@ class LoginPage extends TreePageNode {
 		if ($session)
 			$session->delete();
 		Output::deleteCookie('session');
+		Environment::getCurrent()->notfifyLoggedOut();
 		self::$loggedOut->call();
 	}  
 }

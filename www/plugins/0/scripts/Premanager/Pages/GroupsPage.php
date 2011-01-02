@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+
+use Premanager\Execution\Rights;
+
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
@@ -31,7 +35,8 @@ class GroupsPage extends TreeListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($name == '+')
+		if ($name == '+' && Rights::hasRightInAnyProject(Right::getByName(
+			'Premanager', 'manageGroups')))
 			return new AddGroupHomePage($this);
 		if ($name == '-')
 			return new ProjectGroupsPage($this, Project::getOrganization());
@@ -88,10 +93,12 @@ class GroupsPage extends TreeListPageNode {
 		
 		$page->appendBlock(PageBlock::createTable($head, $body));
 		
-		$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
-			Translation::defaultGet('Premanager', 'addGroup'), 
-			Translation::defaultGet('Premanager', 'addGroupDescription'),
-			'Premanager/images/tools/add-group.png');
+		if (Rights::hasRightInAnyProject(Right::getByName(
+			'Premanager', 'manageGroups')))
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/+',
+				Translation::defaultGet('Premanager', 'addGroup'), 
+				Translation::defaultGet('Premanager', 'addGroupDescription'),
+				'Premanager/images/tools/add-group.png');
 			
 		return $page;
 	} 

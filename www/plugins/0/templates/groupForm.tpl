@@ -39,8 +39,15 @@
 		
 		{formElement
 			name="autoJoin"
-			label=string(Premanager groupAutoJoinShortLabel)
-			description=string(Premanager groupAutoJoinLabel)
+			label=string(Premanager groupAutoJoinLabel)
+			description=string(Premanager groupAutoJoinDescription)
+			type=checkbox
+		}
+		
+		{formElement
+			name="loginConfirmationRequired"
+			label=string(Premanager groupLoginConfirmationRequiredLabel)
+			description=string(Premanager groupLoginConfirmationRequiredDescription)
 			type=checkbox
 		}
 	</fieldset>

@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+use Premanager\Execution\Rights;
 use Premanager\Debug\Debug;
 use Premanager\Models\Project;
 use Premanager\Execution\Redirection;
@@ -67,6 +69,10 @@ class AddUserPage extends UserFormPage {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'createUsers'),
+			null, $errorResponse))
+			return $errorResponse;
+		
 		$user = User::createNew($values['name'], $values['password'],
 			$values['email'], $values['isEnabled']);
 		return new Redirection(

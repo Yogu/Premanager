@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Rights;
+
+use Premanager\Models\Right;
+
 use Premanager\Execution\Redirection;
 use Premanager\Types;
 use Premanager\Execution\FormPageNode;
@@ -127,6 +131,9 @@ class UserJoinGroupPage extends FormPageNode {
 		$selected = Request::getPOST('groups');
 		$values = array();
 		if (is_array($selected)) {
+			$rightA = Right::getByName('Premanager', 'manageGroupMemberships');
+			$rightB = Right::getByName('Premanager',
+				'manageGroupMembershipsOfProjectMembers');
 			foreach ($selected as $groupID) {
 				if (Types::isInteger($groupID) && $groupID > 0) {
 					$group = Group::getByID($groupID);
@@ -136,6 +143,16 @@ class UserJoinGroupPage extends FormPageNode {
 							 Translation::defaultGet('Premanager', 'userJoinAlreadyMemberError',
 							  array('groupName' => $group->getName(),
 							  'projectTitle' => $group->getProject()->getTitle())));
+						else if (!Rights::hasRight($rightA, $group->getProject()) &&
+							!($group->getProject()->getID() &&
+							$this->_user->isProjectMemberOf($group->getProject()) &&
+							Rights::hasRight($rightB, $group->getProject())))
+						{
+							$errors[] = array('groups',
+							 Translation::defaultGet('Premanager', 'userJoinDeniedError',
+							  array('groupName' => $group->getName(),
+							  'projectTitle' => $group->getProject()->getTitle())));
+						}
 						$values[$groupID] = true;
 					}
 				}

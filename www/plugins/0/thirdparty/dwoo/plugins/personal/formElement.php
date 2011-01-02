@@ -36,13 +36,15 @@
  */
 function Dwoo_Plugin_formElement(Dwoo $dwoo, $name, $label = '',
 	$description = '', $type = '', $attributes = array(), $multiple = false,
-	$size = 1, $options = null, $leftColumn = true, $fullsize = false)
+	$size = 1, $options = null, $leftColumn = true, $fullsize = false,
+	$enabled = true)
 {
 	$error = $dwoo->scope['errors'][$name];
 	$value = $dwoo->scope['values'][$name];
 	$attr = "name=\"$name".($type == 'select' ? '[]' : '')."\" id=\"form-$name\" ".
 		($error || $fullsize ? 'class="'.
 		($error?'error ':'').($fullsize?'fullsize ':'').'"':'').
+		(!$enabled ? "disabled=\"disabled\" " : '').
 		implode(' ', array_map(function($k, $v) {
 			return $k.'="'.htmlspecialchars($v).'"';
 		}, array_keys($attributes), $attributes));

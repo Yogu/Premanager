@@ -70,9 +70,9 @@ var jscolor = {
 		var matchClass = new RegExp('(^|\\s)('+jscolor.bindClass+')\\s*(\\{[^}]*\\})?', 'i');
 		var e = document.getElementsByTagName('input');
 		for(var i=0; i<e.length; i+=1) {
-			var m;
+			var m = '';
 			// EDIT by Yogu: Added the "type check"
-			if(!e[i].color && (e[i].type == 'color' || (e[i].className && (m = e[i].className.match(matchClass))))) {
+			if(!e[i].color && (e[i].getAttribute('type') == 'color' || (e[i].className && (m = e[i].className.match(matchClass))))) {
 				var prop = {};
 				if(m[3]) {
 					try {

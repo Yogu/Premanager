@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+
+use Premanager\Execution\Rights;
+
 use Premanager\Execution\Redirection;
 use Premanager\Types;
 use Premanager\Execution\FormPageNode;
@@ -92,8 +96,17 @@ class UserLeaveGroupPage extends PageNode {
 		}
 		if (Types::isInteger($id) && $id > 0)
 			$group = Group::getByID($id);
-		if ($group)
+		if ($group) {
+			$right = Right::getByName('Premanager', 'manageGroupMemberships');
+			if ($group->getProject()->getID())
+				$right = array($right, Right::getByName('Premanager',
+					'manageGroupMembershipsOfProjectMembers'));
+				
+			if (!Rights::requireRight($right, $group->getProject(), $errorResponse))
+				return $errorResponse;
+			
 			$this->_user->leaveGroup($group);
+		}
 		return new Redirection($this->getParent()->getURL());
 	}
 
