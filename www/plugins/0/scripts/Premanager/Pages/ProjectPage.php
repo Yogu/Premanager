@@ -42,22 +42,17 @@ class ProjectPage extends PageNode {
 	}
 
 	// ===========================================================================
-		
 	/**
-	 * Gets an array of all child page nodes
+	 * Gets the child specified by its name
 	 * 
-	 * @param int $count the number of items the array should contain at most or
-	 *   -1 if all available items should be contained
-	 * @param Premanager\Execution\PageNode $referenceNode the page node that
-	 *   should be always in the array
-	 * @return array an array of the child Premanager\Execution\PageNode's
+	 * @param string $name the child's expected name
+	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
-	public function getChildren($count = -1, PageNode $referenceNode = null) {
-		$list = array();
-		$list[] = new EditProjectPage($this, $this->_project);
-		if ($this->_project->getID())
-			$list[] = new DeleteProjectPage($this, $this->_project);
-		return $list;
+	public function getChildByName($name) {
+		if ($name == 'edit')
+			return new EditProjectPage($this, $this->_project);
+		if ($name == 'delete' && $this->_project->getID())
+			return new DeleteProjectPage($this, $this->_project);
 	}
 	
 	/**
