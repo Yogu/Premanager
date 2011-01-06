@@ -311,29 +311,34 @@ body.has-sidebar #content {
 
 /* ========== Navbar ========== */
 
-#navbar > ul {
+#navbar > ul,
+ul.location {
 	display: inline;
 }
 
-#navbar > ul > li {
+#navbar > ul > li,
+ul.location > li {
 	float: left;
 	padding-left: 2ex;
  	
  	list-style: none;
 }
 
-#navbar > ul > li:before {
+#navbar > ul > li:before,
+ul.location > li:before {
 	position: relative;
 	left: -1ex;
 	
 	content: "»";
 }
 
-#navbar > ul > li:first-child:before {
+#navbar > ul > li:first-child:before,
+ul.location > li:first-child:before {
 	content: "";
 }
 
-#navbar > ul > li:first-child {
+#navbar > ul > li:first-child,
+ul.location > li:first-child {
 	background: none;
 	padding-left: 0;
 }                  

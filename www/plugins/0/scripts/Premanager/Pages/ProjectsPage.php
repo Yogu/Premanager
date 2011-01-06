@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Models\Right;
+
+use Premanager\Execution\Rights;
+
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
@@ -33,6 +37,9 @@ class ProjectsPage extends TreeListPageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
+		if (!Rights::hasRight(Right::getByName('Premanager', 'manageProjects')))
+			return;
+		
 		if ($name == '+')
 			return new AddProjectPage($this);
 		if ($name == '-')
@@ -52,6 +59,9 @@ class ProjectsPage extends TreeListPageNode {
 	 * @return array an array of the child Premanager\Execution\PageNode's
 	 */
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
+		if (!Rights::hasRight(Right::getByName('Premanager', 'manageProjects')))
+			return array();
+		
 		$referenceModel = $referenceNode instanceof ProjectPage ?
 			$referenceNode->getProject() : null;
 		$models = $this->getChildrenHelper(self::getList(), $referenceModel,
@@ -71,6 +81,10 @@ class ProjectsPage extends TreeListPageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'manageProjects'),
+			null, $errorResponse, false))
+			return $errorResponse;
+		
 		$list = self::getList()->getRange($this->getStartIndex(),
 			$this->getItemsPerPage(), true);
 		
@@ -103,7 +117,10 @@ class ProjectsPage extends TreeListPageNode {
 	 * @return int
 	 */
 	protected function countItems() {
-		return self::getList()->getcount();
+		if (!Rights::hasRight(Right::getByName('Premanager', 'manageProjects')))
+			return 0;
+		
+		return self::getList()->getCount();
 	}
 	
 	/**

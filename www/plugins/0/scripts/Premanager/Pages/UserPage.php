@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Environment;
+
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Debug\Debug;
@@ -124,11 +126,15 @@ class UserPage extends PageNode {
 				'Premanager/images/tools/edit.png');
 		
 		if ($this->_user->getID() &&
-			Rights::hasRight(Right::getByName('Premanager', 'deleteUsers')))
+			Rights::hasRight(Right::getByName('Premanager', 'deleteUsers'))) {
+			$enabled = $this->_user != Environment::getCurrent()->getUser();
+			$description = $enabled ? 'deleteUserDescription' :
+				'deleteOwnUserDescription';
 			$page->toolbar[] = new ToolBarItem($this->getURL().'/delete',
 				Translation::defaultGet('Premanager', 'deleteUser'), 
-				Translation::defaultGet('Premanager', 'deleteUserDescription'),
-				'Premanager/images/tools/delete.png');
+				Translation::defaultGet('Premanager', $description),
+				'Premanager/images/tools/delete.png', $enabled);
+		}
 		
 		if (Rights::hasRightInAnyProject(Right::getByName(
 				'Premanager', 'manageGroupMemberships')) ||

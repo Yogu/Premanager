@@ -74,6 +74,19 @@ class Page extends Response {
 		$this->statusCode = 200;
 	}
 	
+	/**
+	 * Creates a page that simply contains the $message, embedded in <p></p> tags
+	 * 
+	 * @param Premanager\Execution\PageNode $node the node that creates this page
+	 *   (is used for navigation)
+	 * @param string $message the message to output
+	 */
+	public static function createMessagePage(PageNode $node, $message) {
+		$page = new Page($node);
+		$page->createMainBlock('<p>'.$message.'</p>');
+		return $page;
+	}
+	
 	// ===========================================================================
 	
 	/**

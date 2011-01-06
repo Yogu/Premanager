@@ -21,8 +21,21 @@ class Rights {
 		return Environment::getCurrent()->getUser()->hasRight($right);
 	}
 	
+	/**
+	 * Checks whether the current user has the specified right and prepares an
+	 * error response if needed
+	 * 
+	 * @param Premanager\Models\Right $right the right to check. Specify an array
+	 *   of rights if only one of them is required
+	 * @param Premanager\Models\Project $project the project
+	 * @param Premanager\Execution\Response $errorResponse the response to output
+	 *   if the right is not available. out-only.
+	 * @param bool $active true, if the login should be confirmed if required or
+	 *   false to return true even if the session is not confirmed
+	 * @return bool true, if the user has the specified right
+	 */
 	public static function requireRight($right, Project $project = null,
-		&$errorResponse) {
+		&$errorResponse, $active = true) {
 		if (!is_array($right))
 			$rights = array($right);
 		else
@@ -31,7 +44,7 @@ class Rights {
 			self::validateProject($right, $project);
 		unset($right);
 				
-		if (Environment::getCurrent()->getSession() && 
+		if (!$active || Environment::getCurrent()->getSession() && 
 			Environment::getCurrent()->getSession()->isConfirmed())
 		{
 			foreach ($rights as $right)	{

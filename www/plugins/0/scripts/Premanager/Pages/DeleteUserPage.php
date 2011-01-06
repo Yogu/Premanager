@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Environment;
+
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
@@ -71,6 +73,12 @@ class DeleteUserPage extends PageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
+		// Don't delete yourself!
+		if ($this->_user == Environment::getCurrent()->getUser()) {
+			return Page::createMessagePage($this->_node,
+				Translation::defaultGet('Premanager', 'deleteOwnUserError'));
+		}
+		
 		if (Request::getPOST('confirm')) {
 			if (!Rights::requireRight(Right::getByName('Premanager', 'deleteUsers'),
 				null, $errorResponse))

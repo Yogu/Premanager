@@ -70,6 +70,10 @@ class DeleteProjectPage extends PageNode {
 	 */
 	public function getResponse() {
 		if (Request::getPOST('confirm')) {	
+			if (!Rights::requireRight(Right::getByName('Premanager', 'manageProjects'),
+				null, $errorResponse))
+				return $errorResponse;
+			
 			$this->_project->delete();
 			return new Redirection($this->getParent()->getParent()->getURL());
 		} else {

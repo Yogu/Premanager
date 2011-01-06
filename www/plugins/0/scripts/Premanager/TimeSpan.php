@@ -1,10 +1,14 @@
 <?php
 namespace Premanager;
 
+use Premanager\Execution\Environment;
+
+use Premanager\Execution\Translation;
+use Premanager\Debug\Debug;
+
 /**
  * A time span 
  */
-use Premanager\Debug\Debug;
 
 class TimeSpan extends Module {
 	private $_timestamp;
@@ -309,23 +313,25 @@ class TimeSpan extends Module {
 	/**
 	 * Converts the time span value to a string
 	 * 
-	 * @param bool $longFormat if true, a long format like "3 seconds ago" is used
-	 *   (otherwise it 
+	 * @param bool $format enum Premanager\TimeSpanFormat
 	 * @return string the formatted string
 	 */
-	public function format($longFormat) {
+	public function format($format) {
 		switch ($format) {
 			case TimeSpanFormat::SHORT_RELATIVE_TO_NOW:
+			case 'short-relative-to-now':
 				$pattern = array('date%Ago', 'dateInX%');
 				$suffix = 'Short';
 				break;
 				
 			case TimeSpanFormat::LONG_RELATIVE_TO_NOW:
+			case 'long-relative-to-now':
 				$pattern = array('date%Ago', 'dateInX%');
 				$suffix = 'Long';
 				break;
 				
 			case TimeSpanFormat::SHORT:
+			case 'short':
 				$pattern = 'date%';
 				$suffix = 'Short';
 				break;
@@ -349,9 +355,10 @@ class TimeSpan extends Module {
 		} else if ($time > 0) {
 			$precision = 'Seconds'; $num = $time;
 		} else if ($time == 0) {
-			if (is_array($pattern))
-				$stringName = 'dateRelativeToday';
-			else
+			if (is_array($pattern)) {
+				$stringName = 'now';
+				$suffix = '';
+			} else
 				$precision = 'Seconds';
 			$num = null;
 		} else if ($time > -60) {

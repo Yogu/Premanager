@@ -278,7 +278,7 @@ final class Session extends Model {
 					'!confirmationExpirationTime! > NOW()'),
 				'confirmationExpirationTime' => array(Project::getDescriptor(),
 					'getConfirmationExpirationTime', 'confirmationExpirationTime')),
-				'Premanager', 'Sessions', array(__CLASS__, 'getByID'));
+				'Premanager', 'Sessions', array(__CLASS__, 'getByID'), false);
 		}
 		return self::$_descriptor;
 	}                                            
@@ -482,13 +482,14 @@ final class Session extends Model {
 	public function hit() {
 		$this->checkDisposed();
 		
-		$project = Environment::getCurrent()->getproject();
+		$project = Environment::getCurrent()->getProject();
 		
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"SET lastRequestTime = NOW(), ".
 				"isFirstRequest = '0', ".
-				"projectID = '".$project->getID()."'");	
+				"projectID = '".$project->getID()."' ".
+			"WHERE id = '$this->_id'");
 		
 		$this->_lastRequestTime = new DateTime();
 		$this->_isFirstRequest = false;

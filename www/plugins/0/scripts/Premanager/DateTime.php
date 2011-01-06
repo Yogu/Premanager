@@ -398,9 +398,9 @@ class DateTime extends Module {
 	 */
 	public function subtract($value) { 
 		if ($value instanceof TimeSpan)
-			return new DateTime($this->_timestamp -$value->gettimestamp());
-		else if ($value instanceof DataTime)
-			return new TimeSpan($this->_timestamp -$value->_timestamp);
+			return new DateTime($this->_timestamp - $value->gettimestamp());
+		else if ($value instanceof DateTime)
+			return new TimeSpan($this->_timestamp - $value->_timestamp);
 		else
 			throw new ArgumentException('$value must be a date/time or time stamp',
 				'value');
@@ -526,32 +526,39 @@ class DateTime extends Module {
 			
 		switch ($format) {
 			case DateTimeFormat::LONG_RELATIVE:
-				return $this->subtract(self::getNow())->
+			case 'long-relative':
+				return self::getNow()->subtract($this)->
 					format(TimeSpanFormat::LONG_RELATIVE_TO_NOW);
 					
 			case DateTimeFormat::SHORT_RELATIVE:
-				return $this->subtract(self::getNow())->
+			case 'short-relative':
+				return self::getNow()->subtract($this)->
 					format(TimeSpanFormat::SHORT_RELATIVE_TO_NOW);
 			
 			case DateTimeFormat::LONG_DATE:
+			case 'long-date':
 				$format = Environment::getCurrent()->getLanguage()->getLongDateFormat();
 				break;
 				
 			case DateTimeFormat::LONG_TIME:
+			case 'long-time':
 				$format = Environment::getCurrent()->getLanguage()->getLongTimeFormat();
 				break;
 				
 			case DateTimeFormat::SHORT_DATE_TIME:
+			case 'short-date-time':
 				$format =
 					Environment::getCurrent()->getLanguage()->getShortDateTimeFormat();
 				break;
 				
 			case DateTimeFormat::SHORT_DATE:
+			case 'short-date':
 				$format =
 					Environment::getCurrent()->getLanguage()->getShortDateFormat();
 				break;
 				
 			case DateTimeFormat::SHORT_TIME:
+			case 'short-time':
 				$format =
 					Environment::getCurrent()->getLanguage()->getShortTimeFormat();
 				break;

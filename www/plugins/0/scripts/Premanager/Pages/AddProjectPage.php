@@ -72,6 +72,10 @@ class AddProjectPage extends ProjectFormPage {
 	 * @return Premanager\Execution\Response the response to send
 	 */
 	protected function applyValues(array $values) {
+		if (!Rights::requireRight(Right::getByName('Premanager', 'manageProjects'),
+			null, $errorResponse))
+			return $errorResponse;
+		
 		$project = Project::createNew($values['name'], $values['title'],
 			$values['subTitle'], $values['author'], $values['copyright'],
 			$values['description'], $values['keywords']);
