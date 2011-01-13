@@ -151,12 +151,15 @@ class URLInfo {
 				$walker = function($elements, $templates, $trunkElements,
 					$breakOnFailure, $language, $edition)
 				{
-					if (count($elements) > count($trunkElements))
-						array_splice($elements, -count($trunkElements));
-					if (count($templates) > count($trunkElements))
-						array_splice($templates, -count($trunkElements));
+					if (count($trunkElements)) {
+						if (count($elements) > count($trunkElements))
+							array_splice($elements, -count($trunkElements));
+						if (count($templates) > count($trunkElements))
+							array_splice($templates, -count($trunkElements));
+					}
 					
-					foreach ($elements as $elementKey => $element) {
+					for ($i = 0; $i < count($elements); $i++) {
+						$element = $elements[$i];
 						foreach ($templates as $templateKey => $template) {
 							// Check if the lement matches the template. Test the strongest
 							// defined template at first.
@@ -187,14 +190,18 @@ class URLInfo {
 							// If the element matches the template, 
 							if ($ok) {
 								unset($templates[$templateKey]);
+								unset($elements[$i]);
+								$i--;
 								break;
 							}
 						}
 						
-						if ($breakOnFailure && !$ok)
-							return $elementKey;
+						if ($breakOnFailure && !$ok) {
+							array_splice($elements, 0, $i);
+							return $elements;
+						}
 					}
-					return count($elements);
+					return $elements;
 				};
 				
 				// requestURL - emptyURLPrefix = significant data
@@ -203,17 +210,17 @@ class URLInfo {
 				$edition = Edition::COMMON;
 				
 				// Domain part
-				$trunkElements = explode('.', $trunkURL->getHost());
-				$elements = explode('.', $requestURL->getHost());
-				$templates = explode('.', $templateHost);
+				$trunkElements = self::explodeRemoveEmpty($trunkURL->getHost(), '.');
+				$elements = self::explodeRemoveEmpty($requestURL->getHost(), '.');
+				$templates = self::explodeRemoveEmpty($templateHost, '.');
 				call_user_func($walker, $elements, $templates, $trunkElements, false,
 					$language, $edition);
 				
 				// Path part
-				$trunkElements = explode('/', trim($trunkURL->getPath(), '/'));
-				$elements = explode('/', trim($requestURL->getPath(), '/'));
-				$templates = explode('/', trim($templatePath, '/'));
-				$pathElementIndex = call_user_func($walker, $elements, $templates,
+				$trunkElements = self::explodeRemoveEmpty($trunkURL->getPath(), '/');
+				$elements = self::explodeRemoveEmpty($requestURL->getPath(), '/');
+				$templates = self::explodeRemoveEmpty($templatePath, '/');
+				$elements = call_user_func($walker, $elements, $templates,
 					$trunkElements, true, $language, $edition);
 	
 				if (!$language) {
@@ -230,9 +237,6 @@ class URLInfo {
 					
 				$this->_language = $language;
 				$this->_edition = $edition;
-				
-				// Find the path to the page node
-				array_splice($elements, 0, $pathElementIndex);
 				
 				$this->_relativeRequestURL = implode('/', $elements);
 				
@@ -289,6 +293,13 @@ class URLInfo {
 			}
 		}
 		return array_keys($langs);
+	}
+	
+	private static function explodeRemoveEmpty($str, $delimiter) {
+		$array = array();
+		foreach (explode($delimiter, $str) as $item)
+			if ($item) $array[] = $item;
+		return $array;
 	}
 }
 
