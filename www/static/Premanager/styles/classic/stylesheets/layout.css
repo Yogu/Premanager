@@ -274,7 +274,8 @@ body.has-sidebar #content {
 
 /* ========== Fullsize elements ========== */
 
-.block > div > .list {
+.block > div > .list,
+.block > div > .tree {
 	margin: -10px -10px -5px;
 } 
 

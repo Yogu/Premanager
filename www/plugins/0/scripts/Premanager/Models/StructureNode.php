@@ -186,7 +186,7 @@ final class StructureNode extends Model {
 	 * @return bool true, if the name is valid
 	 */
 	public static function isValidName($name) {
-		return strpos('/', $name) === false;
+		return (!strlen($name) || $name[0] != '+') && strpos($name, '/') === false;
 	}
 
 	// ===========================================================================
@@ -616,8 +616,9 @@ final class StructureNode extends Model {
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
 		if (!self::isValidName($name))
-			throw new ArgumentException('$name must not contain slashes', 'name');
-		if (!isNameAvailable($name))
+			throw new ArgumentException('$name must not contain slashes and must '.
+				'not begin with a plus sign', 'name');
+		if (!$this->isNameAvailable($name, $this))
 			throw new NameConflictException('There is already a structure node with '.
 				'the same parent and that name', $name);
 		if (!$title)
@@ -844,7 +845,8 @@ final class StructureNode extends Model {
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
 		if (!self::isValidName($name))
-			throw new ArgumentException('$name must not contain slashes', 'name');
+			throw new ArgumentException('$name must not contain slashes and must '.
+				'not begin with a plus sign', 'name');
 		if (!$this->isNameAvailable($name))
 			throw new NameConflictException('There is already a child node with the '.
 				'same name', $name);

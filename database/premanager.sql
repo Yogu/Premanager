@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 22. November 2010 um 20:33
+-- Erstellungszeit: 10. Januar 2011 um 19:31
 -- Server Version: 5.1.41
--- PHP-Version: 5.3.1
+-- PHP-Version: 5.3.4
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -24,8 +24,9 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groupright`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Erzeugt am: 31. Dezember 2010 um 17:10
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupright` (
@@ -48,44 +49,40 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groupright` (
 --
 
 INSERT INTO `premanager_0_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
-(6, 1, '2010-06-27 14:37:27'),
-(2, 16, '2010-06-26 21:26:48'),
-(6, 11, '2010-06-27 14:37:27'),
-(6, 2, '2010-06-27 14:37:27'),
-(6, 7, '2010-06-27 14:37:27'),
-(6, 5, '2010-06-27 14:37:27'),
-(6, 3, '2010-06-27 14:37:27'),
-(3, 6, '2010-06-27 14:37:34'),
-(2, 8, '2010-06-26 21:26:48'),
-(1, 8, '2010-05-08 18:41:54'),
-(2, 9, '2010-06-26 21:26:48'),
-(2, 2, '2010-06-26 21:26:48'),
-(2, 10, '2010-06-26 21:26:48'),
-(3, 4, '2010-06-27 14:37:34'),
-(6, 17, '2010-06-27 14:37:27'),
-(11, 12, '2010-06-11 15:53:13'),
-(11, 13, '2010-06-11 15:53:13'),
-(12, 12, '2010-06-11 15:54:08'),
-(12, 13, '2010-06-11 15:54:08'),
-(12, 14, '2010-06-11 15:54:08'),
-(12, 15, '2010-06-11 15:54:08');
+(21, 24, '2010-12-31 17:26:30'),
+(21, 22, '2010-12-31 17:26:30'),
+(3, 25, '2011-01-02 21:21:23'),
+(3, 26, '2011-01-02 21:21:23'),
+(3, 21, '2011-01-02 21:21:23'),
+(3, 23, '2011-01-02 21:21:23'),
+(3, 22, '2011-01-02 21:21:23'),
+(3, 20, '2011-01-02 21:21:23'),
+(3, 19, '2011-01-02 21:21:23'),
+(3, 18, '2011-01-02 21:21:23'),
+(22, 22, '2010-12-31 17:26:00'),
+(22, 24, '2010-12-31 17:26:00'),
+(22, 26, '2010-12-31 17:26:00'),
+(24, 22, '2010-12-31 17:26:15'),
+(24, 24, '2010-12-31 17:26:15'),
+(24, 26, '2010-12-31 17:26:15'),
+(21, 26, '2010-12-31 17:26:30');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groups`
 --
--- Erzeugt am: 22. November 2010 um 17:33
--- Aktualisiert am: 22. November 2010 um 17:33
+-- Erzeugt am: 01. Januar 2011 um 22:03
+-- Aktualisiert am: 02. Januar 2011 um 21:28
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `projectID` int(10) unsigned NOT NULL,
+  `parentID` int(10) unsigned NOT NULL COMMENT 'project',
   `color` char(6) COLLATE utf8_bin NOT NULL,
   `priority` int(10) unsigned NOT NULL,
   `autoJoin` tinyint(1) NOT NULL DEFAULT '0',
-  `isLocked` tinyint(1) NOT NULL DEFAULT '0',
+  `loginConfirmationRequired` tinyint(1) NOT NULL DEFAULT '0',
   `createTime` datetime NOT NULL,
   `editTime` datetime NOT NULL,
   `editTimes` int(10) unsigned NOT NULL DEFAULT '0',
@@ -95,9 +92,8 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
   `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `order` (`priority`),
-  KEY `isFixed` (`isLocked`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
+  KEY `order` (`priority`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=28 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_groups`:
@@ -105,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
 --       `premanager_0_users` -> `id`
 --   `editorID`
 --       `premanager_0_users` -> `id`
---   `projectID`
+--   `parentID`
 --       `premanager_0_projects` -> `id`
 --
 
@@ -113,22 +109,26 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
 -- Daten für Tabelle `premanager_0_groups`
 --
 
-INSERT INTO `premanager_0_groups` (`id`, `projectID`, `color`, `priority`, `autoJoin`, `isLocked`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
-(1, 0, '5C5C5C', 0, 0, 0, '2010-02-14 00:41:15', '2010-04-24 15:10:06', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:45'),
-(2, 0, '000000', 1, 1, 0, '2010-02-14 00:42:55', '2010-04-24 01:18:01', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-23 23:59:37'),
-(3, 0, '006600', 10, 0, 1, '2010-03-05 23:55:33', '2010-04-24 01:16:54', 1, 2, '127.0.0.1', 2, '127.0.0.1', '2010-04-29 16:45:54'),
-(6, 0, '339933', 9, 0, 1, '2010-04-26 21:05:08', '2010-05-12 21:51:26', 6, 2, '127.0.0.1', 2, '127.0.0.1', '2010-05-12 21:51:26'),
-(11, 0, '000080', 0, 0, 0, '2010-06-11 13:48:24', '2010-07-04 10:28:52', 2, 2, '127.0.0.1', 2, '127.0.0.1', '2010-07-04 12:28:28'),
-(12, 0, 'a04000', 0, 0, 0, '2010-06-11 13:53:56', '2010-06-11 13:57:12', 3, 2, '127.0.0.1', 2, '127.0.0.1', '2010-06-11 15:57:12');
+INSERT INTO `premanager_0_groups` (`id`, `parentID`, `color`, `priority`, `autoJoin`, `loginConfirmationRequired`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `timestamp`) VALUES
+(1, 0, '5C5C5C', 1, 0, 0, '2010-02-14 00:41:15', '2010-12-28 22:20:01', 4, 2, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 23:19:37'),
+(2, 0, '000000', 1, 1, 0, '2010-02-14 00:42:55', '2010-12-28 21:31:37', 23, 2, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 22:31:13'),
+(3, 0, '006600', 10, 0, 1, '2010-03-05 23:55:33', '2011-01-02 14:55:44', 3, 2, '127.0.0.1', 0, '127.0.0.1', '2011-01-02 15:55:20'),
+(26, 0, '64002E', 5, 0, 0, '2010-12-29 23:47:46', '2010-12-29 23:48:26', 1, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:48:02'),
+(23, 117, '64002E', 0, 0, 0, '2010-12-29 23:41:30', '2010-12-29 23:41:30', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:41:06'),
+(24, 117, '006600', 0, 0, 0, '2010-12-29 23:42:10', '2010-12-29 23:42:10', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:41:46'),
+(25, 118, '64002E', 0, 0, 0, '2010-12-29 23:43:12', '2010-12-29 23:43:12', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:42:48'),
+(22, 118, '006000', 0, 0, 0, '2010-12-28 14:51:13', '2010-12-29 23:42:35', 1, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:42:11'),
+(21, 17, '006600', 0, 0, 0, '2010-12-28 14:50:27', '2010-12-28 14:50:27', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 15:50:03'),
+(20, 17, '64002E', 0, 0, 0, '2010-12-28 14:47:22', '2010-12-28 14:47:22', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 15:46:58'),
+(27, 17, '1F44FF', 0, 0, 0, '2011-01-02 20:00:37', '2011-01-02 20:00:37', 0, 79, '127.0.0.1', 79, '127.0.0.1', '2011-01-02 21:00:13');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groupsname`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 28. Dezember 2010 um 13:41
+-- Aktualisiert am: 02. Januar 2011 um 21:28
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupsname` (
@@ -139,11 +139,10 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groupsname` (
   `languageID` tinyint(1) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`nameID`),
-  UNIQUE KEY `name` (`name`),
   KEY `groupID` (`id`),
   KEY `inUse` (`inUse`),
   KEY `languageID` (`languageID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=35 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_groupsname`:
@@ -167,11 +166,14 @@ INSERT INTO `premanager_0_groupsname` (`nameID`, `id`, `name`, `inUse`, `languag
 (9, 1, 'invités', 1, 3, '2010-04-24 01:16:11'),
 (10, 3, 'administrateurs', 1, 3, '2010-04-24 01:16:54'),
 (11, 2, 'utilisateurs inscrits', 1, 3, '2010-04-24 01:18:01'),
-(13, 6, 'co-admins', 1, 1, '2010-04-26 21:05:08'),
-(18, 4, 'daspuzzlederwaisen', 0, 1, '2010-06-06 18:17:04'),
-(19, 4, 'das-puzzle-der-waisen2', 1, 1, '2010-06-06 18:17:04'),
-(20, 11, 'redakteure', 1, 1, '2010-06-11 15:48:24'),
-(21, 12, 'moderatoren', 1, 1, '2010-06-11 15:53:56');
+(33, 26, 'projektmitglieder', 1, 1, '2010-12-30 00:47:22'),
+(32, 25, 'projektmitglieder', 1, 1, '2010-12-30 00:42:48'),
+(29, 22, 'projektleiter', 1, 1, '2010-12-28 15:50:49'),
+(30, 23, 'projektmitglieder', 1, 1, '2010-12-30 00:41:06'),
+(31, 24, 'projektleiter', 1, 1, '2010-12-30 00:41:46'),
+(28, 21, 'projektleiter', 1, 1, '2010-12-28 15:50:03'),
+(27, 20, 'projektmitglieder', 1, 1, '2010-12-28 15:46:58'),
+(34, 27, 'schauspieler', 1, 1, '2011-01-02 21:00:13');
 
 -- --------------------------------------------------------
 
@@ -179,7 +181,7 @@ INSERT INTO `premanager_0_groupsname` (`nameID`, `id`, `name`, `inUse`, `languag
 -- Tabellenstruktur für Tabelle `premanager_0_groupstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:12
+-- Aktualisiert am: 02. Januar 2011 um 21:00
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupstranslation` (
@@ -214,10 +216,14 @@ INSERT INTO `premanager_0_groupstranslation` (`id`, `languageID`, `name`, `text`
 (1, 3, 'Invités', 'Invités sont des visiteurs qui ne sont pas connecté.', 'Invité', '2010-04-24 15:10:06'),
 (3, 3, 'Administrateurs', 'Administrateurs s''occupe de ce website.', 'Administrateur', '2010-04-24 01:16:54'),
 (2, 3, 'Utilisateurs inscrits', 'This groups covers all registered visitors who can log in with their secret password. The membership of this group does not grant any special rights except the right to manage their own account.', 'Utilisateur inscrit', '2010-04-24 01:18:01'),
-(6, 1, 'Co-Admins', 'Co-Admins kümmern sich um die Seite und sind den Administratoren untergeordnet.', 'Co-Admin', '2010-04-26 21:05:08'),
-(4, 1, 'das-puzzle-der-waisen2', '', 'Das Puzzle der Waisen', '2010-06-06 18:17:04'),
-(11, 1, 'Redakteure', 'Redakteure können Blog-Einträge verfassen.', 'Redakteur', '2010-06-11 15:48:24'),
-(12, 1, 'Moderatoren', 'Moderatoren können Blog-Einträge veröffentlichen und löschen.', 'Moderator', '2010-06-11 15:53:56');
+(26, 1, 'Projektmitglieder', 'Alle Benutzer, die an einem Juvenile-Studios-Projekt mitgewirkt haben, sind in dieser Gruppe vereint.', 'Projektmitglied', '2010-12-30 00:47:22'),
+(23, 1, 'Projektmitglieder', 'Alle Darsteller, Hintergrundleute und Regisseure sind in dieser Gruppe vereint.', 'Projektmitglied', '2010-12-30 00:41:06'),
+(24, 1, 'Projektleiter', 'Die Projektleiter organisieren das Filmprojekt.', 'Projektleiter', '2010-12-30 00:41:46'),
+(25, 1, 'Projektmitglieder', 'Alle Darsteller, Hintergrundleute und Regisseure sind in dieser Gruppe vereint.', 'Projektmitglied', '2010-12-30 00:42:48'),
+(27, 1, 'Schauspieler', 'Alle, die im Film "Zwei Gesichter" eine Schauspielerrolle eingenommen haben', 'Schauspieler', '2011-01-02 21:00:13'),
+(22, 1, 'Projektleiter', 'Die Projektleiter organisieren das Filmprojekt', 'Projektleiter', '2010-12-30 00:42:11'),
+(21, 1, 'Projektleiter', 'Die Projektleiter organisieren das Filmprojekt.', 'Projektleiter', '2010-12-28 15:50:03'),
+(20, 1, 'Projektmitglieder', 'Alle Darsteller, Hintergrundleute und Regisseure sind in dieser Gruppe vereint.', 'Projektmitglied', '2010-12-28 15:46:58');
 
 -- --------------------------------------------------------
 
@@ -279,9 +285,8 @@ INSERT INTO `premanager_0_languages` (`id`, `name`, `title`, `englishTitle`, `is
 --
 -- Tabellenstruktur für Tabelle `premanager_0_log`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:12
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 10. Januar 2011 um 19:31
+-- Aktualisiert am: 10. Januar 2011 um 19:31
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_log` (
@@ -298,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_log` (
   PRIMARY KEY (`id`),
   KEY `type` (`type`),
   KEY `createTime` (`createTime`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=299 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_log`:
@@ -310,307 +315,6 @@ CREATE TABLE IF NOT EXISTS `premanager_0_log` (
 -- Daten für Tabelle `premanager_0_log`
 --
 
-INSERT INTO `premanager_0_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
-(1, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Blog\\scripts\\Article.php on line 125 and defined', 'warning', '2010-06-12 11:54:00', 2, '127.0.0.1', '2010-06-12 13:54:00'),
-(2, 'http://de.rack.localhost/blog/ein-neuer-blog?delete', 'http://de.rack.localhost/blog/ein-neuer-blog?delete', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Errorneous query (Query: DELETE FROM rack_premanager_revisions WHERE articleID = ''3''; Mysql Error: Table ''rack.rack_premanager_revisions'' doesn''t exist)', 'error', '2010-06-12 12:32:56', 2, '127.0.0.1', '2010-06-12 14:32:56'),
-(3, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Uncaught exception (Class: Dwoo_Compilation_Exception; Message: Compilation error at line 47 in &quot;file:D:\\Programmierung\\webspace\\own\\rack\\plugins/Blog/templates/articleAdd.tpl&quot; : Parse error in &quot;staticURLPrefix=escape({$Config_staticURLPrefix})};&lt;/script&gt;\r\n		&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticPrefix}Premanager/scripts/prototype.js&quot;&gt;&lt;/script&gt;\r\n		&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticPrefix}Premanager/scripts/tools.js&quot;&gt;&lt;/script&gt;\r\n		&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticPrefix}Premanager/scripts/window.js&quot;&gt;&lt;/script&gt;\r\n			&lt;script type=&quot;text/javascript&quot; src=&quot;{$Config_staticURLPrefix}Premanager/scripts/wysiwyg.js&quot;&gt;&lt;/script&gt;\r\n	&lt;/head&gt;\r\n	\r\n	&lt;body lang=&quot;{$Lang_code}&quot;&gt;\r\n		&lt;div id=&quot;header&quot;&gt;\r\n			&lt;div id=&quot;organization-title&quot;&gt;\r\n				&lt;span class=&quot;text&quot;&gt;&lt;a href=&quot;http://{urlTemplate(null, null, '''')}&quot;&gt;{html $Org_title}&lt;/a&gt;&lt;/span&gt;\r\n			&lt;/div&gt;\r\n			\r\n			{if $Prj_id != 0}\r\n				&lt;div id=&quot;project-title&quot;&gt;\r\n					&lt;span class=&quot;text&quot;&gt;&lt;a href=&quot;./&quot;&gt;{html $Prj_title}&lt;/a&gt;&lt;/span&gt;\r\n				&lt;/div&gt;\r\n			{/if}\r\n		&lt;/div&gt;\r\n\r\n		&lt;div class=&quot;navigation&quot;&gt;\r\n			&lt;ul class=&quot;location&quot;&gt;\r\n				&lt;li&gt;&lt;a href=&quot;http://{urlTemplate(null, null, '''')}&quot;&gt;{html $Org_title}&lt;/a&gt;&lt;/li&gt;\r\n				{if $Prj_id != 0}\r\n					&lt;li&gt;&lt;a href=&quot;./&quot;&gt;{html $Prj_title}&lt;/a&gt;&lt;/li&gt;\r\n				{/if}\r\n				{$Premanager_navigationList}\r\n			&lt;/ul&gt;\r\n			\r\n			{if $List_pageCount &gt; 1}\r\n				&lt;div class=&quot;pagination&quot;&gt;\r\n					{if $List_page &gt; 1}\r\n						&lt;a href=&quot;./{if $List_page-1 &gt; 1}{$List_baseURL}{$List_page-1}{else}{$List_firstPageURL}{/if}&quot; class=&quot;page-back&quot;&gt;{string Premanager pageBack}&lt;/a&gt;\r\n					{/if}\r\n					\r\n					&lt;span class=&quot;pages&quot;&gt;\r\n						{if $List_page &gt; 1}&lt;a href=&quot;./{$List_firstPageURL}&quot;&gt;1&lt;/a&gt;{/if}\r\n						{if $List_page &gt; 2}&lt;a href=&quot;./{$List_baseURL}2&quot;&gt;2&lt;/a&gt;{/if}\r\n						{if $List_page &gt; 3}&lt;a href=&quot;./{$List_baseURL}3&quot;&gt;3&lt;/a&gt;{/if}\r\n						\r\n						{if $List_page &gt; 5}&lt;span class=&quot;gap&quot;&gt;{string Premanager literalGap}&lt;/span&gt;{/if}\r\n\r\n            {if $List_page &gt; 5 &amp;&amp; $List_page == $List_pageCount}&lt;a href=&quot;./{$List_baseURL}{$List_page-2}&quot;&gt;{$List_page-2}&lt;/a&gt;{/if} \r\n						{if $List_page &gt; 4}&lt;a href=&quot;./{$List_baseURL}{$List_page-1}&quot;&gt;{$List_page-1}&lt;/a&gt;{/if}\r\n						\r\n						&lt;span class=&quot;current&quot;&gt;{$List_page}&lt;/span&gt;\r\n						\r\n						{if $List_page &lt; $List_pageCount-3}&lt;a href=&quot;./{$List_baseURL}{$List_page+1}&quot;&gt;{$List_page+1}{/if}\r\n						\r\n						{if $List_page &lt; $List_pageCount-4}{string Premanager literalGap}&lt;/span&gt;{/if}\r\n						\r\n						{if $List_page &lt; $List_pageCount-2}&lt;a href=&quot;./{$List_baseURL}{$List_pageCount-2}&quot;&gt;{$List_pageCount-2}&lt;/a&gt;{/if}\r\n						{if $List_page &lt; $List_pageCount-1}&lt;a href=&quot;./{$List_baseURL}{$List_pageCount-1}&quot;&gt;{$List_pageCount-1}&lt;/a&gt;{/if}\r\n						{if $List_page &lt; $List_pageCount}&lt;a href=&quot;./{$List_baseURL}{$List_pageCount}&quot;&gt;{$List_pageCount}&lt;/a&gt;{/if}\r\n					&lt;/span&gt;\r\n\r\n					{if $List_page &lt; $List_pageCount}\r\n						&lt;a href=&quot;./{$List_baseURL}{$List_page+1}&quot; class=&quot;page-forward&quot;&gt;{string Premanager pageForward}&lt;/a&gt;\r\n					{/if}\r\n				&lt;/div&gt;			\r\n			{/if}\r\n		&lt;/div&gt;\r\n		\r\n			&lt;ul class=&quot;toolbar&quot;&gt;\r\n		&lt;li&gt;&lt;a href=&quot;{$Client_internalRequestURL}?add&quot; class=&quot;tool-add-article active&quot; title=&quot;{string Blog addArticleDescription}&quot;&gt;{string Blog addArticle}&lt;/a&gt;&lt;/li&gt;\r\n	&lt;/ul&gt;	\r\n\r\n		&lt;div id=&quot;content&quot;{if $Premanager_sidebar &amp;&amp; $Premanager_navigationTree} class=&quot;with-sidebar with-navigation-tree&quot;{elseif $Premanager_sidebar} class=&quot;with-sidebar&quot;{elseif $Premanager_navigationTree} class=&quot;with-navigation-tree&quot;{/if}&gt;\r\n			{$Premanager_globalArea}\r\n		\r\n			{if $Premanager_debug &amp;&amp; $Premanager_log}\r\n				&lt;dl class=&quot;block&quot; id=&quot;log&quot;&gt;\r\n					&lt;dt&gt;Log&lt;/dt&gt;\r\n					&lt;dd&gt;\r\n						&lt;ul class=&quot;list&quot;&gt;{$Premanager_log}&lt;/ul&gt;\r\n					&lt;/dd&gt;\r\n				&lt;/dl&gt;\r\n			{/if}\r\n		                 \r\n			{$Premanager_beforeContent}     \r\n			\r\n		\r\n			&lt;dl class=&quot;block&quot; id=&quot;main-block&quot;&gt;\r\n				&lt;dt&gt;{html $Nde_standAloneTitle}&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n						&lt;form action=&quot;{html $Client_requestURL}&quot; method=&quot;post&quot;&gt;\r\n		{if $Blog_Article_inputErrors}\r\n			&lt;ul class=&quot;input-errors&quot;&gt;\r\n				{$Blog_Article_inputErrors}	\r\n			&lt;/ul&gt;\r\n		{/if}   \r\n	\r\n		&lt;fieldset class=&quot;inputs&quot;&gt;\r\n			&lt;dl&gt;\r\n				&lt;dt&gt;&lt;label for=&quot;Blog_Article_title&quot;&gt;{string Premanager label array(label=string(Blog articleTitle))}&lt;/label&gt;&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n					&lt;input type=&quot;text&quot; name=&quot;Blog_Article_title&quot; id=&quot;Blog_Article_title&quot; value=&quot;{html $Blog_Article_formTitle}&quot; class=&quot;fullsize{if $Blog_Article_title_incorrect} error{/if}&quot; /&gt;\r\n					&lt;p&gt;{string Blog articleTitleDescription}&lt;/p&gt;\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;\r\n			       \r\n			&lt;dl&gt;\r\n				&lt;dt&gt;&lt;label for=&quot;Blog_Article_title&quot;&gt;{string Premanager label array(label=string(Blog articleText))}&lt;/label&gt;&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n					&lt;textarea id=&quot;Blog_Article_text&quot; name=&quot;Blog_Article_text&quot; class=&quot;wysiwyg fullsize{if $Blog_Article_text_incorrect} error{/if}&quot; cols=&quot;80&quot; rows=&quot;5&quot; &gt;{html $Blog_Article_text}&lt;/textarea&gt;\r\n					&lt;p&gt;{string Blog articleTextDescription}&lt;/p&gt;\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;     \r\n			\r\n			&lt;dl&gt;\r\n				&lt;dt&gt;&lt;label for=&quot;Blog_Article_summary&quot;&gt;{string Premanager label array(label=string(Blog summaryLabel))}&lt;/label&gt;&lt;/dt&gt;\r\n				&lt;dd&gt;\r\n					&lt;input type=&quot;text&quot; name=&quot;Blog_Article_summary&quot; id=&quot;Blog_Article_summary&quot; value=&quot;{html $Blog_Article_summary}&quot; class=&quot;fullsize{if $Blog_Article_summary_incorrect} error{/if}&quot; /&gt;\r\n					&lt;p&gt;{if $Blog_Article_mode == ''add''}{string Blog summaryCreatedDescription}{else}{string Blog summaryDescription}{/if}&lt;/p&gt;\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;\r\n		&lt;/fieldset&gt;\r\n		\r\n		&lt;fieldset class=&quot;buttons&quot;&gt;\r\n			&lt;input type=&quot;submit&quot; name=&quot;Blog_Article_submit&quot; class=&quot;main&quot; value=&quot;{string Premanager submitButton}&quot; /&gt;\r\n			&lt;input type=&quot;submit&quot; name=&quot;Blog_Article_preview&quot; value=&quot;{string Premanager previewButton}&quot; /&gt;\r\n		&lt;/fieldset&gt;\r\n	&lt;/form&gt;				\r\n				&lt;/dd&gt;\r\n			&lt;/dl&gt;\r\n			\r\n					\r\n			{$Premanager_afterContent}		\r\n		&lt;/div&gt;\r\n		\r\n		{if $Premanager_navigationTree}\r\n			&lt;ul id=&quot;navigation-tree&quot;&gt;\r\n				{$Premanager_navigationTree}		\r\n			&lt;/ul&gt;\r\n		{/if}\r\n		\r\n		{if $Premanager_sidebar}\r\n			&lt;div id=&quot;sidebar&quot;&gt;\r\n				{$Premanager_sidebar}\r\n			&lt;/div&gt;\r\n		{/if} \r\n	&lt;/body&gt;\r\n&lt;/html&gt;\r\n&quot;; File: D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\thirdparty\\dwoo\\Dwoo\\Compiler.php:1403)', 'error', '2010-06-12 12:56:02', 2, '127.0.0.1', '2010-06-12 14:56:02'),
-(4, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Blog\\scripts\\Article.php on line 127 and defined', 'warning', '2010-06-12 13:30:32', 2, '127.0.0.1', '2010-06-12 15:30:32'),
-(5, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?rev=1', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?revisions', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: require_once(D:\\Programmierung\\webspace\\own\\rack\\plugins/Premanager/scripts/PML) [function.require-once]: failed to open stream: No such file or directory', 'warning', '2010-06-12 17:05:26', 0, '127.0.0.1', '2010-06-12 19:05:26'),
-(6, 'http://de.rack.localhost/blog/blog-funktion-im-aufbau', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?rev=1', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for PMLNode::getInnerXML(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php on line 300 and defined', 'warning', '2010-06-12 17:21:48', 0, '127.0.0.1', '2010-06-12 19:21:48'),
-(7, 'http://de.rack.localhost/blog/blog-funktion-im-aufbau', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?rev=1', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for PMLNode::getInnerXML(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php on line 300 and defined', 'warning', '2010-06-12 17:21:48', 0, '127.0.0.1', '2010-06-12 19:21:48'),
-(8, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Blog\\scripts\\Article.php on line 131 and defined', 'warning', '2010-06-18 16:11:17', 2, '127.0.0.1', '2010-06-18 18:11:17'),
-(9, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-18 16:23:26', 2, '127.0.0.1', '2010-06-18 18:23:26'),
-(10, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-18 16:23:26', 2, '127.0.0.1', '2010-06-18 18:23:26'),
-(11, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-18 16:23:26', 2, '127.0.0.1', '2010-06-18 18:23:26'),
-(12, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-18 16:48:16', 2, '127.0.0.1', '2010-06-18 18:48:16'),
-(13, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php:69)', 'warning', '2010-06-18 16:48:16', 2, '127.0.0.1', '2010-06-18 18:48:16'),
-(14, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php:69)', 'warning', '2010-06-18 16:48:16', 2, '127.0.0.1', '2010-06-18 18:48:16'),
-(15, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php:69)', 'warning', '2010-06-18 16:48:16', 2, '127.0.0.1', '2010-06-18 18:48:16'),
-(16, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for Premanager::log(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php on line 286 and defined', 'warning', '2010-06-18 17:08:57', 2, '127.0.0.1', '2010-06-18 19:08:57'),
-(17, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for Premanager::log(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php on line 286 and defined', 'warning', '2010-06-18 17:09:35', 2, '127.0.0.1', '2010-06-18 19:09:35'),
-(18, 'http://de.rack.localhost/blog/test', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for Premanager::log(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PML.php on line 286 and defined', 'warning', '2010-06-18 17:09:35', 2, '127.0.0.1', '2010-06-18 19:09:35'),
-(19, 'http://de.rack.localhost/blog/und-so-gehts?edit&rev=2', 'http://de.rack.localhost/blog/und-so-gehts?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Accessed string translation does not exist: Blog.preview', 'error', '2010-06-18 17:48:14', 2, '127.0.0.1', '2010-06-18 19:48:14'),
-(20, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Blog\\scripts\\Article.php on line 131 and defined', 'warning', '2010-06-18 18:06:01', 2, '127.0.0.1', '2010-06-18 20:06:01'),
-(21, 'http://de.rack.localhost/blog/blog-funktion-im-aufbau', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Widget class not found: Premanager_LoginWidget', 'error', '2010-06-18 22:13:54', 0, '127.0.0.1', '2010-06-19 00:13:54'),
-(22, 'http://de.rack.localhost/blog/blog-funktion-im-aufbau', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Widget class not found: Premanager_LoginWidget', 'error', '2010-06-18 22:14:32', 0, '127.0.0.1', '2010-06-19 00:14:32'),
-(23, 'http://de.rack.localhost/', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Errorneous query (Query: INSERT INTO rack_premanager_sessions (userID, startTime, lastRequestTime, cookie, ip, userAgent, secondaryPasswordUsed, hidden, projectID) VALUES (''0'', NOW(), NOW(), ''573826e0fa9f9ef1ee0e086990203dd47fa73a462bf89a7788d0a81878a688b2'', ''127.0.0.1'', ''Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)'', 0, 0, ''0''); Mysql Error: Field ''isFirstRequest'' doesn''t have a default value)', 'error', '2010-06-19 09:34:00', 0, '127.0.0.1', '2010-06-19 11:34:00'),
-(24, 'http://de.rack.localhost/', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Errorneous query (Query: INSERT INTO rack_premanager_sessions (userID, startTime, lastRequestTime, cookie, ip, userAgent, secondaryPasswordUsed, hidden, projectID) VALUES (''0'', NOW(), NOW(), ''c5c12c584d39c6076a0fba535d90de497c8d7db951f652ca8fdbf80231a1ce00'', ''127.0.0.1'', ''Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)'', 0, 0, ''0''); Mysql Error: Field ''isFirstRequest'' doesn''t have a default value)', 'error', '2010-06-19 09:36:18', 0, '127.0.0.1', '2010-06-19 11:36:18'),
-(25, 'http://de.rack.localhost/', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Errorneous query (Query: INSERT INTO rack_premanager_sessions (userID, startTime, lastRequestTime, cookie, ip, userAgent, secondaryPasswordUsed, hidden, projectID) VALUES (''0'', NOW(), NOW(), ''e7aedcf6f8a87feb2b973cbef45dcf36c4cebfb48ac457fbff4bd6fcaa34a068'', ''127.0.0.1'', ''Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)'', 0, 0, ''0''); Mysql Error: Field ''isFirstRequest'' doesn''t have a default value)', 'error', '2010-06-19 09:36:32', 0, '127.0.0.1', '2010-06-19 11:36:32'),
-(26, 'http://de.rack.localhost/', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Widget class not found: Premanager_LoginWidget', 'error', '2010-06-19 09:38:36', 0, '127.0.0.1', '2010-06-19 11:38:36'),
-(27, 'http://de.rack.localhost/', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Widget class not found: Premanager_LoginWidget', 'error', '2010-06-19 09:44:09', 0, '127.0.0.1', '2010-06-19 11:44:09'),
-(28, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Blog\\scripts\\Article.php on line 131 and defined', 'warning', '2010-06-19 10:04:34', 2, '127.0.0.1', '2010-06-19 12:04:34'),
-(29, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::loadXML() [domdocument.loadxml]: Extra content at the end of the document in Entity, line: 2', 'warning', '2010-06-19 16:37:47', 2, '127.0.0.1', '2010-06-19 18:37:47'),
-(30, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\PML.php:325)', 'warning', '2010-06-19 16:37:47', 2, '127.0.0.1', '2010-06-19 18:37:47'),
-(31, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\PML.php:325)', 'warning', '2010-06-19 16:37:47', 2, '127.0.0.1', '2010-06-19 18:37:47'),
-(32, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\PML.php:325)', 'warning', '2010-06-19 16:37:47', 2, '127.0.0.1', '2010-06-19 18:37:47'),
-(33, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::loadXML() [domdocument.loadxml]: Extra content at the end of the document in Entity, line: 2', 'warning', '2010-06-19 16:38:02', 2, '127.0.0.1', '2010-06-19 18:38:02'),
-(34, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::loadXML() [domdocument.loadxml]: Extra content at the end of the document in Entity, line: 2', 'warning', '2010-06-19 16:39:00', 2, '127.0.0.1', '2010-06-19 18:39:00'),
-(35, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 1: parser error : StartTag: invalid element name', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(36, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: ', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(37, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]:  ^', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(38, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 1: parser error : Extra content at the end of the document', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(39, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: ', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(40, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]:  ^', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(41, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Failed to parse the XML resource ''in_memory_buffer''.', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(42, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 16:41:00', 2, '127.0.0.1', '2010-06-19 18:41:00'),
-(43, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''p'': Missing child element(s). Expected is ( a ).', 'warning', '2010-06-19 17:06:55', 2, '127.0.0.1', '2010-06-19 19:06:55'),
-(44, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''p'': This element is not expected.', 'warning', '2010-06-19 17:06:55', 2, '127.0.0.1', '2010-06-19 19:06:55'),
-(45, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : error parsing attribute name', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(46, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(47, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(48, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : attributes construct error', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(49, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(50, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(51, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : Couldn''t find end of Start Tag element line 35', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(52, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(53, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(54, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Failed to parse the XML resource ''in_memory_buffer''.', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(55, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:39:45', 2, '127.0.0.1', '2010-06-19 19:39:45'),
-(56, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : error parsing attribute name', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(57, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(58, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(59, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : attributes construct error', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(60, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(61, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(62, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : Couldn''t find end of Start Tag element line 35', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(63, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(64, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(65, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Failed to parse the XML resource ''in_memory_buffer''.', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(66, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:40:17', 2, '127.0.0.1', '2010-06-19 19:40:17'),
-(67, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : error parsing attribute name', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(68, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(69, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(70, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : attributes construct error', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(71, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(72, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(73, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : Couldn''t find end of Start Tag element line 35', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(74, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(75, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                      ^', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(76, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Failed to parse the XML resource ''in_memory_buffer''.', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(77, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:40:50', 2, '127.0.0.1', '2010-06-19 19:40:50'),
-(78, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : error parsing attribute name', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(79, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(80, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                       ^', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(81, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : attributes construct error', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(82, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(83, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                       ^', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(84, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : Couldn''t find end of Start Tag element line 35', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(85, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(86, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                       ^', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(87, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Failed to parse the XML resource ''in_memory_buffer''.', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(88, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:40:59', 2, '127.0.0.1', '2010-06-19 19:40:59'),
-(89, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : error parsing attribute name', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(90, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(91, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                       ^', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(92, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : attributes construct error', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(93, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(94, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                       ^', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(95, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Entity: line 35: parser error : Couldn''t find end of Start Tag element line 35', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(96, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(97, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: 	                                       ^', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(98, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Failed to parse the XML resource ''in_memory_buffer''.', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(99, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:41:02', 2, '127.0.0.1', '2010-06-19 19:41:02'),
-(100, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''minOccours'' is not allowed.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
-(101, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''maxOccours'' is not allowed.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15');
-INSERT INTO `premanager_0_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
-(102, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
-(103, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
-(104, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''type'': The value ''xsd:string'' of simple type ''xs:QName'' has no corresponding namespace declaration in scope.', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
-(105, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:41:15', 2, '127.0.0.1', '2010-06-19 19:41:15'),
-(106, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''minOccours'' is not allowed.', 'warning', '2010-06-19 17:42:02', 2, '127.0.0.1', '2010-06-19 19:42:02'),
-(107, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''maxOccours'' is not allowed.', 'warning', '2010-06-19 17:42:02', 2, '127.0.0.1', '2010-06-19 19:42:02'),
-(108, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:42:02', 2, '127.0.0.1', '2010-06-19 19:42:02'),
-(109, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:42:02', 2, '127.0.0.1', '2010-06-19 19:42:02'),
-(110, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''type'': The value ''xsd:string'' of simple type ''xs:QName'' has no corresponding namespace declaration in scope.', 'warning', '2010-06-19 17:42:02', 2, '127.0.0.1', '2010-06-19 19:42:02'),
-(111, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:42:02', 2, '127.0.0.1', '2010-06-19 19:42:02'),
-(112, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''minOccours'' is not allowed.', 'warning', '2010-06-19 17:42:05', 2, '127.0.0.1', '2010-06-19 19:42:05'),
-(113, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}choice'': The attribute ''maxOccours'' is not allowed.', 'warning', '2010-06-19 17:42:05', 2, '127.0.0.1', '2010-06-19 19:42:05'),
-(114, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:42:05', 2, '127.0.0.1', '2010-06-19 19:42:05'),
-(115, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:42:05', 2, '127.0.0.1', '2010-06-19 19:42:05'),
-(116, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''type'': The value ''xsd:string'' of simple type ''xs:QName'' has no corresponding namespace declaration in scope.', 'warning', '2010-06-19 17:42:05', 2, '127.0.0.1', '2010-06-19 19:42:05'),
-(117, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidateSource() [domdocument.schemavalidatesource]: Invalid Schema', 'warning', '2010-06-19 17:42:05', 2, '127.0.0.1', '2010-06-19 19:42:05'),
-(118, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: I/O warning : failed to load external entity "file:///D:/Programmierung/webspace/own/includes/pml.xsd"', 'warning', '2010-06-19 17:43:45', 2, '127.0.0.1', '2010-06-19 19:43:45'),
-(119, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Failed to locate the main schema resource at ''D:\\Programmierung\\webspace\\own\\includes\\pml.xsd''.', 'warning', '2010-06-19 17:43:45', 2, '127.0.0.1', '2010-06-19 19:43:45'),
-(120, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 17:43:45', 2, '127.0.0.1', '2010-06-19 19:43:45'),
-(121, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: I/O warning : failed to load external entity "file:///D:/Programmierung/webspace/own/includes/pml.xsd"', 'warning', '2010-06-19 17:44:01', 2, '127.0.0.1', '2010-06-19 19:44:01'),
-(122, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Failed to locate the main schema resource at ''D:\\Programmierung\\webspace\\own\\includes\\pml.xsd''.', 'warning', '2010-06-19 17:44:01', 2, '127.0.0.1', '2010-06-19 19:44:01'),
-(123, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 17:44:01', 2, '127.0.0.1', '2010-06-19 19:44:01'),
-(124, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: file:///D:/Programmierung/webspace/own/rack/plugins/Premanager/core/../includes/pml.xsd:35: parser error : error parsing attribute name', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(125, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 	', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(126, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 	                                       ^', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(127, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: file:///D:/Programmierung/webspace/own/rack/plugins/Premanager/core/../includes/pml.xsd:35: parser error : attributes construct error', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(128, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 	', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(129, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 	                                       ^', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(130, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: file:///D:/Programmierung/webspace/own/rack/plugins/Premanager/core/../includes/pml.xsd:35: parser error : Couldn''t find end of Start Tag element line 35', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(131, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 	', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(132, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 	                                       ^', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(133, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Failed to parse the XML resource ''D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core/../includes/pml.xsd''.', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(134, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 17:46:33', 2, '127.0.0.1', '2010-06-19 19:46:33'),
-(135, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:46:53', 2, '127.0.0.1', '2010-06-19 19:46:53'),
-(136, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''minOccours'': Only the attributes ''minOccurs'', ''maxOccurs'' and ''id'' are allowed in addition to ''ref''.', 'warning', '2010-06-19 17:46:53', 2, '127.0.0.1', '2010-06-19 19:46:53'),
-(137, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''type'': The value ''xsd:string'' of simple type ''xs:QName'' has no corresponding namespace declaration in scope.', 'warning', '2010-06-19 17:46:53', 2, '127.0.0.1', '2010-06-19 19:46:53'),
-(138, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 17:46:53', 2, '127.0.0.1', '2010-06-19 19:46:53'),
-(139, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''type'': The value ''xsd:string'' of simple type ''xs:QName'' has no corresponding namespace declaration in scope.', 'warning', '2010-06-19 17:47:40', 2, '127.0.0.1', '2010-06-19 19:47:40'),
-(140, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 17:47:40', 2, '127.0.0.1', '2010-06-19 19:47:40'),
-(141, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''ref'': The QName value ''ul'' does not resolve to a(n) element declaration.', 'warning', '2010-06-19 17:48:30', 2, '127.0.0.1', '2010-06-19 19:48:30'),
-(142, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''ref'': The QName value ''ol'' does not resolve to a(n) element declaration.', 'warning', '2010-06-19 17:48:30', 2, '127.0.0.1', '2010-06-19 19:48:30'),
-(143, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 17:48:30', 2, '127.0.0.1', '2010-06-19 19:48:30'),
-(144, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''p'': Missing child element(s). Expected is ( a ).', 'warning', '2010-06-19 17:49:02', 2, '127.0.0.1', '2010-06-19 19:49:02'),
-(145, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''p'': Missing child element(s). Expected is ( a ).', 'warning', '2010-06-19 17:49:26', 2, '127.0.0.1', '2010-06-19 19:49:26'),
-(146, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::loadXML() [domdocument.loadxml]: expected ''>'' in Entity, line: 2', 'warning', '2010-06-19 17:50:06', 2, '127.0.0.1', '2010-06-19 19:50:06'),
-(147, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'': This element is not expected.', 'warning', '2010-06-19 17:51:00', 2, '127.0.0.1', '2010-06-19 19:51:00'),
-(148, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''pml'': Character content other than whitespace is not allowed because the content type is ''element-only''.', 'warning', '2010-06-19 17:51:08', 2, '127.0.0.1', '2010-06-19 19:51:08'),
-(149, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''p'': This element is not expected. Expected is ( a ).', 'warning', '2010-06-19 17:51:24', 2, '127.0.0.1', '2010-06-19 19:51:24'),
-(150, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'': This element is not expected.', 'warning', '2010-06-19 17:52:02', 2, '127.0.0.1', '2010-06-19 19:52:02'),
-(151, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''li'': Character content other than whitespace is not allowed because the content type is ''element-only''.', 'warning', '2010-06-19 17:52:30', 2, '127.0.0.1', '2010-06-19 19:52:30'),
-(152, 'http://de.rack.localhost/blog?add', 'http://de.rack.localhost/blog?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::loadXML() [domdocument.loadxml]: Opening and ending tag mismatch: h1 line 3 and h in Entity, line: 3', 'warning', '2010-06-19 17:52:48', 2, '127.0.0.1', '2010-06-19 19:52:48'),
-(153, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''br'': This element is not expected. Expected is ( a ).', 'warning', '2010-06-19 18:05:37', 2, '127.0.0.1', '2010-06-19 20:05:37'),
-(154, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:13:07', 2, '127.0.0.1', '2010-06-19 20:13:07'),
-(155, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: internal: no atom generated', 'warning', '2010-06-19 18:13:23', 2, '127.0.0.1', '2010-06-19 20:13:23'),
-(156, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: genrate transition: atom == NULL', 'warning', '2010-06-19 18:13:23', 2, '127.0.0.1', '2010-06-19 20:13:23'),
-(157, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: xmlFAParseRegExp: extra characters', 'warning', '2010-06-19 18:13:23', 2, '127.0.0.1', '2010-06-19 20:13:23'),
-(158, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}pattern'': The value ''^(http|https|ftp)\\:\\/\\/(([0-9a-z][0-9a-z-]*[0-9a-z]\\.)+([a-z]{2,6})(\\/(.*))?)$'' of the facet ''pattern'' is not a valid regular expression.', 'warning', '2010-06-19 18:13:23', 2, '127.0.0.1', '2010-06-19 20:13:23'),
-(159, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:13:23', 2, '127.0.0.1', '2010-06-19 20:13:23'),
-(160, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: internal: no atom generated', 'warning', '2010-06-19 18:14:02', 2, '127.0.0.1', '2010-06-19 20:14:02'),
-(161, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: genrate transition: atom == NULL', 'warning', '2010-06-19 18:14:02', 2, '127.0.0.1', '2010-06-19 20:14:02'),
-(162, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: xmlFAParseRegExp: extra characters', 'warning', '2010-06-19 18:14:02', 2, '127.0.0.1', '2010-06-19 20:14:02'),
-(163, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}pattern'': The value ''^(http|https|ftp)\\://(([0-9a-z][0-9a-z-]*[0-9a-z]\\.)+([a-z]{2,6})(/(.*))?)$'' of the facet ''pattern'' is not a valid regular expression.', 'warning', '2010-06-19 18:14:02', 2, '127.0.0.1', '2010-06-19 20:14:02'),
-(164, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:14:02', 2, '127.0.0.1', '2010-06-19 20:14:02'),
-(165, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: internal: no atom generated', 'warning', '2010-06-19 18:14:55', 2, '127.0.0.1', '2010-06-19 20:14:55'),
-(166, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: genrate transition: atom == NULL', 'warning', '2010-06-19 18:14:55', 2, '127.0.0.1', '2010-06-19 20:14:55'),
-(167, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: failed to compile: xmlFAParseRegExp: extra characters', 'warning', '2010-06-19 18:14:55', 2, '127.0.0.1', '2010-06-19 20:14:55'),
-(168, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}pattern'': The value ''/^(http|https|ftp)\\:\\/\\/(([0-9a-z][0-9a-z-]*[0-9a-z]\\.)+([a-z]{2,6})(/(.*))?)$/'' of the facet ''pattern'' is not a valid regular expression.', 'warning', '2010-06-19 18:14:55', 2, '127.0.0.1', '2010-06-19 20:14:55'),
-(169, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:14:55', 2, '127.0.0.1', '2010-06-19 20:14:55'),
-(170, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''br'': This element is not expected. Expected is ( a ).', 'warning', '2010-06-19 18:16:04', 2, '127.0.0.1', '2010-06-19 20:16:04'),
-(171, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''{http://www.w3.org/2001/XMLSchema}element'', attribute ''ref'': The QName value ''br'' does not resolve to a(n) element declaration.', 'warning', '2010-06-19 18:18:08', 2, '127.0.0.1', '2010-06-19 20:18:08'),
-(172, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:18:08', 2, '127.0.0.1', '2010-06-19 20:18:08'),
-(173, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:18:33', 2, '127.0.0.1', '2010-06-19 20:18:33'),
-(174, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 		', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(175, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 		                              ^', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(176, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: file:///D:/Programmierung/webspace/own/rack/plugins/Premanager/core/../includes/pml.xsd:58: parser error : attributes construct error', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(177, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 		', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(178, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 		                              ^', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(179, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: file:///D:/Programmierung/webspace/own/rack/plugins/Premanager/core/../includes/pml.xsd:58: parser error : Couldn''t find end of Start Tag attribute line 58', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(180, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 		', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(181, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: 		                              ^', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(182, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Failed to parse the XML resource ''D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core/../includes/pml.xsd''.', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(183, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:20:45', 2, '127.0.0.1', '2010-06-19 20:20:45'),
-(184, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Invalid Schema', 'warning', '2010-06-19 18:21:11', 2, '127.0.0.1', '2010-06-19 20:21:11'),
-(185, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'', attribute ''href'': ''http://www.juvenile-studios.de'' is not a valid value of the atomic type ''url''.', 'warning', '2010-06-19 18:22:18', 2, '127.0.0.1', '2010-06-19 20:22:18'),
-(186, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'', attribute ''href'': ''http://www.juvenile-studios.de'' is not a valid value of the atomic type ''url''.', 'warning', '2010-06-19 18:22:51', 2, '127.0.0.1', '2010-06-19 20:22:51'),
-(187, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'', attribute ''href'': ''http://www.juvenile-studios.de'' is not a valid value of the atomic type ''url''.', 'warning', '2010-06-19 18:23:07', 2, '127.0.0.1', '2010-06-19 20:23:07'),
-(188, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'', attribute ''href'': ''http://www.juvenile-studios.de'' is not a valid value of the atomic type ''url''.', 'warning', '2010-06-19 18:23:30', 2, '127.0.0.1', '2010-06-19 20:23:30'),
-(189, 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'http://de.rack.localhost/blog/der-erste-wysiwyg-artikel?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''a'', attribute ''href'': ''http://-www.juvenile-studios.de'' is not a valid value of the atomic type ''url''.', 'warning', '2010-06-19 18:24:09', 2, '127.0.0.1', '2010-06-19 20:24:09'),
-(190, 'http://de.rack.localhost/blog/ein-test?edit&rev=2', 'http://de.rack.localhost/blog/ein-test?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''p'': This element is not expected. Expected is one of ( a, br ).', 'warning', '2010-06-19 18:25:00', 2, '127.0.0.1', '2010-06-19 20:25:00'),
-(191, 'http://de.rack.localhost/blog/ein-test?edit&rev=2', 'http://de.rack.localhost/blog/ein-test?edit&rev=2', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Warning: DOMDocument::schemaValidate() [domdocument.schemavalidate]: Element ''p'': This element is not expected. Expected is one of ( a, br ).', 'warning', '2010-06-19 18:25:04', 2, '127.0.0.1', '2010-06-19 20:25:04'),
-(192, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Can''t connect to MySQL server on ''localhost'' (10061))', 'error', '2010-06-24 11:35:27', 0, '127.0.0.1', '2010-06-24 13:35:27'),
-(193, 'http://de.rack.localhost/mein-konto/avatar?user', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Strings::get(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ChangeAvatar.php on line 23 and defined', 'warning', '2010-06-26 19:40:30', 2, '127.0.0.1', '2010-06-26 21:40:30'),
-(194, 'http://de.rack.localhost/mein-konto/avatar?user', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Accessed string translation does not exist: userDoesNotExist.', 'error', '2010-06-26 19:40:30', 2, '127.0.0.1', '2010-06-26 21:40:30'),
-(195, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Could not select UTC+0 timezone (Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '':00'' at line 1)', 'error', '2010-06-27 11:34:19', 0, '127.0.0.1', '2010-06-27 13:34:40'),
-(196, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Could not select UTC+0 timezone (Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '':00'' at line 1)', 'error', '2010-06-27 11:34:23', 0, '127.0.0.1', '2010-06-27 13:34:40'),
-(197, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Could not select UTC+0 timezone (Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '':30'' at line 1)', 'error', '2010-06-27 11:34:33', 0, '127.0.0.1', '2010-06-27 13:34:40'),
-(198, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Could not select UTC+0 timezone (Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '':30'' at line 1)', 'error', '2010-06-27 11:34:34', 0, '127.0.0.1', '2010-06-27 13:34:40'),
-(199, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Could not select UTC+0 timezone (Mysql Error: Unknown or incorrect time zone: ''+0'')', 'error', '2010-06-27 11:35:08', 0, '127.0.0.1', '2010-06-27 13:34:51'),
-(200, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Accessed string translation does not exist (String Name: Premanager.changeAvatarMessageOwnEmpty)', 'error', '2010-06-27 11:47:32', 2, '127.0.0.1', '2010-06-27 13:47:08'),
-(201, 'http://de.rack.localhost/mein-konto/avatar?user=Gast', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Accessed string translation does not exist (String Name: Premanager.selectAvatarEmpty)', 'error', '2010-06-27 12:38:36', 2, '127.0.0.1', '2010-06-27 14:38:12'),
-(202, 'http://de.rack.localhost/mein-konto/avatar', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Accessed string translation does not exist (String Name: Premanager.changeAvatarButton)', 'error', '2010-06-27 13:33:51', 2, '127.0.0.1', '2010-06-27 15:33:27'),
-(203, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:04', 2, '127.0.0.1', '2010-06-27 19:53:40'),
-(204, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:04', 2, '127.0.0.1', '2010-06-27 19:53:40'),
-(205, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-27 17:54:04', 2, '127.0.0.1', '2010-06-27 19:53:40'),
-(206, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:08', 2, '127.0.0.1', '2010-06-27 19:53:44'),
-(207, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:08', 2, '127.0.0.1', '2010-06-27 19:53:44'),
-(208, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-27 17:54:08', 2, '127.0.0.1', '2010-06-27 19:53:44'),
-(209, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:11', 2, '127.0.0.1', '2010-06-27 19:53:47'),
-(210, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:11', 2, '127.0.0.1', '2010-06-27 19:53:47'),
-(211, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-27 17:54:11', 2, '127.0.0.1', '2010-06-27 19:53:47'),
-(212, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:36', 2, '127.0.0.1', '2010-06-27 19:54:12'),
-(213, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:54:36', 2, '127.0.0.1', '2010-06-27 19:54:12'),
-(214, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-06-27 17:54:36', 2, '127.0.0.1', '2010-06-27 19:54:12'),
-(215, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:05', 2, '127.0.0.1', '2010-06-27 19:54:41');
-INSERT INTO `premanager_0_log` (`id`, `url`, `referer`, `userAgent`, `text`, `type`, `createTime`, `creatorID`, `creatorIP`, `timestamp`) VALUES
-(216, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:05', 2, '127.0.0.1', '2010-06-27 19:54:41'),
-(217, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:09', 2, '127.0.0.1', '2010-06-27 19:54:45'),
-(218, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 3 for Picture::loadFromFile(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\User.php on line 347 and defined', 'warning', '2010-06-27 17:55:09', 2, '127.0.0.1', '2010-06-27 19:54:45'),
-(219, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:24:32', 2, '127.0.0.1', '2010-06-27 20:24:08'),
-(220, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for User::dbDeleteAvatar(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ChangeAvatar.php on line 62 and defined', 'warning', '2010-06-27 18:25:29', 2, '127.0.0.1', '2010-06-27 20:25:05'),
-(221, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:25:46', 2, '127.0.0.1', '2010-06-27 20:25:22'),
-(222, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:25:52', 2, '127.0.0.1', '2010-06-27 20:25:28'),
-(223, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:25:57', 2, '127.0.0.1', '2010-06-27 20:25:33'),
-(224, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:26:00', 2, '127.0.0.1', '2010-06-27 20:25:36'),
-(225, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:26:02', 2, '127.0.0.1', '2010-06-27 20:25:38'),
-(226, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:26:03', 2, '127.0.0.1', '2010-06-27 20:25:39'),
-(227, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:26:04', 2, '127.0.0.1', '2010-06-27 20:25:40'),
-(228, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Cannot modify header information - headers already sent by (output started at D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\PNGPicture.php:14)', 'warning', '2010-06-27 18:26:10', 2, '127.0.0.1', '2010-06-27 20:25:46'),
-(229, 'http://de.rack.localhost/mein-konto/avatar', 'http://de.rack.localhost/mein-konto/avatar', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for User::dbDeleteAvatar(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ChangeAvatar.php on line 62 and defined', 'warning', '2010-06-27 19:39:06', 2, '127.0.0.1', '2010-06-27 21:38:42'),
-(230, 'http://de.rack.localhost/mein-konto/avatar?user=Jan', 'http://de.rack.localhost/mein-konto/avatar?user=Jan', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for User::dbDeleteAvatar(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ChangeAvatar.php on line 62 and defined', 'warning', '2010-06-27 20:03:06', 2, '127.0.0.1', '2010-06-27 22:02:42'),
-(231, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''rack''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:08:11', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(232, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''rack''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:08:15', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(233, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''rack''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:09:23', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(234, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Unknown MySQL server host ''localhost_'' (11001))', 'error', '2010-06-28 19:09:36', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(235, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Unknown MySQL server host ''localhost_'' (11001))', 'error', '2010-06-28 19:09:38', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(236, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''rack''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:09:52', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(237, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Can''t connect to MySQL server on ''www.google.com'' (10107))', 'error', '2010-06-28 19:10:03', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(238, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''ODBC''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:10:25', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(239, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''root''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:10:31', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(240, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''ODBC''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:15:58', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(241, '', '', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''root''@''localhost'' (using password: YES))', 'error', '2010-06-28 19:16:10', 0, '127.0.0.1', '2010-06-28 21:15:53'),
-(242, '', 'http://de.rack.localhost/blog', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''ODBC''@''localhost'' (using password: NO))', 'error', '2010-06-28 19:16:47', 0, '127.0.0.1', '2010-06-28 21:16:29'),
-(243, '', 'http://de.rack.localhost/blog', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Access denied for user ''ODBC''@''localhost'' (using password: NO))', 'error', '2010-06-28 19:17:21', 0, '127.0.0.1', '2010-06-28 21:17:50'),
-(244, 'http://de.rack.localhost/admin/struktur/_/blog', 'http://de.rack.localhost/admin/struktur/_?create-panel', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT plugin.name AS plugin, tree.class, FROM rack_premanager_trees AS tree INNER JOIN rack_premanager_plugins AS plugin ON plugin.pluginID = tree.pluginID WHERE tree.treeID = ''6''; Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''FROM rack_premanager_trees AS tree INNER JOIN rack_premanager_plugins AS plugin '' at line 1)', 'error', '2010-07-01 13:15:36', 2, '127.0.0.1', '2010-07-01 15:15:12'),
-(245, 'http://de.rack.localhost/admin/struktur/_/admin?delete', 'http://de.rack.localhost/admin/struktur/_/admin', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 1 for Node::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\Node.php on line 673 and defined', 'warning', '2010-07-01 13:42:00', 2, '127.0.0.1', '2010-07-01 15:41:36'),
-(246, 'http://de.rack.localhost/admin/struktur/_/admin?delete', 'http://de.rack.localhost/admin/struktur/_/admin', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-07-01 13:42:00', 2, '127.0.0.1', '2010-07-01 15:41:36'),
-(247, 'http://de.rack.localhost/admin/struktur/_/admin?delete', 'http://de.rack.localhost/admin/struktur/_/admin', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Invalid argument supplied for foreach()', 'warning', '2010-07-01 13:42:18', 2, '127.0.0.1', '2010-07-01 15:41:54'),
-(248, 'http://de.rack.localhost/admin/struktur/_/admin?delete', 'http://de.rack.localhost/admin/struktur/_/admin', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: mysql_free_result() expects parameter 1 to be resource, null given', 'warning', '2010-07-01 13:43:32', 2, '127.0.0.1', '2010-07-01 15:43:08'),
-(249, 'http://de.rack.localhost/admin', 'http://de.rack.localhost/admin/struktur/_', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT node.nodeID, translation.name, translation.title, node.noAccessRestriction, node.treeID, node.hasTree FROM rack_premanager_nodes AS node LEFT JOIN rack_premanager_nodestranslation AS translation ON node.nodeID = translation.nodeID WHERE (CASE translation.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) = (SELECT MAX(CASE translationTemp.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) FROM rack_premanager_nodes AS translationTempItem LEFT JOIN rack_premanager_nodestranslation AS translationTemp ON translationTempItem.nodeID = translationTemp.nodeID WHERE node.nodeID = translationTempItem.nodeID ) AND  node.parentID = ''92'' AND node.nodeID != ''92'' GROUP BY node.nodeID ORDER BY translation.name ASC; Mysql Error: Unknown column ''node.hasTree'' in ''field list'')', 'error', '2010-07-01 13:53:18', 2, '127.0.0.1', '2010-07-01 15:52:54'),
-(250, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:11:06', 2, '127.0.0.1', '2010-07-03 19:10:42'),
-(251, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:11:06', 2, '127.0.0.1', '2010-07-03 19:10:42'),
-(252, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:11:45', 2, '127.0.0.1', '2010-07-03 19:11:21'),
-(253, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:11:45', 2, '127.0.0.1', '2010-07-03 19:11:21'),
-(254, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:12:20', 2, '127.0.0.1', '2010-07-03 19:11:56'),
-(255, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:12:20', 2, '127.0.0.1', '2010-07-03 19:11:56'),
-(256, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:12:33', 2, '127.0.0.1', '2010-07-03 19:12:09'),
-(257, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Premanager_ProjectNode::__construct(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\scripts\\ProjectsNode.php on line 51 and defined', 'warning', '2010-07-03 17:12:33', 2, '127.0.0.1', '2010-07-03 19:12:09'),
-(258, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: mysql_real_escape_string() expects parameter 1 to be string, object given', 'warning', '2010-07-03 17:21:14', 2, '127.0.0.1', '2010-07-03 19:20:50'),
-(259, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', '', 'error', '2010-07-03 17:21:14', 2, '127.0.0.1', '2010-07-03 19:20:50'),
-(260, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:24:40', 2, '127.0.0.1', '2010-07-03 19:24:16'),
-(261, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:18', 2, '127.0.0.1', '2010-07-03 19:25:54'),
-(262, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:19', 2, '127.0.0.1', '2010-07-03 19:25:55'),
-(263, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:20', 2, '127.0.0.1', '2010-07-03 19:25:56'),
-(264, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:21', 2, '127.0.0.1', '2010-07-03 19:25:57'),
-(265, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:21', 2, '127.0.0.1', '2010-07-03 19:25:57'),
-(266, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:22', 2, '127.0.0.1', '2010-07-03 19:25:58'),
-(267, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:27', 2, '127.0.0.1', '2010-07-03 19:26:03'),
-(268, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:29', 2, '127.0.0.1', '2010-07-03 19:26:05'),
-(269, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Event ''assignToOutput'' can not be raised because it was not added', 'error', '2010-07-03 17:26:29', 2, '127.0.0.1', '2010-07-03 19:26:05'),
-(270, '', 'http://de.rack.localhost/admin/projekte/ajl%C3%B6ksfdsld%C3%B6jflsd%C3%B6/sdgljdslf', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Can''t connect to MySQL server on ''localhost'' (10061))', 'error', '2010-07-03 19:50:27', 0, '127.0.0.1', '2010-07-03 21:50:04'),
-(271, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte/', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT project.projectID FROM rack_premanager_projects AS project LEFT JOIN rack_premanager_projectstranslation AS translation ON project.projectID = translation.projectID WHERE (CASE translation.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) = (SELECT MAX(CASE translationTemp.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) FROM rack_premanager_projects AS translationTempItem LEFT JOIN rack_premanager_projectstranslation AS translationTemp ON translationTempItem.projectID = translationTemp.projectID WHERE project.projectID = translationTempItem.projectID ) ORDER BY project.projectID != 0 DESC, translation.title ASC LIMIT , 5; Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' 5'' at line 1)', 'error', '2010-07-03 21:43:01', 2, '127.0.0.1', '2010-07-03 23:42:37'),
-(272, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT project.projectID FROM rack_premanager_projects AS project LEFT JOIN rack_premanager_projectstranslation AS translation ON project.projectID = translation.projectID WHERE (CASE translation.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) = (SELECT MAX(CASE translationTemp.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) FROM rack_premanager_projects AS translationTempItem LEFT JOIN rack_premanager_projectstranslation AS translationTemp ON translationTempItem.projectID = translationTemp.projectID WHERE project.projectID = translationTempItem.projectID ) ORDER BY project.projectID == 0 DESC, translation.title ASC LIMIT 0, 20; Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''== 0 DESC, translation.title ASC LIMIT 0, 20'' at line 1)', 'error', '2010-07-03 21:45:52', 2, '127.0.0.1', '2010-07-03 23:45:28'),
-(273, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT project.projectID FROM rack_premanager_projects AS project LEFT JOIN rack_premanager_projectstranslation AS translation ON project.projectID = translation.projectID WHERE (CASE translation.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) = (SELECT MAX(CASE translationTemp.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) FROM rack_premanager_projects AS translationTempItem LEFT JOIN rack_premanager_projectstranslation AS translationTemp ON translationTempItem.projectID = translationTemp.projectID WHERE project.projectID = translationTempItem.projectID ) ORDER BY project.projectID == 0 DESC, translation.title ASC LIMIT 0, 20; Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''== 0 DESC, translation.title ASC LIMIT 0, 20'' at line 1)', 'error', '2010-07-03 21:45:57', 2, '127.0.0.1', '2010-07-03 23:45:33'),
-(274, 'http://de.rack.localhost/admin/projekte', 'http://de.rack.localhost/admin/projekte?edit', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT project.projectID FROM rack_premanager_projects AS project LEFT JOIN rack_premanager_projectstranslation AS translation ON project.projectID = translation.projectID WHERE (CASE translation.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) = (SELECT MAX(CASE translationTemp.languageID WHEN 1 THEN 2 WHEN 2 THEN 1 ELSE 0 END) FROM rack_premanager_projects AS translationTempItem LEFT JOIN rack_premanager_projectstranslation AS translationTemp ON translationTempItem.projectID = translationTemp.projectID WHERE project.projectID = translationTempItem.projectID ) ORDER BY project.projectID == 0 DESC, translation.title ASC LIMIT 0, 20; Mysql Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''== 0 DESC, translation.title ASC LIMIT 0, 20'' at line 1)', 'error', '2010-07-03 21:46:06', 2, '127.0.0.1', '2010-07-03 23:45:42'),
-(275, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: require_once(Project.php) [function.require-once]: failed to open stream: No such file or directory', 'warning', '2010-07-03 22:15:16', 2, '127.0.0.1', '2010-07-04 00:14:52'),
-(276, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: UPDATE rack_premanager_sessions SET lastRequestTime = NOW(), projectID = ''-1'' WHERE cookie = ''675a445069ec265db7cdb8190e0eeb0df8712ecb880db970bb3e9984a30dd932''; Mysql Error: Out of range value for column ''projectID'' at row 1)', 'error', '2010-07-03 22:16:15', 2, '127.0.0.1', '2010-07-04 00:15:51'),
-(277, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: INSERT INTO rack_premanager_projectsname (projectID, name, languageID, inUse) VALUES (''-1'', ''b'', ''1'', ''1''); Mysql Error: Out of range value for column ''projectID'' at row 1)', 'error', '2010-07-03 22:17:10', 2, '127.0.0.1', '2010-07-04 00:16:46'),
-(278, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: INSERT INTO rack_premanager_nodes (projectID, treeID, createTime, creatorID, creatorIP, editTime, editorID, editorIP, editTimes, parentID) VALUES (''19'', ''0'', NOW(), ''2'', ''127.0.0.1'', NOW(), ''2'', ''127.0.0.1'', ''0'', ''0''); Mysql Error: Field ''hasPanel'' doesn''t have a default value)', 'error', '2010-07-03 22:19:23', 2, '127.0.0.1', '2010-07-04 00:18:59'),
-(279, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(280, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(281, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(282, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(283, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(284, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(285, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(286, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(287, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(288, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(289, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(290, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(291, 'http://de.rack.localhost/admin/projekte?add', 'http://de.rack.localhost/admin/projekte?add', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Warning: Missing argument 2 for Module::getAvailableName(), called in D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\core\\Project.php on line 187 and defined', 'warning', '2010-07-03 22:20:06', 2, '127.0.0.1', '2010-07-04 00:19:42'),
-(292, 'http://de.rack.localhost/admin/struktur', 'http://de.rack.localhost/admin/projekte/homepage-ag', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Node tree class file not found (Class Name: Premanager_StructureNode)', 'error', '2010-07-04 10:24:02', 2, '127.0.0.1', '2010-07-04 12:23:38'),
-(293, 'http://de.rack.localhost/', 'http://de.rack.localhost/mitglieder/anmeldung', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Errorneous query (Query: SELECT panelObject.objectID FROM rack_premanager_panelobjects AS panelObject WHERE panelObject.nodeID = ''79'' AND IS_NULL(panelObject.userID) ORDER BY panelObject.group ASC, panelObject.order ASC; Mysql Error: FUNCTION rack.IS_NULL does not exist)', 'error', '2010-07-04 11:11:59', 2, '127.0.0.1', '2010-07-04 13:11:35'),
-(294, 'http://de.rack.localhost/', 'http://de.rack.localhost/mitglieder/anmeldung', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Widget class not found:  (Class Name: ViewonlineWidget)', 'error', '2010-07-04 11:12:33', 2, '127.0.0.1', '2010-07-04 13:12:09'),
-(295, 'http://de.rack.localhost/', 'http://de.rack.localhost/mitglieder/anmeldung', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Widget class not found:  (Class Name: _ViewonlineWidget)', 'error', '2010-07-04 11:13:02', 2, '127.0.0.1', '2010-07-04 13:12:38'),
-(296, 'http://de.rack.localhost/', 'http://de.rack.localhost/mitglieder/anmeldung', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Uncaught exception (Class: Dwoo_Compilation_Exception; Message: Compilation error at line 148 in &quot;file:D:\\Programmierung\\webspace\\own\\rack\\plugins/Premanager/templates/panelView.tpl&quot; : Invalid method name : $count(UserNode_pane; File: D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\thirdparty\\dwoo\\Dwoo\\Compiler.php:2233)', 'error', '2010-07-04 11:13:15', 2, '127.0.0.1', '2010-07-04 13:12:51'),
-(297, '', 'http://de.rack.localhost/mitglieder/anmeldung', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Could not connect to database (Mysql Error: Can''t connect to MySQL server on ''localhost'' (10061))', 'error', '2010-07-04 14:55:49', 0, '127.0.0.1', '2010-07-04 16:55:31'),
-(298, 'http://de.rack.localhost/', 'http://de.rack.localhost/', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.6) Gecko/20100625 Firefox/3.6.6 (.NET CLR 3.5.30729)', 'Uncaught exception (Class: Dwoo_Compilation_Exception; Message: Compilation error at line 164 in &quot;file:D:\\Programmierung\\webspace\\own\\rack\\plugins/Premanager/templates/panelView.tpl&quot; : Invalid method name : $count($UserNode_pan; File: D:\\Programmierung\\webspace\\own\\rack\\plugins\\Premanager\\thirdparty\\dwoo\\Dwoo\\Compiler.php:2233)', 'error', '2010-07-04 15:10:10', 2, '127.0.0.1', '2010-07-04 17:09:46');
 
 -- --------------------------------------------------------
 
@@ -678,7 +382,8 @@ CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguagestranslation` (
 -- Tabellenstruktur für Tabelle `premanager_0_nodegroup`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodegroup` (
@@ -702,7 +407,6 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodegroup` (
 
 INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 (8, 3, '2010-05-29 00:37:39'),
-(8, 6, '2010-05-29 00:37:41'),
 (30, 2, '2010-05-29 00:46:29'),
 (92, 3, '2010-06-09 22:30:14'),
 (94, 2, '2010-06-09 22:31:56');
@@ -713,8 +417,8 @@ INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 18:34
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 09. Januar 2011 um 19:13
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
@@ -736,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
   KEY `parentID` (`parentID`),
   KEY `projectID` (`projectID`),
   KEY `treeID` (`treeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=153 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=156 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodes`:
@@ -759,16 +463,16 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
 INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAccessRestriction`, `hasPanel`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
 (90, 94, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:22', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
 (89, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:15', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
-(88, 92, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:27', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
+(88, 92, 0, 19, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:27', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2011-01-06 17:11:43'),
 (83, 93, 0, 4, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:58', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:55'),
-(82, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:43', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2010-10-06 19:24:39'),
+(82, 93, 0, 18, 1, 0, '2010-06-09 20:21:34', '2011-01-09 17:54:44', 2, '127.0.0.1', 2, '127.0.0.1', 7, '2011-01-09 18:54:20'),
 (81, 93, 0, 15, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:51', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 21:44:31'),
 (80, 93, 0, 1, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:34', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:05'),
 (79, 0, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:21:34', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-09-18 00:52:12'),
 (84, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:05', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
-(92, 79, 0, 0, 0, 0, '2010-06-09 20:30:08', '2010-06-09 20:30:08', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:30:12'),
+(92, 79, 0, 0, 0, 0, '2010-06-09 20:30:08', '2011-01-09 14:44:44', 2, '127.0.0.1', 2, '127.0.0.1', 6, '2011-01-09 15:44:20'),
 (93, 79, 0, 0, 1, 0, '2010-06-09 20:30:44', '2010-06-09 20:30:44', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-07-01 15:50:04'),
-(94, 79, 0, 0, 0, 0, '2010-06-09 20:31:46', '2010-06-09 20:31:46', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:31:54'),
+(94, 79, 0, 0, 0, 0, '2010-06-09 20:31:46', '2011-01-09 14:48:19', 2, '127.0.0.1', 2, '127.0.0.1', 5, '2011-01-09 15:47:55'),
 (95, 0, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-09 20:34:29', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:34:29'),
 (91, 92, 0, 16, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:10', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-11-13 21:12:18'),
 (111, 94, 0, 0, 1, 0, '2010-06-26 19:07:54', '2010-06-26 19:07:54', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-10-06 19:24:39'),
@@ -781,8 +485,8 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 -- Tabellenstruktur für Tabelle `premanager_0_nodesname`
 --
 -- Erzeugt am: 14. November 2010 um 22:10
--- Aktualisiert am: 22. November 2010 um 18:34
--- Letzter Check am: 14. November 2010 um 22:10
+-- Aktualisiert am: 09. Januar 2011 um 18:37
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
@@ -797,7 +501,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
   KEY `languageID` (`languageID`),
   KEY `name` (`name`),
   KEY `nodeID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=20 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=26 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodesname`:
@@ -816,16 +520,19 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (2, 91, 'projekte', 1, 1, '2010-11-14 22:11:44'),
 (3, 89, 'registrierung', 1, 1, '2010-11-14 22:11:44'),
 (4, 90, 'anmeldungsdaten', 1, 1, '2010-11-14 22:11:44'),
-(5, 92, 'admin', 1, 1, '2010-11-14 22:11:44'),
+(5, 92, 'admin', 1, 1, '2011-01-09 15:44:20'),
 (6, 90, 'benutzer', 1, 1, '2010-11-14 22:11:44'),
 (8, 88, 'struktur', 1, 1, '2010-11-14 22:15:19'),
-(9, 94, 'mein-konto', 1, 1, '2010-11-14 22:11:44'),
+(9, 94, 'mein-konto', 1, 1, '2011-01-09 15:47:55'),
 (10, 84, 'passwort-vergessen', 1, 1, '2010-11-14 22:11:44'),
 (11, 82, 'wer-ist-online', 1, 1, '2010-11-14 22:14:02'),
 (12, 83, 'anmeldung', 1, 1, '2010-11-14 22:14:02'),
 (13, 81, 'gruppen', 1, 1, '2010-11-14 22:14:02'),
 (14, 80, 'benutzer', 1, 1, '2010-11-14 22:14:02'),
-(15, 111, 'avatar', 1, 1, '2010-11-14 22:14:02');
+(15, 111, 'avatar', 1, 1, '2010-11-14 22:14:02'),
+(20, 94, 'admin2', 1, 0, '2011-01-09 15:44:38'),
+(21, 94, 'mein-konto&#', 1, 0, '2011-01-09 15:46:21'),
+(22, 94, 'mein-konto/', 1, 0, '2011-01-09 15:47:55');
 
 -- --------------------------------------------------------
 
@@ -833,7 +540,8 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_nodestranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 18:34
+-- Aktualisiert am: 09. Januar 2011 um 18:43
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodestranslation` (
@@ -862,11 +570,11 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (91, 1, 'projekte', 'Projekte', '2010-06-09 22:29:10'),
 (89, 1, 'registrierung', 'Registrierung', '2010-06-09 22:29:15'),
 (90, 1, 'anmeldungsdaten', 'Anmeldungsdaten', '2010-06-09 22:29:22'),
-(92, 1, 'admin', 'Administration', '2010-06-09 22:30:08'),
+(92, 1, 'admin', 'Administration', '2011-01-09 15:44:20'),
 (96, 1, 'benutzer', 'Benutzerliste', '2010-06-12 00:24:51'),
 (95, 1, '', 'Startseite', '2010-06-09 22:34:29'),
 (88, 1, 'struktur', 'Struktur', '2010-06-09 22:29:27'),
-(94, 1, 'mein-konto', 'Mein Konto', '2010-06-09 22:31:46'),
+(94, 1, 'mein-konto', 'Mein Konto', '2011-01-09 15:47:42'),
 (84, 1, 'passwort-vergessen', 'Passwort vergessen', '2010-06-09 22:29:05'),
 (82, 1, 'wer-ist-online', 'Wer ist online?', '2010-06-09 22:29:43'),
 (83, 1, 'anmeldung', 'Anmeldung', '2010-06-09 22:28:58'),
@@ -883,7 +591,7 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 -- Tabellenstruktur für Tabelle `premanager_0_options`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 20:12
+-- Aktualisiert am: 02. Januar 2011 um 19:00
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -909,7 +617,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_options` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_options`:
@@ -931,7 +639,8 @@ INSERT INTO `premanager_0_options` (`id`, `pluginID`, `name`, `type`, `minValue`
 (6, 0, 'email', 'string', NULL, NULL, 'test@example.org', 'info@yogularm.de', b'0', b'0', NULL, NULL, NULL, NULL, '2010-05-07 19:20:20', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
 (7, 0, 'passwordLostPasswordExpirationTime', 'int', 0, NULL, '172800', '172800', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
 (8, 0, 'avatarWidth', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
-(9, 0, 'avatarHeight', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32');
+(9, 0, 'avatarHeight', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
+(10, 0, 'loginConfirmationLength', 'int', 1, NULL, '600', '600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-01-02 18:58:08');
 
 -- --------------------------------------------------------
 
@@ -1039,7 +748,8 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projectoptions` (
 -- Tabellenstruktur für Tabelle `premanager_0_projects`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 18:34
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projects` (
@@ -1080,8 +790,8 @@ INSERT INTO `premanager_0_projects` (`id`, `name`, `createTime`, `editTime`, `ed
 -- Tabellenstruktur für Tabelle `premanager_0_projectsname`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 18:34
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projectsname` (
@@ -1123,7 +833,8 @@ INSERT INTO `premanager_0_projectsname` (`nameID`, `id`, `name`, `inUse`, `langu
 -- Tabellenstruktur für Tabelle `premanager_0_projectstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 18:34
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projectstranslation` (
@@ -1162,19 +873,20 @@ INSERT INTO `premanager_0_projectstranslation` (`id`, `languageID`, `title`, `su
 --
 -- Tabellenstruktur für Tabelle `premanager_0_rights`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 20:12
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 31. Dezember 2010 um 13:42
+-- Aktualisiert am: 02. Januar 2011 um 17:30
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_rights` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `scope` enum('organization','projects','both') COLLATE utf8_bin NOT NULL DEFAULT 'both',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
+  KEY `pluginID` (`pluginID`),
+  KEY `scope` (`scope`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=29 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_rights`:
@@ -1186,24 +898,22 @@ CREATE TABLE IF NOT EXISTS `premanager_0_rights` (
 -- Daten für Tabelle `premanager_0_rights`
 --
 
-INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `timestamp`) VALUES
-(1, 0, 'manageUsers', '2010-10-07 21:04:44'),
-(2, 0, 'createGroups', '2010-10-07 21:04:44'),
-(3, 0, 'moderateGroups', '2010-10-07 21:04:44'),
-(4, 0, 'lockGroups', '2010-10-07 21:04:44'),
-(5, 0, 'structureAdmin', '2010-10-07 21:04:44'),
-(6, 0, 'manageRights', '2010-10-07 21:04:44'),
-(7, 0, 'setGroupPriority', '2010-10-07 21:04:44'),
-(8, 0, 'register', '2010-10-07 21:04:44'),
-(9, 0, 'registerWithoutEmail', '2010-10-07 21:04:44'),
-(10, 0, 'changeUserName', '2010-10-07 21:04:44'),
-(11, 0, 'manageProjects', '2010-10-07 21:04:44'),
-(12, 2, 'createArticles', '2010-06-11 14:39:29'),
-(13, 2, 'editArticles', '2010-06-11 15:52:07'),
-(14, 2, 'deleteArticles', '2010-06-11 15:52:07'),
-(15, 2, 'publishRevisions', '2010-06-11 15:52:07'),
-(16, 0, 'changeOwnAvatar', '2010-10-07 21:04:44'),
-(17, 0, 'changeForeignAvatars', '2010-10-07 21:04:44');
+INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `scope`, `timestamp`) VALUES
+(21, 0, 'manageProjects', 'organization', '2010-12-31 13:42:29'),
+(20, 0, 'editUsers', 'organization', '2010-12-31 13:42:29'),
+(12, 2, 'createArticles', 'both', '2010-06-11 14:39:29'),
+(13, 2, 'editArticles', 'both', '2010-06-11 15:52:07'),
+(14, 2, 'deleteArticles', 'both', '2010-06-11 15:52:07'),
+(15, 2, 'publishRevisions', 'both', '2010-06-11 15:52:07'),
+(19, 0, 'deleteUsers', 'organization', '2010-12-31 13:42:29'),
+(18, 0, 'createUsers', 'organization', '2010-12-31 13:42:29'),
+(22, 0, 'manageGroups', 'both', '2010-12-31 13:43:46'),
+(23, 0, 'manageGroupMemberships', 'both', '2010-12-31 13:43:46'),
+(24, 0, 'manageGroupMembershipsOfProjectMembers', 'projects', '2010-12-31 13:43:46'),
+(25, 0, 'structureAdmin', 'organization', '2010-12-31 13:43:46'),
+(26, 0, 'manageRights', 'both', '2010-12-31 13:43:46'),
+(27, 0, 'register', 'organization', '2011-01-02 17:29:53'),
+(28, 0, 'registerWithoutEmail', 'organization', '2011-01-02 17:29:53');
 
 -- --------------------------------------------------------
 
@@ -1211,7 +921,8 @@ INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_rightstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:12
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_rightstranslation` (
@@ -1236,41 +947,30 @@ CREATE TABLE IF NOT EXISTS `premanager_0_rightstranslation` (
 --
 
 INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `description`, `timestamp`) VALUES
-(2, 1, 'Gruppen erstellen', 'Erlaubt es, neue Gruppen erstellen können (eigene Gruppen können bearbeitet und gelöscht werden).', '2010-04-26 18:19:37'),
-(2, 2, 'Create groups', 'Allows to create new groups (own groups can be edited and deleted).', '2010-04-26 18:19:37'),
-(4, 1, 'Gruppen sperren', 'Erlaubt es, Gruppengründern und -leitern die Rechte an ihren Gruppen zu entziehen und gesperrte Gruppen selbst bearbeiten und freigeben zu können.', '2010-04-29 16:44:57'),
-(4, 2, 'Lock groups', 'Allows to revoke group founders'' and group leaders'' rights at their own groups and allows to edit and release locked groups.', '2010-04-29 16:17:41'),
-(1, 1, 'Benutzer verwalten', 'Erlaubt es, Benutzer zu erstellen, zu bearbeiten und zu löschen', '2010-04-26 18:29:24'),
-(1, 2, 'Manage users', 'Allows to create, edit and delete users', '2010-04-26 18:29:24'),
-(3, 1, 'Gruppen moderieren', 'Bietet Gründerrechte an allen nicht fixierten (in Kombination mit "Gruppen fixieren" auch an fixierten) Gruppen.', '2010-04-26 18:32:59'),
-(3, 2, 'Moderate groups', 'Give founder''s rights to all non-fixed groups (combined with "Fix groups" right, to all fixed groups, too).', '2010-04-26 18:32:59'),
-(5, 1, 'Seitenstruktur bearbeiten', 'Erlaubt es, die Seitenstruktur zu bearbeiten.', '2010-04-26 18:33:53'),
-(5, 2, 'Edit page structure', 'Allows to edit page structure.', '2010-04-26 18:33:53'),
-(6, 1, 'Rechte verwalten', 'Erlaubt es, anderen Benutzern Rechte zu erteilen und zu entziehen.', '2010-04-26 21:07:13'),
-(6, 2, 'Manage rights', 'Allows giving and taking rights.', '2010-04-26 21:07:45'),
-(7, 1, 'Gruppenpriorität festlegen', 'Erlaubt es, eigene Gruppen in das Titelsystem einzugliedern, das Titel und Farbe von Benutzern festlegt.', '2010-04-29 16:53:20'),
-(7, 2, 'Set Group Priority', 'Allows to insert own groups into the title system that defines color and title of users.', '2010-04-29 16:53:20'),
-(8, 1, 'Registrieren', 'Erlaubt es, ein neues Benutzerkonto zu erstellen, bei dem eine E-Mail-Adresse angegeben und bestätigt werden muss', '2010-05-08 18:39:47'),
-(8, 2, 'Register', 'Allows creating a new account; e-mail address must be inputted and confirmed', '2010-05-08 18:39:47'),
-(9, 1, 'Registrieren (ohne E-Mail)', 'Erlaubt es, ein Benutzerkonto zu erstellen, bei dem keine E-Mail-Adresse angegeben werden muss', '2010-05-08 18:41:01'),
-(9, 2, 'Register (without e-mail)', 'Allows creating a new account; e-mail address must not be inputted', '2010-05-08 18:41:01'),
-(10, 1, 'Benutzernamen ändern', 'Erlaubt es, den eigenen Benutzernamen nachträglich zu ändern', '2010-05-24 18:45:03'),
-(11, 1, 'Projekte verwalten', 'Erlaubt es, Projekte zu erstellen, zu bearbeiten, zu löschen und bietet dieselben Rechte an allen Projekten, die Projektleiter über ihre eigenen Projekte haben', '2010-06-06 16:00:38'),
+(28, 1, 'Registrieren (ohne E-Mail-Adresse)', 'Erlaubt es, ein neues Benutzerkonto zu erstellen, ohne ein E-Mail-Adresse angeben zu müssen', '2011-01-02 17:31:23'),
+(27, 1, 'Registrieren', 'Erlaubt es, ein neues Benutzerkonto zu erstellen, das mit einer gültigen E-Mail-Adresse freigeschaltet werden muss', '2011-01-02 17:31:23'),
+(26, 1, 'Rechte verwalten', 'Erlaubt es, Rechte zu vergeben und zu entziehen', '2010-12-31 14:31:15'),
+(25, 1, 'Struktur verwalten', 'Erlaubt es, die Seitenstruktur eines Projekts bzw. der Organisation zu bearbeiten', '2010-12-31 14:31:50'),
+(21, 1, 'Projekte verwalten', 'Erlaubt es, Projekte zu erstellen und zu löschen und ihre Namen und Metadaten zu bearbeiten', '2010-12-31 14:31:15'),
+(22, 1, 'Gruppen verwalten', 'Erlaubt es, Gruppen zu erstellen, zu bearbeiten und zu löschen', '2010-12-31 14:31:15'),
+(24, 1, 'Gruppenmitgliedschaften von Projektmitgliedern verwalten', 'Erlaubt es, Benutzer in Gruppen einzufügen oder daraus zu entfernen, sofern sie bereits Mitglied einer Gruppe des selben Projekts sind', '2010-12-31 14:31:15'),
+(20, 1, 'Benutzerkonten bearbeiten', 'Erlaubt es, Benutzernamen, E-Mail-Adressen, Avatare usw. zu ändern', '2010-12-31 14:31:15'),
+(23, 1, 'Gruppenmitgliedschaften verwalten', 'Erlaubt es, Benutzer in Gruppen einzufügen oder daraus zu entfernen', '2010-12-31 14:31:15'),
 (12, 1, 'Blog-Artikel erstellen', 'Erlaubt es, neue Blog-Artikel zu erstellen, nicht aber, sie zu veröffentlichen', '2010-06-11 15:56:19'),
 (14, 1, 'Blog-Artikel löschen', 'Erlaubt es, Blog-Artikel endgültig zu löschen', '2010-06-11 15:45:16'),
 (13, 1, 'Blog-Artikel bearbeiten', 'Erlaubt es, den Inhalt von Blog-Artikeln zu bearbeiten, nicht aber, diese Veränderungen zu veröffentlichen', '2010-06-11 15:45:16'),
 (15, 1, 'Blog-Artikel veröffentlichen', 'Erlaubt es, neue Blog-Artikel und Änderungen an existierenden Artikeln zu veröffentlichen, sowie ältere Versionen wiederherzustellen und Artikel zu verstecken', '2010-06-11 15:45:16'),
-(16, 1, 'Eigenen Avatar auswählen', 'Erlaubt es, einen eigenen Avatar hochzuladen.', '2010-06-26 21:22:00'),
-(17, 1, 'Avatare anderer Benutzer auswählen', 'Erlaubt es, den Avatar von Benutzern, die verwaltet werden können, zu ändern.', '2010-06-26 21:22:00');
+(18, 1, 'Benutzer erstellen', 'Erlaubt es, neue Benutzerkonten zu erstellen', '2010-12-31 14:31:15'),
+(19, 1, 'Benutzer löschen', 'Erlaubt es, Benutzerkonten zu löschen', '2010-12-31 14:31:15');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 13. November 2010 um 22:58
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 02. Januar 2011 um 16:00
+-- Aktualisiert am: 09. Januar 2011 um 20:13
+-- Letzter Check am: 02. Januar 2011 um 16:00
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
@@ -1285,12 +985,13 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   `hidden` tinyint(1) NOT NULL,
   `projectID` int(10) unsigned NOT NULL,
   `isFirstRequest` tinyint(1) NOT NULL,
+  `confirmationExpirationTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=24 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=50 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_sessions`:
@@ -1346,7 +1047,7 @@ INSERT INTO `premanager_0_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) 
 -- Tabellenstruktur für Tabelle `premanager_0_strings`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 19:34
+-- Aktualisiert am: 09. Januar 2011 um 19:13
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -1357,7 +1058,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=573 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=599 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_strings`:
@@ -1587,8 +1288,8 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (252, 0, 'groupTitleDescription', '2010-10-07 21:04:52'),
 (254, 0, 'groupColorDescription', '2010-10-07 21:04:52'),
 (255, 0, 'groupTextDescription', '2010-10-07 21:04:52'),
-(256, 0, 'groupAutoJoinLabel', '2010-10-07 21:04:52'),
-(257, 0, 'groupAutoJoinShortLabel', '2010-10-07 21:04:52'),
+(256, 0, 'groupAutoJoinDescription', '2011-01-02 15:28:39'),
+(257, 0, 'groupAutoJoinLabel', '2011-01-02 15:29:07'),
 (258, 0, 'deleteGroupMessage', '2010-10-07 21:04:52'),
 (259, 0, 'noGroupNameInputtedError', '2010-10-07 21:04:52'),
 (260, 0, 'groupNameAlreadyExistsError', '2010-10-07 21:04:52'),
@@ -1898,7 +1599,31 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (569, 0, 'organizationGroupsMessage', '2010-11-22 18:48:55'),
 (570, 0, 'organizationGroupsEmptyMessage', '2010-11-22 18:49:50'),
 (571, 0, 'projectGroupsEmptyMessage', '2010-11-22 18:50:09'),
-(572, 0, 'groupProject', '2010-11-22 19:20:23');
+(572, 0, 'groupProject', '2010-11-22 19:20:23'),
+(573, 0, 'groupProjectNotFoundError', '2010-11-26 19:12:13'),
+(574, 0, 'addGroupProjectListMessage', '2010-12-28 13:15:04'),
+(575, 0, 'enableUserLabel', '2010-12-28 20:48:40'),
+(576, 0, 'enableUserDescription', '2010-12-28 20:49:45'),
+(577, 0, 'userJoinNoGroupSelectedError', '2010-12-29 23:39:50'),
+(578, 0, 'editGroupRightsMessage', '2010-12-31 14:24:59'),
+(579, 0, 'groupLoginConfirmationRequiredLabel', '2011-01-02 15:34:13'),
+(580, 0, 'groupLoginConfirmationRequiredDescription', '2011-01-02 15:34:46'),
+(581, 0, 'loginConfirmationPageTitle', '2011-01-02 16:56:06'),
+(582, 0, 'loginConfirmationMessage', '2011-01-02 16:57:51'),
+(583, 0, 'confirmLogin', '2011-01-02 18:44:25'),
+(584, 0, 'loginConfirmationErrorMessage', '2011-01-02 19:09:34'),
+(585, 0, 'loginConfirmationFinishedMessage', '2011-01-02 19:09:53'),
+(586, 0, 'loginConfirmationFinishedIframeMessage', '2011-01-02 19:10:32'),
+(587, 0, 'loggedOutLoginTitle', '2011-01-02 20:11:24'),
+(588, 0, 'addGroupProjectListEmptyMessage', '2011-01-02 21:26:07'),
+(589, 0, 'userJoinDeniedError', '2011-01-02 21:48:13'),
+(590, 0, 'deleteOwnUserError', '2011-01-03 16:10:24'),
+(591, 0, 'deleteOwnUserDescription', '2011-01-03 16:19:27'),
+(592, 0, 'now', '2011-01-06 16:39:51'),
+(594, 0, 'invalidStructureNodeName', '2011-01-09 15:02:14'),
+(595, 0, 'addTreeNodeChildError', '2011-01-09 18:20:14'),
+(596, 0, 'browseStructureNodesTitle', '2011-01-09 18:44:56'),
+(598, 0, 'upperStructureNode', '2011-01-09 19:05:36');
 
 -- --------------------------------------------------------
 
@@ -1906,7 +1631,7 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 22. November 2010 um 19:34
+-- Aktualisiert am: 09. Januar 2011 um 20:13
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
@@ -2399,14 +2124,14 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (268, 2, 'Join Group', '2010-04-25 12:50:54'),
 (269, 1, 'Fügt diesen Benutzer in eine Benutzergruppe ein', '2010-04-25 12:53:15'),
 (269, 2, 'Adds this user to a user group', '2010-04-25 12:53:15'),
-(270, 1, 'Unten sind alle Benutzergruppen, die du verwalten kannst, und in denen {name html} noch nicht Mitglied ist, aufgelistet. Klicke auf einen Eintrag, um {name html} dieser Gruppe hinzuzufügen.', '2010-04-25 13:08:22'),
+(270, 1, 'Wähle aus den unten stehenden Benutzergruppen diejenigen aus, denen der Benutzer {name html} beitreten soll.', '2010-12-28 23:51:27'),
 (271, 1, 'Dieser Benutzer ist bereits Mitglied in allen Gruppen, die du verwalten kannst.', '2010-04-25 13:09:55'),
-(270, 2, 'Below you see all groups you are allowed to manage in which {name html} is not a member. Click an item to add {name html} to this group.', '2010-04-25 13:09:07'),
+(578, 1, 'Wähle die Rechte aus, die Mitglieder dieser Gruppe erhalten sollen.', '2010-12-31 14:11:29'),
 (271, 2, '{name html} is already member of all groups you can manage.', '2010-04-25 13:09:55'),
 (272, 1, 'Es existiert keine Benutzergruppe mit diesem Namen.', '2010-04-25 13:26:41'),
 (272, 2, 'There is no user group called like that.', '2010-04-25 13:26:41'),
-(273, 1, 'Der Benutzer ist bereits Mitglied dieser Benutzergruppe.', '2010-04-25 13:30:34'),
-(273, 2, 'The user is already a member of this group.', '2010-04-25 13:30:34'),
+(273, 1, 'Der Benutzer ist bereits Mitglied der Gruppe <b>{groupName html}</b> des Projekts <b>{projectTitle html}</b>.', '2010-12-30 00:15:24'),
+(577, 1, 'Bitte wähle eine oder mehrere Gruppen aus, denen der Benutzer beitreten soll.', '2010-12-29 23:39:50'),
 (274, 1, 'Verlassen', '2010-04-25 13:38:00'),
 (274, 2, 'Leave', '2010-04-25 13:38:00'),
 (275, 1, 'Entfernt diesen Benutzer aus dieser Benutzergruppe', '2010-04-25 13:39:19'),
@@ -2439,12 +2164,10 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (288, 2, 'Rights', '2010-04-26 21:14:10'),
 (289, 1, 'Zeigt eine Liste der Rechte dieses Benutzers an', '2010-04-26 21:14:36'),
 (289, 2, 'Shows a list of this user''s rights', '2010-04-26 21:14:36'),
-(290, 1, 'Hier siehst du eine Liste der Rechte, über die dieser Benutzer verfügt. Sie ergeben sich aus allen Rechten, die den Gruppen zugeordnet sind, in denen dieser Benutzer Mitglied ist.</p>\r\n\r\n<p>Bearbeite Gruppenrechte, füge den Benutzer in weitere Gruppen ein oder entferne ihn aus Gruppen, um seine Rechte zu beeinflussen.', '2010-04-26 21:21:03'),
-(290, 2, 'Here you see all rights of this user. They are the rights of all groups of that this user is a member.</p>\r\n\r\n<p>To change this user''s rights, edit group rights, add this user to further groups or remove it out of groups.', '2010-04-26 21:21:03'),
-(291, 1, 'Dieser Benutzer verfügt momentan über keine Rechte.</p>\r\n\r\n<p>Bearbeite Gruppenrechte oder füge den Benutzer in weitere Gruppen ein, um ihm Rechte zuzusprechen.', '2010-04-26 21:23:17'),
-(291, 2, 'This user does not have any rights.</p>\r\n\r\n<p>To add rights, change group rights or add this user to further groups.', '2010-04-26 21:23:30'),
-(292, 1, 'Recht', '2010-04-26 21:25:11'),
-(292, 2, 'Right', '2010-04-26 21:25:11'),
+(290, 1, 'Hier siehst du eine Liste der Rechte, über die dieser Benutzer verfügt. Sie ergeben sich aus allen Rechten, die den Gruppen zugeordnet sind, in denen dieser Benutzer Mitglied ist.</p>\r\n\r\n<p>Beachte, dass du nur die Rechte siehst der Projekte siehst, deren Rechte du verwalten kannst.</p>\r\n\r\n<p>Bearbeite Gruppenrechte, füge den Benutzer in weitere Gruppen ein oder entferne ihn aus Gruppen, um seine Rechte zu beeinflussen.', '2011-01-02 22:25:03'),
+(590, 1, 'Du kannst dein eigenes Benutzerkonto nicht löschen. Melde dich unter einem anderen Benutzernamen an, um diesen Benutzer zu löschen.', '2011-01-03 16:10:24'),
+(291, 1, 'Dieser Benutzer verfügt momentan über keine Rechte.</p>\r\n\r\n<p>Beachte, dass du nur die Rechte siehst der Projekte siehst, deren Rechte du verwalten kannst.</p>\r\n\r\n<p>Bearbeite Gruppenrechte oder füge den Benutzer in weitere Gruppen ein, um ihm Rechte zuzusprechen.', '2011-01-02 22:25:26'),
+(292, 1, 'Rechte {''für die gesamte Organisation'' if(projectID==0))}{''für das Projekt <b>'' if(projectID!=0)}{projectTitle if(projectID!=0)}{''</b>'' if(projectID!=0'')}', '2010-12-31 18:29:07'),
 (293, 1, 'Verliehen von', '2010-04-26 21:26:11'),
 (293, 2, 'Granted by', '2010-04-26 21:26:11'),
 (294, 1, 'Du hast versucht, eine ungültige Seite aufzurufen, eine ungültige Aktion durchzuführen oder ungültige Eingaben getätigt.', '2010-04-28 17:36:56'),
@@ -2452,7 +2175,6 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (296, 1, 'Sperren', '2010-04-29 16:15:48'),
 (296, 2, 'Lock', '2010-04-29 16:15:48'),
 (297, 1, 'Entzieht den Gruppenleitern die Rechte über diese Gruppe', '2010-04-29 16:20:47'),
-(297, 2, 'Revokes group founders'' and group leaders'' rights at this group', '2010-04-29 16:20:47'),
 (298, 1, 'Entsperren', '2010-04-29 16:21:00'),
 (298, 2, 'Unlock', '2010-04-29 16:21:00'),
 (299, 1, 'Gibt den Gruppenleitern die Rechte an dieser Gruppe zurück', '2010-04-29 16:21:34'),
@@ -2739,10 +2461,10 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (550, 1, '{num} Tag{''e if(num!=1)}', '2010-11-22 18:54:32'),
 (551, 1, '{num} Monat{''e if(num!=1)}', '2010-11-22 18:54:32'),
 (552, 1, '{num} Jahr{''e if(num!=1)}', '2010-11-22 18:54:32'),
-(553, 1, 'Du bist momentan als {userName html} angemeldet. Wenn du dich unter einem anderen Namen anmelden willst, musst du dich zuerst abmelden.', '2010-09-26 18:16:55'),
+(553, 1, 'Du bist momentan als <b>{userName html}</b> angemeldet. Wenn du dich unter einem anderen Namen anmelden willst, musst du dich zuerst abmelden.', '2011-01-02 22:27:19'),
 (554, 1, 'Abmelden', '2010-09-26 18:18:52'),
 (555, 1, 'Zurück zur zuletzt besuchten Seite', '2010-09-26 19:23:37'),
-(556, 1, 'Du bist jetzt als &quot;{userName html}&quot; angemeldet.', '2010-11-22 18:58:46'),
+(556, 1, 'Du bist jetzt als <b>{userName html}</b> angemeldet.', '2011-01-02 22:27:44'),
 (558, 1, 'Anmeldung', '2010-10-06 21:30:16'),
 (557, 1, 'Du bist jetzt abgemeldet.', '2010-09-26 19:20:13'),
 (559, 1, 'Abmeldung', '2010-10-06 21:30:22'),
@@ -2758,7 +2480,29 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (569, 1, 'Hier sind die Benutzergruppen aufgelistet, die keinem Projekt, sondern der Organisation zugeordnet wurden.', '2010-11-22 18:48:55'),
 (570, 1, 'Es wurden noch keine Benutzergruppen für die Organisation erstellt.', '2010-11-22 18:49:50'),
 (571, 1, 'Für das Projekt &quot;{projectTitle html}&quot; wurden noch keine Benutzergruppen erstellt.', '2010-11-22 18:58:33'),
-(572, 1, 'Projekt', '2010-11-22 19:20:23');
+(572, 1, 'Projekt', '2010-11-22 19:20:23'),
+(573, 1, 'Bitte wähle ein Projekt für die Gruppe aus.', '2010-11-26 19:12:13'),
+(574, 1, 'Um eine Benutzergruppe zu erstellen, wähle zunächst das Projekt aus, für das die Grupe erstellt werden soll.', '2010-12-28 13:15:04'),
+(575, 1, 'Benutzerkonto aktivieren', '2010-12-28 20:48:40'),
+(576, 1, 'Nur aktivierte Benutzerkonten können für die Anmeldung verwendet werden.', '2010-12-28 20:49:45'),
+(579, 1, 'Bestätigung der Anmeldung erforderlich', '2011-01-02 15:34:13'),
+(580, 1, 'Frägt den Benutzer erneut nach seinem Passwort, wenn auf Rechte dieser Gruppe zugegriffen werden soll. Dient als zusätzlicher Schutz vor Betrügern.', '2011-01-02 15:36:09'),
+(581, 1, 'Bestätigung der Anmeldung', '2011-01-02 16:52:19'),
+(582, 1, 'Um die Aktion durchführen zu können, musst du deine Identität bestätigen und dazu dein Passwort eingeben.</p><p><strong>Achtung:</strong> Gebe dein Passwort nur ein, wenn du wirklich eine Aktion durchführen wolltest.', '2011-01-02 16:57:51'),
+(583, 1, 'Anmeldung bestätigen', '2011-01-02 18:44:25'),
+(584, 1, 'Das eingegebene Passwort ist falsch.', '2011-01-02 19:09:34'),
+(585, 1, 'Die Anmeldung wurde erfolgreich bestätigt.', '2011-01-02 19:09:53'),
+(586, 1, 'Die Anmeldung wurde erfolgreich bestätigt.</p><p>Benutze die Neu-Laden-Funktion deines Browsers (meistenst über die Taste F5 erreichbar), um fortzufahren.', '2011-01-02 19:10:32'),
+(587, 1, 'Erneut anmelden?', '2011-01-02 20:11:24'),
+(588, 1, 'Du verfügst nicht über das Recht, Benutzergruppen zu erstellen.', '2011-01-02 21:26:07'),
+(589, 1, 'Du verfügst nicht über das Recht, diesen Benutzer zur Gruppe  <b>{groupName html}</b> des Projekts <b>{projectTitle html}</b> hinzuzufügen.', '2011-01-02 21:48:13'),
+(591, 1, 'Du kannst dein eigenes Benutzerkonto nicht löschen.', '2011-01-03 16:19:27'),
+(592, 1, 'Jetzt', '2011-01-06 16:39:51'),
+(592, 2, 'now', '2011-01-06 16:43:07'),
+(594, 1, 'Der Name darf weder mit einem Pluszeichen (+) beginnen, noch Schrägstriche (/) enthalten.', '2011-01-09 15:02:14'),
+(595, 1, 'Eine Seite, die mit einem Modul verknüpft ist, kann keine Unterseiten enthalten.', '2011-01-09 18:20:14'),
+(596, 1, 'Über- und untergeordnete Seiten', '2011-01-09 18:44:56'),
+(598, 1, 'Übergeordnete Seite ({title html})', '2011-01-09 20:04:32');
 
 -- --------------------------------------------------------
 
@@ -2799,7 +2543,7 @@ INSERT INTO `premanager_0_styles` (`id`, `pluginID`, `isDefault`, `class`, `time
 -- Tabellenstruktur für Tabelle `premanager_0_trees`
 --
 -- Erzeugt am: 22. November 2010 um 19:31
--- Aktualisiert am: 22. November 2010 um 19:32
+-- Aktualisiert am: 07. Januar 2011 um 13:49
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
@@ -2812,7 +2556,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`),
   KEY `scope` (`scope`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=20 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_trees`:
@@ -2828,21 +2572,23 @@ INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `key`, `ti
 (1, 0, 'Premanager\\Pages\\UsersPage', 'organization', 'users', '2010-11-22 19:31:51'),
 (4, 0, 'Premanager\\Pages\\LoginPage', 'organization', 'login', '2010-11-22 19:31:51'),
 (15, 0, 'Premanager\\Pages\\GroupsPage', 'organization', 'groups', '2010-11-22 19:31:51'),
-(16, 0, 'Premanager\\Pages\\ProjectsPage', 'organization', 'projects', '2010-11-22 19:31:51');
+(16, 0, 'Premanager\\Pages\\ProjectsPage', 'organization', 'projects', '2010-11-22 19:31:51'),
+(18, 0, 'Premanager\\Pages\\ViewonlinePage', 'organization', 'viewonline', '2011-01-03 17:22:17'),
+(19, 0, 'Premanager\\Pages\\StructureOverviewPage', 'both', 'structure', '2011-01-07 13:44:23');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_usergroup`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Erzeugt am: 28. Dezember 2010 um 22:29
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_usergroup` (
   `userID` int(10) unsigned NOT NULL,
   `groupID` int(10) unsigned NOT NULL,
-  `isLeader` tinyint(1) NOT NULL DEFAULT '0',
   `joinTime` datetime NOT NULL,
   `joinIP` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -2861,16 +2607,21 @@ CREATE TABLE IF NOT EXISTS `premanager_0_usergroup` (
 -- Daten für Tabelle `premanager_0_usergroup`
 --
 
-INSERT INTO `premanager_0_usergroup` (`userID`, `groupID`, `isLeader`, `joinTime`, `joinIP`, `timestamp`) VALUES
-(0, 1, 0, '2010-04-28 19:49:28', '127.0.0.1', '2010-04-28 19:49:28'),
-(2, 2, 1, '2010-04-25 14:03:27', '127.0.0.1', '2010-04-25 16:17:54'),
-(2, 6, 1, '2010-04-26 21:36:03', '127.0.0.1', '2010-04-28 21:52:34'),
-(2, 3, 1, '2010-04-28 21:29:02', '127.0.0.1', '2010-04-28 21:52:33'),
-(2, 11, 1, '2010-06-11 13:48:24', '127.0.0.1', '2010-06-11 15:48:24'),
-(2, 12, 1, '2010-06-11 13:53:56', '127.0.0.1', '2010-06-11 15:53:56'),
-(70, 2, 0, '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:48:03'),
-(70, 11, 0, '2010-06-11 22:49:45', '93.192.17.163', '2010-06-11 22:49:45'),
-(70, 12, 0, '2010-06-11 22:49:48', '93.192.17.163', '2010-06-11 22:49:48');
+INSERT INTO `premanager_0_usergroup` (`userID`, `groupID`, `joinTime`, `joinIP`, `timestamp`) VALUES
+(0, 1, '2010-04-28 19:49:28', '127.0.0.1', '2010-04-28 19:49:28'),
+(2, 2, '2010-04-25 14:03:27', '127.0.0.1', '2010-04-25 16:17:54'),
+(2, 26, '2010-12-29 23:48:05', '127.0.0.1', '2010-12-30 00:47:41'),
+(2, 3, '2010-12-31 12:18:55', '127.0.0.1', '2010-12-31 13:18:31'),
+(2, 22, '2010-12-31 12:16:44', '127.0.0.1', '2010-12-31 13:16:20'),
+(2, 21, '2010-12-29 23:21:31', '127.0.0.1', '2010-12-30 00:21:07'),
+(2, 20, '2011-01-02 21:03:42', '127.0.0.1', '2011-01-02 22:03:18'),
+(2, 24, '2010-12-29 23:43:39', '127.0.0.1', '2010-12-30 00:43:15'),
+(2, 23, '2010-12-29 23:43:39', '127.0.0.1', '2010-12-30 00:43:15'),
+(79, 2, '2010-12-29 23:48:56', '127.0.0.1', '2010-12-30 00:48:32'),
+(79, 26, '2010-12-29 23:49:17', '127.0.0.1', '2010-12-30 00:48:53'),
+(79, 20, '2010-12-29 23:49:17', '127.0.0.1', '2010-12-30 00:48:53'),
+(2, 25, '2011-01-02 17:22:23', '127.0.0.1', '2011-01-02 18:21:59'),
+(79, 21, '2010-12-31 17:55:27', '127.0.0.1', '2010-12-31 18:55:03');
 
 -- --------------------------------------------------------
 
@@ -2905,9 +2656,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
 --
 -- Tabellenstruktur für Tabelle `premanager_0_users`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 13. November 2010 um 19:58
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 28. Dezember 2010 um 17:30
+-- Aktualisiert am: 09. Januar 2011 um 17:43
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_users` (
@@ -2929,8 +2680,6 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
   `unconfirmedEmailStartTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `unconfirmedEmailKey` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   `status` enum('disabled','waitForEmail','enabled') COLLATE utf8_bin NOT NULL,
-  `isBot` tinyint(1) NOT NULL DEFAULT '0',
-  `botIdentifier` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   `hasPersonalSidebar` int(1) NOT NULL DEFAULT '0',
   `hasAvatar` tinyint(1) NOT NULL DEFAULT '0',
   `avatarMIME` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -2938,16 +2687,17 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `status` (`status`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=71 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=81 ;
 
 --
 -- Daten für Tabelle `premanager_0_users`
 --
 
-INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `isBot`, `botIdentifier`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
-(0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 1, 'image/png', '2010-10-07 21:29:57'),
-(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2010-11-13 18:54:25', '2010-11-13 18:54:25', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, '', 0, 1, 'image/png', '2010-11-13 19:54:01'),
-(70, 'Marc', '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:56:40', '2010-06-11 22:56:40', '93.192.60.138', '92f50201d5d704933e7ec802d7b5425e0a7a831af3bf5eff77e7c745e02f1913', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '000000', 'starwarsfan32@web.de', '', '0000-00-00 00:00:00', '', 'enabled', 0, '', 0, 0, '', '2010-07-04 00:12:19');
+INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
+(0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', '2010-12-28 23:19:37'),
+(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2011-01-09 16:30:35', '2011-01-09 16:30:35', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, 1, 'image/png', '2011-01-09 17:30:11'),
+(70, 'Marc', '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:56:40', '2010-06-11 22:56:40', '93.192.60.138', '92f50201d5d704933e7ec802d7b5425e0a7a831af3bf5eff77e7c745e02f1913', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '000000', 'starwarsfan32@web.de', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2010-07-04 00:12:19'),
+(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-01-06 15:34:55', '2011-01-06 15:34:55', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '64002E', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2011-01-06 16:34:31');
 
 -- --------------------------------------------------------
 
@@ -2955,8 +2705,8 @@ INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registratio
 -- Tabellenstruktur für Tabelle `premanager_0_usersname`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_usersname` (
@@ -2971,7 +2721,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_usersname` (
   KEY `userID` (`id`),
   KEY `languageID` (`languageID`),
   KEY `inUse` (`inUse`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=75 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=85 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_usersname`:
@@ -2992,7 +2742,8 @@ INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inU
 (5, 0, 'anonymous', 0, 0, '2010-04-23 22:31:27'),
 (74, 0, 'invité', 3, 1, '2010-05-24 21:13:23'),
 (21, 70, 'marc', 1, 1, '2010-06-12 13:42:56'),
-(73, 0, 'gast', 1, 1, '2010-05-24 21:14:44');
+(73, 0, 'gast', 1, 1, '2010-05-24 21:14:44'),
+(83, 79, 'markus', 1, 1, '2010-12-30 00:48:32');
 
 -- --------------------------------------------------------
 
@@ -3000,7 +2751,8 @@ INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_userstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_userstranslation` (
@@ -3024,19 +2776,22 @@ CREATE TABLE IF NOT EXISTS `premanager_0_userstranslation` (
 --
 
 INSERT INTO `premanager_0_userstranslation` (`id`, `languageID`, `title`, `timestamp`) VALUES
-(0, 1, 'Gast', '2010-07-04 12:28:28'),
 (6, 1, '', '2010-04-23 22:42:05'),
 (9, 1, '', '2010-04-23 22:43:59'),
 (12, 1, '', '2010-04-23 22:47:22'),
 (18, 1, '', '2010-04-25 16:20:31'),
-(0, 2, 'Gast', '2010-07-04 12:28:28'),
-(2, 1, 'Administrator', '2010-07-04 12:28:28'),
-(2, 2, 'Administrator', '2010-07-04 12:28:28'),
-(70, 1, 'Registrierter Benutzer', '2010-07-04 12:28:28'),
-(70, 2, 'Registrierter Benutzer', '2010-07-04 12:28:28'),
-(70, 3, 'Registrierter Benutzer', '2010-07-04 12:28:28'),
-(0, 3, 'Gast', '2010-07-04 12:28:28'),
-(2, 3, 'Administrator', '2010-07-04 12:28:28');
+(0, 1, 'Gast', '2011-01-02 15:55:20'),
+(0, 2, 'Guest', '2011-01-02 15:55:20'),
+(0, 3, 'Invité', '2011-01-02 15:55:20'),
+(79, 1, 'Projektmitglied', '2011-01-02 15:55:20'),
+(79, 2, 'Projektmitglied', '2011-01-02 15:55:20'),
+(79, 3, 'Projektmitglied', '2011-01-02 15:55:20'),
+(2, 1, 'Administrator', '2011-01-02 15:55:20'),
+(2, 2, 'Administrator', '2011-01-02 15:55:20'),
+(2, 3, 'Administrateur', '2011-01-02 15:55:20'),
+(70, 1, 'Benutzer', '2011-01-02 21:38:50'),
+(70, 2, 'User', '2011-01-02 21:38:50'),
+(70, 3, 'User', '2011-01-02 21:38:50');
 
 -- --------------------------------------------------------
 

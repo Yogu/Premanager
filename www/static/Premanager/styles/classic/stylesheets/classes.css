@@ -267,6 +267,22 @@
 	background-color: transparent !important;
 }
 
+.list > li.go-up {
+	margin-bottom: 2px;
+}
+
+.list > li.go-up:last-child {
+	margin-bottom: 0;
+}
+
+.list > li.go-up > a {
+	padding-left: 30px;
+	
+	background-image: url(../../../images/tools/go-up.png);
+	background-position: 5px center;
+	background-repeat: no-repeat;
+}
+
 /* ========== Trees ========== */
 
 .tree li > ul > li {   
@@ -275,25 +291,58 @@
 
 .tree li {
 	list-style: none;
-}                   
+}
 
-.tree a {  
-	display: block;
-	padding: 2px; 
+.tree a {
 	overflow: hidden;
 	white-space: nowrap;
+	
+ 	font-size: 11px;
+}
 
+.tree div,
+.tree a,
+.tree .toolbar > li > a,
+.tree .toolbar > li > span {
+	display: block;
+	padding: 2px;
+	
 	background-color: #DFF0FF;
 	border-bottom: 1px solid #B1DBFF;     
 	border-right: 1px solid #B1DBFF;
 	border-top: 1px solid #FFFFFF;
 	border-left: 1px solid #FFFFFF;
-	
- 	font-size: 11px;
 }
 
-.tree .selected > a,
-.tree > li > a {  
+.tree div {
+	padding: 4px;
+}
+
+.tree div > a {
+	display: inline;
+	padding: 4px;
+	padding-right: 0;
+	
+	border: none;
+	
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.tree div > a:after {
+	display: inline;
+	width: 1px;
+	height: 100%;
+	padding: 4px 0;
+	margin-left: 5px;
+	
+	border-left: 1px solid #B1DBFF;
+	border-right: 1px solid #FFFFFF;
+	
+	content: '';	
+}
+
+.tree .selected > a {  
 	background-color: #FFD053;
 	border-bottom: 1px solid #F4B100;     
 	border-right: 1px solid #F4B100;
@@ -309,15 +358,20 @@
 	border-left: 1px solid #FFFFFF;
 }
 
-.tree a:hover {   
+.tree a:hover,
+.tree div:hover,
+.tree div:hover > a,
+.tree .toolbar > li > a:hover {   
 	background-color: #CBE7FF;
 }  
 
-.tree .selected > a:hover {
+.tree .selected > a:hover,
+.tree .selected > div {
 	background-color: #FFC836;
 }   
 
-.tree .active > a:hover {
+.tree .active > a:hover,
+.tree .active > div:hover {
 	background-color: #66B8FF;
 }    
                         
@@ -326,6 +380,76 @@
  	color: #000000;
  	text-decoration: none; 
 	outline: none;
+}
+
+/* ========== Tree Toolbars ========== */
+
+.tree li > div > .toolbar {
+	float: right;	
+	display: none;
+	padding: 0;
+	margin: -5px;
+	
+	border-left: 1px solid #B1DBFF; 	
+}
+
+.tree li > div:hover > .toolbar {
+	display: block; 	
+}
+
+.tree .toolbar > li {
+	float: left;
+	overflow: visible;
+	height: 100%;
+	margin-right: 0;
+
+	list-style: none;
+}
+
+/* Only icons */
+.tree .toolbar > li > a,
+.tree .toolbar > li > span {    
+	background-position: center;
+	background-repeat: no-repeat;
+	color: transparent;
+	content: "";
+	display: block;
+	height: 22px;
+	overflow: hidden;
+	padding: 0 !important;
+	white-space: nowrap;
+	width: 22px;
+	
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+}
+
+/* Icons + text */
+/*.tree .toolbar > li > a,
+.tree .structure-admin .toolbar > li > span {
+	display: block;
+	height: 16px;
+	line-height: 14px;     
+	overflow: hidden;
+	white-space: nowrap;
+	padding-left: 23px !important;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	
+	background-repeat: no-repeat;
+	background-position: 0px center;
+	
+	font-size: 11px;
+	
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+}*/
+
+.tree .toolbar > li > .disabled {
+	cursor: default;
+	opacity: 0.5;
 }
 
 /* ========== Fieldsets ========== */
