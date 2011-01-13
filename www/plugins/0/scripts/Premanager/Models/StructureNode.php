@@ -1,6 +1,7 @@
 <?php                 
 namespace Premanager\Models;
 
+use Premanager\Execution\Environment;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\QueryList\QueryOperation;
 use Premanager\QueryList\QueryExpression;
@@ -648,9 +649,9 @@ final class StructureNode extends Model {
 						'Premanage\Models\StructureNodeType'); 
 			}
 		} else
-			$hasPanel = $this->gethasPanel();
+			$hasPanel = $this->getType() == StructureNodeType::PANEL;
 			
-		DataBaseHelper::update('Premanager', 'StructureNodes', 'nodeID',
+		DataBaseHelper::update('Premanager', 'Nodes',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE,
 			$this->_id, $name,
@@ -669,7 +670,7 @@ final class StructureNode extends Model {
 		$this->_hasPanel = $hasPanel;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getuser();
+		$this->_editor = Environment::getCurrent()->getUser();
 	}     
 	
 	/**
@@ -866,12 +867,13 @@ final class StructureNode extends Model {
 					'Premanager\Models\StructureNodeType');
 		}
 	
-		$id = DataBaseHelper::insert('Premanager', 'Nodes', 'nodeID',
-			DataBaseHelepr::CREATOR_FIELDS | DataBaseHelepr::EDITOR_FIELDS, $name,
+		$id = DataBaseHelper::insert('Premanager', 'Nodes',
+			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
 			array(
 				'noAccessRestriction' => $noAccessRestriction,
-				'parentID' => $parent->getid(),
-				'hasPanel' => $type == self::TYPE_PANEL,
+				'parentID' => $this->_id,
+				'projectiD' => $this->getProject()->getID(),
+				'hasPanel' => $type == StructureNodeType::PANEL,
 				'treeID' => 0),
 			array(
 				'title' => $title)
@@ -884,13 +886,8 @@ final class StructureNode extends Model {
 		$instance->_editTime = new DateTime();
 
 		// Now parent node contains one child more
-		if ($parent->_childCount !== null)
-			$parent->_childCount++;
-			
-		// Other children of this node's parent might have moved
-		foreach (self::$_instances as $instance)
-			if ($instance->_index !== null && $instance->getparent() == $parent)
-				$instance::$_index = null;	
+		if ($this->_childCount !== null)
+			$this->_childCount++;	
 		
 		return $instance;
 	}  
@@ -912,7 +909,7 @@ final class StructureNode extends Model {
 		}
 
 		// Delete this node
-		DataBaseHelper::delete('Premanager', 'StructureNodes', 'nodeID',
+		DataBaseHelper::delete('Premanager', 'Nodes',
 			DataBaseHelper::IS_TREE,
 			$this->_id);      
 			    
@@ -923,8 +920,6 @@ final class StructureNode extends Model {
 		
 		if ($this->getparent() && $this->getparent()->_childCount !== null)
 			$this->getparent()->_childCount--;
-			
-		unset(self::$_instance[$this->_id]);
 
 		$this->dispose();
 	}
@@ -938,10 +933,10 @@ final class StructureNode extends Model {
 	 * @return bool true, if this node can be deleted
 	 */
 	public function canDelete() {
-		if ($this->gettree())
+		if ($this->getTreeClass())
 			return false;
 		else
-			foreach ($this->getchildren() as $child) {
+			foreach ($this->getChildren() as $child) {
 				if (!$child->canDelete())
 					return false;
 			}

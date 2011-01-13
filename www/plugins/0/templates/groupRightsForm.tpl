@@ -25,6 +25,6 @@
 	</fieldset>
 	
 	<fieldset class="buttons">
-		<input type="submit" name="form-submit" class="main" value="{string Premanager submitButton}" />
+		<input type="submit" name="submit" class="main" value="{string Premanager submitButton}" />
 	</fieldset>
 {/form}

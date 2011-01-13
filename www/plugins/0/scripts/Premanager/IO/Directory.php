@@ -12,7 +12,7 @@ class Directory {
 	 * @return bool true, if the directory exists
 	 */
 	public static function exists($path) {
-		return \file_exists($path) && \is_dir($path);
+		return file_exists($path) && \is_dir($path);
 	}
 	
 	/**

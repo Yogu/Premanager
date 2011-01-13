@@ -757,6 +757,14 @@ fieldset > dl > dd > .input-errors li {
 	margin-left: 210px;
 }   
 
+.info-list > dl > dd > p.description {
+	margin-top: 2px;
+	margin-bottom: 0;
+
+	color: #666666;
+	font-size: 11px;
+}
+
 /* ========== Info Box ========== */
 
 .info-box {

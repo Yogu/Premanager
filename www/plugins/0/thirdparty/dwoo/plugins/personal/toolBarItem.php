@@ -23,7 +23,7 @@ function Dwoo_Plugin_toolBarItem_compile(Dwoo_Compiler $compiler, $url, $title,
 				"'value=\"'.htmlspecialchars($title).'\"'.$descriptionCode.$iconCode.".
 				"' /></form></li>'";
 		default:
-			return "'<li>'.($enabled ? '<a href=\"./'.htmlspecialchars($url).'\" : ".
+			return "'<li>'.($enabled ? '<a href=\"./'.htmlspecialchars($url).'\"' : ".
 				"'<span class=\"disabled\"').$descriptionCode.$iconCode.'>'.".
 				"htmlspecialchars($title).'</'.($enabled ? 'a' : 'span').'></li>'";
 	}

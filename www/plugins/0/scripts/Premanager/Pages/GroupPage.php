@@ -49,7 +49,7 @@ class GroupPage extends ListPageNode {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_group->getname();
+		return $this->_group->getName();
 	}
 	
 	/**
@@ -59,7 +59,7 @@ class GroupPage extends ListPageNode {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_group->getname();
+		return $this->_group->getName();
 	}
 	
 	/**

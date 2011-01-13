@@ -179,9 +179,9 @@ class Request {
 	 * @return string
 	 */
 	public static function getGET($name) {
-		$value = \array_key_exists($name, $_GET) ? $_GET[$name] : null;
-		if (\function_exists('get_magic_quotes_gpc') && \get_magic_quotes_gpc())
-			$value = $this->deepStripslashes($value);
+		$value = array_key_exists($name, $_GET) ? $_GET[$name] : null;
+		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
+			$value = self::deepStripslashes($value);
 		return $value;	
 	}
 	
@@ -234,10 +234,10 @@ class Request {
 	 */
 	public static function getCookie($name) {
 		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
-		$value = \array_key_exists($prefix.$name, $_COOKIE) ?
+		$value = array_key_exists($prefix.$name, $_COOKIE) ?
 			$_COOKIE[$prefix.$name] : null;
-		if (\function_exists('get_magic_quotes_gpc') && \get_magic_quotes_gpc())
-			$value = $this->deepStripslashes($value);
+		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
+			$value = self::deepStripslashes($value);
 		return $value;	
 	}
 	

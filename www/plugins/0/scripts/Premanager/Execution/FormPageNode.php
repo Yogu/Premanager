@@ -43,7 +43,7 @@ abstract class FormPageNode extends PageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		if (Request::getPOST('form-submit')) {
+		if (Request::getPOST('submit')) {
 			$errors = array();
 			$this->_values = $this->getValuesFromPOST($errors);
 			if (count($errors)) {
@@ -65,7 +65,6 @@ abstract class FormPageNode extends PageNode {
 		$template->set('errors', $this->_errors);
 		
 		return $this->getFormPage($template->get());
-		return $page;
 	}
 
 	// ===========================================================================

@@ -76,6 +76,8 @@ class DeleteProjectPage extends PageNode {
 			
 			$this->_project->delete();
 			return new Redirection($this->getParent()->getParent()->getURL());
+		} else if (Request::getPOST('cancel')) {
+			return new Redirection($this->getParent()->getURL());
 		} else {
 			$page = new Page($this);
 			$template = new Template('Premanager', 'confirmation');
