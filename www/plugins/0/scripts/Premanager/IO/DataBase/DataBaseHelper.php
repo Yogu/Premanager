@@ -196,13 +196,7 @@ class DataBaseHelper extends Module {
 		$lang = Environment::getCurrent()->getlanguage()->getid();
 		
 		if (!Types::isInteger($id) || $id < 0)
-			throw new rgumentException('$id must be a positive integer value', 'id');
-		
-		if (($flags & self::IS_TREE)) {
-			if (!Types::isInteger($parentID) || $parentID < 0)
-				throw new InvalidArgumentException('$flags contains IS_TREE, but '.
-					'parentID is not an nonnegative integer');
-		}
+			throw new ArgumentException('$id must be a positive integer value', 'id');
 		
 		// -------------- Item ------------
 			
@@ -221,7 +215,7 @@ class DataBaseHelper extends Module {
 				$translatedValues['name'] = $name;
 		}
 		
-		if ($flags & self::IS_TREE)
+		if ($parentID !== null)
 			$values['parentID'] = $parentID;
 		   
 		// Prepare query
@@ -412,7 +406,7 @@ class DataBaseHelper extends Module {
 		$result = DataBase::query(
 			"SELECT ".
 				($flags & self::IS_TREE ? "item.parentID, " : '').
-				($flags & self::UNTRANSLATED_NAME ? "item.name, " : "translation.name").
+				($flags & self::UNTRANSLATED_NAME ? "item.name " : "translation.name ").
 			"FROM ".DataBase::formTableName($plugin, $table)." AS item ",
 			/* translating */
 			"WHERE item.id = '$id'");

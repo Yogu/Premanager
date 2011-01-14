@@ -23,6 +23,7 @@ class Redirection extends Response {
 		elseif (!preg_match('/^[a-zA-Z0-9+.-]+\:/', $location))
 			$location = Environment::getCurrent()->getURLPrefix().$location;
 		$this->_location = $location;
+		$this->_statusCode = $code;
 	}
 	
 	/**

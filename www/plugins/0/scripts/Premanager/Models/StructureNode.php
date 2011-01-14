@@ -121,7 +121,7 @@ final class StructureNode extends Model {
 	 * Gets a structure node using its id
 	 * 
 	 * @param int $id the id of the session
-	 * @return Premanager\Models\Session
+	 * @return Premanager\Models\StructureNode
 	 */
 	public static function getByID($id) {
 		if (!Types::isInteger($id) || $id < 0)
@@ -688,10 +688,10 @@ final class StructureNode extends Model {
 	public function setParent(StructureNode $parent) {
 		$this->checkDisposed();
 			
-		if ($parent == $this->getparent())
+		if ($parent == $this->getParent())
 			return;
 			
-		if (!$this->getparent())
+		if (!$this->getParent())
 			throw new InvalidOperationException('Root node can not be moved');
 		if (!$parent)
 			throw new ArgumentNullException('parent');
@@ -714,14 +714,14 @@ final class StructureNode extends Model {
 		// new parent, too
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodesName')." ".
-			"WHERE nodeID = '$this->_id'");
+			"WHERE id = '$this->_id'");
 			
 		// Re-insert up-to-date names
-		DataBaseHelper::rebuildNameTable('Premanager', 'Nodes', 'nodeID', 
+		DataBaseHelper::rebuildNameTable('Premanager', 'Nodes',
 			DataBaseHelper::IS_TREE, $this->_id);
 			
 		// Now update parent id
-		DataBaseHelper::update('Premanager', 'StructureNode', 'nodeID',
+		DataBaseHelper::update('Premanager', 'Nodes',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE , $this->_id, null,
 			array(
@@ -730,16 +730,16 @@ final class StructureNode extends Model {
 		);           
 		
 		// Update child count
-		if ($this->getparent()->_childCount !== null)
-			$this->getparent()->_childCount--;
+		if ($this->getParent()->_childCount !== null)
+			$this->getParent()->_childCount--;
 		if ($parent->_childCount !== null)	
 			$parent->_childCount++;
 		
-		$this->_parentID = $parent->getid();
+		$this->_parentID = $parent->getID();
 		$this->_parent = $parent;
 		
 		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getuser();
+		$this->_editor = Environment::getCurrent()->getUser();
 	}
 	
 	/**

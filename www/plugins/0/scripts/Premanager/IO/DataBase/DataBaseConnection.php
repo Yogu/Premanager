@@ -1,8 +1,8 @@
 <?php 
 namespace Premanager\IO\DataBase;
 
+use Premanager\ArgumentException;
 use Premanager\Models\Plugin;
-
 use Premanager\Module;
 use Premanager\Strings;
 use Premanager\Debug\Debug;
@@ -219,6 +219,8 @@ class DataBaseConnection extends Module {
 	 */
 	public function formTableName($plugin, $table) {
 		$pluginID = Plugin::getIDFromName($plugin);
+		if ($pluginID === null)
+			throw new ArgumentException('There is no plugin called '.$plugin);
 		return Strings::toLower($this->_prefix.$pluginID.'_'.$table);
 	}
 }
