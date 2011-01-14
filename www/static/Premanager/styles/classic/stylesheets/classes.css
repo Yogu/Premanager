@@ -314,6 +314,23 @@
 	border-left: 1px solid #FFFFFF;
 }
 
+.tree .toolbar > li > form > input {
+	display: block !important;
+	padding: 2px !important;
+	
+	background-color: #DFF0FF !important;
+}
+	
+.tree .toolbar > li > form > input,
+.tree .toolbar > li > form > input:hover,
+.tree .toolbar > li > form > input:hover:active,
+.tree .toolbar > li > form > input:active {
+	border-bottom: 1px solid #B1DBFF !important;     
+	border-right: 1px solid #B1DBFF !important;
+	border-top: 1px solid #FFFFFF !important;
+	border-left: 1px solid #FFFFFF !important;
+}
+
 .tree div {
 	padding: 4px;
 }
@@ -342,44 +359,107 @@
 	content: '';	
 }
 
-.tree .selected > a {  
-	background-color: #FFD053;
-	border-bottom: 1px solid #F4B100;     
-	border-right: 1px solid #F4B100;
-	border-top: 1px solid #FFFFFF;
-	border-left: 1px solid #FFFFFF;
-}        
-
-.tree .active > a {  
-	background-color: #85C5FF;
-	border-bottom: 1px solid #60B5FF;     
-	border-right: 1px solid #60B5FF;
-	border-top: 1px solid #FFFFFF;
-	border-left: 1px solid #FFFFFF;
-}
-
 .tree a:hover,
 .tree div:hover,
 .tree div:hover > a,
 .tree .toolbar > li > a:hover {   
 	background-color: #CBE7FF;
-}  
+}
 
-.tree .selected > a:hover,
-.tree .selected > div {
-	background-color: #FFC836;
-}   
-
-.tree .active > a:hover,
-.tree .active > div:hover {
-	background-color: #66B8FF;
-}    
+.tree .toolbar > li > form > input:hover,
+.tree .toolbar > li > form > input:active,
+.tree .toolbar > li > form > input:hover:active {
+	background-color: #CBE7FF !important;
+}
                         
 .tree a,
 .tree a:hover {
  	color: #000000;
  	text-decoration: none; 
 	outline: none;
+}
+
+.tree .selected > div > .toolbar {
+	border-left: 1px solid #F4B100;
+}
+
+.tree .selected > a,
+.tree .selected > div,
+.tree .selected > div > a,
+.tree .selected > div > .toolbar > li > a {  
+	background-color: #FFD053;
+}
+
+.tree .selected > div > .toolbar > li > form > input {
+	background-color: #FFD053 !important;
+}
+
+.tree .selected > a,
+.tree .selected > div,
+.tree .selected > div > .toolbar > li > a,
+.tree .selected > div > .toolbar > li > form > input {
+	border-bottom: 1px solid #F4B100;     
+	border-right: 1px solid #F4B100;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}        
+
+.tree .selected > div > a:after {
+	border-left: 1px solid #F4B100;
+	border-right: 1px solid #FFFFFF;
+}
+
+.tree .selected > a:hover,
+.tree .selected > div:hover,
+.tree .selected > div:hover > a,
+.tree .selected > div > .toolbar > li > a:hover {
+	background-color: #FFC836;
+}
+
+.tree .selected > div > .toolbar > li > form > input:hover,
+.tree .selected > div > .toolbar > li > form > input:active {
+	background-color: #FFC836 !important;
+}
+
+.tree .active > div > .toolbar {
+	border-left: 1px solid #85C5FF;
+}
+
+.tree .active > a,
+.tree .active > div,
+.tree .active > div > a,
+.tree .active > div > .toolbar > li > a {  
+	background-color: #85C5FF;
+}
+
+.tree .active > div > .toolbar > li > form > input {
+	background-color: #85C5FF !important;
+}
+
+.tree .active > a,
+.tree .active > div,
+.tree .active > div > .toolbar > li > a,
+.tree .active > div > .toolbar > li > form > input {
+	border-bottom: 1px solid #60B5FF;     
+	border-right: 1px solid #60B5FF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}        
+
+.tree .active > div > a:after {
+	border-left: 1px solid #60B5FF;
+}
+
+.tree .active > a:hover,
+.tree .active > div:hover,
+.tree .active > div:hover > a,
+.tree .active > div > .toolbar > li > a:hover {
+	background-color: #66B8FF;
+}
+
+.tree .active > div > .toolbar > li > form > input:hover,
+.tree .active > div > .toolbar > li > form > input:active {
+	background-color: #66B8FF !important;
 }
 
 /* ========== Tree Toolbars ========== */
@@ -390,14 +470,15 @@
 	padding: 0;
 	margin: -5px;
 	
-	border-left: 1px solid #B1DBFF; 	
+	border-left: 1px solid #B1DBFF;
 }
 
 .tree li > div:hover > .toolbar {
 	display: block; 	
 }
 
-.tree .toolbar > li {
+.tree .toolbar > li,
+.tree .toolbar > li > form > input {
 	float: left;
 	overflow: visible;
 	height: 100%;
@@ -408,7 +489,8 @@
 
 /* Only icons */
 .tree .toolbar > li > a,
-.tree .toolbar > li > span {    
+.tree .toolbar > li > span,
+.tree .toolbar > li > form > input {    
 	background-position: center;
 	background-repeat: no-repeat;
 	color: transparent;
@@ -420,34 +502,61 @@
 	white-space: nowrap;
 	width: 22px;
 	
-	border-radius: 0;
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
+	border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	-webkit-border-radius: 0 !important;
+}
+
+.tree .toolbar > li > form > input,
+.tree .toolbar > li > form > input:hover,
+.tree .toolbar > li > form > input:hover:active,
+.tree .toolbar > li > form > input:active {
+	height: 24px !important;
+	width: 24px !important;
+	margin: 0 !important;
+	
+	background-position: center !important;
 }
 
 /* Icons + text */
-/*.tree .toolbar > li > a,
-.tree .structure-admin .toolbar > li > span {
+.tree .toolbar.show-titles > li > a,
+.tree .toolbar.show-titles > li > span,
+.tree .toolbar.show-titles > li > form > input {
 	display: block;
 	height: 16px;
 	line-height: 14px;     
 	overflow: hidden;
 	white-space: nowrap;
-	padding-left: 23px !important;
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding-left: 26px !important;
+	padding-top: 3px !important;
+	padding-bottom: 3px !important;
+	padding-right: 6px !important;
+	width: auto !important;
 	
 	background-repeat: no-repeat;
 	background-position: 0px center;
 	
 	font-size: 11px;
+	color: #000000;
 	
 	border-radius: 0;
 	-moz-border-radius: 0;
 	-webkit-border-radius: 0;
-}*/
+}
 
-.tree .toolbar > li > .disabled {
+.tree .toolbar.show-titles > li > form > input,
+.tree .toolbar.show-titles > li > form > input:hover,
+.tree .toolbar.show-titles > li > form > input:hover:active,
+.tree .toolbar.show-titles > li > form > input:active {
+	padding-left: 23px !important;
+	padding-right: 3px !important;
+	padding-top: 2px !important;
+	
+	background-position: 0px center !important;
+}
+
+.tree .toolbar > li > .disabled,
+.tree .toolbar > li > form > input[disalbed] {
 	cursor: default;
 	opacity: 0.5;
 }
