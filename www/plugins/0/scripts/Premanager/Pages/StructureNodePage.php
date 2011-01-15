@@ -75,6 +75,8 @@ class StructureNodePage extends PageNode {
 				return new AddStructureNodePage($this, $this->getStructureNode());
 			case '+delete':
 				return new DeleteStructureNodePage($this, $this->getStructureNode());
+			case '+move':
+				return new MoveStructureNodePage($this, $this->getStructureNode());
 			default:
 				$model = $this->_structureNode->getChild($name);
 				if ($model)
@@ -152,6 +154,13 @@ class StructureNodePage extends PageNode {
 			Translation::defaultGet('Premanager',
 				'editNodeDescription'),
 			'Premanager/images/tools/edit.png');
+			
+		if ($this->_structureNode->getParent())
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/+move',
+				Translation::defaultGet('Premanager', 'moveNode'), 
+				Translation::defaultGet('Premanager',
+					'moveNodeDescription'),
+				'Premanager/images/tools/move.png');
 		
 		$canAdd = $this->_structureNode->getType() != StructureNodeType::TREE;
 			$page->toolbar[] = new ToolBarItem($this->getURL().'/+add',

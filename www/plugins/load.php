@@ -49,6 +49,13 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 }
 set_error_handler("exception_error_handler", (E_ALL | E_STRICT) & ~E_NOTICE);
 
+function exception_handler($exception) {
+  echo "<b>Uncaught exception:</b> " . $exception->getMessage() . " (" .
+  	get_class($exception) . ")\n";
+}
+
+//???set_exception_handler('exception_handler');
+
 // Run Premanager
 Premanager\Premanager::run();
 

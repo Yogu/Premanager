@@ -47,6 +47,7 @@ final class StructureNode extends Model {
 	private $_editor;    
 	private $_editorID;
 	private $_editTime; 
+	private $_url;
 	private $_authorizedGroupsCount;
 	private $_childCount;
 	private $_children;
@@ -447,6 +448,24 @@ final class StructureNode extends Model {
 	}
 	
 	/**
+	 * Gets the url to this structure node, relative to the url trunk
+	 */
+	public function getURL() {
+		$this->checkDisposed();
+		
+		if (!$this->_url) {
+			if ($this->getParent()) {
+				$parentURL = $this->getParent()->getURL();
+				if ($parentURL)
+					$this->_url = $parentURL . '/';
+				$this->_url .= htmlspecialchars($this->getName());
+			} else
+				$this->_url = htmlspecialchars($this->getProject()->getName());
+		}
+		return $this->_url;
+	}
+	
+	/**
 	 * Determines if the specified user can access this node
 	 *
 	 * @param User user whose permission to be checked
@@ -625,6 +644,8 @@ final class StructureNode extends Model {
 			throw new ArgumentException(
 				'$title is an empty string or contains only whitespaces', 'title');
 			
+		$nameChanged = $name != $this->getName();
+			
 		if ($type !== null) {
 			switch ($type)  {
 				case StructureNodeType::SIMPLE:
@@ -664,6 +685,9 @@ final class StructureNode extends Model {
 				'title' => $title),
 			$this->getParent() ? $this->getParent()->getID() : 0
 		);
+		
+		if ($nameChanged)
+			$this->_url = null;
 		
 		$this->_name = $name;
 		$this->_title = $title;	
@@ -737,6 +761,8 @@ final class StructureNode extends Model {
 		
 		$this->_parentID = $parent->getID();
 		$this->_parent = $parent;
+		
+		self::clearURLCache();
 		
 		$this->_editTime = new DateTime();
 		$this->_editor = Environment::getCurrent()->getUser();
@@ -971,31 +997,33 @@ final class StructureNode extends Model {
 	 *   checked 
 	 * @return bool true, if all names are available
 	 */
-	public function areNamesAvailalbe($name, StructureNode $node) {   
+	public function areNamesAvailable(StructureNode $node) {   
 		$this->checkDisposed();
 
 		$result = DataBase::query(
 			"SELECT name.name ".
-			"FROM ".DataBase::formTableName('Premanger', 'NodesName')." AS name ".
-			"WHERE name.nodeID = '$this->_id' ".
+			"FROM ".DataBase::formTableName('Premanager', 'NodesName')." AS name ".
+			"WHERE name.id = '$node->_id' ".
 				"AND name.inUse = '1'");
 		while ($result->next()) {
 			if (!DataBaseHelper::isNameAvailable('Premanager', 'Nodes',
 				DataBaseHelper::IS_TREE,
-				$result->get($name), null, $this->_id))
+				$result->get('name'), null, $this->_id))
 					return false;
 		}
 		return true;
 	}
 	
 	/**
-	 * Checks if this is a child of the specified node
+	 * Checks if this is a child or a grandchild or a gread-grandchild and so on
+	 * of the specified node
 	 *
 	 * @param Premanager\Models\StructureNode $node node to be tested 
 	 * @return bool true, if this node is a child of $node
 	 */
 	public function isChildOf(StructureNode $node) {
-		return $this->getParent() == $node || $this->isChildOf($node->getParent());
+		return $this->getParent() && 
+			($this->getParent() == $node || $this->getParent()->isChildOf($node));
 	}
 
 	// ===========================================================================       
@@ -1025,7 +1053,16 @@ final class StructureNode extends Model {
 		$this->_editTime = new DateTime($result->get('editTime'));
 		
 		return true;
-	}      
+	}
+
+	/**
+	 * Deletes the value of $_url properties of all instances
+	 */
+	private static function clearURLCache() {
+		foreach (self::$_instances as $instance) {
+			$instance->_url = null;
+		}
+	}
 }
 
 ?>

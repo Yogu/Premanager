@@ -422,5 +422,5 @@ Premanager.SmartPageload = {
 	}
 }
 
-if (Modernizr.history)
-	Event.observe(window, 'load', function() { Premanager.SmartPageload.init(); });
+/*if (Modernizr.history)
+	Event.observe(window, 'load', function() { Premanager.SmartPageload.init(); });*/
