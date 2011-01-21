@@ -168,7 +168,7 @@
 		
 		<footer id="footer">
 			<p>{html $organization->getCopyright()}</p>
-			<p><a href="http://www.yogularm.de/">Premanager © Jan Melcher, 2009-2010.</a></p>
+			<p><a href="{html $version['URL']}">Premanager <span title="{html $version['Date']}">{html $version['Version']}</span> &copy; {html $version['Copyright']}.</a></p>
 			{*<nav id="footlinks">
 				<ul>
 					<li><a href="./info/impressum">Impressum</a></li>

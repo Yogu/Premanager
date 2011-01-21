@@ -21,6 +21,7 @@ use Premanager\Execution\Environment;
  */
 class Premanager extends Module {
 	private static $_isRunning = false;
+	private static $_versionInfo = null;
 	
 	/**
 	 * Starts Premanager and outputs the requested page
@@ -63,6 +64,13 @@ class Premanager extends Module {
 	 */
 	public static function isRunning() {
 		return self::$_isRunning;
+	}
+	
+	public static function getVersionInfo() {
+		if (self::$_versionInfo === null)
+			self::$_versionInfo =
+				parse_ini_file(Config::getPluginPathOf('Premanager') . '/version.ini');
+		return self::$_versionInfo;
 	}
 }
 

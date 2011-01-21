@@ -1,6 +1,7 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\Premanager;
 use Premanager\Debug\Debug;
 use Premanager\Models\StructureNode;
 use Premanager\URL;
@@ -174,6 +175,7 @@ class Page extends Response {
 		$template->set('staticURLPrefix', Config::getStaticURLPrefix());
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());
+		$template->set('version', Premanager::getVersionInfo());
 		
 		return $template->get();
 	}
