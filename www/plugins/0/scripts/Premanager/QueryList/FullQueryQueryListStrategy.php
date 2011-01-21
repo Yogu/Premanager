@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\QueryList;
 
+use Premanager\Debug\Debug;
 use Premanager\NotImplementedException;
 use Premanager\Types;
 use Premanager\Execution\Template;
@@ -324,11 +325,13 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			// use a translation
 			if ($t->isTableTranslated() && $rightPart) 
 				$this->_queryBase = DataBase::getQuery(
-					"FROM ".$table." AS item",
+					"FROM ".$table." AS item".
+					$this->getQueryList()->getJoinSQL(),
 					/* translating */
 					$rightPart).' '; 
 			else
-				$this->_queryBase = 'FROM ' . $table . ' AS item '. $rightPart . ' ';
+				$this->_queryBase = 'FROM ' . $table . ' AS item ' .
+					$this->getQueryList()->getJoinSQL() . $rightPart . ' ';
 		}
 		return $this->_queryBase;
 	}

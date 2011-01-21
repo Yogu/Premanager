@@ -54,7 +54,7 @@ final class User extends Model {
 	private $_secondaryPasswordStartTime = false;
 	private $_secondaryPasswordExpirationTime = false;
 	private $_secondaryPasswordStartIP;
-	private $_groupCount;
+	private $_groups;
 	private $_rights = array();
 	
 	private static $_instances = array();
@@ -688,75 +688,21 @@ final class User extends Model {
 		$this->checkDisposed();			
 		return array_search($right, $this->getRights($project, $loginConfirmed))
 			!== false;
-	}     
+	}       
 	
 	/**
-	 * Gets a list of groups of that this user is a member
-	 *
-	 * @param int $start index of first user
-	 * @param int $count count of users to return
-	 * @return array
+	 * Gets the list of groups this user is a member of
+	 * 
+	 * @return Premanager\QueryList\QueryList
 	 */
-	public function getGroups($start = null, $count = null) {      
+	public function getGroups() {
 		$this->checkDisposed();
 		
-		//TODO: implement this with QueryList (problem: queries do not support 
-		// a CONTIANS operator yet)
-		
-		if (($start !== null && $count === null) ||
-			($count !== null && $start === null))
-			throw new ArgumentException('Either both $start and $count must '.
-				'be specified or none of them');
-				
-		if ($start !== null || $count !== null) {
-			if (!Types::isInteger($start) || $start < 0)
-				throw new ArgumentException(
-					'$start must be a positive integer value or null');
-			if (!Types::isInteger($count) || $count < 0)
-				throw new ArgumentException(
-					'$count must be a positive integer value or null');		
-		}  
-	
-		$list = array();
-		$result = DataBase::query(
-			"SELECT grp.id ".
-			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
-				" AS userGroup ".
-				"ON userGroup.groupID = grp.id ".
-				"AND userGroup.userID = '$this->_id' ",
-			/* translating */
-			"ORDER BY grp.parentID = 0 DESC, ".
-				"grp.parentID ASC, ".
-				"LOWER(translation.name) ASC ".
-			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = array();
-		while ($result->next()) {
-			$group = Group::getByID($result->get('id'));
-			$list[] = $group;
-		}
-		return $list;
-	}      
-	
-	/**
-	 * Gets the count of groups of that this user is a member
-	 *
-	 * This value is cached.
-	 *
-	 * @return int
-	 */
-	public function getGroupCount() {          
-		$this->checkDisposed();
-			
-		if ($this->_groupCount === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(userGroup.userID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'UsersGroup')." AS userGroup ".
-				"WHERE userGroup.userID = '$this->_id'");
-			$this->_groupCount = $result->get('count');
-		}
-		return $this->_groupCount;
-	}         
+		if ($this->_groups === null)
+			$this->_groups = Group::getGroups()->joinFilter('Premanager', 'UserJoin',
+				"item.id = [join].groupID AND [join].userID = $this->_id");
+		return $this->_groups;
+	}       
 	
 	/**
 	 * Checks whether this user is member of a specified group

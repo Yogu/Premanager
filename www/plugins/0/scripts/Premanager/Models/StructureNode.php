@@ -48,8 +48,7 @@ final class StructureNode extends Model {
 	private $_editorID;
 	private $_editTime; 
 	private $_url;
-	private $_authorizedGroupsCount;
-	private $_childCount;
+	private $_authorizedGroups;
 	private $_children;
 	
 	private static $_instances = array();
@@ -411,24 +410,6 @@ final class StructureNode extends Model {
 		}
 		return null;
 	}      
-	    
-	/**
-	 * Gets the count of subnodes
-	 *
-	 * @return int
-	 */
-	public function getChildCount() {        
-		$this->checkDisposed();
-			
-		if ($this->_childCount === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(node.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
-				"WHERE node.parentID = ".$this->_id);
-			$this->_childCount = $result->get('count');
-		}
-		return $this->_childCount;
-	}  
 	
 	/**
 	 * Gets a list of child nodes
@@ -496,70 +477,21 @@ final class StructureNode extends Model {
 	}
 	    
 	/**
-	 * Gets the count of groups that have a special access right
+	 * Gets a list of groups that can access this node
 	 *
-	 * @return int
+	 * @return Premanager\QueryList\QueryList
 	 */
-	public function getAuthorizedGroupsCount() {     
+	public function getAuthorizedGroups() {     
 		$this->checkDisposed();
 			
-		if ($this->_authorizedGroupsCount === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(node.nodeID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
-				"WHERE node.parentID = ".$this->_id);
-			$this->_authorizedGroupsCount = $result->get('count');
-		}
-		return $this->_authorizedGroupsCount;
+		if ($this->_authorizedGroups === null)
+			$this->_authorizedGroups =
+				Group::getGroups()->joinFilter('Premanager', 'NodeGroup',
+				"item.id = [join].groupID AND [join].nodeID = ".$this->_id);
+		return $this->_authorizedGroups;
 	}  
 	
 	/**
-	 * Gets a list of groups that have a special access right
-	 *
-	 * @param int $start index of first group
-	 * @param int $count count of groups to return
-	 * @return array
-	 */
-	public function getAuthorizedGroups($start = null, $count = null) {
-		$this->checkDisposed();
-			
-		$start = $start ? $start : 0;
-		$count = $count ? $count : 0;
-		
-		if (($start !== null && $count == null) ||
-			($count !== null && $start === null))
-			throw new ArgumentException('Either both $start and $count must '.
-				'be specified or none of them');
-				
-		if ($start === null || $count === null) {
-			if (!Types::isInteger($start) || $start < 0)
-				throw new ArgumentException(
-					'$start must be a positive integer value or null', 'start');
-			if (!Types::isInteger($count) || $count < 0)
-				throw new ArgumentException(
-					'$count must be a positive integer value or null', 'count');		
-		}  
-	
-		$list = array();
-		$result = DataBase::query(
-			"SELECT grp.id, translation.name, translation.title, grp.color ".
-			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
-				"AS nodeGroup ".
-				"ON nodeGroup.groupID = group.id ",
-			/* translating */ 
-			"WHERE nodeGroup.nodeID = '$this->_id' ".
-			"ORDER BY LOWER(translation.name) ASC ".
-			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = '';
-		while ($result->next()) {
-			$group = Group::getByID($result->get('groupID'),
-				$result->get('name'), $result->get('title'),
-				$result->get('color'));
-			$list[] = $group;
-		}
-		return $list;
-	}
 	
 	/**
 	 * Adds the specified group to the list of groups with access right

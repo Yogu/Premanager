@@ -245,7 +245,8 @@ class PHPQueryListStrategy extends QueryListStrategy {
 			$this->_queryBase =
 				"SELECT item.id ".
 				"FROM ".DataBase::formTableName(
-					$modelType->getPluginName(), $modelType->getTable())." AS item ";
+					$modelType->getPluginName(), $modelType->getTable())." AS item ".
+				$this->_queryList->getJoinSQL();
 		}
 		return $this->_queryBase;
 	}

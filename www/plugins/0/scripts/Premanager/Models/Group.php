@@ -36,6 +36,7 @@ final class Group extends Model {
 	private $_loginConfirmationRequired;
 	private $_rights;
 	private $_simpleRightList;
+	private $_members;
 	private $_creator;   
 	private $_creatorID;
 	private $_createTime;
@@ -582,65 +583,18 @@ final class Group extends Model {
 	}      
 	
 	/**
-	 * Gets a list of members in a specified range
-	 *
-	 * @param int $start index of first user
-	 * @param int $count count of users to return
-	 * @return array
+	 * Gets the list of group members
+	 * 
+	 * @return Premanager\QueryList\QueryList
 	 */
-	public function getMembers($start = null, $count = null) {  
+	public function getMembers() {
 		$this->checkDisposed();
 		
-		//TODO: implement this with QueryList (problem: queries do not support 
-		// a CONTIANS operator yet)
-		
-		if (($start !== null && $count === null) ||
-			($count !== null && $start === null))
-			throw new ArgumentException('Either both $start and $count must '.
-				'be specified or none of them');
-				
-		if ($start !== null || $count !== null) {
-			if (!Types::isInteger($start) || $start < 0)
-				throw new ArgumentException(
-					'$start must be a positive integer value or null');
-			if (!Types::isInteger($count) || $count < 0)
-				throw new ArgumentException(
-					'$count must be a positive integer value or null');		
-		}  
-	
-		$list = array();
-		$result = DataBase::query(
-			"SELECT user.id ".
-			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." ".
-				"AS userGroup ".
-				"ON userGroup.groupID = '$this->_id' ".
-				"AND userGroup.userID = user.id ".
-			"ORDER BY LOWER(user.name) ASC ".
-			($start !== null ? "LIMIT $start, $count" : ''));
-		$list = array();
-		while ($result->next()) {
-			$user = User::getByID($result->get('id'));
-			$list[] = $user;
-		}
-		return $list;
+		if ($this->_members === null)
+			$this->_members = User::getUsers()->joinFilter('Premanager', 'UserGroup',
+				"item.id = [join].userID AND [join].groupID = $this->_id");
+		return $this->_members;
 	}      
-	
-	/**
-	 * Gets the count of members
-	 *
-	 * This value is not cached, because group membership can change without
-	 * this object would notice
-	 *
-	 * @return int
-	 */
-	public function getMemberCount() {
-		$result = DataBase::query(
-			"SELECT COUNT(userGroup.userID) AS count ".
-			"FROM ".DataBase::formTableName('Premanager', 'UserGroup')." AS userGroup ".
-			"WHERE userGroup.groupID = '$this->_id'");
-		return $result->get('count');
-	}   
 	      
 	/**
 	 * Changes various properties

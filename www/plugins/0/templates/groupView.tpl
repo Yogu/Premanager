@@ -16,7 +16,7 @@
 
 	<dl>
 		<dt>{string Premanager label array(label=string(Premanager groupMemberCountLabel))}</dt>
-		<dd>{$group->getMemberCount()}</dd>
+		<dd>{$group->getMembers()->getCount()}</dd>
 	</dl>
 
 	<dl>

@@ -159,7 +159,7 @@ class GroupPage extends ListPageNode {
 	 * @return int
 	 */
 	protected function countItems() {
-		return $this->_group->getMemberCount();
+		return $this->_group->getMembers()->getCount();
 	}
 }
 

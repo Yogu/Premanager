@@ -35,6 +35,15 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @var Premanager\QueryList\QueryListStrategy
 	 */
 	private $_strategy;
+	/**
+	 * Count of tables joined with this list
+	 * @var int
+	 */
+	private $_joinCount = 0;
+	/**
+	 * @var string
+	 */
+	private $_joinSQL = '';
 
 	// ===========================================================================
 	
@@ -50,7 +59,8 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 *   type specified by $modelType - or - $filter contains invalid elements
 	 */
 	public function __construct(ModelDescriptor $modelType,
-		QueryExpression $filter = null, array $sortRules = array()) {
+		QueryExpression $filter = null, array $sortRules = array(), $joinSQL = '',
+			$joinCount = 0) {
 		parent::__construct();
 		
 		$this->_modelType = $modelType;
@@ -66,6 +76,8 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			$this->checkSortRules($sortRules);
 			$this->_sortRules = $sortRules;
 		}
+		$this->_joinSQL = $joinSQL;
+		$this->_joinCount = $joinCount;
 	}
 
 	// ===========================================================================
@@ -97,6 +109,15 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function getSortRules() {			
 		return $this->_sortRules;
+	}
+	
+	/**
+	 * Gets the sql string for the JOIN statements applied to this list
+	 * 
+	 * @return string an sql string
+	 */
+	public function getJoinSQL() {
+		return $this->_joinSQL;
 	}
 	
 	/**
@@ -218,10 +239,42 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			return $this;
 		
 		if ($this->_filter)
-			return new QueryList(new QueryExpression($this->_modelType,
-				QueryOperation::LOGICAL_AND, $this->_filter, $condition));
+			return new QueryList($this->_modelType,
+				new QueryExpression($this->_modelType, QueryOperation::LOGICAL_AND,
+					$this->_filter, $condition),
+				$this->_sortRules, $this->_joinSQL, $this->_joinCount);
 		else
-			return new QueryList($this->_modelType, $condition);
+			return new QueryList($this->_modelType, $condition, $this->_sortRules,
+				$this->_joinSQL, $this->_joinCount);
+	}
+	
+	/**
+	 * Selects only the items that stay after a INNER JOIN statement on a
+	 * specified table with an optional condition.
+	 * 
+	 * The $condition parameter can use fields of the join table using the [join]
+	 * table alias, and fields of the item table using the item table alias.
+	 * 
+	 * Example: Given is the list of users. Call
+	 *   joinFilter(
+	 *     'Premanager', 'Premanager',
+	 *     "item.id = [join].userID AND item.groupID = 5")
+	 * to select those users who are in group with id 5.
+	 * 
+	 * Make sure that there is no [join] in strings of the sql!
+	 * 
+	 * @param string $tablePlugin the name of the plugin that owns the table
+	 * @param string $tableName the name of the join table
+	 * @param string $condition an optional SQL expression
+	 */
+	public function joinFilter($tablePlugin, $tableName, $condition = '') {
+		$alias = 'join'.$this->_joinCount;
+		$condition = str_replace('[join]', $alias, $condition);
+		$sql = "INNER JOIN ".DataBase::formTableName($tablePlugin, $tableName).
+			" AS $alias ".
+			($condition ? "ON $condition " : '');
+		return new QueryList($this->_modelType, $this->_filter, $this->_sortRules,
+			$this->_joinSQL . $sql, $this->_joinCount + 1);
 	}
 	
 	/**
@@ -245,7 +298,8 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 			return $this;
 			
 		$this->checkSortRules($rules);
-		return new QueryList($this->_modelType, $this->_filter, $rules);
+		return new QueryList($this->_modelType, $this->_filter, $rules,
+			$this->_joinSQL, $this->_joinCount);
 	}
 	
 	/**

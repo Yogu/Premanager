@@ -1,8 +1,10 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\QueryList\SortDirection;
+use Premanager\QueryList\SortRule;
+use Premanager\QueryList\QueryExpression;
 use Premanager\Execution\Environment;
-
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Debug\Debug;
@@ -30,6 +32,10 @@ class UserPage extends PageNode {
 	 * @var Premanager\Models\User
 	 */
 	private $_user;
+	/**
+	 * @var Premanager\QueryList\QueryList
+	 */
+	private $_list;
 
 	// ===========================================================================
 	
@@ -109,7 +115,7 @@ class UserPage extends PageNode {
 		$page->createMainBlock($template->get());
 		
 		// Groups
-		$groups = $this->_user->getGroups();
+		$groups = $this->getList();
 		if (count($groups)) {
 			$template = new Template('Premanager', 'userGroupsList');
 			$template->set('groups', $groups);
@@ -173,6 +179,15 @@ class UserPage extends PageNode {
 		return $other instanceof UserPage &&
 			$other->_user == $this->_user; 
 	}	    
+	
+	private function getList() {
+		if (!$this->_list) {
+			$this->_list = $this->_user->getGroups();
+			$this->_list = $this->_list->sort(array(
+				new SortRule($this->_list->exprMember('project'))));
+		}
+		return $this->_list;
+	}
 }
 
 ?>
