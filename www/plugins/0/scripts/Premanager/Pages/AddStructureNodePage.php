@@ -74,7 +74,7 @@ class AddStructureNodePage extends StructureNodeFormPage {
 			return $errorResponse;
 		
 		$structureNode = $this->getStructureNode()->createChild($values['name'],
-			$values['title'], true, StructureNodeType::SIMPLE);
+			$values['title'], StructureNodeType::SIMPLE);
 		return new Redirection(
 			$this->getParent()->getURL() . '/' . $structureNode->getName());
 	}

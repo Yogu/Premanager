@@ -92,11 +92,11 @@ final class StructureNode extends Model {
 			if ($instance->_title === null)
 				$instance->_title = $title;
 			if ($instance->_noAccessRestriction === null)
-				$instance->_noAccessRestriction = (bool) $noAccessRestriction;
+				$instance->_noAccessRestriction = $noAccessRestriction;
 			if ($instance->_treeClass === false)
 				$instance->_treeClass = $tree;
 			if ($instance->_hasPanel === null)
-				$instance->_hasPanel = (bool) $hasPanel;
+				$instance->_hasPanel = $hasPanel;
 
 			return $instance;	
 		}
@@ -110,9 +110,9 @@ final class StructureNode extends Model {
 		$instance->_parent = $parent;
 		$instance->_name = $name;
 		$instance->_title = $title;
-		$instance->_noAccessRestriction = (bool) $noAccessRestriction;
+		$instance->_noAccessRestriction = $noAccessRestriction;
 		$instance->_treeClass = $treeClass;
-		$instance->_hasPanel = (bool) $hasPanel;
+		$instance->_hasPanel = $hasPanel;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -455,22 +455,21 @@ final class StructureNode extends Model {
 	public function canAccess(User $user) {
 		$this->checkDisposed();
 			
-		if (!$user)
-			throw new ArgumentNullException('user');
-			
-		if ($this->_noAccessRestriction)
+		if ($this->getNoAccessRestriction())
 			return true;
 		else {
 			// If you need a special access permission, check whether there is a group
 			// of which the user is a member and which has access permission
 			$result = DataBase::query(
-				"SELECT group.groupID ".
-				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS group ".
-				"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup')." AS userGroup ".
-					"ON userGroup.userID = '$user->getid()' ".
-					"AND userGroup.groupID = group.groupID ".
-				"INNER JOIN ".DataBase::formTableName('Premanager', 'NodeGroup')." AS nodeGroup ".
-					"ON nodeGroup.groupID = group.groupID ".
+				"SELECT grp.id ".
+				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
+				"INNER JOIN ".DataBase::formTableName('Premanager', 'UserGroup').
+					" AS userGroup ".
+					"ON userGroup.userID = '".$user->getID()."' ".
+					"AND userGroup.groupID = grp.id ".
+				"INNER JOIN ".DataBase::formTableName('Premanager', 'NodeGroup').
+					" AS nodeGroup ".
+					"ON nodeGroup.groupID = grp.id ".
 					"AND nodeGroup.nodeID = '$this->_id'");
 			return $result->next();
 		}
@@ -492,52 +491,31 @@ final class StructureNode extends Model {
 	}  
 	
 	/**
-	
-	/**
-	 * Adds the specified group to the list of groups with access right
+	 * Changes the list of groups which can access this node. All old permissions
+	 * are removed and the new ones are added.
 	 * 
-	 * If the specified group has already the access right, nothing is done.
-	 * 
-	 * @param Premanager\Models\Group $group the group to add 
+	 * @param array $groups the new array of authorized groups 
 	 */
-	public function addAuthorizedGroup(Group $group) {
+	public function setAuthorizedGroups(array $groups) {
 		$this->checkDisposed();
-			
-		if (!$group)
-			throw new ArgumentNullException('group');
-
-		// If this group does already have the access right, just add 0 to 0
-		// (do "nothing")
-		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
-			"(nodeID, groupID) ".
-			"VALUES ('$this->_id', '$group->getid()') ".
-			"ON DUPLICATE KEY UPDATE 0+0");
-			
-		if (DataBase::getAffectedRows() && $this->_authorizedGroupsCount !== null)
-			$this->_authorizedGroupsCount++;
-	}
-	
-	/**
-	 * Removes the specified group off the list of groups with access right
-	 * 
-	 * If the specified group is not in list, nothing is done.
-	 * 
-	 * @param Premanage\Models\Group $group the group to remove
-	 */
-	public function removeAuthorizedGroup(Group $group) {
-		$this->checkDisposed();
-			
-		if (!$group)
-			throw new ArgumentNullException('group');
-
+		
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
-			"WHERE nodeID = '$this->_id' ".
-				"AND groupID = '$group->getid()'");   
-			
-		if (DataBase::getAffectedRows() && $this->_authorizedGroupsCount !== null)
-			$this->_authorizedGroupsCount--;
+			"WHERE nodeID = '$this->_id'");
+		$sql = "";
+		foreach ($groups as $group) {
+			if ($group instanceof Group) {
+				if ($sql)
+					$sql .= ", ";
+				$sql .= "($this->_id, ".$group->getID().")";
+			}
+		}
+		if ($sql) {
+			DataBase::query(
+				"INSERT INTO ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
+				" (nodeID, groupID) ".
+				"VALUES $sql ");
+		}
 	}
 	      
 	/**
@@ -713,7 +691,7 @@ final class StructureNode extends Model {
 			
 		$noAccessRestriction = !!$noAccessRestriction;
 			
-		DataBaseHelper::update('Premanager', 'StructureNodes', 'nodeID',
+		DataBaseHelper::update('Premanager', 'Nodes',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
 			DataBaseHelper::IS_TREE,
 			$this->_id, null,
@@ -788,16 +766,14 @@ final class StructureNode extends Model {
 	 *
 	 * @param string $name group name
 	 * @param string $title user title
-	 * @param bool $noAccessRestriction specifies if all users can access the page
 	 * @param int $type content type (StructureNodeType::SIMPLE or ~::PANEL) 
 	 * @param StructureTree $tree if $type is TYPE_TREE, the structure tree
 	 * @return StructureNode
 	 * @throws Premanager\NameConflictException $name is not available
 	 */
-	public function createChild($name, $title, $noAccessRestriction, $type) {
+	public function createChild($name, $title, $type) {
 		$name = Strings::normalize($name);
 		$title = trim($title);
-		$noAccessRestriction = !!$noAccessRestriction;
 		
 		if (!$name)
 			throw new ArgumentException(
@@ -830,7 +806,7 @@ final class StructureNode extends Model {
 		$id = DataBaseHelper::insert('Premanager', 'Nodes',
 			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
 			array(
-				'noAccessRestriction' => $noAccessRestriction,
+				'noAccessRestriction' => true,
 				'parentID' => $this->_id,
 				'projectiD' => $this->getProject()->getID(),
 				'hasPanel' => $type == StructureNodeType::PANEL,
@@ -839,7 +815,7 @@ final class StructureNode extends Model {
 				'title' => $title)
 		);
 		
-		$instance = self::createFromID($id, $name, $title, $parent);
+		$instance = self::createFromID($id, $parent, $name, $title, true);
 		$instance->_creator = Environment::getCurrent()->getuser();
 		$instance->_createTime = new DateTime();
 		$instance->_editor = Environment::getCurrent()->getuser();
@@ -976,7 +952,7 @@ final class StructureNode extends Model {
 		$this->_title = $result->get('title');
 		$this->_parentID = (int) $result->get('parentID');
 		$this->_projectID = (int) $result->get('projectID');
-		$this->_noAccessRestriction = (bool) $result->get('noAccessRestriction');
+		$this->_noAccessRestriction = !!$result->get('noAccessRestriction');
 		$this->_hasPanel = (bool) $result->get('hasPanel');
 		$this->_treeID = (int) $result->get('treeID');
 		$this->_creatorID = (int) $result->get('creatorID');

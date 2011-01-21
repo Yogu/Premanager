@@ -73,7 +73,7 @@ class UserJoinGroupPage extends FormPageNode {
 	}
 	
 	/**
-	 * Gets the list of projects sorted by title
+	 * Gets the list of groups sorted by project and group name
 	 * 
 	 * @return Premanager\QueryList\QueryList the list of users
 	 */
