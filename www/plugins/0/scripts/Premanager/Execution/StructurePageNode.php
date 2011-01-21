@@ -1,8 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Models\Right;
 use Premanager\QueryList\SortRule;
-
 use Premanager\Debug\Debug;
 use Premanager\IO\Output;
 use Premanager\Execution\Template;
@@ -89,29 +89,29 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		$project = Project::getByName($name);
-		if ($project)
-			return $this->getChildByStructureNode($project->getRootNode());
+		if ($this->_isRootNode) {
+			$project = Project::getByName($name);
+			if ($project)
+				return $this->getChildByStructureNode($project->getRootNode());
+		}
 		
 		$structureNode = $this->_structureNode->getChild($name);
-		if ($structureNode)
-			return $this->getChildByStructureNode($structureNode);
-	}
+		if ($structureNode &&
+			($structureNode->canAccess(Environment::getCurrent()->getUser()) ||
+			Rights::hasRight(Right::getByName('Premanager', 'structureAdmin'))))
+				return $this->getChildByStructureNode($structureNode);
+	}	
 	
 	/**
 	 * Gets an array of all child page nodes
 	 * 
-	 * @param int $count the number of items the array should contain at most or
-	 *   -1 if all available items should be contained
-	 * @param Premanager\Execution\PageNode $referenceNode the page node that
-	 *   should be always in the array
+	 * @param int $count is ignored in this implementation
+	 * @param Premanager\Execution\PageNode $referenceNode is ignored in this
+	 *   implementation
 	 * @return array an array of the child Premanager\Execution\PageNode's
 	 */
 	public function getChildren($count = -1, PageNode $referenceNode = null) {
-		$referenceModel = $referenceNode instanceof StructurePageNode ?
-			$referenceNode->getStructureNode() : null;
-		$structureNodes = $this->getChildrenHelper($this->getList(),
-			$referenceModel, $count);
+		$structureNodes = $this->getChildrenHelper($this->getList(), null, -1);
 			
 		$list = array();
 		
@@ -124,8 +124,11 @@ class StructurePageNode extends PageNode {
 		}
 		
 		// Child nodes
+		$right = Rights::hasRight(Right::getByName('Premanager', 'structureAdmin'));
 		foreach ($structureNodes as $structureNode) {
-			$list[] = $this->getChildByStructureNode($structureNode);
+			if ($right ||
+				$structureNode->canAccess(Environment::getCurrent()->getUser()))
+					$list[] = $this->getChildByStructureNode($structureNode);
 		}
 		
 		return $list;
@@ -190,8 +193,12 @@ class StructurePageNode extends PageNode {
 				
 			default:
 				$subNodes = array();
+				$right =
+					Rights::hasRight(Right::getByName('Premanager', 'structureAdmin'));
 				foreach ($this->getList() as $structureNode) {
-					$subNodes[] = $this->getChildByStructureNode($structureNode);
+					if ($right ||
+						$structureNode->canAccess(Environment::getCurrent()->getUser()))
+							$subNodes[] = $this->getChildByStructureNode($structureNode);
 				}
 				
 				// create list of sub-page-nodes

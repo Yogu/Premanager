@@ -77,6 +77,9 @@ class StructureNodePage extends PageNode {
 				return new DeleteStructureNodePage($this, $this->getStructureNode());
 			case '+move':
 				return new MoveStructureNodePage($this, $this->getStructureNode());
+			case '+permissions':
+				return new StructureNodePermissionsPage($this,
+					$this->getStructureNode());
 			default:
 				$model = $this->_structureNode->getChild($name);
 				if ($model)
@@ -178,6 +181,11 @@ class StructureNodePage extends PageNode {
 					$canDelete ? 'deleteNodeDescription' : 'deleteTreeNodeError'),
 				'Premanager/images/tools/delete.png',
 				$canDelete);
+				
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/+permissions',
+				Translation::defaultGet('Premanager', 'nodePermissions'), 
+				Translation::defaultGet('Premanager', 'nodePermissionsDescription'),
+				'Premanager/images/tools/rights.png');
 		}
 			
 		$page->toolbar[] = new ToolBarItem($this->getRealURL(),

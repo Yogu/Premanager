@@ -45,7 +45,7 @@
 				{toolbarItem
 					title=string(Premanager nodePermissions)
 					description=string(Premanager nodePermissionsDescription)
-					url=concat($url, '/+rights')
+					url=concat($url, '/+permissions')
 					iconURL='Premanager/images/tools/rights.png'
 				}
 				
