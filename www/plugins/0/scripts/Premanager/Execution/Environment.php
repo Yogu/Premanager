@@ -109,7 +109,7 @@ class Environment extends Module {
 		$instance = new self();
 		switch ($edition) {
 			case Edition::COMMON:
-			case Editoin::MOBILE:
+			case Edition::MOBILE:
 			case Edition::PRINTABLE:
 				break;
 			default:
@@ -234,7 +234,7 @@ class Environment extends Module {
 	 */
 	public function getPageNode() {
 		if (!$this->_pageNode && $this->_isReal) {
-			if (Request::isAnalyzing())
+			if (Request::getPageNode() === null)
 				return StructurePageNode::getRootNode();
 			else
 				$this->_pageNode = Request::getPageNode();
@@ -254,7 +254,7 @@ class Environment extends Module {
 	 */
 	public function getProject() {
 		if (!$this->_project && $this->_isReal) {
-			if (Request::isAnalyzing())
+			if (Request::getProject() === null)
 				return Project::getOrganization();
 			else
 				$this->_project = Request::getProject();
@@ -274,7 +274,7 @@ class Environment extends Module {
 	 */
 	public function getLanguage() {
 		if (!$this->_language && $this->_isReal) {
-			if (Request::isAnalyzing())
+			if (Request::getLanguage() === null)
 				return Language::getDefault();
 			else
 				$this->_language = Request::getLanguage();
@@ -293,7 +293,7 @@ class Environment extends Module {
 	 * @return Premanager\Execution\Style
 	 */
 	public function getStyle() {
-		if (!$this->_user && $this->_isReal) {
+		if (!$this->_style && $this->_isReal) {
 			if ($this->_styleLoading)
 				return StyleClass::getDefault()->getInstance();
 			else {
@@ -322,8 +322,8 @@ class Environment extends Module {
 	 * @return int
 	 */
 	public function getEdition() {
-		if (!$this->_user && $this->_isReal) {
-			if (Request::isAnalyzing())
+		if ($this->_edition === null && $this->_isReal) {
+			if (Request::getEdition() === null)
 				return Edition::COMMON;
 			else
 				$this->_edition = Request::getEdition();

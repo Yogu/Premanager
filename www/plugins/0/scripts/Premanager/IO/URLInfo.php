@@ -149,7 +149,7 @@ class URLInfo {
 				// template.
 				// Returns the index of the element after the last used one
 				$walker = function($elements, $templates, $trunkElements,
-					$breakOnFailure, $language, $edition)
+					$breakOnFailure, $state)
 				{
 					if (count($trunkElements)) {
 						if (count($elements) > count($trunkElements))
@@ -168,11 +168,11 @@ class URLInfo {
 								case '{edition}':
 									switch ($element) {
 										case 'mobile':
-											$edition = Edition::MOBILE;
+											$state->edition = Edition::MOBILE;
 											$ok = true;
 											break;
 										case 'print':
-											$edition = Edition::PRINTABLE;
+											$state->edition = Edition::PRINTABLE;
 											$ok = true;
 											break;
 									}
@@ -181,7 +181,7 @@ class URLInfo {
 								case '{language}':
 									$lang = Language::getByName($element);
 									if ($lang) {
-										$language = $lan;
+										$state->language = $lang;
 										$ok = true;
 									}
 									break;
@@ -190,7 +190,8 @@ class URLInfo {
 							// If the element matches the template, 
 							if ($ok) {
 								unset($templates[$templateKey]);
-								unset($elements[$i]);
+								// unset does not reorder the indices, so use array_splice
+								array_splice($elements, 0, 1);
 								$i--;
 								break;
 							}
@@ -207,36 +208,37 @@ class URLInfo {
 				// requestURL - emptyURLPrefix = significant data
 				// urlTemplate - emptyURLPrefix = template for the data
 				
-				$edition = Edition::COMMON;
+				$state = (object)
+					(array('edition' => Edition::COMMON, 'language' => null));
 				
 				// Domain part
 				$trunkElements = self::explodeRemoveEmpty($trunkURL->getHost(), '.');
 				$elements = self::explodeRemoveEmpty($requestURL->getHost(), '.');
 				$templates = self::explodeRemoveEmpty($templateHost, '.');
 				call_user_func($walker, $elements, $templates, $trunkElements, false,
-					$language, $edition);
+					$state);
 				
 				// Path part
 				$trunkElements = self::explodeRemoveEmpty($trunkURL->getPath(), '/');
 				$elements = self::explodeRemoveEmpty($requestURL->getPath(), '/');
 				$templates = self::explodeRemoveEmpty($templatePath, '/');
 				$elements = call_user_func($walker, $elements, $templates,
-					$trunkElements, true, $language, $edition);
+					$trunkElements, true, $state);
 	
-				if (!$language) {
+				if (!$state->language) {
 					foreach (self::parseHTTPLanguageHeader() as $code) {
 						if ($lang = Language::getByName($code)) {
-							$language = $lang;
+							$state->language = $lang;
 							break;
 						}
 					}
 					
-					if (!$language)
-						$language = Language::getDefault();
+					if (!$state->language)
+						$state->language = Language::getDefault();
 				}
 					
-				$this->_language = $language;
-				$this->_edition = $edition;
+				$this->_language = $state->language;
+				$this->_edition = $state->edition;
 				
 				$this->_relativeRequestURL = implode('/', $elements);
 				

@@ -24,8 +24,6 @@ class Request {
 	private static $_requestURLInfo;
 	private static $_isRefererInternal;
 	private static $_refererInfo = false;
-	private static $_isValidated;
-	private static $_isValidating;
 	private static $_postValidated;
 	private static $_postValues;
 	
@@ -49,9 +47,8 @@ class Request {
 	 * @return Premanager\IO\URLInfo the url info object
 	 */
 	public static function getRequestURLInfo() {
-		if (self::$_requestURLInfo === null) {
-			self::validateURL();
-		}
+		if (self::$_requestURLInfo === null)
+			self::$_requestURLInfo = new URLInfo(self::getRequestURL());
 		return self::$_requestURLInfo;
 	}
 	
@@ -97,7 +94,7 @@ class Request {
 	 * work properly
 	 */
 	public static function isAnalyzing() {
-		return self::$_isValidating;
+		return self::getRequestURLInfo()->isAnalyzing();
 	}
 	
 	/**
@@ -258,26 +255,12 @@ class Request {
 	 * Redirecting means instantly finishing the output and terminating the
 	 * script. Make sure that this method has been called before critical code.
 	 */
-	public static function validateURL() {
-		if (!self::$_isValidated) {
-			// Don't call this method twice!
-			self::$_isValidated = true;
-			self::$_isValidating = true;
-			
-			try {
-				self::$_requestURLInfo = new URLInfo(self::getRequestURL());
-				
-				// Compare the url of the page node to the request url
-				$calculatedURL = Environment::getCurrent()->getURLPrefix() .
-					self::$_requestURLInfo->getPageNode()->getFullURL();
-				if ($calculatedURL != self::getRequestURL())
-					Output::redirect($calculatedURL, 301 /* moved permanently */);
-			} catch (\Exception $e) {
-				self::$_isValidating = false;
-				throw $e;
-			}
-			self::$_isValidating = false;
-		}
+	public static function validateURL() {				
+		// Compare the url of the page node to the request url
+		$calculatedURL = Environment::getCurrent()->getURLPrefix() .
+			self::$_requestURLInfo->getPageNode()->getFullURL();
+		if ($calculatedURL != self::getRequestURL())
+			Output::redirect($calculatedURL, 301 /* moved permanently */);
 	}
 	
 	/**

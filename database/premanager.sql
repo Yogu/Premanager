@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 15. Januar 2011 um 00:02
+-- Erstellungszeit: 21. Januar 2011 um 22:20
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.4
 
@@ -113,14 +113,14 @@ INSERT INTO `premanager_0_groups` (`id`, `parentID`, `color`, `priority`, `autoJ
 (1, 0, '5C5C5C', 1, 0, 0, '2010-02-14 00:41:15', '2010-12-28 22:20:01', 4, 2, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 23:19:37'),
 (2, 0, '000000', 1, 1, 0, '2010-02-14 00:42:55', '2010-12-28 21:31:37', 23, 2, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 22:31:13'),
 (3, 0, '006600', 10, 0, 1, '2010-03-05 23:55:33', '2011-01-02 14:55:44', 3, 2, '127.0.0.1', 0, '127.0.0.1', '2011-01-02 15:55:20'),
-(26, 0, '64002E', 5, 0, 0, '2010-12-29 23:47:46', '2010-12-29 23:48:26', 1, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:48:02'),
-(23, 117, '64002E', 0, 0, 0, '2010-12-29 23:41:30', '2010-12-29 23:41:30', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:41:06'),
+(26, 0, '64002E', 5, 0, 0, '2010-12-29 23:47:46', '2011-01-21 22:17:59', 3, 0, '127.0.0.1', 2, '127.0.0.1', '2011-01-21 23:17:35'),
+(23, 117, '64002E', 0, 0, 0, '2010-12-29 23:41:30', '2011-01-21 22:19:24', 1, 0, '127.0.0.1', 2, '127.0.0.1', '2011-01-21 23:19:00'),
 (24, 117, '006600', 0, 0, 0, '2010-12-29 23:42:10', '2010-12-29 23:42:10', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:41:46'),
-(25, 118, '64002E', 0, 0, 0, '2010-12-29 23:43:12', '2010-12-29 23:43:12', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:42:48'),
+(25, 118, '64002E', 0, 0, 0, '2010-12-29 23:43:12', '2011-01-21 22:19:10', 1, 0, '127.0.0.1', 2, '127.0.0.1', '2011-01-21 23:18:46'),
 (22, 118, '006000', 0, 0, 0, '2010-12-28 14:51:13', '2010-12-29 23:42:35', 1, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-30 00:42:11'),
 (21, 17, '006600', 0, 0, 0, '2010-12-28 14:50:27', '2010-12-28 14:50:27', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 15:50:03'),
-(20, 17, '64002E', 0, 0, 0, '2010-12-28 14:47:22', '2010-12-28 14:47:22', 0, 0, '127.0.0.1', 0, '127.0.0.1', '2010-12-28 15:46:58'),
-(27, 17, '1F44FF', 0, 0, 0, '2011-01-02 20:00:37', '2011-01-02 20:00:37', 0, 79, '127.0.0.1', 79, '127.0.0.1', '2011-01-02 21:00:13');
+(20, 17, '64002E', 0, 0, 0, '2010-12-28 14:47:22', '2011-01-21 22:19:37', 1, 0, '127.0.0.1', 2, '127.0.0.1', '2011-01-21 23:19:13'),
+(27, 17, '1F44FF', 0, 0, 0, '2011-01-02 20:00:37', '2011-01-21 22:20:11', 1, 79, '127.0.0.1', 2, '127.0.0.1', '2011-01-21 23:19:47');
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,7 @@ INSERT INTO `premanager_0_groups` (`id`, `parentID`, `color`, `priority`, `autoJ
 -- Tabellenstruktur für Tabelle `premanager_0_groupsname`
 --
 -- Erzeugt am: 28. Dezember 2010 um 13:41
--- Aktualisiert am: 02. Januar 2011 um 21:28
+-- Aktualisiert am: 21. Januar 2011 um 23:19
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupsname` (
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_groupsname` (
   KEY `groupID` (`id`),
   KEY `inUse` (`inUse`),
   KEY `languageID` (`languageID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=35 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=37 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_groupsname`:
@@ -173,7 +173,9 @@ INSERT INTO `premanager_0_groupsname` (`nameID`, `id`, `name`, `inUse`, `languag
 (31, 24, 'projektleiter', 1, 1, '2010-12-30 00:41:46'),
 (28, 21, 'projektleiter', 1, 1, '2010-12-28 15:50:03'),
 (27, 20, 'projektmitglieder', 1, 1, '2010-12-28 15:46:58'),
-(34, 27, 'schauspieler', 1, 1, '2011-01-02 21:00:13');
+(34, 27, 'schauspieler', 1, 1, '2011-01-02 21:00:13'),
+(35, 20, 'project members', 1, 2, '2011-01-21 23:19:13'),
+(36, 27, 'actors', 1, 2, '2011-01-21 23:19:47');
 
 -- --------------------------------------------------------
 
@@ -223,7 +225,12 @@ INSERT INTO `premanager_0_groupstranslation` (`id`, `languageID`, `name`, `text`
 (27, 1, 'Schauspieler', 'Alle, die im Film "Zwei Gesichter" eine Schauspielerrolle eingenommen haben', 'Schauspieler', '2011-01-02 21:00:13'),
 (22, 1, 'Projektleiter', 'Die Projektleiter organisieren das Filmprojekt', 'Projektleiter', '2010-12-30 00:42:11'),
 (21, 1, 'Projektleiter', 'Die Projektleiter organisieren das Filmprojekt.', 'Projektleiter', '2010-12-28 15:50:03'),
-(20, 1, 'Projektmitglieder', 'Alle Darsteller, Hintergrundleute und Regisseure sind in dieser Gruppe vereint.', 'Projektmitglied', '2010-12-28 15:46:58');
+(20, 1, 'Projektmitglieder', 'Alle Darsteller, Hintergrundleute und Regisseure sind in dieser Gruppe vereint.', 'Projektmitglied', '2010-12-28 15:46:58'),
+(26, 2, 'Project Members', 'All having worked on a Juvenile Studio project', 'Project Member', '2011-01-21 23:17:01'),
+(25, 2, 'Project Members', 'All actors, background people and directors', 'Project Member', '2011-01-21 23:18:46'),
+(23, 2, 'Project Members', 'All actors, background people and directors', 'Project Member', '2011-01-21 23:19:00'),
+(20, 2, 'Project Members', 'All actors, background people and directors', 'Project Member', '2011-01-21 23:19:13'),
+(27, 2, 'Actors', 'Those who have had an actor role in the film "Zwei Gesichter"', 'Actor', '2011-01-21 23:19:47');
 
 -- --------------------------------------------------------
 
@@ -381,9 +388,8 @@ CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguagestranslation` (
 --
 -- Tabellenstruktur für Tabelle `premanager_0_nodegroup`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 03. Januar 2011 um 16:58
--- Letzter Check am: 03. Januar 2011 um 16:58
+-- Erzeugt am: 21. Januar 2011 um 21:36
+-- Aktualisiert am: 21. Januar 2011 um 22:31
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodegroup` (
@@ -406,10 +412,8 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodegroup` (
 --
 
 INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
-(8, 3, '2010-05-29 00:37:39'),
-(30, 2, '2010-05-29 00:46:29'),
-(92, 3, '2010-06-09 22:30:14'),
-(94, 2, '2010-06-09 22:31:56');
+(92, 3, '2011-01-21 21:52:20'),
+(94, 2, '2011-01-21 22:19:39');
 
 -- --------------------------------------------------------
 
@@ -417,7 +421,7 @@ INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 15. Januar 2011 um 00:33
+-- Aktualisiert am: 21. Januar 2011 um 22:31
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -461,20 +465,20 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
 --
 
 INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAccessRestriction`, `hasPanel`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
-(90, 94, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:22', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
-(89, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:15', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
-(88, 92, 0, 19, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:27', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2011-01-06 17:11:43'),
-(83, 93, 0, 4, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:58', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:30:55'),
-(82, 93, 0, 18, 1, 0, '2010-06-09 20:21:34', '2011-01-09 17:54:44', 2, '127.0.0.1', 2, '127.0.0.1', 7, '2011-01-09 18:54:20'),
-(81, 93, 0, 15, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:28:51', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 21:44:31'),
-(80, 93, 0, 1, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:34', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-06-09 22:31:05'),
+(90, 94, 0, 0, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:14:55', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:31'),
+(89, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:16:05', 2, '127.0.0.1', 2, '127.0.0.1', 3, '2011-01-21 23:15:41'),
+(88, 92, 0, 19, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:14:28', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:04'),
+(83, 93, 0, 4, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:15:14', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:50'),
+(82, 93, 0, 18, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:15:56', 2, '127.0.0.1', 2, '127.0.0.1', 8, '2011-01-21 23:15:32'),
+(81, 93, 0, 15, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:16:39', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:16:15'),
+(80, 93, 0, 1, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:15:22', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:58'),
 (79, 0, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:21:34', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-09-18 00:52:12'),
-(84, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:05', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-10-06 19:24:39'),
-(92, 79, 0, 0, 0, 0, '2010-06-09 20:30:08', '2011-01-09 14:44:44', 2, '127.0.0.1', 2, '127.0.0.1', 6, '2011-01-09 15:44:20'),
-(93, 79, 0, 0, 1, 0, '2010-06-09 20:30:44', '2011-01-14 23:54:35', 2, '127.0.0.1', 2, '127.0.0.1', 12, '2011-01-15 00:54:11'),
-(94, 79, 0, 0, 0, 0, '2010-06-09 20:31:46', '2011-01-14 21:39:32', 2, '127.0.0.1', 2, '127.0.0.1', 7, '2011-01-14 22:39:08'),
+(84, 93, 0, 0, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:15:33', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:15:09'),
+(92, 79, 0, 0, 0, 0, '2010-06-09 20:30:08', '2011-01-21 20:52:44', 2, '127.0.0.1', 2, '127.0.0.1', 13, '2011-01-21 21:52:20'),
+(93, 79, 0, 0, 1, 0, '2010-06-09 20:30:44', '2011-01-21 22:15:07', 2, '127.0.0.1', 2, '127.0.0.1', 15, '2011-01-21 23:14:43'),
+(94, 79, 0, 0, 0, 0, '2010-06-09 20:31:46', '2011-01-21 22:14:44', 2, '127.0.0.1', 2, '127.0.0.1', 9, '2011-01-21 23:14:20'),
 (95, 0, 17, 0, 1, 0, '2010-06-09 20:34:29', '2010-06-09 20:34:29', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-06-09 22:34:29'),
-(91, 92, 0, 16, 1, 0, '2010-06-09 20:21:34', '2010-06-09 20:29:10', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2010-11-13 21:12:18'),
+(91, 92, 0, 16, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:02:54', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:02:30'),
 (111, 94, 0, 0, 1, 0, '2010-06-26 19:07:54', '2010-06-26 19:07:54', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-10-06 19:24:39'),
 (144, 0, 118, 0, 1, 0, '2010-11-14 20:51:53', '2010-11-14 20:51:53', 0, '127.0.0.1', 0, '127.0.0.1', 0, '2010-11-14 21:51:29'),
 (139, 0, 117, 0, 1, 0, '2010-11-14 20:06:32', '2010-11-14 20:06:32', 0, '127.0.0.1', 0, '127.0.0.1', 0, '2010-11-14 21:06:08');
@@ -485,7 +489,7 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 -- Tabellenstruktur für Tabelle `premanager_0_nodesname`
 --
 -- Erzeugt am: 14. November 2010 um 22:10
--- Aktualisiert am: 15. Januar 2011 um 00:33
+-- Aktualisiert am: 15. Januar 2011 um 01:03
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -501,7 +505,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
   KEY `languageID` (`languageID`),
   KEY `name` (`name`),
   KEY `nodeID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=44 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=55 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodesname`:
@@ -519,7 +523,9 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (43, 93, 'mitglieder', 1, 1, '2011-01-15 00:54:11'),
 (2, 91, 'projekte', 1, 1, '2010-11-14 22:11:44'),
 (3, 89, 'registrierung', 1, 1, '2010-11-14 22:11:44'),
+(47, 90, 'login-data', 2, 1, '2011-01-21 23:14:31'),
 (5, 92, 'admin', 1, 1, '2011-01-09 15:44:20'),
+(46, 94, 'my-account', 2, 1, '2011-01-21 23:14:20'),
 (8, 88, 'struktur', 1, 1, '2010-11-14 22:15:19'),
 (10, 84, 'passwort-vergessen', 1, 1, '2010-11-14 22:11:44'),
 (11, 82, 'wer-ist-online', 1, 1, '2010-11-14 22:14:02'),
@@ -527,8 +533,17 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (13, 81, 'gruppen', 1, 1, '2010-11-14 22:14:02'),
 (14, 80, 'benutzer', 1, 1, '2010-11-14 22:14:02'),
 (15, 111, 'avatar', 1, 1, '2010-11-14 22:14:02'),
+(45, 88, 'structure', 2, 1, '2011-01-21 23:14:04'),
+(44, 91, 'projects', 2, 1, '2011-01-21 23:02:30'),
 (30, 94, 'mein-konto', 1, 1, '2011-01-14 22:39:08'),
-(35, 90, 'anmeldungsdaten', 1, 1, '2011-01-15 00:12:54');
+(35, 90, 'anmeldungsdaten', 1, 1, '2011-01-15 00:12:54'),
+(48, 93, 'members', 2, 1, '2011-01-21 23:14:43'),
+(49, 83, 'login', 2, 1, '2011-01-21 23:14:50'),
+(50, 80, 'users', 2, 1, '2011-01-21 23:14:58'),
+(51, 84, 'password-lost', 2, 1, '2011-01-21 23:15:09'),
+(52, 89, 'register', 2, 1, '2011-01-21 23:15:17'),
+(53, 82, 'who-is-online', 2, 1, '2011-01-21 23:15:32'),
+(54, 81, 'groups', 2, 1, '2011-01-21 23:16:15');
 
 -- --------------------------------------------------------
 
@@ -579,7 +594,18 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (144, 1, '', 'Startseite', '2010-11-22 20:32:34'),
 (139, 1, '', 'Startseite', '2010-11-22 20:32:43'),
 (79, 1, '', 'Startseite', '2010-11-22 20:32:34'),
-(111, 1, 'avatar', 'Avatar', '2010-06-26 21:07:54');
+(111, 1, 'avatar', 'Avatar', '2010-06-26 21:07:54'),
+(88, 2, 'structure', 'Structure', '2011-01-21 23:14:04'),
+(91, 2, 'projects', 'Projects', '2011-01-21 23:02:30'),
+(94, 2, 'my-account', 'My Account', '2011-01-21 23:14:20'),
+(90, 2, 'login-data', 'Login Data', '2011-01-21 23:14:31'),
+(93, 2, 'members', 'Members', '2011-01-21 23:14:43'),
+(83, 2, 'login', 'Login', '2011-01-21 23:14:50'),
+(80, 2, 'users', 'Users', '2011-01-21 23:14:58'),
+(84, 2, 'password-lost', 'Password Lost', '2011-01-21 23:15:09'),
+(89, 2, 'register', 'Register', '2011-01-21 23:15:41'),
+(82, 2, 'who-is-online', 'Who is online?', '2011-01-21 23:15:32'),
+(81, 2, 'groups', 'Groups', '2011-01-21 23:16:15');
 
 -- --------------------------------------------------------
 
@@ -965,7 +991,7 @@ INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `desc
 -- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
 -- Erzeugt am: 02. Januar 2011 um 16:00
--- Aktualisiert am: 15. Januar 2011 um 00:33
+-- Aktualisiert am: 21. Januar 2011 um 23:01
 -- Letzter Check am: 02. Januar 2011 um 16:00
 --
 
@@ -987,7 +1013,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=55 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=61 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_sessions`:
@@ -1002,7 +1028,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
 --
 
 INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `confirmationExpirationTime`, `timestamp`) VALUES
-(54, 2, '2011-01-14 23:54:13', '2011-01-14 23:54:36', '3758d4249b070076c0d92e6aa17402f1551af28650a279db93fdedf404397e20', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b9) Gecko/20100101 Firefox/4.0b9', 0, 0, 0, 0, '2011-01-15 00:04:33', '2011-01-15 00:54:12');
+(60, 2, '2011-01-21 22:02:31', '2011-01-21 22:20:29', '9b4bde5f312973d766c94320f3ed1f16e778f94852d9f2210d9e87c254cbe01d', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b9) Gecko/20100101 Firefox/4.0b9', 0, 0, 0, 0, '2011-01-21 22:24:26', '2011-01-21 23:20:05');
 
 -- --------------------------------------------------------
 
@@ -1045,7 +1071,7 @@ INSERT INTO `premanager_0_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) 
 -- Tabellenstruktur für Tabelle `premanager_0_strings`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 09. Januar 2011 um 19:13
+-- Aktualisiert am: 21. Januar 2011 um 22:01
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -1056,7 +1082,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=599 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=601 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_strings`:
@@ -1621,7 +1647,9 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (594, 0, 'invalidStructureNodeName', '2011-01-09 15:02:14'),
 (595, 0, 'addTreeNodeChildError', '2011-01-09 18:20:14'),
 (596, 0, 'browseStructureNodesTitle', '2011-01-09 18:44:56'),
-(598, 0, 'upperStructureNode', '2011-01-09 19:05:36');
+(599, 0, 'nodePermissionsMessage', '2011-01-21 19:06:10'),
+(598, 0, 'upperStructureNode', '2011-01-09 19:05:36'),
+(600, 0, 'everyone', '2011-01-21 21:47:55');
 
 -- --------------------------------------------------------
 
@@ -1629,7 +1657,7 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 15. Januar 2011 um 00:33
+-- Aktualisiert am: 21. Januar 2011 um 22:01
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
@@ -2500,7 +2528,9 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (594, 1, 'Der Name darf weder mit einem Pluszeichen (+) beginnen, noch Schrägstriche (/) enthalten.', '2011-01-09 15:02:14'),
 (595, 1, 'Eine Seite, die mit einem Modul verknüpft ist, kann keine Unterseiten enthalten.', '2011-01-09 18:20:14'),
 (596, 1, 'Über- und untergeordnete Seiten', '2011-01-09 18:44:56'),
-(598, 1, 'Übergeordnete Seite ({title html})', '2011-01-09 20:04:32');
+(598, 1, 'Übergeordnete Seite ({title html})', '2011-01-09 20:04:32'),
+(599, 1, 'Hier kannst du festlegen, wer diese Seite ansehen darf. Kann ein Benutzer eine übergeordnete Seite nicht aufrufen, ist ihm der Zugriff auf alle untergeordneten Seiten in jedem Fall verwehrt.</p>  <p>Wähle die Gruppen aus, deren Mitglieder die Seite aufrufen können sollen. Wenn die Gruppe &quot;Jeder&quot; ausgewählt ist, gibt es keine Anzeigebeschränkungen.</p>  <p><strong>Hinweis:</strong> Jeder, der die Struktur bearbeiten kann (also auch du) kann unabhängig von den Berechtigungen alle Seiten aufrufen. Dadurch wird verhindert, dass wichtige administrative Bereiche überhaupt nicht mehr zugreifbar sind.</p>\r\n\r\n<p><strong>Bedienungshinweis:</strong> Halte die Strg-Taste gedrückt, während du auf Einträge klickst, um mehrere Gruppen auszuwählen, oder die Umschalt-Taste, um einen Bereich auszuwählen.', '2011-01-21 21:53:21'),
+(600, 1, 'Jeder', '2011-01-21 21:47:55');
 
 -- --------------------------------------------------------
 
@@ -2655,7 +2685,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
 -- Tabellenstruktur für Tabelle `premanager_0_users`
 --
 -- Erzeugt am: 28. Dezember 2010 um 17:30
--- Aktualisiert am: 15. Januar 2011 um 00:33
+-- Aktualisiert am: 21. Januar 2011 um 22:31
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -2693,9 +2723,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
 
 INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
 (0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', '2010-12-28 23:19:37'),
-(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2011-01-14 23:54:13', '2011-01-14 23:54:13', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, 1, 'image/png', '2011-01-15 00:53:49'),
+(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2011-01-21 22:02:31', '2011-01-21 22:02:31', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, 1, 'image/png', '2011-01-21 23:02:07'),
 (70, 'Marc', '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:56:40', '2010-06-11 22:56:40', '93.192.60.138', '92f50201d5d704933e7ec802d7b5425e0a7a831af3bf5eff77e7c745e02f1913', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '000000', 'starwarsfan32@web.de', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2010-07-04 00:12:19'),
-(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-01-06 15:34:55', '2011-01-06 15:34:55', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '64002E', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2011-01-06 16:34:31');
+(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-01-21 21:20:25', '2011-01-21 21:20:25', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '64002E', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2011-01-21 22:20:01');
 
 -- --------------------------------------------------------
 
@@ -2778,18 +2808,18 @@ INSERT INTO `premanager_0_userstranslation` (`id`, `languageID`, `title`, `times
 (9, 1, '', '2010-04-23 22:43:59'),
 (12, 1, '', '2010-04-23 22:47:22'),
 (18, 1, '', '2010-04-25 16:20:31'),
-(0, 1, 'Gast', '2011-01-02 15:55:20'),
-(0, 2, 'Guest', '2011-01-02 15:55:20'),
-(0, 3, 'Invité', '2011-01-02 15:55:20'),
-(79, 1, 'Projektmitglied', '2011-01-02 15:55:20'),
-(79, 2, 'Projektmitglied', '2011-01-02 15:55:20'),
-(79, 3, 'Projektmitglied', '2011-01-02 15:55:20'),
-(2, 1, 'Administrator', '2011-01-02 15:55:20'),
-(2, 2, 'Administrator', '2011-01-02 15:55:20'),
-(2, 3, 'Administrateur', '2011-01-02 15:55:20'),
-(70, 1, 'Benutzer', '2011-01-02 21:38:50'),
-(70, 2, 'User', '2011-01-02 21:38:50'),
-(70, 3, 'User', '2011-01-02 21:38:50');
+(0, 3, 'Invité', '2011-01-21 23:19:47'),
+(79, 3, 'Project Member', '2011-01-21 23:19:47'),
+(79, 2, 'Project Member', '2011-01-21 23:19:47'),
+(2, 3, 'Administrateur', '2011-01-21 23:19:47'),
+(2, 2, 'Administrator', '2011-01-21 23:19:47'),
+(70, 2, 'User', '2011-01-21 23:19:47'),
+(0, 2, 'Guest', '2011-01-21 23:19:47'),
+(2, 1, 'Administrator', '2011-01-21 23:19:47'),
+(70, 1, 'Benutzer', '2011-01-21 23:19:47'),
+(79, 1, 'Projektmitglied', '2011-01-21 23:19:47'),
+(0, 1, 'Gast', '2011-01-21 23:19:47'),
+(70, 3, 'User', '2011-01-21 23:19:47');
 
 -- --------------------------------------------------------
 
