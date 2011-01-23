@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 21. Januar 2011 um 22:20
+-- Erstellungszeit: 23. Januar 2011 um 20:16
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.4
 
@@ -73,7 +73,7 @@ INSERT INTO `premanager_0_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_groups`
 --
 -- Erzeugt am: 01. Januar 2011 um 22:03
--- Aktualisiert am: 02. Januar 2011 um 21:28
+-- Aktualisiert am: 21. Januar 2011 um 23:31
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
@@ -183,7 +183,7 @@ INSERT INTO `premanager_0_groupsname` (`nameID`, `id`, `name`, `inUse`, `languag
 -- Tabellenstruktur für Tabelle `premanager_0_groupstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 02. Januar 2011 um 21:00
+-- Aktualisiert am: 21. Januar 2011 um 23:31
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupstranslation` (
@@ -421,7 +421,7 @@ INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 21. Januar 2011 um 22:31
+-- Aktualisiert am: 21. Januar 2011 um 23:31
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -489,7 +489,7 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 -- Tabellenstruktur für Tabelle `premanager_0_nodesname`
 --
 -- Erzeugt am: 14. November 2010 um 22:10
--- Aktualisiert am: 15. Januar 2011 um 01:03
+-- Aktualisiert am: 21. Januar 2011 um 23:31
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -551,7 +551,7 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_nodestranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 09. Januar 2011 um 18:43
+-- Aktualisiert am: 21. Januar 2011 um 23:31
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -991,7 +991,7 @@ INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `desc
 -- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
 -- Erzeugt am: 02. Januar 2011 um 16:00
--- Aktualisiert am: 21. Januar 2011 um 23:01
+-- Aktualisiert am: 23. Januar 2011 um 20:48
 -- Letzter Check am: 02. Januar 2011 um 16:00
 --
 
@@ -1013,7 +1013,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=61 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=66 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_sessions`:
@@ -1028,7 +1028,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
 --
 
 INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `confirmationExpirationTime`, `timestamp`) VALUES
-(60, 2, '2011-01-21 22:02:31', '2011-01-21 22:20:29', '9b4bde5f312973d766c94320f3ed1f16e778f94852d9f2210d9e87c254cbe01d', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b9) Gecko/20100101 Firefox/4.0b9', 0, 0, 0, 0, '2011-01-21 22:24:26', '2011-01-21 23:20:05');
+(65, 2, '2011-01-23 19:27:39', '2011-01-23 20:15:25', 'ee937600008703f674a94574317b5ba11ab3afe73116397f7f68c663be5d2848', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b9) Gecko/20100101 Firefox/4.0b9', 0, 0, 0, 0, '0000-00-00 00:00:00', '2011-01-23 21:15:01');
 
 -- --------------------------------------------------------
 
@@ -2685,7 +2685,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
 -- Tabellenstruktur für Tabelle `premanager_0_users`
 --
 -- Erzeugt am: 28. Dezember 2010 um 17:30
--- Aktualisiert am: 21. Januar 2011 um 22:31
+-- Aktualisiert am: 23. Januar 2011 um 20:48
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -2723,7 +2723,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
 
 INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `secondaryPassword`, `secondaryPasswordStartTime`, `secondaryPasswordExpirationTime`, `secondaryPasswordStartIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `timestamp`) VALUES
 (0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', 'd46c3c951f16f75d18c2a05ed7481f0714ddad92e7192024549c69385a3dc394', '2010-05-22 22:23:05', '2010-05-24 22:23:05', '127.0.0.1', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', '2010-12-28 23:19:37'),
-(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2011-01-21 22:02:31', '2011-01-21 22:02:31', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, 1, 'image/png', '2011-01-21 23:02:07'),
+(2, 'Jan', '2010-02-13 18:27:13', '127.0.0.1', '2011-01-23 19:27:39', '2011-01-23 19:27:39', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '006600', 'info@yogularm.de', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, 1, 'image/png', '2011-01-23 20:27:15'),
 (70, 'Marc', '2010-06-11 22:48:03', '93.192.60.138', '2010-06-11 22:56:40', '2010-06-11 22:56:40', '93.192.60.138', '92f50201d5d704933e7ec802d7b5425e0a7a831af3bf5eff77e7c745e02f1913', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '000000', 'starwarsfan32@web.de', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2010-07-04 00:12:19'),
 (79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-01-21 21:20:25', '2011-01-21 21:20:25', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '64002E', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', '2011-01-21 22:20:01');
 
@@ -2779,7 +2779,7 @@ INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_userstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 03. Januar 2011 um 16:58
+-- Aktualisiert am: 21. Januar 2011 um 23:31
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -3026,69 +3026,6 @@ INSERT INTO `premanager_2_revisions` (`id`, `articleID`, `revision`, `languageID
 (13, 6, 1, 1, '2010-06-18 18:06:01', 2, '127.0.0.1', '<p>Hallo,</p>\r\n<p>soeben habe ich den aktuellen Stand der Premanager Markup Language eingebaut. Dabei handelt es sich um eine auf <a href="http://de.wikipedia.org/wiki/Extensible_Markup_Language">XML</a> basierende Sprache, in der formatierte Texte gespeichert werden. Im <a href="http://letsrack.juvenile-studios.de/de/blog/der-erste-wysiwyg-artikel">WYSIWYG-Editor</a> war sie schon in Verwendung, jetzt aber wird sie vollends unterstützt, denn der im PML-Format gespeicherte Text wird nun  beim Anzeigen  in <a href="http://de.wikipedia.org/wiki/Hypertext_Markup_Language">HTML</a>-Code umgewandelt, den jeder Browser versteht.</p>\r\n<p>Grüße,<br />Jan</p>', 'Der Artikel wurde erstellt', '2010-06-18 20:06:01'),
 (14, 7, 1, 1, '2010-06-19 10:04:34', 2, '127.0.0.1', 'Ohne Javascript', 'Der Artikel wurde erstellt', '2010-06-19 12:04:34'),
 (15, 7, 2, 1, '2010-06-19 10:05:03', 2, '127.0.0.1', 'Ohne Javascript<p><p>a</p></p>', '', '2010-06-19 12:05:03');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `premanager_5_creativepages`
---
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
---
-
-CREATE TABLE IF NOT EXISTS `premanager_5_creativepages` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `nodeID` int(10) unsigned NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nodeID` (`nodeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
-
---
--- RELATIONEN DER TABELLE `premanager_5_creativepages`:
---   `nodeID`
---       `premanager_0_nodes` -> `id`
---
-
---
--- Daten für Tabelle `premanager_5_creativepages`
---
-
-INSERT INTO `premanager_5_creativepages` (`id`, `nodeID`, `timestamp`) VALUES
-(1, 0, '2010-03-31 22:53:40');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `premanager_5_creativepagestranslation`
---
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:12
---
-
-CREATE TABLE IF NOT EXISTS `premanager_5_creativepagestranslation` (
-  `id` int(10) unsigned NOT NULL,
-  `languageID` int(10) unsigned NOT NULL,
-  `text` text COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`,`languageID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- RELATIONEN DER TABELLE `premanager_5_creativepagestranslation`:
---   `id`
---       `premanager_5_creativepages` -> `id`
---   `languageID`
---       `premanager_0_languages` -> `id`
---
-
---
--- Daten für Tabelle `premanager_5_creativepagestranslation`
---
-
-INSERT INTO `premanager_5_creativepagestranslation` (`id`, `languageID`, `text`, `timestamp`) VALUES
-(1, 1, '<p>Herzlich Willkommen bei <b>Rack</b>, dem momentanen Entwicklungsstand der Organisationssoftware <b>Premanager</b>!</p>\r\n\r\n<p>Da die Navigation gerade noch in Arbeit ist, sind die einzelnen Kategorien noch nicht richtig verlinkt. Benutze deshalb die folgende Liste, um diese Website zu erkunden.</p>\r\n\r\n<ul>\r\n<li><p><a href="./mitglieder/benutzer">Benutzerliste</a></p></li>\r\n<li><p><a href="./mitglieder/gruppen">Gruppenliste</a></p></li>\r\n<li><p><a href="./mitglieder/wer-ist-online">Wer ist online?</a></p></li>\r\n<li><p><a href="./anmeldung">Anmeldeformular</a></p></li>\r\n<li><p><a href="./blog">Blog</a></p></li>\r\n<li><p><a href="./admin/struktur">Seitenstruktur</a></p></li>\r\n</ul>\r\n\r\n<p>Du kannst auch jederzeit auf Englisch umschalten, indem du das <i>de</i> in der Adresszeile durch ein <i>en</i> austauschst.</p>\r\n\r\n<p>Genauso ist es möglich, ein Projekt auszuwählen: Füge dafür <i>/zwei-gesichter</i> direkt nach dem Servernamen ein.</p>\r\n\r\n<p>Ich wünsche dir viel Spaß beim Erkunden der bisherigen Funktionen von Premanager 1.0. Wenn du noch fragen hast, kontaktiere mich bitte <a href="mailto:info@yogularm.de">E-Mail</a>. Danke!</p>', '2010-05-23 00:49:56'),
-(1, 2, '<p>Welcome to <b>Rack</b>, the current development snapshot of organization software <b>Premanager</b>!</p>\r\n\r\n<p>Because the navigation is still in progress, you can use the following list to reach some more content.</p>\r\n\r\n<ul>\r\n<li><p><a href="./members/users">User List</a></p></li>\r\n<li><p><a href="./members/groups">Group List</a></p></li>\r\n<li><p><a href="./members/who-is-online">Who is online?</a></p></li>\r\n<li><p><a href="./login">Login</a></p></li>\r\n<li><p><a href="./blog">Blog</a></p></li>\r\n<li><p><a href="./admin/structure">Structure</a></p></li>\r\n</ul>\r\n\r\n<p>You can always switch to German by replacing <i>en</i> in address bar by <i>de</i>.</p>\r\n\r\n<p>It is also possible to select a project: Insert <i>/zwei-gesichter</i> directly after server name.</p>\r\n\r\n<p>Happy discovering new features of Premanager 1.0. Feel free to contact my via <a href="mailto:info@yogularm.de">e-mail</a>. Thank you!</p>', '2010-05-23 00:50:10');
 
 -- --------------------------------------------------------
 
