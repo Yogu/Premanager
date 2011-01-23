@@ -106,6 +106,9 @@ class StructureNodePermissionsPage extends FormPageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	protected function getFormPage($formHTML) {
+		if (Request::getPOST('cancel'))
+			return new Redirection($this->getParent()->getURL());
+			
 		$message = Translation::defaultGet('Premanager', 'nodePermissionsMessage');
 		
 		$page = new Page($this);

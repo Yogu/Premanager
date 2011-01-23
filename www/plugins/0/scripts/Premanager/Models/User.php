@@ -699,7 +699,7 @@ final class User extends Model {
 		$this->checkDisposed();
 		
 		if ($this->_groups === null)
-			$this->_groups = Group::getGroups()->joinFilter('Premanager', 'UserJoin',
+			$this->_groups = Group::getGroups()->joinFilter('Premanager', 'UserGroup',
 				"item.id = [join].groupID AND [join].userID = $this->_id");
 		return $this->_groups;
 	}       

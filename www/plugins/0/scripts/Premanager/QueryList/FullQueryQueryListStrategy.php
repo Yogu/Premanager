@@ -325,7 +325,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 			// use a translation
 			if ($t->isTableTranslated() && $rightPart) 
 				$this->_queryBase = DataBase::getQuery(
-					"FROM ".$table." AS item".
+					"FROM ".$table." AS item ".
 					$this->getQueryList()->getJoinSQL(),
 					/* translating */
 					$rightPart).' '; 

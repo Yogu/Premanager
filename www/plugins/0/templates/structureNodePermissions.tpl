@@ -13,5 +13,6 @@
 	
 	<fieldset class="buttons">
 		<input type="submit" name="submit" class="main" value="{string Premanager submitButton}" />
+		<input type="submit" name="cancel" value="{string Premanager confirmationCancelButton}" />
 	</fieldset>
 {/form}
