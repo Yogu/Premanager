@@ -1,8 +1,13 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\Models\StylesheetInfo;
+use Premanager\IO\CorruptDataException;
+use Premanager\IO\FileNotFoundException;
+use Premanager\IO\File;
+use Premanager\IO\Config;
+use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\IO\DataBase\DataBase;
-
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\ArgumentException;
@@ -18,13 +23,17 @@ use Premanager\QueryList\DataType;
 use Premanager\QueryList\ModelDescriptor;
               
 /**
- * A class for a style
+ * A style
  */
-final class StyleClass extends Model {
+final class Style extends Model {
 	private $_id;
 	private $_pluginID;
 	private $_plugin;
-	private $_className;
+	private $_path;
+	private $_title;
+	private $_description;
+	private $_author;
+	private $_stylesheets;
 	private $_instance;
 	
 	private static $_instances = array();
@@ -40,14 +49,14 @@ final class StyleClass extends Model {
 	}
 	
 	private static function createFromID($id, $pluginID = null,
-		$className = null) {
+		$path = null) {
 		
 		if (array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
 			if ($instance->_pluginID === null)
 				$instance->_pluginID = $pluginID;
-			if ($instance->_className === null)
-				$instance->_className = $className;
+			if ($instance->_path === null)
+				$instance->_path = $path;
 				
 			return $instance;
 		}
@@ -59,7 +68,7 @@ final class StyleClass extends Model {
 		$instance = new self();
 		$instance->_id = $id;
 		$instance->_pluginID = $pluginID;
-		$instance->_className = $className;
+		$instance->_path = $path;
 		self::$_instances[$id] = $instance;
 		return $instance;
 	} 
@@ -93,35 +102,37 @@ final class StyleClass extends Model {
 	 * Creates a new style class and inserts it into data base
 	 *
 	 * @param Plugin $plugin the plugin that registers this style class             
-	 * @param string $className the class name for the style 
+	 * @param string $path the path to style.xml file, relative to the plugin's
+	 *   static directory
+	 * @param string $title a display title
+	 * @param string $description a short description
+	 * @param string $author the style's author(s)
 	 * @return Premanager\Models\StyleClass
 	 */
-	public static function createNew(Plugin $plugin, $className) {
-		$className = trim($className);
+	public static function createNew(Plugin $plugin, $path, $title, $description,
+		$author)
+	{
+		$path = trim($path);
 		
-		if (!$plugin)
-			throw new ArgumentNullException('plugin');
-			
-		if (!class_exists($className))
-			throw new ArgumentException('$className does not refer to an existing '.
-				'class', 'className');
-		
-		// Check if the class extends Premanager\Execution\Style
-		$class = $className;
-		while ($class != 'Premanager\Execution\Style') {
-			$class = get_parent_class($class);
-			if (!$class)
-				throw new ArgumentException('The class specified by $className '.
-					'does not inherit from Premanager\Execution\Style');
-		}
+		$fileName = Config::getStaticPath() . '/' . $plugin->getName() . '/'.$path;
+		if (!File::exists($fileName))
+			throw new FileNotFoundException('The style file does not exist (file '.
+				'name: '.$fileName);
 	
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Styles')." ".
-			"(pluginID, class) ".
-			"VALUES ('$plugin->getid()', '".DataBase::escape($className)."'");
+			"(pluginID, path, author) ".
+			"VALUES ('$plugin->getid()', '".DataBase::escape($path)."', ".
+				"'".DataBase::escape($author)."'");
 		$id = DataBase::insertID();
 		
-		$instance = self::createFromID($id, $plugin, $className);
+		DataBaseHelper::update('Premanager', 'Styles', 0, $id, null, array(),
+			array('title' => $title, 'description' => $description));	
+		
+		$instance = self::createFromID($id, $plugin, $path);
+		$instance->_title = $title;
+		$instance->_description = $description;
+		$instance->_author = $author;
 
 		if (self::$_count !== null)
 			self::$_count++;		
@@ -152,12 +163,12 @@ final class StyleClass extends Model {
 	public static function getDefault() {
 		if (self::$_default === null) {
 			$result = DataBase::query(
-				"SELECT style.id, style.pluginID, style.class ".
+				"SELECT style.id, style.pluginID, style.path ".
 				"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 				"WHERE style.isDefault = '1'");
 			if ($result->next()) {
 				self::$_default = self::createFromID($result->get('id'),
-					$result->get('pluginID'), $result->get('class'));
+					$result->get('pluginID'), $result->get('path'));
 			} else
 				throw new CorruptDataException('No default style found');
 		}
@@ -209,8 +220,12 @@ final class StyleClass extends Model {
 			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
 				'id' => array(DataType::NUMBER, 'getID', 'id'),
 				'plugin' => array(Plugin::getDescriptor(), 'getPlugin', 'pluginID'),
-				'className' => array(DataType::STRING, 'getClassName', 'className')),
-				'Premanager', 'Styles', array(__CLASS__, 'getByID'));
+				'path' => array(DataType::STRING, 'getPath', 'path'),
+				'title' => array(DataType::STRING, 'getTitle', '*title'),
+				'description' => array(DataType::STRING, 'getDescription',
+					'*description'),
+				'author' => array(DataType::STRING, 'getAuthor', '*author')),
+				'Premanager', 'Styles', array(__CLASS__, 'getByID'), true);
 		}
 		return self::$_descriptor;
 	}      
@@ -245,29 +260,98 @@ final class StyleClass extends Model {
 	}        
 
 	/**
-	 * Gets the class name for this style
+	 * Gets the path to style.xml file, relative to the plugin's static directory
 	 *
 	 * @return string
 	 */
-	public function getClassName() {
+	public function getPath() {
 		$this->checkDisposed();
 			
-		if ($this->_className === null)
+		if ($this->_path === null)
 			$this->load();
-		return $this->_className;	
+		return $this->_path;	
+	}
+	
+	/**
+	 * Gets the absolute path to style.xml
+	 */
+	public function getFileName() {
+		$this->checkDisposed();
+		
+		return Config::getStaticPath() . '/' . $this->getPlugin()->getName() .
+			'/' . $this->_path;
+	}
+
+	/**
+	 * Gets the translated title
+	 *
+	 * @return string
+	 */
+	public function getTitle() {
+		$this->checkDisposed();
+			
+		if ($this->_title === null)
+			$this->load();
+		return $this->_title;	
 	}        
 
 	/**
-	 * Creates an instance of this style class
+	 * Gets a short description
+	 *
+	 * @return string
+	 */
+	public function getDescription() {
+		$this->checkDisposed();
+
+		if ($this->_description === null)
+			$this->load();
+		return $this->_description;
+	}          
+
+	/**
+	 * Gets the style's author(s)
+	 *
+	 * @return string
+	 */
+	public function getAuthor() {
+		$this->checkDisposed();
+
+		if ($this->_author === null)
+			$this->load();
+		return $this->_author;
+	}    
+
+	/**
+	 * Creates a list of stylesheets used by this style
 	 * 
 	 * @return Premanager\Models\Style
 	 */
-	public function getInstance()  {
-		if ($this->_instance === null) {
-			$className = $this->getClassName();
-			$this->_instance = new $className;
+	public function getStylesheets()  {
+		$this->checkDisposed();
+		
+		if ($this->_stylesheets === null) {
+			$fileName = $this->getFileName();
+			if (!File::exists($fileName))
+				throw new CorruptDataException('Referred style file does not exist ('.
+					'id: '.$this->_id.', file name: '.$fileName);
+				
+			$xml = new \DOMDocument();
+			if (!$xml->load($fileName))
+				throw new CorruptDataException('Referred style file is invalid ('.
+					'id: '.$this->_id.', file name: '.$fileName);
+			$this->_stylesheets = array();
+			foreach ($xml->getElementsByTagName('stylesheet') as $stylesheet) {
+				$src = $stylesheet->getAttribute('src');
+				$type = $stylesheet->getAttribute('type');
+				$media = $stylesheet->getAttribute('media');
+				$this->_stylesheets[] =
+					StylesheetInfo::simpleCreate($this->getPlugin()->getName(),
+					dirname($this->getPath()) . '/' . $src,
+					$media, $type);
+			}
 		}
-		return $this->_instance;
+		
+		return $this->_stylesheets;
 	}   
 	
 	/**
@@ -307,14 +391,19 @@ final class StyleClass extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT style.pluginID, style.className ".    
-			"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
+			"SELECT style.pluginID, style.path, style.author, translation.title, ".
+				"translation.description ".    
+			"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ",
+			/* translating */
 			"WHERE style.id = '$this->_id'");
 		if (!$result->next())
 			return false;
 		
 		$this->_pluginID = $result->get('pluginID');
-		$this->_className = $result->get('className');
+		$this->_path = $result->get('path');
+		$this->_title = $result->get('title');
+		$this->_description = $result->get('description');
+		$this->_author = $result->get('author');
 		
 		return true;
 	}

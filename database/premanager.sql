@@ -2537,20 +2537,22 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 --
 -- Tabellenstruktur für Tabelle `premanager_0_styles`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 23. Januar 2011 um 16:28
+-- Aktualisiert am: 23. Januar 2011 um 16:48
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_styles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pluginID` int(10) unsigned NOT NULL,
   `isDefault` tinyint(1) NOT NULL,
-  `class` varchar(255) COLLATE utf8_bin NOT NULL,
+  `isEnabled` tinyint(1) NOT NULL DEFAULT '1',
+  `path` varchar(255) COLLATE utf8_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `pluginID` (`pluginID`,`isDefault`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+  KEY `isEnabled` (`isEnabled`),
+  KEY `pluginID` (`pluginID`),
+  KEY `isDefault` (`isDefault`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_styles`:
@@ -2562,8 +2564,44 @@ CREATE TABLE IF NOT EXISTS `premanager_0_styles` (
 -- Daten für Tabelle `premanager_0_styles`
 --
 
-INSERT INTO `premanager_0_styles` (`id`, `pluginID`, `isDefault`, `class`, `timestamp`) VALUES
-(1, 1, 1, 'Premanager\\Styles\\ClassicStyle', '2010-10-07 19:42:15');
+INSERT INTO `premanager_0_styles` (`id`, `pluginID`, `isDefault`, `isEnabled`, `path`, `timestamp`) VALUES
+(1, 0, 0, 1, 'styles/classic/style.xml', '2011-01-23 16:28:59'),
+(2, 0, 1, 1, 'styles/yogularm/style.xml', '2011-01-23 16:29:07');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_0_stylestranslation`
+--
+-- Erzeugt am: 23. Januar 2011 um 16:30
+-- Aktualisiert am: 23. Januar 2011 um 16:37
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_0_stylestranslation` (
+  `id` int(11) NOT NULL,
+  `languageID` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8_bin NOT NULL,
+  `description` text COLLATE utf8_bin NOT NULL,
+  `author` varchar(255) COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`languageID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- RELATIONEN DER TABELLE `premanager_0_stylestranslation`:
+--   `id`
+--       `premanager_0_styles` -> `id`
+--   `languageID`
+--       `premanager_0_languages` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_0_stylestranslation`
+--
+
+INSERT INTO `premanager_0_stylestranslation` (`id`, `languageID`, `title`, `description`, `author`, `timestamp`) VALUES
+(1, 1, 'Klassischer Stil', 'Weiße Blöcke auf blauem Hintergrund. Schwarze Schrift.', 'Jan Melcher', '2011-01-23 16:37:05'),
+(2, 1, 'Yogularm', 'Geschwungene Navigationsleiste über den oberen und linken Rand. Schwarze Schrift auf weißem Hintergrund.', 'Jan Melcher', '2011-01-23 16:37:05');
 
 -- --------------------------------------------------------
 

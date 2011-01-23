@@ -1,0 +1,163 @@
+@charset "UTF-8";
+
+body {	
+	background-color: #FFFFFF;
+}
+
+body.simple {
+	background-color: #FFFFFF;
+	
+	padding: 0;
+}
+	
+/* ========== Navbar ========== */
+
+#navbar > ul > li,
+ul.location > li {
+	float: left;
+	padding-right: 2ex;
+ 	
+ 	list-style: none;
+ 	
+ 	font-size: 10px;
+ 	font-weight: bold;
+}
+
+#navbar > ul > li:after,
+ul.location > li:after {
+	position: relative;
+	left: 1ex;
+	
+	content: "»";
+}
+
+#navbar > ul > li:last-child:after,
+ul.location > li:last-child:after {
+	content: "";
+}
+
+#navbar > ul > li:first-child,
+ul.location > li:first-child {
+	background: none;
+	padding-left: 0;
+}
+
+/* ========== Footer ========== */
+
+#footer {
+	padding: 5px;  
+	margin-bottom: 0 !important;
+	text-align: center;
+}
+
+#footer p,
+#footlinks li {
+	margin: 0;
+	
+	font-size: 10px;
+	color: #444444;
+	letter-spacing: -1px;
+}    
+
+#footlinks,
+#footlinks > ul,
+#footlinks > ul > li {
+	display: inline;
+} 
+
+#footlinks > ul > li {
+	padding-left: 0.5ex;
+ 	
+ 	list-style: none;
+}    
+
+#footlinks > ul > li:before {
+	position: relative;
+	left: -0.5ex;
+	
+	content: "|";
+}  
+
+#footlinks > ul > li:first-child:before {
+	content: "";
+}
+
+#footlinks > ul > li:first-child {
+	padding-left: 0;
+}
+
+#footer {
+	margin: 20px 0;
+	padding: 5px;
+	clear: both;
+	overflow: hidden;
+}
+
+/* ========== Content blocks and sidebar blocks ========== */
+
+.block {
+	margin-bottom: 20px;
+}
+
+.block:last-child {
+	margin-bottom: 0;	
+}
+
+.block > header {
+	margin-bottom: 5px;
+	
+	text-align: left;
+	font-weight: bold;
+	
+	font-size: 18px;
+	line-height: 24px;
+	font-weight: bold;
+}
+
+.block > table > thead > tr > th {
+	text-align: left;
+	font-weight: bold;
+	
+	padding: 2px 8px;
+}
+
+.block > table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+#main-block > header {
+	font-size: 22px;
+	line-height: 26px;
+}
+
+.block > header {
+	overflow: hidden;
+	word-wrap: break-word;
+}
+
+.block > div {
+	overflow: hidden;
+	margin-left: 50px;
+}
+
+.block.table-wrap {
+	padding-left: 50px;	
+}
+
+.block-row {
+	margin-bottom: 20px;	
+}
+
+.block-row:last-child {
+	margin-bottom: 0;	
+}
+
+.block-col {
+	margin-right: 20px;	
+}
+
+.block-col:last-child {
+	margin-right: 0;	
+}

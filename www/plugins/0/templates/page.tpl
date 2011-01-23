@@ -30,7 +30,17 @@
 		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
 		{foreach $environment->getStyle()->getStylesheets() as stylesheet}
-			<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getmedia() != 'all'} media="{html $stylesheet->getMedia()}"{/if} />
+			{if $environment->getEdition() == 1} {* mobile *}
+				{if $stylesheet->getMedia() != "screen"} 
+					<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getMedia() == 'handheld'} media="handheld, screen"{elseif $stylesheet->getMedia() != "all"} media="{html $stylesheet->getMedia()}"{/if} />
+				{/if}
+			{elseif $environment->getEdition() == 2} {* print *}
+				{if $stylesheet->getMedia() != "screen"} 
+					<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getMedia() != 'print' && $stylesheet->getMedia() != "all"} media="{html $stylesheet->getMedia()}"{/if} />
+				{/if}
+			{else}
+				<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getMedia() != 'all'} media="{html $stylesheet->getMedia()}"{/if} />
+			{/if}
 		{/foreach}
 		
 		{*

@@ -1,6 +1,7 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\Models\Style;
 use Premanager\ArgumentException;
 use Premanager\Debug\Debug;
 use Premanager\URL;
@@ -13,7 +14,6 @@ use Premanager\Models\Project;
 use Premanager\Models\Language;
 use Premanager\Models\StyleClass;
 use Premanager\Models\Session;
-use Premanager\Execution\Style;
 
 /**
  * A collection of environment properties
@@ -36,7 +36,7 @@ class Environment extends Module {
 	 */
 	private $_language;
 	/**
-	 * @var Premanager\Execution\Style
+	 * @var Premanager\Models\Style
 	 */
 	private $_style;
 	/**
@@ -99,7 +99,7 @@ class Environment extends Module {
 	 *   Premanager\Models\Project::getOrganization() - MAY differ from the
 	 *   project of $pageNode
 	 * @param Premanager\Models\Language $language the current language
-	 * @param Premanager\Execution\Style $style the current style
+	 * @param Premanager\Models\Style $style the current style
 	 * @param int $edition enum Premanager\Execution\Edition
 	 */
 	public static function create(User $user, $session,
@@ -286,21 +286,21 @@ class Environment extends Module {
 	/**
 	 * Gets the current style
 	 * 
-	 * This method returns Premanager\Models\Style::getDefault()->getInstance() if
-	 * it is called while the actual value for $style is loading. Use
-	 * isStyleAvailable() to check whether this is the case.
+	 * This method returns the default stlye if it is called while the actual
+	 * value for $style is loading. Use isStyleAvailable() to check whether this
+	 * is the case.
 	 * 
-	 * @return Premanager\Execution\Style
+	 * @return Premanager\Models\Style
 	 */
 	public function getStyle() {
 		if (!$this->_style && $this->_isReal) {
 			if ($this->_styleLoading)
-				return StyleClass::getDefault()->getInstance();
+				return Style::getDefault();
 			else {
 				$this->_styleLoading = true;
 				try {
 					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_style = StyleClass::getDefault()->getInstance();
+					$this->_style = Style::getDefault();
 				} catch (\Exception $e) {
 					$this->_styleLoading = false;
 					throw $e;

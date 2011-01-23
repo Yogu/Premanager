@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<style>
+	<stylesheet src="stylesheets/reset.css" type="text/css" media="all" />
+	<stylesheet src="stylesheets/layout.css" type="text/css" media="all" />
+	<stylesheet src="stylesheets/general.css" type="text/css" media="all" />
+	<stylesheet src="stylesheets/classes.css" type="text/css" media="all" />
+	<stylesheet src="stylesheets/print.css" type="text/css" media="print" />
+	<stylesheet src="stylesheets/mobile.css" type="text/css" media="handheld" />
+</style>
