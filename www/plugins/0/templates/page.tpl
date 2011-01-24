@@ -39,7 +39,7 @@
 					<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getMedia() != 'print' && $stylesheet->getMedia() != "all"} media="{html $stylesheet->getMedia()}"{/if} />
 				{/if}
 			{else}
-				<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getMedia() != 'all'} media="{html $stylesheet->getMedia()}"{/if} />
+				<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}" media="{html $stylesheet->getMedia()}" />
 			{/if}
 		{/foreach}
 		

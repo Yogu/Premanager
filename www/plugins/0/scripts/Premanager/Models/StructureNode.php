@@ -820,10 +820,6 @@ final class StructureNode extends Model {
 		$instance->_createTime = new DateTime();
 		$instance->_editor = Environment::getCurrent()->getuser();
 		$instance->_editTime = new DateTime();
-
-		// Now parent node contains one child more
-		if ($this->_childCount !== null)
-			$this->_childCount++;	
 		
 		return $instance;
 	}  

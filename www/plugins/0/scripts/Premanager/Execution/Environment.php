@@ -360,15 +360,14 @@ class Environment extends Module {
 	 * Gets the prefix for relative urls
 	 * 
 	 * The url prefix contains protocol, host and may contain a path. Environment
-	 * properties are inserted. Example: http://en.example.com/my-project.
+	 * properties are inserted. Example: http://mobile.en.example.com/.
 	 * 
 	 * @return string
 	 */
 	public function getURLPrefix() {
 		if ($this->_urlPrefix === null)
 			$this->_urlPrefix =
-				URL::fromTemplate($this->getLanguage(), $this->getEdition(),
-					$this->getProject());
+				URL::fromTemplate($this->getLanguage(), $this->getEdition());
 		return $this->_urlPrefix;
 	}
 	
