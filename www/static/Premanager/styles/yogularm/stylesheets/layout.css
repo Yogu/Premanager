@@ -114,14 +114,14 @@ ul.location > li:first-child {
 	font-weight: bold;
 }
 
-.block > table > thead > tr > th {
+.block.table-wrap table > thead > tr > th {
 	text-align: left;
 	font-weight: bold;
 	
 	padding: 2px 8px;
 }
 
-.block > table {
+.block.table-wrap table {
 	width: 100%;
 	border-collapse: separate;
 	border-spacing: 0;
@@ -160,4 +160,8 @@ ul.location > li:first-child {
 
 .block-col:last-child {
 	margin-right: 0;	
+}
+
+.block-footer {
+	padding: 5px;
 }

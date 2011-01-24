@@ -52,13 +52,22 @@ class PageBlock extends Module {
 	 * 
 	 * @param string $head the part to put into <thead></thead> (html)
 	 * @param string $body the part to put into <tbody></tbody> (html)
+	 * @param string $frame a HTML string to put around the <table> tag. &table;
+	 *   is replaced by the whole <table> tag.
 	 * @return Premanager\Execution\PageBlock
 	 */
-	public static function createTable($head, $body) {
+	public static function createTable($head, $body, $frame)
+	{
 		$instance = new self();
 		
-		$instance->_html = '<section class="block table-wrap"><table><thead>'.$head.
-			'</thead><tbody>'.$body.'</tbody></table></section>';
+		$table = '<table><thead>'.$head.'</thead><tbody>'.$body.'</tbody></table>';
+		if ($frame)
+			$html = str_replace('&table;', $table, $frame);
+		else
+			$html = $table; 
+		
+		$instance->_html = '<section class="block table-wrap">'.$html.'</section>';
+		
 		return $instance;
 	}
 	

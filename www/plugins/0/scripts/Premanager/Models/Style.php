@@ -30,6 +30,7 @@ final class Style extends Model {
 	private $_pluginID;
 	private $_plugin;
 	private $_path;
+	private $_isEnabled;
 	private $_title;
 	private $_description;
 	private $_author;
@@ -79,7 +80,7 @@ final class Style extends Model {
 	 * Gets a style class using its id
 	 * 
 	 * @param int $id the id of the style class
-	 * @return Premanager\Models\StyleClass
+	 * @return Premanager\Models\Style
 	 */
 	public static function getByID($id) {
 		if (!Types::isInteger($id) || $id < 0)
@@ -107,7 +108,7 @@ final class Style extends Model {
 	 * @param string $title a display title
 	 * @param string $description a short description
 	 * @param string $author the style's author(s)
-	 * @return Premanager\Models\StyleClass
+	 * @return Premanager\Models\Style
 	 */
 	public static function createNew(Plugin $plugin, $path, $title, $description,
 		$author)
@@ -122,7 +123,7 @@ final class Style extends Model {
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Styles')." ".
 			"(pluginID, path, author) ".
-			"VALUES ('$plugin->getid()', '".DataBase::escape($path)."', ".
+			"VALUES ('".$plugin->getID()."', '".DataBase::escape($path)."', ".
 				"'".DataBase::escape($author)."'");
 		$id = DataBase::insertID();
 		
@@ -158,7 +159,7 @@ final class Style extends Model {
 	/**
 	 * Gets the default style class
 	 * 
-	 * @return Premanager\Models\StyleClass
+	 * @return Premanager\Models\Style
 	 */
 	public static function getDefault() {
 		if (self::$_default === null) {
@@ -178,11 +179,15 @@ final class Style extends Model {
 	/**
 	 * Sets the default style class
 	 * 
-	 * @param Premanager\Models\StyleClass $style the new default style class
+	 * @param Premanager\Models\Style $style the new default style class
+	 * @throws Premanager\ArgumentException if $style is disabled
 	 */
-	public static function setDefault(StyleClass $style) {
+	public static function setDefault(Style $style) {
 		if (!$style)
 			throw new ArgumentNullException('style');
+			
+		if (!$style->isEnabled())
+			throw new ArgumentException('The specified style is not enabled');
 		
 		// Remove former default style
 		DataBase::query(
@@ -194,7 +199,7 @@ final class Style extends Model {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 			"SET style.isDefault = '1' ".
-			"WHERE style.id = '$style->getid()'");
+			"WHERE style.id = '".$style->getID()."'");
 		
 		self::$_default = $style;
 	}
@@ -204,7 +209,7 @@ final class Style extends Model {
 	 * 
 	 * @return Premanager\QueryList\QueryList
 	 */
-	public static function getStyleClasses() {
+	public static function getStyles() {
 		if (!self::$_queryList)
 			self::$_queryList = new QueryList(self::getDescriptor());
 		return self::$_queryList;
@@ -224,7 +229,9 @@ final class Style extends Model {
 				'title' => array(DataType::STRING, 'getTitle', '*title'),
 				'description' => array(DataType::STRING, 'getDescription',
 					'*description'),
-				'author' => array(DataType::STRING, 'getAuthor', '*author')),
+				'author' => array(DataType::STRING, 'getAuthor', '*author'),
+				'isEnabled' => array(DataType::BOOLEAN, 'isEnabled', 'isEnabled'),
+				'isDefault' => array(DataType::BOOLEAN, 'isEnabled', 'isDefault')),
 				'Premanager', 'Styles', array(__CLASS__, 'getByID'), true);
 		}
 		return self::$_descriptor;
@@ -319,7 +326,56 @@ final class Style extends Model {
 		if ($this->_author === null)
 			$this->load();
 		return $this->_author;
-	}    
+	}     
+	
+	/**
+	 * Checks whether this style is enabled
+	 * 
+	 * @return bool true, if this style is enabled
+	 */
+	public function isEnabled() {
+		$this->checkDisposed();
+
+		if ($this->_isEnabled === null)
+			$this->load();
+		return $this->_isEnabled;
+	} 
+	
+	/**
+	 * Enables or disables this style
+	 * 
+	 * @param $enable true to enable or false to disable this style
+	 * @throws Premanager\InvalidOperationException tried to disable the default
+	 *   style when there is not another enabled style
+	 */
+	public function setIsEnabled($enable) {
+		$this->checkDisposed();
+		
+		if ($this->isDefault() && !$enable) {
+			$l = self::getStyles();
+			$l = $l->filter($l->exprMember('isEnabled'));
+			if ($l->getCount())
+				self::setDefault($l[0]);
+			else
+				throw new InvalidOperationException('The default style can not be '.
+					'disabled when there is not another enabled style');
+		}
+
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Styles')." ".
+			"SET isEnabled = ".($enable ? '1' : '0')." ".
+			"WHERE id = ".$this->_id);
+		$this->_isEnabled = !!$enable;
+	}
+	
+	/**
+	 * Checks whether this style is the default style
+	 * 
+	 * @return bool true, if this style is the default style
+	 */
+	public function isDefault() {
+		return $this == self::getDefault();
+	}
 
 	/**
 	 * Creates a list of stylesheets used by this style
@@ -372,8 +428,16 @@ final class Style extends Model {
 			
 		// If this was the default style, select another default style
 		if (self::getDefault() == $this) {
-			$arr = self::getStyleClasses(0, 1);
-			self::setDefault($arr[0]);
+			$l = self::getStyles();
+			$l = $l->filter($l->exprMember('isEnabled'));
+			if ($l->getCount())
+				self::setDefault($l[0]);
+			else {
+				$l = self::getStyles();
+				$style = $l[0];
+				$style->setIsEnabled(true);
+				self::setDefault($style);
+			}
 		}
 			
 		DataBase::query(
@@ -392,7 +456,7 @@ final class Style extends Model {
 	private function load() {
 		$result = DataBase::query(
 			"SELECT style.pluginID, style.path, style.author, translation.title, ".
-				"translation.description ".    
+				"translation.description, style.isEnabled ".    
 			"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ",
 			/* translating */
 			"WHERE style.id = '$this->_id'");
@@ -401,6 +465,7 @@ final class Style extends Model {
 		
 		$this->_pluginID = $result->get('pluginID');
 		$this->_path = $result->get('path');
+		$this->_isEnabled = $result->get('isEnabled');
 		$this->_title = $result->get('title');
 		$this->_description = $result->get('description');
 		$this->_author = $result->get('author');

@@ -121,7 +121,7 @@ body.has-sidebar #content {
 }
 
 .block > header,
-.block > table > thead > tr > th {
+.block.table-wrap table > thead > tr > th {
 	margin-bottom: 2px;    
 	padding: 5px;
 	                                                              
@@ -138,11 +138,11 @@ body.has-sidebar #content {
 	font-weight: bold;
 }  
 
-.block > table > thead > tr > th {
+.block.table-wrap table > thead > tr > th {
 	border-bottom: 2px solid #004381;
 }
 
-.block > table {
+.block.table-wrap table {
 	width: 100%;
 	border-collapse: separate;
 	border-spacing: 0;
@@ -155,12 +155,12 @@ body.has-sidebar #content {
 	-webkit-border-radius-topright: 5px;
 }
 
-.block > table thead > tr > th:first-child {
+.block.table-wrap table thead > tr > th:first-child {
 	-moz-border-radius-topleft: 5px;         
 	-webkit-border-radius-topleft: 5px;
 } 
 
-.block > table thead > tr > th:last-child {
+.block.table-wrap table thead > tr > th:last-child {
 	-moz-border-radius-topright: 5px;            
 	-webkit-border-radius-topright: 5px;
 }
@@ -183,7 +183,7 @@ body.has-sidebar #content {
 }
 
 .block > div,
-.block > table > tbody > tr > td > div {    
+.block.table-wrap table > tbody > tr > td > div {    
 	padding: 10px;
 	
 	background-color: #FFFFFF; 
@@ -232,7 +232,7 @@ body.has-sidebar #content {
 	font-size: 10px; 
 }     
 
-.block > table > tbody > tr:first-child > td {
+.block.table-wrap table > tbody > tr:first-child > td {
 	margin-top: 2px;
 }
 
@@ -270,6 +270,12 @@ body.has-sidebar #content {
 
 .block-col:last-child {
 	margin-right: 0;	
+}
+
+.block-footer {
+	padding: 5px;
+	
+	background: #FFFFFF;	
 }
 
 /* ========== Fullsize elements ========== */
@@ -405,4 +411,4 @@ ul.location > li:first-child {
 	background: #004381;
 	
 	content: '';
-}  
+}

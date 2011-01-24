@@ -83,7 +83,7 @@
 
 .list > li,
 .list > li > a,
-.block > table > tbody > tr > td {
+.block.table-wrap table > tbody > tr > td {
 	padding: 7px 8px;
 
 	background-color: #DFF0FF;
@@ -95,53 +95,53 @@
 
 .list > li.selected,
 .list > li.selected > a,
-.block > table > tbody > tr.selected > td {
+.block.table-wrap table > tbody > tr.selected > td {
 	background-color: #FFD053;
 	border-bottom: 1px solid #F4B100;
 }    
 
 .list > li.selected:hover,
 .list > li.selected:hover > a,
-.block > table > tbody > tr.selected:hover > td {
+.block.table-wrap table > tbody > tr.selected:hover > td {
 	background-color: #FFC836;
 }
 
-.block > table > tbody > tr > td > a {
+.block.table-wrap table > tbody > tr > td > a {
 	padding: 7px 8px;
 	
 	outline: none;
 }
      
 .list > li > a, 
-.block > table > tbody > tr > td > a {
+.block.table-wrap table > tbody > tr > td > a {
 	display: block;
 }
 
-.block > table > tbody > tr > td > a {
+.block.table-wrap table > tbody > tr > td > a {
 	overflow: hidden;
 }
 
 .list > li > a,
-.block > table > tbody > tr > td > a {
+.block.table-wrap table > tbody > tr > td > a {
  	margin: -8px;
 } 
 
 .list > li > a,
 .list > li:hover > a,
-.block > table > tbody > tr > td > a,
-.block > table > tbody > tr > td > a:hover {
+.block.table-wrap table > tbody > tr > td > a,
+.block.table-wrap table > tbody > tr > td > a:hover {
  	color: #000000;
  	text-decoration: none;
 }
 
 .list > li:hover,
 .list > li:hover > a,
-.block > table > tbody > tr:hover > td {
+.block.table-wrap table > tbody > tr:hover > td {
 	background-color: #CBE7FF;
 }    
 
 .list > li.group-header,
-.block > table > tbody > tr.group-header > td {
+.block.table-wrap table > tbody > tr.group-header > td {
 	background-color: #FFD07C !important;
 	border: none !important;
 
@@ -151,7 +151,7 @@
 }
 
 .list > li.group-header > a,
-.block > table > tbody > tr.group-header > td > a {
+.block.table-wrap table > tbody > tr.group-header > td > a {
  	margin: -7px -8px;
 	
 	background-color: #FFD07C !important;
@@ -171,7 +171,7 @@
 /* ========== List Toolbars ========== */
                   
 .list > li > .toolbar,
-.block > table .toolbar {
+.block.table-wrap table .toolbar {
 	float: right;
 	margin: -8px;
 }			
@@ -185,17 +185,17 @@
 }    
 
 /* we can't hide a toolbar in a table because the layout would change when showing it (looks ugly) */
-.block > table .toolbar {
+.block.table-wrap table .toolbar {
 	position: relative;
 	left: -10000px;
 }  
 
-.block > table tr:hover .toolbar {
+.block.table-wrap table tr:hover .toolbar {
 	left: 0;
 }
 						
 .list > li > .toolbar > li,
-.block > table .toolbar > li {
+.block.table-wrap table .toolbar > li {
 	float: left;
 	margin-right: 2px;
 	
@@ -203,24 +203,24 @@
 }   
 						
 .list > li > .toolbar > li:last-child,
-.block > table .toolbar > li:last-child {
+.block.table-wrap table .toolbar > li:last-child {
 	margin-right: 0;
 }
 
 .list > li > .toolbar > li.new-group,
-.block > table .toolbar > li.new-group {
+.block.table-wrap table .toolbar > li.new-group {
 	margin-left: 10px;
 }
 
 .list > li > .toolbar > li.new-group:first-child,
-.block > table .toolbar > li.new-group:first-child {
+.block.table-wrap table .toolbar > li.new-group:first-child {
 	margin-left: 0;
 }
 
 .list > li > .toolbar > li > a,
 .list > li > .toolbar > li > span,
-.block > table .toolbar > li > a,
-.block > table .toolbar > li > span {
+.block.table-wrap table .toolbar > li > a,
+.block.table-wrap table .toolbar > li > span {
 	display: block;
 	padding: 5px;
 	
@@ -235,8 +235,8 @@
 
 .list > li > .toolbar > li > a[class],
 .list > li > .toolbar > li > span[class],
-.block > table .toolbar > li > a[class],
-.block > table .toolbar > li > span[class] {
+.block.table-wrap table .toolbar > li > a[class],
+.block.table-wrap table .toolbar > li > span[class] {
 	background-position: 5px center;
 	background-repeat: no-repeat;
 	padding-left: 30px !important;
@@ -246,10 +246,10 @@
 .list > li > .toolbar > li > a.active,
 .list > li > .toolbar > li > span:hover,
 .list > li > .toolbar > li > span.active,
-.block > table .toolbar > li > a:hover,
-.block > table .toolbar > li > a.active,
-.block > table .toolbar > li > span:hover,
-.block > table .toolbar > li > span.active {
+.block.table-wrap table .toolbar > li > a:hover,
+.block.table-wrap table .toolbar > li > a.active,
+.block.table-wrap table .toolbar > li > span:hover,
+.block.table-wrap table .toolbar > li > span.active {
 	color: #000000;
 	text-decoration: none;
 	
@@ -257,12 +257,12 @@
 }
 
 .list > li > .toolbar > li > span,
-.block > table .toolbar li > span {
+.block.table-wrap table .toolbar li > span {
 	cursor: default;
 }  
 
 .list > li > .toolbar > li > span.disabled,
-.block > table .toolbar > span.disabled {
+.block.table-wrap table .toolbar > span.disabled {
 	opacity: 0.5;
 	background-color: transparent !important;
 }
@@ -753,7 +753,8 @@ textarea.fullsize,
 	height: 400px;
 }
 
-input[type=checkbox] {
+input[type=checkbox],
+input[type=radio] {
 	width: auto;
 	
 	box-shadow: none;
@@ -953,7 +954,7 @@ fieldset > dl > dd > .input-errors li {
 }
 
 .list .detail,
-.block > table .detail {
+.block.table-wrap table .detail {
 	margin-left: 1ex;
 	
 	font-size: 11px;
