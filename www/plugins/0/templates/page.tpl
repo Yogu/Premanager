@@ -26,6 +26,17 @@
 		{if $node->getParent()} 
 			<link rel="up" title="{string Premanager up}" href="./{html $node->getParent()->getURL()}" />
 		{/if}
+		
+		{if $environment->getEdition() == 1} {* mobile *}
+			<link rel="alternate" media="screen" type="text/html" href="{urlPrefix null ''}{$node->getFullURL()}" />
+			<link rel="alternate" media="print" type="text/html" href="{urlPrefix null 'print'}{$node->getFullURL()}" />
+		{elseif $environment->getEdition() == 2} {* print *}
+			<link rel="alternate" media="screen" type="text/html" href="{urlPrefix null ''}{$node->getFullURL()}" />
+			<link rel="alternate" media="handheld" type="text/html" href="{urlPrefix null 'mobile'}{$node->getFullURL()}" />
+		{else}
+			<link rel="alternate" media="handheld" type="text/html" href="{urlPrefix null 'mobile'}{$node->getFullURL()}" />
+			<link rel="alternate" media="print" type="text/html" href="{urlPrefix null 'print'}{$node->getFullURL()}" />
+		{/if}
 		     		
 		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
