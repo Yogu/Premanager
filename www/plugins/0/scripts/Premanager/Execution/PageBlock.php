@@ -53,10 +53,10 @@ class PageBlock extends Module {
 	 * @param string $head the part to put into <thead></thead> (html)
 	 * @param string $body the part to put into <tbody></tbody> (html)
 	 * @param string $frame a HTML string to put around the <table> tag. &table;
-	 *   is replaced by the whole <table> tag.
+	 *   is replaced by the whole <table> tag (optional).
 	 * @return Premanager\Execution\PageBlock
 	 */
-	public static function createTable($head, $body, $frame)
+	public static function createTable($head, $body, $frame = '')
 	{
 		$instance = new self();
 		

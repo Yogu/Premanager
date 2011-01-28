@@ -82,6 +82,7 @@ class EditUserPage extends UserFormPage {
 			$this->_user->setPassword($values['password']);
 		if ($values['isEnabled'] != $this->_user->isEnabled())
 			$this->_user->setIsEnabled($values['isEnabled']);
+			
 		return new Redirection($this->getParent()->getURL());
 	}
 	
