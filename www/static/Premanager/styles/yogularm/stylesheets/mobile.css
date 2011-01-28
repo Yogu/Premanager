@@ -6,7 +6,14 @@
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	
-	background: -moz-linear-gradient(center top, #859FED, #1E2C6C 77%, #06115D);   
+	background: #1E2C6C;
+	background: -moz-linear-gradient(center top, #859FED, #1E2C6C 77%, #06115D);
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#859FED),
+		color-stop(0.77, #1E2C6C),
+		to(#06115D));   
 	
 	overflow: hidden;
 }
@@ -22,7 +29,14 @@
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	
-	background: -moz-linear-gradient(center top, #4A65dC, #163E94 5px, #4A65dC);
+	background: #001169;
+	background: -moz-linear-gradient(center top, #4A65DC, #163E94 5px, #4A65DC);
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#4A65DC),
+		color-stop(0.5, #163E94),
+		to(#4A65DC));   
 	border-top: 1px solid #000000;
 	border-bottom: 1px solid #011565;
 	
@@ -42,7 +56,13 @@
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	
+	background: #D3D9EA;
 	background: -moz-linear-gradient(center top, #A5B2D5, #FFFFFF);
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#A5B2D5),
+		to(#FFFFFF));   
 	border-top: 1px solid #FFFFFF;
 	border-bottom: 1px solid #A8AEBC;
 }

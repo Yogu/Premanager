@@ -25,7 +25,8 @@
 	display: block;
 	padding: 5px;
 	
-	outline: none;	
+	outline: none;
+	border-radius: 5px;	
 	-moz-border-radius: 5px;     
 	-webkit-border-radius: 5px;
 
@@ -227,6 +228,7 @@
 	padding: 5px;
 	
 	outline: none;	
+	border-radius: 5px;
 	-moz-border-radius: 5px;     
 	-webkit-border-radius: 5px;
 
@@ -684,6 +686,7 @@ div.wysiwyg > iframe {
 	background: #FFFFFF;
 	border: 1px solid #9999FF;  
 	outline: none !important;
+	border-radius:  2px 2px 2px 2px;
 	-moz-border-radius: 2px 2px 2px 2px;
 	-webkit-border-radius: 2px 2px 2px 2px;    
 	
@@ -783,7 +786,15 @@ button {
 	                      
 	background-color: #FFD159;      
 	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 10px, #FFD159 10px, #FFD159); 
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#FFD159),
+		color-stop(0.4, #FFEAB4),
+		color-stop(0.4, #FFD159),
+		to(#FFD159));
 	border: none; 
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px; 
 	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
@@ -798,7 +809,14 @@ input[type=reset]:hover,
 input[type=button]:hover,
 button:hover {
 	background-color: #FFB900;
-	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 10px, #FFB900 10px, #FFB900);  
+	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 10px, #FFB900 10px, #FFB900);
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#FFB900),
+		color-stop(0.4, #FFDF8C),
+		color-stop(0.4, #FFB900),
+		to(#FFB900));  
 	border-color: #FFFFFF #DEA100 #DEA100 #FFFFFF;      
 	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
@@ -824,6 +842,13 @@ button:active:hover {
 	-webkit-box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.5) inset, -0.5px -1px 2px rgba(0, 0, 0, 0.3) inset;  
 	border-color: #DEA100 #FFFFFF #FFFFFF #DEA100;   
 	background: -moz-linear-gradient(center top, #FFB900, #FFDF8C 12px, #FFB900 12px, #FFB900); 
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#FFB900),
+		color-stop(0.4, #FFDF8C),
+		color-stop(0.4, #FFB900),
+		to(#FFB900));  
 }      
           
 input[type=submit][disabled],
@@ -847,6 +872,13 @@ button[disabled]:active,
 button[disabled]:focus {
 	background-color: #FFD159;      
 	background: -moz-linear-gradient(center top, #FFD159, #FFEAB4 10px, #FFD159 10px, #FFD159);
+	background: -webkit-gradient(linear,
+		center top,
+		center bottom,
+		from(#FFD159),
+		color-stop(0.4, #FFEAB4),
+		color-stop(0.4, #FFD159),
+		to(#FFD159));  
 	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset;
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 1px 1px 1px #FFFFFF inset, -1px -1px 1px rgba(0, 0, 0, 0.8) inset; 
 }
@@ -865,6 +897,7 @@ button.main {
 	margin-bottom: 20px;
 	padding: 5px; 
 	
+	border-radius: 5px;
 	-moz-border-radius: 5px; 
 	-webkit-border-radius: 5px;
 	-moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);  
@@ -882,7 +915,8 @@ button.main {
 	margin-top: 0;
 }
 
-fieldset > dl > dd > .input-errors { 
+fieldset > dl > dd > .input-errors {
+	border-radius: 0; 
 	-moz-border-radius: 0; 
 	-webkit-border-radius: 0;
 	-moz-box-shadow: none;  
@@ -1013,8 +1047,17 @@ fieldset > dl > dd > .input-errors li {
 	padding-left: 20px;
 
 	background-color: #FFD636;     
-	background: url(../images/info-box.png) 4px center no-repeat, -moz-linear-gradient(center top, #FFD636, #FFEB9B 13px, #FFD636 13px, #FFD636);
+	background: url(../images/info-box.png) 4px center no-repeat,
+		-moz-linear-gradient(center top, #FFD636, #FFEB9B 13px, #FFD636 13px, #FFD636),
+		-webkit-gradient(linear,
+			center top,
+			center bottom,
+			from(#FFD636),
+			color-stop(0.3, #FFEB9B),
+			color-stop(0.3, #FFD636),
+			to(#FFD636));  
 	border: 1px solid #FFFFFF;
+	border-radius: 5px;
 	-moz-border-radius: 5px;     
 	-webkit-border-radius: 5px;
 	-moz-box-shadow: 1px 1px 6px #000000;
