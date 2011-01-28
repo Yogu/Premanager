@@ -124,9 +124,7 @@ final class StructureNode extends Model {
 	 * @return Premanager\Models\StructureNode
 	 */
 	public static function getByID($id) {
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
+		$id = (int)$id;
 		
 		// This switch allows not to call load() on models that have already been
 		// created

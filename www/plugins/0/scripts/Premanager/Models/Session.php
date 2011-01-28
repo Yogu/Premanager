@@ -124,9 +124,7 @@ final class Session extends Model {
 	 * @return Premanager\Models\Session
 	 */
 	public static function getByID($id) {
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
+		$id = (int)$id;
 			
 		if (\array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];

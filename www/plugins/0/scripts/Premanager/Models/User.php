@@ -122,9 +122,7 @@ final class User extends Model {
 	 * @return Premanager\Models\User the user or null, if $id does not exist
 	 */
 	public static function getByID($id) {
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
+		$id = (int)$id;
 			
 		if (array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];

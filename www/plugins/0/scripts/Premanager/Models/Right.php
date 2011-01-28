@@ -122,8 +122,7 @@ class Right {
 	 *   right with the specified id
 	 */
 	public static function getByID($id) {
-		if (!Types::isInteger($id))
-			throw new ArgumentException('$id is not an integer', 'id');
+		$id = (int)$id;
 			
 		$rights = self::getRights();
 		return $rights[$id];

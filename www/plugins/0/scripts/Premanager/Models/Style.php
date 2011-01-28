@@ -83,9 +83,7 @@ final class Style extends Model {
 	 * @return Premanager\Models\Style
 	 */
 	public static function getByID($id) {
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
+		$id = (int)$id;
 			
 		if (\array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];
