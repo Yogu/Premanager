@@ -1,16 +1,12 @@
 <?php
 namespace Premanager\Pages;
 
+use Premanager\Execution\Environment;
 use Premanager\Types;
-
 use Premanager\Models\Style;
-
 use Premanager\Execution\TreePageNode;
-
 use Premanager\Models\Right;
-
 use Premanager\Execution\Rights;
-
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
@@ -47,6 +43,7 @@ class StylesPage extends TreePageNode {
 			null, $errorResponse, false));
 		
 		$list = self::getList();
+		$notGuest = !!Environment::getCurrent()->getUser()->getID();
 			
 		if (Request::getPOST('submit')) {
 			if (!Rights::requireRight(Right::getByName('Premanager', 'manageStyles'),
@@ -94,6 +91,18 @@ class StylesPage extends TreePageNode {
 					}
 				}
 			}
+		} else if ($notGuest) {
+			// Guests may have manageStyle right - don't know how crazy admins are...
+			$post = Request::getPOSTValues();
+			foreach ($post as $name => $value) {
+				if (substr($name, 0, 6) == 'select') {
+					$id = substr($name, 7);
+					$style = Style::getByID($id);
+					if ($style)
+						Environment::getCurrent()->getUser()->setStyle($style);
+					break;
+				}
+			}
 		}
 		
 		$page = new Page($this);
@@ -102,11 +111,13 @@ class StylesPage extends TreePageNode {
 			'<p>'.Translation::defaultGet('Premanager', 'stylesMessage').'</p>');
 		
 		$template = new Template('Premanager', 'styleListHead');
+		$template->set('notGuest', $notGuest);
 		$head = $template->get();
 		
 		$template = new Template('Premanager', 'styleListBody');
 		$template->set('list', $list);
 		$template->set('node', $this);
+		$template->set('notGuest', $notGuest);
 		$body = $template->get();
 		
 		$template = new Template('Premanager', 'styleListFrame');

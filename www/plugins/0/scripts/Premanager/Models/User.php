@@ -41,7 +41,9 @@ final class User extends Model {
 	private $_avatarMIME;
 	private $_status;   
 	private $_hasPersonalSidebar;    
-	private $_email;             
+	private $_email; 
+	private $_styleID;
+	private $_style = false;
 	private $_unconfirmedEmail;    
 	private $_unconfirmedEmailStartTime = false;    
 	private $_unconfirmedEmailKey;
@@ -316,6 +318,7 @@ final class User extends Model {
 				'hasPersonalSidebar' => array(DataType::BOOLEAN,
 					'getHasPersonalSidebar', 'hasPersonalSidebar'),
 				'email' => array(DataType::STRING, 'getEmail', 'email'),
+				'style' => array(Style::getDescriptor(), 'getStyle', 'styleID'),
 				'unconfirmedEmail' => array(DataType::STRING, 'getUnconfirmedEmail',
 					'unconfirmedEmail'),
 				'unconfirmedEmailStartTime' => array(DataType::STRING,
@@ -482,7 +485,24 @@ final class User extends Model {
 		if ($this->_email === null)
 			$this->load();
 		return $this->_email;	
-	}                        
+	}                           
+
+	/**
+	 * Gets the style this user has chosen, if this user has explicitly chosen a
+	 * style
+	 *
+	 * @return Premanager\Models\Style the style or null if no style is chosen
+	 */
+	public function getStyle() {
+		$this->checkDisposed();
+			
+		if ($this->_style === false) {
+			if ($this->_styleID === null)
+				$this->load();
+			$this->_style = $this->_styleID ? Style::getByID($this->_styleID) : null;
+		}
+		return $this->_style;	
+	}                    
 
 	/**
 	 * Gets an email address that is not confirmed yet
@@ -845,7 +865,7 @@ final class User extends Model {
 					return false;
 			};
 		} else
-			$data = array('name' => $this->name);
+			$data = array('name' => $this->_name);
 			
 		DataBaseHelper::update('Premanager', 'Users',
 			DataBaseHelper::UNTRANSLATED_NAME,
@@ -904,6 +924,35 @@ final class User extends Model {
 		);           
 		
 		$this->_email = $email;
+	}     
+	
+	/**
+	 * Changes the style
+	 * 
+	 * This value will be changed in data base and in this object.
+	 * 
+	 * @param Premanager\Models\Style $style the style or null to reset to the
+	 *   default style
+	 * @throws Premanager\InvalidOperationException this user is the guest
+	 */
+	public function setStyle($style) {     
+		$this->checkDisposed();
+		
+		if (!$this->_id)
+			throw InvalidOperationException('Cannot set style for guest');
+		
+		if ($style !== null && !($style instanceof Style))
+			throw new ArgumentException(
+				'$style must be either null or a Premanager\Models\Style', 'style');
+			
+		DataBaseHelper::update('Premanager', 'Users',
+			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
+			array('styleID' => $style ? $style->getID() : 0),
+			array()
+		);           
+		
+		$this->_style = $style;
+		$this->_styleID = $style->getID();
 	}     
 	
 	/**
@@ -1366,10 +1415,10 @@ final class User extends Model {
 		$result = DataBase::query(
 			"SELECT user.name, user.color, translation.title, user.hasAvatar, ". 
 				"user.avatarMIME, user.status, user.hasPersonalSidebar, ".
-				"user.email, user.unconfirmedEmail, user.unconfirmedEmailStartTime, ".
-				"user.unconfirmedEmailKey, user.registrationTime, ".
-				"user.registrationIP, user.lastLoginTime, user.lastLoginIP, ".
-				"user.lastVisibleLoginTime, ".
+				"user.styleID, user.email, user.unconfirmedEmail, ".
+				"user.unconfirmedEmailStartTime, user.unconfirmedEmailKey, ".
+				"user.registrationTime, user.registrationIP, user.lastLoginTime, ".
+				"user.lastLoginIP, user.lastVisibleLoginTime, ".
 				"(user.secondaryPassword != '') AS hasSecondaryPassword, ".
 				"user.secondaryPasswordStartTime, ".
 				"user.secondaryPasswordExpirationTime, user.secondaryPasswordStartIP ".    
@@ -1390,7 +1439,8 @@ final class User extends Model {
 		$this->_avatarMIME = $result->get('avatarMIME');
 		$this->_status = $result->get('status');
 		$this->_hasPersonalSidebar = $result->get('hasPersonalSidebar');  
-		$this->_email = $result->get('email');                              
+		$this->_email = $result->get('email'); 
+		$this->_styleID = $result->get('styleID');                             
 		$this->_unconfirmedEmail = $result->get('unconfirmedEmail');        
 		$this->_unconfirmedEmailStartTime = $this->_unconfirmedEmail ?
 			new DateTime($result->get('unconfirmedEmailStartTime')) : null;      

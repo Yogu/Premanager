@@ -299,8 +299,10 @@ class Environment extends Module {
 			else {
 				$this->_styleLoading = true;
 				try {
-					// TODO: This value is only a placeholder; replace it by the real value
-					$this->_style = Style::getDefault();
+					if ($this->getUser()->getID() && $this->getUser()->getStyle())
+						$this->_style = $this->getUser()->getStyle();
+					else
+						$this->_style = Style::getDefault();
 				} catch (\Exception $e) {
 					$this->_styleLoading = false;
 					throw $e;
