@@ -109,8 +109,9 @@ class UserRightsPage extends PageNode {
 					$headTemplate->set('rights', $rights);
 					$bodyTemplate->set('project', $project);
 					$bodyTemplate->set('rights', $rights);
-					$blocks[] =
-						PageBlock::createTable($headTemplate->get(), $bodyTemplate->get());
+					$body = trim($bodyTemplate->get());
+					if ($body)
+						$blocks[] = PageBlock::createTable($headTemplate->get(), $body);
 				}
 			}
 		}
