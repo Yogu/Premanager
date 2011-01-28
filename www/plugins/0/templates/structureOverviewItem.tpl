@@ -4,7 +4,7 @@
 		
 		<ul class="toolbar">
 			{$url = $node->getURL()}
-			{toolbarItem
+			{toolBarItem
 				title=string(Premanager editNode)
 				description=string(Premanager editNodeDescription)
 				url=concat($url, '/+edit')
@@ -12,7 +12,7 @@
 			}
 			
 			{$realURL = $node->getRealURL()}
-			{toolbarItem
+			{toolBarItem
 				title=string(Premanager gotoNode)
 				description=string(Premanager gotoNodeDescription)
 				url=$realURL
@@ -26,7 +26,7 @@
 				{$description = addNodeDescription}
 				{$enabled = true}
 			{/if}
-			{toolbarItem
+			{toolBarItem
 				title=string(Premanager addNode)
 				description=string(Premanager $description)
 				url=concat($url, '/+add')
@@ -35,14 +35,14 @@
 			}
 			
 			{if $node->getStructureNode()->getParent()}
-				{toolbarItem
+				{toolBarItem
 					title=string(Premanager moveNode)
 					description=string(Premanager moveNodeDescription)
 					url=concat($url, '/+move')
 					iconURL='Premanager/images/tools/move.png'
 				}
 				
-				{toolbarItem
+				{toolBarItem
 					title=string(Premanager nodePermissions)
 					description=string(Premanager nodePermissionsDescription)
 					url=concat($url, '/+permissions')
@@ -56,7 +56,7 @@
 					{$description = deleteTreeNodeError}
 					{$enabled = false}
 				{/if}
-				{toolbarItem
+				{toolBarItem
 					title=string(Premanager deleteNode)
 					description=string(Premanager $description)
 					url=concat($url, '/+delete')

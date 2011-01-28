@@ -34,7 +34,7 @@
 	
 	{if $canRegister}
 		<div class="info-box">
-			<p>{string Premanager loginRegisterTip} <a href="./{$registerURL}">{string Premanager loginRegisterTipLinkText}</a></p>
-		</div>	
+			<p>{string Premanager loginRegisterTip} <a href="./{treeURL Premanager register}">{string Premanager loginRegisterTipLinkText}</a></p>
+		</div>
 	{/if}
 {/form}

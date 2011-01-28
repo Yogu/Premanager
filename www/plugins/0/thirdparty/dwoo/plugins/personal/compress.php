@@ -1,4 +1,4 @@
-<?php       
+<?php
 
 class Dwoo_Processor_compress extends Dwoo_Processor {
 	public function process($input) {
@@ -11,10 +11,12 @@ class Dwoo_Processor_compress extends Dwoo_Processor {
 			preg_replace('/[\s]+/', ' ',
 			$input));*/    
 			
-		return
-			preg_replace('/([^a-zA-Z0-9_])\s([^a-zA-Z0-9_])/', '$1$2',
-			preg_replace('/[\s]+/', ' ',
-			$input));
+		if (strpos($input, '<?php') !== false)
+			return $input;
+		else
+			return preg_replace('/([^a-zA-Z0-9_()])\s([^a-zA-Z0-9_()])/', '$1$2',
+				preg_replace('/[\s]+/', ' ',
+				$input));
 	}
 }
 

@@ -1038,10 +1038,12 @@ fieldset > dl > dd > .input-errors li {
 .info-box {
 	padding: 4px;
 	padding-left: 20px;
+	margin: 6px;
 
 	background-color: #FFD636;     
 	background: url(../images/info-box.png) 4px center no-repeat,
-		-moz-linear-gradient(center top, #FFD636, #FFEB9B 13px, #FFD636 13px, #FFD636),
+		-moz-linear-gradient(center top, #FFD636, #FFEB9B 13px, #FFD636 13px, #FFD636);
+	background: url(../images/info-box.png) 4px center no-repeat,
 		-webkit-gradient(linear,
 			center top,
 			center bottom,
