@@ -795,86 +795,6 @@ final class User extends Model {
 	}
 	
 	/**
-	 * Changes the user name or set a translation for "guest", if this guest
-	 * 
-	 * This value will be changed in data base and in this object.
-	 *
-	 * @param string $name new user name
-	 * @throws Premanage\NameConflictOperation the name is already assigned to a
-	 *   user
-	 */
-	public function setName($name) {
-		$this->checkDisposed();
-
-		$name = trim($name);
-		
-		if (!$name)
-			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');
-		if (!self::isValidName($name))
-			throw new ArgumentException('$name is not a valid user name');
-		if (!self::isNameAvailable($name, $this))
-			throw new NameConflictException('This name is already assigned to a user',
-				$name);
-
-		// Update guest's name
-	  if (!$this->_id) {
-			$result = DataBase::query(
-				"SELECT string.id, translation.languageID ".
-				"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
-				"LEFT JOIN ".DataBase::formTableName('Premanager', 'StringsTranslation').
-					" AS translation ".
-					"ON string.id = translation.id ".
-					"AND translation.languageID = '".
-						Environment::getCurrent()->$language->getid()."' ".
-				"WHERE string.pluginID = '0' ".
-					"AND string.name = 'guest'");
-			if (Types::isInteger($result->get('languageID'))) {
-				DataBase::query(
-					"UPDATE ".
-						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
-					"SET value = '".DataBase::escape($_name)."' ".
-					"WHERE id = '".$result->get('id')."' ".
-						"AND languageID = '".Environment::getCurrent()->$language->getid()."'");
-			} else {
-				DataBase::query(
-					"INSERT INTO ".
-						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
-					"(id, languageID, value) ".
-					"VALUES ('".$result->get('id')."', ".
-						"'".Environment::getCurrent()->$language->getid()."', ".
-						"'".DataBase::escape($this->_name)."')");
-			}
-			
-			$callback = function($name, &$languageID) {
-				$result = DataBase::query(
-					"SELECT translation.languageID ".
-					"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
-					"INNER JOIN ".
-						DataBase::formTableName('Premanager', 'StringsTranslation').
-						" AS translation ".
-						"ON string.id = translation.id ".
-					"WHERE string.pluginID = '0' ".
-						"AND string.name = 'guest' ".
-						"AND LOWER(translation.value) = '".
-							DataBase::escape(Strings::unitize($name))."'");
-				if ($result->next()) {
-					$languageID = $result->get('languageID');
-					return true;
-				} else
-					return false;
-			};
-		} else
-			$data = array('name' => $this->_name);
-			
-		DataBaseHelper::update('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME,
-			$this->_id, $name, $data, array(), $callback);
-		
-		$this->_name = $name;
-	}   
-	
-	/**
 	 * Changes the status
 	 * 
 	 * Only if an user is enabled it can be used for login.
@@ -1005,8 +925,8 @@ final class User extends Model {
 				"'".Request::getIP()."') ".
 			"ON DUPLICATE KEY UPDATE userID = userID");
 			
-		if (DataBase::getAffectedRowCount() && $this->_groupCount !== null)
-			$this->_groupCount++;
+		if (DataBase::getAffectedRowCount())
+			$this->_groups = null;
 
 		// If group is of organization and has a priority, title and color might
 		// have changed
@@ -1031,9 +951,9 @@ final class User extends Model {
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
 			"WHERE userID = '$this->_id' ".
 				"AND groupID = '".$group->getID()."'");   
-				   
-		if (DataBase::getAffectedRowCount() && $this->_groupCount !== null)
-			$this->_groupCount--;
+			
+		if (DataBase::getAffectedRowCount())
+			$this->_groups = null;
 
 		// If group is of organization and has a priority, title and color might
 		// have changed
@@ -1056,7 +976,7 @@ final class User extends Model {
 		if (!$email)
 			throw new ArgumentException('$email is null or an empty string', 'email');
            
-		$key = generateRandomPassword();
+		$key = self::generateKey();
 		     
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
@@ -1066,7 +986,9 @@ final class User extends Model {
 			"WHERE id = '$this->_id'");	
 		$this->_unconfirmedEmailKey = $key;       
 		$this->_unconfirmedEmail = $email;     
-		$this->_unconfirmedEmailStartTime = new DAteTime();
+		$this->_unconfirmedEmailStartTime = new DateTime();
+		
+		return $key;
 	}         
 
 	/**
@@ -1393,6 +1315,87 @@ final class User extends Model {
 		if (!$hidden)
 			$this->_lastVisibleLoginTime = new DateTime();
 	}
+	
+	// moved to bottom because Eclipse seems to have trouble with lambda.
+	/**
+	 * Changes the user name or set a translation for "guest", if this guest
+	 * 
+	 * This value will be changed in data base and in this object.
+	 *
+	 * @param string $name new user name
+	 * @throws Premanage\NameConflictOperation the name is already assigned to a
+	 *   user
+	 */
+	public function setName($name) {
+		$this->checkDisposed();
+
+		$name = trim($name);
+		
+		if (!$name)
+			throw new ArgumentException(
+				'$name is an empty string or contains only whitespaces', 'name');
+		if (!self::isValidName($name))
+			throw new ArgumentException('$name is not a valid user name');
+		if (!self::isNameAvailable($name, $this))
+			throw new NameConflictException('This name is already assigned to a user',
+				$name);
+
+		// Update guest's name
+	  if (!$this->_id) {
+			$result = DataBase::query(
+				"SELECT string.id, translation.languageID ".
+				"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
+				"LEFT JOIN ".DataBase::formTableName('Premanager', 'StringsTranslation').
+					" AS translation ".
+					"ON string.id = translation.id ".
+					"AND translation.languageID = '".
+						Environment::getCurrent()->$language->getid()."' ".
+				"WHERE string.pluginID = '0' ".
+					"AND string.name = 'guest'");
+			if (Types::isInteger($result->get('languageID'))) {
+				DataBase::query(
+					"UPDATE ".
+						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
+					"SET value = '".DataBase::escape($_name)."' ".
+					"WHERE id = '".$result->get('id')."' ".
+						"AND languageID = '".Environment::getCurrent()->$language->getid()."'");
+			} else {
+				DataBase::query(
+					"INSERT INTO ".
+						DataBase::formTableName('Premanager', 'StringsTranslation'). " ".
+					"(id, languageID, value) ".
+					"VALUES ('".$result->get('id')."', ".
+						"'".Environment::getCurrent()->$language->getid()."', ".
+						"'".DataBase::escape($this->_name)."')");
+			}
+			
+			$callback = function($name, &$languageID) {
+				$result = DataBase::query(
+					"SELECT translation.languageID ".
+					"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
+					"INNER JOIN ".
+						DataBase::formTableName('Premanager', 'StringsTranslation').
+						" AS translation ".
+						"ON string.id = translation.id ".
+					"WHERE string.pluginID = '0' ".
+						"AND string.name = 'guest' ".
+						"AND LOWER(translation.value) = '".
+							DataBase::escape(Strings::unitize($name))."'");
+				if ($result->next()) {
+					$languageID = $result->get('languageID');
+					return true;
+				} else
+					return false;
+			};
+		} else
+			$data = array('name' => $this->_name);
+			
+		DataBaseHelper::update('Premanager', 'Users',
+			DataBaseHelper::UNTRANSLATED_NAME,
+			$this->_id, $name, $data, array(), $callback);
+		
+		$this->_name = $name;
+	}   
 
 	// ===========================================================================
 	
@@ -1529,6 +1532,17 @@ final class User extends Model {
 			$this->joinGroup(Group::getByID($result->get('id')));
 		}	
 	}  
+
+	// Returns the cookie value
+	private function generateKey()  {
+		return substr(hash('sha256',
+			'4310fbf72c046c412e46a028eff9c4043788bc50928c04d4bbcfbccac4132498'.
+			Config::getSecurityCode().
+			hash('sha256',
+				'1b323eb338f3c051e24651c24f6ab9121f779ccb27b0e9179f7b80a3e4c858e6'.
+				$this->getName().Config::getSecurityCode().$this->getID()).
+				Request::getIP().time()), 0, 16); 
+	} 
 }
 
 ?>

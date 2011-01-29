@@ -1,4 +1,4 @@
-{form}
+{form action=treeURL(Premanager login)}
 	{if $referer}
 		<input type="hidden" name="referer" value="{html $referer}" />
 	{/if}
