@@ -199,7 +199,7 @@ class Mail extends Module {
 
 		if ($log)
 			Debug::log($header.$content);
-		return mail($to, $title, $content, $header);
+		return mail($to, $this->title, $content, $header);
 	}
 	
 	/**

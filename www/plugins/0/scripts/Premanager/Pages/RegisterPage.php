@@ -142,15 +142,14 @@ class RegisterPage extends TreeFormPageNode {
 				$user->setEnableOnEmailConfirmation(true);
 		
 		$email = $values['email'];
-		if ($email) {
+		if ($email)
 			$key = $user->setUnconfirmedEmail($email);
-	
-			$params = array(
-					'userName' => $user->getName(),
-					'organizationTitle' => Project::getOrganization()->getTitle(),
-					'linkURL' => 'http://'.URL::fromTemplate().$this->getURL().
-						'?key='.$key);
-		}
+			
+		$params = array(
+				'userName' => $user->getName(),
+				'organizationTitle' => Project::getOrganization()->getTitle(),
+				'linkURL' => 'http://'.URL::fromTemplate().$this->getURL().
+					'?key='.$key);
 			
 		if (!self::isEmailOptional()) {
 			$mail = new Mail();
@@ -161,7 +160,7 @@ class RegisterPage extends TreeFormPageNode {
 				'userAccountActivationEmailPlainMessage', $params);
 			$mail->createMainBlock('<p>'.Translation::defaultGet('Premanager',
 				'userAccountActivationEmailMessage', $params).'</p>');
-			if ($mail->send($email, $user->getName(), true)) {
+			if ($mail->send($email, $user->getName())) {
 				return Page::createMessagePage($this, Translation::defaultGet(
 					'Premanager', 'userAccountActivationEmailSentMessage'));
 			} else {    
@@ -180,8 +179,8 @@ class RegisterPage extends TreeFormPageNode {
 				'userEmailConfirmationOnAccountCreationEmailPlainMessage', $params);
 			$mail->createMainBlock('<p>'.Translation::defaultGet('Premanager',
 				'userEmailConfirmationOnAccountCreationEmailMessage', $params).'</p>');
-			if ($mail->send($email, $user->getName(), true)) {
-				$message = 'userEmailConfirmationOnAccountCreationEmailMessage';
+			if ($mail->send($email, $user->getName())) {
+				$message = 'userAccountWithEmailCreatedMessage';
 			} else {  
 				//TODO
 				// Premanager::logToDB('warning', 'Failed to send email confirmation '.
@@ -197,7 +196,7 @@ class RegisterPage extends TreeFormPageNode {
 		$template->set('canRegister', false);
 		$page = new Page($this);
 		$page->createMainBlock(
-			'<p>'.Translation::defaultGet('Premanager', $message).'</p>');
+			'<p>'.Translation::defaultGet('Premanager', $message, $params).'</p>');
 		$page->appendBlock(PageBlock::createSimple(
 			Translation::defaultGet('Premanager', 'loginTitle'),
 			$template->get()));
