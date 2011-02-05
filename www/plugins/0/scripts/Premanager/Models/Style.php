@@ -378,12 +378,17 @@ final class Style extends Model {
 	/**
 	 * Creates a list of stylesheets used by this style
 	 * 
+	 * @param string $doctype specify to a value not equal to 'all' to select only
+	 *   those stylesheets for a specific doctype (e.g. 'page' or 'mail')
 	 * @return Premanager\Models\Style
 	 */
-	public function getStylesheets()  {
+	public function getStylesheets($doctype = 'all')  {
 		$this->checkDisposed();
 		
-		if ($this->_stylesheets === null) {
+		if (!$doctype)
+			$doctype = 'all';
+		
+		if ($this->_stylesheets[$doctype] === null) {
 			$fileName = $this->getFileName();
 			if (!File::exists($fileName))
 				throw new CorruptDataException('Referred style file does not exist ('.
@@ -395,17 +400,21 @@ final class Style extends Model {
 					'id: '.$this->_id.', file name: '.$fileName);
 			$this->_stylesheets = array();
 			foreach ($xml->getElementsByTagName('stylesheet') as $stylesheet) {
+				$dt = $stylesheet->getAttribute('doctype');
+				if ($dt && $dt != 'all' && $doctype != 'all' && $dt != $doctype)
+					continue;
+					 
 				$src = $stylesheet->getAttribute('src');
 				$type = $stylesheet->getAttribute('type');
 				$media = $stylesheet->getAttribute('media');
-				$this->_stylesheets[] =
+				$this->_stylesheets[$doctype][] =
 					StylesheetInfo::simpleCreate($this->getPlugin()->getName(),
 					dirname($this->getPath()) . '/' . $src,
 					$media, $type);
 			}
 		}
 		
-		return $this->_stylesheets;
+		return $this->_stylesheets[$doctype];
 	}   
 	
 	/**

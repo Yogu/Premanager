@@ -40,7 +40,7 @@
 		     		
 		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
-		{foreach $environment->getStyle()->getStylesheets() as stylesheet}
+		{foreach $environment->getStyle()->getStylesheets('page') as stylesheet}
 			{if $environment->getEdition() == 1} {* mobile *}
 				{if $stylesheet->getMedia() != "screen"} 
 					<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getMedia() == 'handheld'} media="handheld, screen"{elseif $stylesheet->getMedia() != "all"} media="{html $stylesheet->getMedia()}"{/if} />
@@ -78,7 +78,7 @@
 		{$head}
 	</head>
 	
-	<body class="{if $sidebar}has-sidebar {/if}">
+	<body class="page{if $sidebar} has-sidebar{/if}">
 		<header id="header">
 			<hgroup>
 				<h1 id="organization-heading"><a href="./">{html $organization->getTitle()}</a></h1>

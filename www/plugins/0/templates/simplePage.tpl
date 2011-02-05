@@ -29,7 +29,7 @@
 		     		
 		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
-		{foreach $environment->getStyle()->getStylesheets() as stylesheet}
+		{foreach $environment->getStyle()->getStylesheets('page') as stylesheet}
 			<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}"{if $stylesheet->getmedia() != 'all'} media="{html $stylesheet->getMedia()}"{/if} />
 		{/foreach}
 	</head>

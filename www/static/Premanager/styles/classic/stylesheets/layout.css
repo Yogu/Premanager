@@ -92,6 +92,10 @@ body.simple {
 	padding-left: 200px;
 }
 
+body.mail #content {
+	padding-left: 0;
+}
+
 body.has-sidebar #content {
 	padding-right: 200px;	
 }

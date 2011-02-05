@@ -113,7 +113,7 @@ class Mail extends Module {
 		if (!is_array($inlineAttachments))
 			$inlineAttachments = array();
 		$number = 0;
-		foreach (Environment::getCurrent()->getStyle()->getStylesheets() as
+		foreach (Environment::getCurrent()->getStyle()->getStylesheets('mail') as
 			$stylesheet)
 		{
 			$inlineAttachments[] = new InlineAttachment(

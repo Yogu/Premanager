@@ -15,12 +15,12 @@
 		<link rel="shortcut icon" title="Shortcut Icon" href="{html $staticURLPrefix}Premanager/images/icon-16x16.png" />
 		
 		{$stylesheetNumber = 0}
-		{foreach $environment->getStyle()->getStylesheets() as stylesheet}
+		{foreach $environment->getStyle()->getStylesheets('mail') as stylesheet}
 			<link rel="stylesheet" type="text/css" href="cid:stylesheet-{$stylesheetNumber++}@premanager" media="{html $stylesheet->getMedia()}" />
 		{/foreach}
 	</head>
 	
-	<body>
+	<body class="mail">
 		<header id="header">
 			<hgroup>
 				<h1 id="organization-heading"><a href="./">{html $organization->getTitle()}</a></h1>

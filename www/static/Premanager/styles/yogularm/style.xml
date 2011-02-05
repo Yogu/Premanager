@@ -4,7 +4,8 @@
 	<stylesheet src="stylesheets/layout.css" type="text/css" media="all" />
 	<stylesheet src="stylesheets/general.css" type="text/css" media="all" />
 	<stylesheet src="stylesheets/classes.css" type="text/css" media="all" />
-	<stylesheet src="stylesheets/screen.css" type="text/css" media="screen" />
+	<stylesheet src="stylesheets/screen.css" type="text/css" media="screen" doctype="page" />
+	<stylesheet src="stylesheets/mail.css" type="text/css" media="all" doctype="mail" />
 	<stylesheet src="stylesheets/print.css" type="text/css" media="print" />
 	<stylesheet src="stylesheets/mobile.css" type="text/css" media="handheld" />
 </style>
