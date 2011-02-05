@@ -1,0 +1,208 @@
+body {
+	padding: 10px;
+	background: #FFFFFF;	
+}
+
+#navbar,
+#navigation-tree,
+#toolbar,
+#pagination,
+.toolbar {
+	display: none !important; 	
+}
+
+#header {
+	margin-bottom: 10px;
+	padding: 0;
+	height: auto;
+	
+	background: none;
+	border: none; 
+}
+
+#header:after,
+#header:before {
+	display: none;	
+}
+
+#organization-heading,
+#project-heading {
+	display: inline;
+	margin-right: 50px;
+	
+	font-size: 26px;
+	font-weight: bold;		
+	color: #000000;
+}
+
+#organization-heading a,
+#project-heading a,
+#organization-heading a:hover,
+#project-heading a:hover {
+	color: #000000;
+	text-decoration: none;
+}
+
+#content {
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+
+/* ========== Content blocks and sidebar blocks ========== */
+
+.block {
+	margin-bottom: 20px;
+}
+
+.block:last-child {
+	margin-bottom: 0;	
+}
+
+#main-block > header,
+.block > header {
+	margin: 0 0 5px;
+	padding: 0;
+	
+	background: none;
+	
+	text-align: left;
+	font-weight: bold;
+	word-wrap: break-word;
+	font-size: 18px;
+	line-height: 24px;
+	font-weight: bold;
+	font-family: Verdana,sans-serif;
+}
+
+.block.table-wrap table > thead > tr > th {
+	text-align: left;
+	font-weight: bold;
+	
+	padding: 2px 8px;
+}
+
+.block.table-wrap table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+#main-block > header {
+	font-size: 20px;
+	line-height: 26px;
+}
+
+.block > div {
+	overflow: hidden;
+	padding: 0;
+}
+
+#footer {
+	background: 0;
+}
+
+#footer p,
+#footer a {
+	color: #444444;
+}
+
+#footer-time-info {
+	display: none;
+}
+
+.block > div > .list, .block > div > .tree {
+	margin: 0 !important;	
+}
+
+/* ========== Lists ========== */
+
+.list,
+.block.table-wrap table > tbody > tr:first-child > td {
+	border-top: 1px solid #D7DEF1;
+}
+
+.list > li,
+.list > li > a,
+.block.table-wrap table > tbody > tr > td {
+	padding: 7px 8px;
+	
+	border-bottom: 1px solid #D7DEF1;
+	border-top: none;
+	background: none;
+	list-style: none;
+	outline: none;
+}
+
+.list > li.selected,
+.list > li.selected > a,
+.block.table-wrap table > tbody > tr.selected > td {
+	background-color: #FFD053;
+}    
+
+.list > li.selected:hover,
+.list > li.selected:hover > a,
+.block.table-wrap table > tbody > tr.selected:hover > td {
+	background-color: #FFC836;
+}
+
+.block.table-wrap table > thead tr,
+.block.table-wrap table > thead th {
+	padding: 2px 8px !important;
+	
+	background: none !important;
+	border: none !important;
+}
+
+.block.table-wrap table > tbody > tr > td > a {
+	padding: 7px 8px;
+	
+	outline: none;
+}
+     
+.list > li > a, 
+.block.table-wrap table > tbody > tr > td > a {
+	display: block;
+}
+
+.block.table-wrap table > tbody > tr > td > a {
+	overflow: hidden;
+}
+
+.list > li > a,
+.block.table-wrap table > tbody > tr > td > a {
+ 	margin: -8px;
+} 
+
+.list > li > a,
+.list > li:hover > a,
+.block.table-wrap table > tbody > tr > td > a,
+.block.table-wrap table > tbody > tr > td > a:hover {
+ 	color: #000000;
+ 	text-decoration: none;
+}
+
+.list > li:hover,
+.list > li:hover > a,
+.block.table-wrap table > tbody > tr:hover > td {
+	background-color: #D7DEF1;
+}    
+
+.list > li.group-header,
+.block.table-wrap table > tbody > tr.group-header > td {
+	background-color: #FFD07C !important;
+	border: none !important;
+
+	font-size: 16px;
+	font-weight: bold;
+	color: #800000;
+}
+
+.list > li.group-header > a,
+.block.table-wrap table > tbody > tr.group-header > td > a {
+ 	margin: -7px -8px;
+	
+	background-color: #D7DEF1 !important;
+	color: #404080;
+	border: none !important;
+}
