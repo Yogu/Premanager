@@ -87,8 +87,8 @@ class RegisterPage extends TreeFormPageNode {
 				$errors[] = array('emailConfirmation', Translation::defaultGet(
 					'Premanager', 'emailConfirmationInvalidError'));
 		} else if (!self::isEmailOptional())
-			$errors[] = Translation::defaultGet('Premanager',
-				'noRegistrationEmailInputtedError');
+			$errors[] = array('email', Translation::defaultGet('Premanager',
+				'noRegistrationEmailInputtedError'));
 		
 		return array(
 			'name' => $name,
@@ -148,8 +148,7 @@ class RegisterPage extends TreeFormPageNode {
 		$params = array(
 				'userName' => $user->getName(),
 				'organizationTitle' => Project::getOrganization()->getTitle(),
-				'linkURL' => 'http://'.URL::fromTemplate().$this->getURL().
-					'?key='.$key);
+				'linkURL' => URL::fromTemplate().$this->getURL().'?key='.$key);
 			
 		if (!self::isEmailOptional()) {
 			$mail = new Mail();
