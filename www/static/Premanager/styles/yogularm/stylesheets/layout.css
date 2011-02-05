@@ -18,9 +18,6 @@ ul.location > li {
 	padding-right: 2ex;
  	
  	list-style: none;
- 	
- 	font-size: 10px;
- 	font-weight: bold;
 }
 
 #navbar > ul > li:after,
@@ -40,6 +37,13 @@ ul.location > li:last-child:after {
 ul.location > li:first-child {
 	background: none;
 	padding-left: 0;
+}
+
+#navbar > ul > li,
+ul.location > li,
+#pagination {
+ 	font-size: 10px;
+ 	font-weight: bold;	
 }
 
 /* ========== Footer ========== */

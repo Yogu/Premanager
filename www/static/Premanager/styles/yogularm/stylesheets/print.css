@@ -4,7 +4,9 @@ body {
 
 #navbar,
 #navigation-tree,
-#toolbar {
+#toolbar,
+#pagination,
+#footer-time-info {
 	display: none; 	
 }
 

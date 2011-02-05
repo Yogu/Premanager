@@ -80,6 +80,13 @@
 	display: none;
 }
 
+#pagination {
+	position: absolute;
+	right: 5px;
+	top: 53px;
+	z-index: 1;	
+}
+
 #navigation-tree {
 	display: none;	
 }

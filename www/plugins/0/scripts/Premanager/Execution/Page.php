@@ -158,6 +158,7 @@ class Page extends Response {
 		$navigationTree = PageNode::getNavigationTreeSource($this->_node);
 		
 		$template->set('node', $this->_node);
+		$template->set('isList', $this->_node instanceof ListPageNode);
 		$template->set('title', $this->title);
 		$template->set('project', $this->_node->getProject());
 		$template->set('projectNode', $projectNode);

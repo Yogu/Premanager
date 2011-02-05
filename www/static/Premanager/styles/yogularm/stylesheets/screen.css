@@ -207,6 +207,13 @@
 	width: 180px;	
 }
 
+#pagination {
+	position: absolute;
+	right: 17px;
+	top: 85px;
+	z-index: 1;	
+}
+
 /* ========== Navigation Tree ========== */
 
 #navigation-tree li {

@@ -26,6 +26,16 @@
 		{if $node->getParent()} 
 			<link rel="up" title="{string Premanager up}" href="./{html $node->getParent()->getURL()}" />
 		{/if}
+		{if $isList && $node->getPageCount() > 1}
+			<link rel="first" title="{string Premanager pageX array(page=1)}" href="./{$node->getURLForPage(1)}" />
+			<link rel="last" title="{string Premanager pageX array(page=$node->getPageCount())}" href="./{$node->getURLForPage($node->getPageCount())}" />
+			{if $node->getPageIndex() > 1}
+				<link rel="prev" title="{string Premanager pageX array(page=$node->getPageIndex()-1)}" href="./{$node->getURLForPage($node->getPageIndex()-1)}" />
+			{/if}
+			{if $node->getPageIndex() - $node->getPageCount()}
+				<link rel="next" title="{string Premanager pageX array(page=$node->getPageIndex()+1)}" href="{$node->getURLForPage($node->getPageIndex()+1)}" />
+			{/if}
+		{/if}
 		
 		{if $environment->getEdition() == 1} {* mobile *}
 			<link rel="alternate" media="screen" type="text/html" href="{urlPrefix null ''}{$node->getFullURL()}" />
@@ -53,20 +63,6 @@
 				<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}" media="{html $stylesheet->getMedia()}" />
 			{/if}
 		{/foreach}
-		
-		{*
-		TODO: move this code to somewhere it is used
-		{if $List_pageCount > 1}
-			<link rel="first" title="{string Premanager pageX array(page=1)}" href="./{$List_firstPageURL}" />
-			<link rel="last" title="{string Premanager pageX array(page=$List_pageCount)}" href="./{$List_baseURL}{$List_pageCount}" />
-			{if $List_page > 1}
-				<link rel="prev" title="{string Premanager pageX array(page=$List_page-1)}" href="{if $List_page-1 > 1}{$List_baseURL}{$List_page-1}{else}{$List_firstPageURL}{/if}" />
-			{/if}
-			{if $List_page < $List_pageCount}
-				<link rel="next" title="{string Premanager pageX array(page=$List_page+1)}" href="{$List_baseURL}/{$List_page+1}" />
-			{/if}
-		{/if}
-		*}
 		                       
 		<script type="text/javascript">var Config = \{emptyURLPrefix:'{escape $emptyURLPrefix}', staticURLPrefix:'{escape $staticURLPrefix}'};</script>                                                                                                      
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/prototype.js"></script>
@@ -96,41 +92,38 @@
 			</ul>		
 		</nav>
 			
-		{*
-		TODO: move this to where it works
-		{if $List_pageCount > 1}
-			<div class="pagination">
-				{if $List_page > 1}
-					<a href="./{if $List_page-1 > 1}{$List_baseURL}{$List_page-1}{else}{$List_firstPageURL}{/if}" class="page-back">{string Premanager pageBack}</a>
+		{if $isList && $node->getPageCount() > 1}
+			<div id="pagination">
+				{if $node->getPageIndex() > 1}
+					<a href="./{$node->getURLForPage($node->getPageIndex()-1)}" class="page-back">{string Premanager pageBack}</a>
 				{/if}
 				
 				<span class="pages">
-					{if $List_page > 1}<a href="./{$List_firstPageURL}">1</a>{/if}
-					{if $List_page > 2}<a href="./{$List_baseURL}2">2</a>{/if}
-					{if $List_page > 3}<a href="./{$List_baseURL}3">3</a>{/if}
+					{if $node->getPageIndex() > 1}<a href="./{$node->getURLForPage(1)}">1</a>{/if}
+					{if $node->getPageIndex() > 2}<a href="./{$node->getURLForPage(2)}">2</a>{/if}
+					{if $node->getPageIndex() > 3}<a href="./{$node->getURLForPage(3)}">3</a>{/if}
 					
-					{if $List_page > 5}<span class="gap">{string Premanager literalGap}</span>{/if}
+					{if $node->getPageIndex() > 5}<span class="gap">{string Premanager literalGap}</span>{/if}
 
-            {if $List_page > 5 && $List_page == $List_pageCount}<a href="./{$List_baseURL}{$List_page-2}">{$List_page-2}</a>{/if} 
-					{if $List_page > 4}<a href="./{$List_baseURL}{$List_page-1}">{$List_page-1}</a>{/if}
+            {if $node->getPageIndex() > 5 && $node->getPageIndex() == $node->getPageCount()}<a href="./{$node->getURLForPage($node->getPageIndex()-2)}">{$node->getPageIndex()-2}</a>{/if} 
+					{if $node->getPageIndex() > 4}<a href="./{$node->getURLForPage($node->getPageIndex()-1)}">{$node->getPageIndex()-2}</a>{/if}
 					
-					<span class="current">{$List_page}</span>
+					<span class="current">{$node->getPageIndex()}</span>
 					
-					{if $List_page < $List_pageCount-3}<a href="./{$List_baseURL}{$List_page+1}">{$List_page+1}{/if}
+					{if $node->getPageIndex() < $node->getPageCount()-3}<a href="./{$node->getURLForPage($node->getPageIndex()+1)}">{$List_page+1}{/if}
 					
-					{if $List_page < $List_pageCount-4}{string Premanager literalGap}</span>{/if}
+					{if $node->getPageIndex() < $node->getPageCount()-4}{string Premanager literalGap}</span>{/if}
 					
-					{if $List_page < $List_pageCount-2}<a href="./{$List_baseURL}{$List_pageCount-2}">{$List_pageCount-2}</a>{/if}
-					{if $List_page < $List_pageCount-1}<a href="./{$List_baseURL}{$List_pageCount-1}">{$List_pageCount-1}</a>{/if}
-					{if $List_page < $List_pageCount}<a href="./{$List_baseURL}{$List_pageCount}">{$List_pageCount}</a>{/if}
+					{if $node->getPageIndex() < $node->getPageCount()-2}<a href="./{$node->getURLForPage($node->getPageCount()-2)}">{$node->getPageCount()-2}</a>{/if}
+					{if $node->getPageIndex() < $node->getPageCount()-1}<a href="./{$node->getURLForPage($node->getPageCount()-1)}">{$node->getPageCount()-1}</a>{/if}
+					{if $node->getPageIndex() < $node->getPageCount()}<a href="./{$node->getURLForPage($node->getPageCount())}">{$node->getPageCount()}</a>{/if}
 				</span>
 
-				{if $List_page < $List_pageCount}
-					<a href="./{$List_baseURL}{$List_page+1}" class="page-forward">{string Premanager pageForward}</a>
+				{if $node->getPageIndex() < $node->getPageCount()}
+					<a href="./{$node->getURLForPage($node->getPageCount())}" class="page-forward">{string Premanager pageForward}</a>
 				{/if}
 			</div>			
 		{/if}
-		*}
 		
 		{if count($toolbar)}
 			<ul class="toolbar" id="toolbar">

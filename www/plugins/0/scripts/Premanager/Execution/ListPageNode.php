@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\Debug\Debug;
+
 use Premanager\IO\Request;
 use Premanager\IO\StatusCode;
 use Premanager\Execution\Template;
@@ -35,6 +37,10 @@ abstract class ListPageNode extends PageNode {
 	 * @var int
 	 */
 	private $_itemsPerPage;
+	/**
+	 * @var bool
+	 */
+	private $_pageIndexChecked;
 	
 	// ===========================================================================
 	
@@ -128,14 +134,30 @@ abstract class ListPageNode extends PageNode {
 	 * @return int
 	 */
 	public function getPageIndex() {
-		if ($this->_pageIndex === null) {
+		if (!$this->_pageIndexChecked) {
 			// Check that current page is in page range  
 			if ($this->_pageIndex > $this->getPageCount())
 				$this->_pageIndex = $this->getPageCount();
 			if ($this->_pageIndex < 1)
 				$this->_pageIndex = 1;
+			$this->_pageIndexChecked = true;
 		}
 		return $this->_pageIndex;
+	}
+	
+	public function getURLForPage($page) {
+		$tmp = $this->_pageIndex;
+		$this->_pageIndexChecked = false;
+		try {
+			$this->_pageIndex = $page;
+			
+			$url = $this->getFullURL();
+			$this->_pageIndex = $tmp;
+			return $url;
+		} catch (\Exception $e) {
+			$this->_pageIndex = $tmp;
+			throw $e;
+		}
 	}
 	
 	/**
