@@ -69,7 +69,9 @@ class Rights {
 			}
 		}
 		
-		if ($ok)
+		// Guests can't confirm their login
+		if ($ok ||
+			($confirmationRequired && !Environment::getCurrent()->getUser()->getID()))
 			return true;
 		else {
 			$errorResponse = new Page(Environment::getCurrent()->getPageNode());

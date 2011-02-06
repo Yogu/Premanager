@@ -83,8 +83,10 @@ class Page extends Response {
 	 * @param string $message the message to output
 	 */
 	public static function createMessagePage(PageNode $node, $message) {
+		$template = new Template('Premanager', 'message');
+		$template->set('message', $message);
 		$page = new Page($node);
-		$page->createMainBlock('<p>'.$message.'</p>');
+		$page->createMainBlock($template->get());
 		return $page;
 	}
 	
