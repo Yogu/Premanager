@@ -342,10 +342,15 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @return Premanager\QueryList\QueryExpression
 	 */
 	public function exprEqual($operand0, $operand1) {
-		if (!($operand0 instanceof QueryExpression))
-			$operand0 = new QueryExpression($this->_modelType, $operand0);
-		if (!($operand1 instanceof QueryExpression))
-			$operand1 = new QueryExpression($this->_modelType, $operand1);	
+		if ($operand0 === null)
+			throw ArgumentNullException('operand0');
+		if ($operand1 === null)
+			throw ArgumentNullException('operand1');
+		
+		if ($operand0 !== null && !($operand0 instanceof QueryExpression))
+			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);
+		if ($operand1 !== null && !($operand1 instanceof QueryExpression))
+			$operand1 = new QueryExpression($this->_modelType, 0, $operand1);
 			
 		return new QueryExpression($this->_modelType, QueryOperation::EQUAL,
 			$operand0, $operand1);
@@ -359,10 +364,15 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @return Premanager\QueryList\QueryExpression
 	 */
 	public function exprUnequal($operand0, $operand1) {
-		if (!($operand0 instanceof QueryExpression))
-			$operand0 = new QueryExpression($this->_modelType, $operand0);
-		if (!($operand1 instanceof QueryExpression))
-			$operand1 = new QueryExpression($this->_modelType, $operand1);	
+		if ($operand0 === null)
+			throw ArgumentNullException('operand0');
+		if ($operand1 === null)
+			throw ArgumentNullException('operand1');
+		
+		if ($operand0 !== null && !($operand0 instanceof QueryExpression))
+			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);
+		if ($operand1 !== null && !($operand1 instanceof QueryExpression))
+			$operand1 = new QueryExpression($this->_modelType, 0, $operand1);
 			
 		return new QueryExpression($this->_modelType, QueryOperation::UNEQUAL,
 			$operand0, $operand1);
@@ -379,12 +389,12 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function expr($operation, $operand0, $operand1 = null,
 		$operand2 = null) {
-		if ($operand0 != null && !($operand0 instanceof QueryExpression))
-			$operand0 = new QueryExpression($this->_modelType, $operand0);
-		if ($operand1 != null && !($operand1 instanceof QueryExpression))
-			$operand1 = new QueryExpression($this->_modelType, $operand1);
-		if ($operand2 != null && !($operand2 instanceof QueryExpression))
-			$operand2 = new QueryExpression($this->_modelType, $operand2);
+		if ($operand0 !== null && !($operand0 instanceof QueryExpression))
+			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);
+		if ($operand1 !== null && !($operand1 instanceof QueryExpression))
+			$operand1 = new QueryExpression($this->_modelType, 0, $operand1);
+		if ($operand2 !== null && !($operand2 instanceof QueryExpression))
+			$operand2 = new QueryExpression($this->_modelType, 0, $operand2);
 			
 		return new QueryExpression($this->_modelType, $operation,
 			$operand0, $operand1, $operand2);
@@ -399,9 +409,9 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function exprAnd($operand0, $operand1) {
 		if (!($operand0 instanceof QueryExpression))
-			$operand0 = new QueryExpression($this->_modelType, $operand0);
+			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);
 		if (!($operand1 instanceof QueryExpression))
-			$operand1 = new QueryExpression($this->_modelType, $operand1);
+			$operand1 = new QueryExpression($this->_modelType, 0, $operand1);
 			
 		return new QueryExpression($this->_modelType, QueryOperation::LOGICAL_AND,
 			$operand0, $operand1);
@@ -416,9 +426,9 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function exprOr($operand0, $operand1) {
 		if (!($operand0 instanceof QueryExpression))
-			$operand0 = new QueryExpression($this->_modelType, $operand0);
+			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);
 		if (!($operand1 instanceof QueryExpression))
-			$operand1 = new QueryExpression($this->_modelType, $operand1);
+			$operand1 = new QueryExpression($this->_modelType, 0, $operand1);
 			
 		return new QueryExpression($this->_modelType, QueryOperation::LOGICAL_OR,
 			$operand0, $operand1);
@@ -451,6 +461,15 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 				'object descriptor');
 			
 		return new QueryExpression($type, QueryOperation::MEMBER, $object, $member);
+	}
+	
+	/**
+	 * Gets a THIS expression which points to the model itself
+	 *
+	 * @return Premanager\QueryList\QueryExpression
+	 */
+	public function exprThis() {
+		return new QueryExpression($this->_modelType, QueryOperation::THIS, null);
 	}
 	
 	// ===========================================================================

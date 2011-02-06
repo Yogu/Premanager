@@ -15,6 +15,14 @@ class QueryOperation {
 	const MEMBER = 1;
 	
 	/**
+	 * The this operator
+	 * 
+	 * Accesses the model itself. Does not have any parameters.
+	 * @var int
+	 */
+	const THIS = 19;
+	
+	/**
 	 * The bool not operator
 	 * 
 	 * - !BOOLEAN: negates a bool value
