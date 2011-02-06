@@ -212,15 +212,53 @@ class RegisterPage extends TreeFormPageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	protected function getFormPage($formHTML) {
-		if (!Rights::requireRight(array(
-			Right::getByName('Premanager', 'register'),
-			Right::getByName('Premanager', 'registerWithoutEmail')), null,
-			$errorResponse, false))
-			return $errorResponse;
-			
-		$page = new Page($this);
-		$page->createMainBlock($formHTML);
-		return $page;
+		if ($key = Request::getGET('key')) {
+			$l = User::getUsers();
+			$l = $l->filter($l->exprEqual($l->exprMember('unconfirmedEmailKey'),
+				$key));
+			if ($l->getCount() == 1) {
+				$user = $l->get(0);
+				$enabled = $user->isEnabled();
+				$user->confirmUnconfirmedEmail();
+				if (!$enabled && $user->isEnabled()) {
+					$page = new Page($this);
+					$page->createMainBlock('<p>'.Translation::defaultGet('Premanager',
+						'emailAddressConfirmedWithWaitForEmailMessage').'</p>');
+					$template = new Template('Premanager', 'loginForm');
+					$page->appendBlock(PageBlock::createSimple(
+						Translation::defaultGet('Premanager', 'loginTitle'),
+						$template->get()));
+					return $page;
+				} else
+					return Page::createMessagePage($this, Translation::defaultGet(
+						'Premanager', 'emailAddressConfirmedMessage'));
+			} else
+				return Page::createMessagePage($this, Translation::defaultGet(
+					'Premanager', 'confirmEmailInvalidKeySpecifiedError'));
+		} else {
+			if (!Rights::requireRight(array(
+				Right::getByName('Premanager', 'register'),
+				Right::getByName('Premanager', 'registerWithoutEmail')), null,
+				$errorResponse, false))
+				return $errorResponse;
+				
+			$page = new Page($this);
+			$page->createMainBlock($formHTML);
+			return $page;
+		}
+	}
+	
+	/**
+	 * Gets an array of names and values of the query ('page' => 7 for '?page=7')
+	 * 
+	 * @return array
+	 */
+	public function getURLQuery() {
+		$query = array();
+		if (Request::getGET('key')) {
+			$query['key'] = Request::getGET('key');
+		}
+		return $query;
 	}
 	
 	/**
