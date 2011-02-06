@@ -34,7 +34,6 @@ final class Session extends Model {
 	private $_lastRequestTime;
 	private $_ip;
 	private $_userAgent;
-	private $_secondaryPasswordUsed;
 	private $_hidden;
 	private $_isFirstRequest;
 	private $_project;
@@ -63,8 +62,8 @@ final class Session extends Model {
 	
 	private static function createFromID($id, $userID = null, $key = null, 
 		$startTime = null, $lastRequestTime = null, $ip = null, $userAgent = null,
-		$secondaryPasswordUsed = null, $hidden = null, $isFirstRequest = null,
-		$projectID = null, $isConfirmed = null) {
+		$hidden = null, $isFirstRequest = null, $projectID = null,
+		$isConfirmed = null) {
 		
 		if (array_key_exists($id, self::$_instances)) {
 			$instance = self::$_instances[$id]; 
@@ -80,8 +79,6 @@ final class Session extends Model {
 				$instance->_ip = $ip;
 			if ($instance->_userAgent === null)
 				$instance->_userAgent = $userAgent;
-			if ($instance->_secondaryPasswordUsed === null)
-				$instance->_secondaryPasswordUsed = $secondaryPasswordUsed;
 			if ($instance->_hidden === null)
 				$instance->_hidden = $hidden;
 			if ($instance->_isFirstRequest === null)
@@ -106,7 +103,6 @@ final class Session extends Model {
 		$instance->_lastRequestTime = $lastRequestTime;
 		$instance->_ip = $ip;
 		$instance->_userAgent = $userAgent;
-		$instance->_secondaryPasswordUsed = $secondaryPasswordUsed;
 		$instance->_hidden = $hidden;
 		$instance->_isFirstRequest = $isFirstRequest;
 		$instance->_projectID = $projectID;
@@ -180,13 +176,10 @@ final class Session extends Model {
 	 *
 	 * @param Premanager\Models\User $user the user of this session
 	 * @param bool $hidden true, if this session should be hidden from other
-	 *   visitors             
-	 * @param bool $secondaryPassowordUsed true, if a secondary password was used
-	 *   for login
+	 *   visitors
 	 * @return Premanager\Models\Session
 	 */
-	public static function createNew(User $user, $hidden = false,
-		$secondaryPassowordUsed = false) {
+	public static function createNew(User $user, $hidden = false) {
 		if (!$user)
 			throw new ArgumentNullException('user');
 		if ($user->getid() == 0)
@@ -194,26 +187,23 @@ final class Session extends Model {
 				'user');
 			
 		$hidden = !!$hidden;
-		$secondaryPassowordUsed = !!$secondaryPassowordUsed;
 	
 		$key = self::formKey($user);
 		$ip = Request::getIP();
 		$userAgent = Request::getUserAgent();
 		$projectID = Environment::getCurrent()->getProject()->getID();
-		$_secondaryPassowordUsed = $secondaryPassowordUsed ? '1' : '0';
 		$_hidden = $hidden ? '1' : '0';
 		DataBase::query(
 			"INSERT INTO ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"(userID, startTime, lastRequestTime, `key`, ip, userAgent, ".
-				"secondaryPasswordUsed, hidden, projectID, isFirstRequest) ".
+				"hidden, projectID, isFirstRequest) ".
 			"VALUES ('".$user->getID()."', NOW(), NOW(), ".
 				"'".DataBase::escape($key)."', '".DataBase::escape($ip)."', ".
-				"'".DataBase::escape($userAgent)."', '$_secondaryPassowordUsed', ".
-				"'$_hidden', '$projectID', '1')");
+				"'".DataBase::escape($userAgent)."', '$_hidden', '$projectID', '1')");
 		$id = DataBase::getInsertID();
 		
 		$instance = self::createFromID($id, $user->getid(), $key, new DateTime(), 
-			new DateTime(), $ip, $userAgent, $secondaryPasswordUsed, $hidden, true,
+			new DateTime(), $ip, $userAgent, $hidden, true,
 			$projectID);
 		$instance->_confirmationExpirationTime = null;
 		$instance->_isConfirmed = false;
@@ -266,8 +256,6 @@ final class Session extends Model {
 					'lastRequestTime'),
 				'ip' => array(DataType::STRING, 'getip', 'ip'),
 				'userAgent' => array(DataType::STRING, 'getUserAgent', 'userAgent'),
-				'isSecondaryPasswordUsed' => array(DataType::BOOLEAN,
-					'getIsSecondaryPasswordUsed', 'isSecondaryPasswordUsed'),
 				'hidden' => array(DataType::BOOLEAN, 'getHidden', 'hidden'),
 				'isFirstRequest' => array(DataType::BOOLEAN, 'getIsFirstRequest',
 					'isFirstRequest'),
@@ -373,19 +361,6 @@ final class Session extends Model {
 		if ($this->_userAgent === null)
 			$this->load();
 		return $this->_userAgent;
-	}
-
-	/**
-	 * Indicates whether the user has logged in with a seconary password
-	 * 
-	 * @return bool
-	 */
-	public function getSecondaryPasswordUsed() {
-		$this->checkDisposed();
-			
-		if ($this->_secondaryPasswordUsed === null)
-			$this->load();
-		return $this->_secondaryPasswordUsed;
 	}
 
 	/**
@@ -526,8 +501,7 @@ final class Session extends Model {
 		$result = DataBase::query(
 			"SELECT session.userID, session.key, session.startTime, ".
 				"session.lastRequestTime, session.ip, session.userAgent, ".
-				"session.secondaryPasswordUsed, session.hidden, ".
-				"session.isFirstRequest, session.projectID, ".
+				"session.hidden, session.isFirstRequest, session.projectID, ".
 				"session.confirmationExpirationTime ".
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.id = '$this->_id'");
@@ -541,7 +515,6 @@ final class Session extends Model {
 		$this->_lastRequestTime = new DateTime($result->get('lastRequestTime'));
 		$this->_ip = $result->get('ip');
 		$this->_userAgent = $result->get('userAgent');
-		$this->_secondaryPasswordUsed = $result->get('secondaryPasswordUsed');
 		$this->_hidden = $result->get('hidden');
 		$this->_isFirstRequest = $result->get('isFirstRequest');
 		$this->_projectID = $result->get('projectID');

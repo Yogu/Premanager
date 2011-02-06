@@ -1,6 +1,7 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\Execution\Options;
 use Premanager\Execution\Environment;
 use Premanager\IO\Config;
 use Premanager\IO\DataBase\DataBaseHelper;
@@ -51,11 +52,10 @@ final class User extends Model {
 	private $_registrationIP;
 	private $_lastLoginTime = false;
 	private $_lastLoginIP;
-	private $_lastVisibleLoginTime = false;       
-	private $_hasSecondaryPassword;
-	private $_secondaryPasswordStartTime = false;
-	private $_secondaryPasswordExpirationTime = false;
-	private $_secondaryPasswordStartIP;
+	private $_lastVisibleLoginTime = false;
+	private $_resetPasswordKey;
+	private $_resetPasswordStartTime = false;
+	private $_resetPasswordIP;
 	private $_groups;
 	private $_rights = array();
 	
@@ -67,6 +67,17 @@ final class User extends Model {
 	const EMAIL_PATTERN = '[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]{0,2}[a-z0-9])?';
 
 	// ===========================================================================  
+	
+	public static function __init() { 
+		// Remove outdated sessions
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
+			"SET resetPasswordKey = '', resetPasswordIP = '', ".
+				"resetPasswordStartTime = '0000-00-00 00:00:00' ".
+			"WHERE resetPasswordStartTime < DATE_SUB(NOW(), INTERVAL ".
+				Options::defaultGet('Premanager', 'resetPasswordKeyExpirationTime').
+				" SECOND)");
+	}
 	
 	protected function __construct() {
 		parent::__construct();	
@@ -261,7 +272,7 @@ final class User extends Model {
 	 */
 	public static function getGuest() {
 		return self::createFromID(0);
-	}          
+	}         
 	    
 	/**
 	 * Gets the count of users
@@ -341,15 +352,14 @@ final class User extends Model {
 					'lastLoginTime'),
 				'lastVisibleLoginTime' => array(DataType::DATE_TIME,
 					'getLastVisibleLoginTime', 'lastVisibleLoginTime'),
-				'hasSecondaryPassword' => array(DataType::BOOLEAN,
-					'getHasSecondaryPassword', '!secondaryPassword! != ""'),
-				'secondaryPasswordStartTime' => array(DataType::DATE_TIME,
-					'getSecondaryPasswordStartTime', 'secondaryPasswordStartTime'),
-				'secondaryPasswordStartIP' => array(DataType::STRING,
-					'getSecondaryPasswordStartIP', 'secondaryPasswordStartIP'),
-				'secondaryPasswordExpirationTime' => array(DataType::DATE_TIME,
-					'getSecondaryPasswordExpirationTime',
-					'secondaryPasswordExpirationTime')),
+				'resetPasswordKey' => array(DataType::STRING,
+					'getResetPasswordKey', 'resetPasswordKey'),
+				'resetPasswordIP' => array(DataType::STRING,
+					'getResetPasswordIP', 'resetPasswordIP'),
+				'resetPasswordStartTime' => array(DataType::DATE_TIME,
+					'getResetPasswordStartTime', 'resetPasswordStartTime'),
+				'resetPasswordExpirationTime' => array(DataType::DATE_TIME,
+					'getResetPasswordExpirationTime', null)),
 				'Premanager', 'Users', array(__CLASS__, 'getByID'), true);
 		}
 		return self::$_descriptor;
@@ -610,59 +620,66 @@ final class User extends Model {
 		if ($this->_lastVisibleLoginTime === false)
 			$this->load();
 		return $this->_lastVisibleLoginTime;	
-	}                          
-
-	/**
-	 * Gets true if there is a secondary password of this user
-	 *
-	 * @return bool
-	 */
-	public function getHasSecondaryPassword() {
-		$this->checkDisposed();
-			
-		if ($this->_hasSecondaryPassword === null)
-			$this->load();
-		return $this->_hasSecondaryPassword;	
-	}                        
-
-	/**
-	 * Gets the date/time when the secondary password was set
-	 *
-	 * @return Premanager\DateTime
-	 */
-	public function getSecondaryPasswordStartTime() {
-		$this->checkDisposed();
-			
-		if ($this->_secondaryPasswordStartTime === false)
-			$this->load();
-		return $this->_secondaryPasswordStartTime;	
-	}                          
-
-	/**
-	 * Gets the ip from that the secondary password was set
-	 *
-	 * @return string
-	 */
-	public function getSecondaryPasswordStartIP() {
-		$this->checkDisposed();
-			
-		if ($this->_secondaryPasswordStartIP === null)
-			$this->load();
-		return $this->_secondaryPasswordStartIP;
 	}
-
+	
 	/**
-	 * Gets the date/time when the secondary password will expire
-	 *
-	 * @return Premanager\DateTime
+	 * Gets the key which can be used to change the password of this user without
+	 * knowing the current password
+	 * 
+	 * @return string the reset-password key, or an empty string if there is no
+	 *   up-to-date key
 	 */
-	public function getSecondaryPasswordExpirationTime() {
+	public function getResetPasswordKey() {
 		$this->checkDisposed();
 			
-		if ($this->_secondaryPasswordExpirationTime === false)
+		if ($this->_resetPasswordKey === null)
 			$this->load();
-		return $this->_secondaryPasswordExpirationTime;	
-	}                          
+		return $this->_resetPasswordKey;	
+	}
+	
+	/**
+	 * Gets the ip of the computer from which the password was reset
+	 *
+	 * @return string the ip or an empty string, if the password was not reset
+	 */
+	public function getResetPasswordIP() {
+		$this->checkDisposed();
+			
+		if ($this->_resetPasswordIP === null)
+			$this->load();
+		return $this->_resetPasswordIP;	
+	}             
+
+	/**
+	 * Gets the date/time when the password was reset
+	 *
+	 * @return Premanager\DateTime the date/time when the password was reset or
+	 *   null if the password was not reset
+	 */
+	public function getResetPasswordStartTime() {
+		$this->checkDisposed();
+			
+		if ($this->_resetPasswordStartTime === false)
+			$this->load();
+		return $this->_resetPasswordStartTime;	
+	}             
+
+	/**
+	 * Gets the date/time when the password reset key will expire
+	 *
+	 * @return Premanager\DateTime the date/time when the password reset key will
+	 *   expire, or null, if there is no password reset key
+	 */
+	public function getResetPasswordExpirationTime() {
+		$this->checkDisposed();
+			
+		$time = $this->getResetPasswordStartTime();
+		if ($time)
+			return $time->add(TimeSpan::fromSeconds(Options::defaultGet('Premanager',
+				'resetPasswordExpirationTime')));
+		else
+			return null;
+	}                                            
 
 	/**
 	 * Gets all rights this user has in the specified project
@@ -761,37 +778,23 @@ final class User extends Model {
 	/**
 	 * Checks if the specifies password is correct for this user
 
-	 * @param string $password the password to check
-	 * @param bool $isSecondaryPassword (out only) is true, if $password matches
-	 *   the secondary password but not the normal password    
+	 * @param string $password the password to check 
 	 * @return bool true, if the password is correct
 	 */
-	public function checkPassword($password, &$isSecondaryPassword) {      
+	public function checkPassword($password) {      
 		$this->checkDisposed();
 			
 		$isSecondaryPassword = false;
 			
 		// Password properties are not stored as class vars for security reasons
 		$result = DataBase::query(
-			"SELECT user.password, user.secondaryPassword ".
+			"SELECT user.password ".
 			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ".
 			"WHERE user.id = '$this->_id'");
 		$dbPassword = $result->get('password');
-		$dbSecondaryPassword = $result->get('secondaryPassword');
 		
 		$encodedPassword = $this->encodePassword($password);
-		if ($dbPassword == $encodedPassword)
-			return true;
-		else {
-			// Check if secondary password has expired
-			if ($this->getsecondaryPasswordExpirationTime() < time())
-				$this->deleteSecondaryPassword();
-			else if  ($encodedPassword == $dbSecondaryPassword) {
-				$isSecondaryPassword = true;
-				return true;
-			}
-		}
-		return false;
+		return $dbPassword == $encodedPassword;
 	}
 	
 	/**
@@ -1100,67 +1103,50 @@ final class User extends Model {
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET password = '".DataBase::escape($encodedPassword)."' ".
 			"WHERE id = '$this->_id'");
-	}          
+	}        
 	
 	/**
-	 * Sets a secondary password
+	 * Generates a key for the reset-password function
+	 * 
+	 * If there is already a key for this user, the method does nothing else than
+	 * returining that key.
 	 *
-	 * If there was another secondary password before, that is removed.
-	 *
-	 * @param string $password
-	 * @param Premanager\Timespan $expirationInterval a time span which is added
-	 *   to now to get the time when this password is expired 
+	 * @return string the random key needed to confirm the email address
 	 */
-	public function setSecondaryPassword($password, TimeSpan $expirationInterval)
-	{
+	public function resetPassword() {
 		$this->checkDisposed();
-			
-		$password = trim($password);
-		if (!$password)
-			throw new ArgumentException(
-				'$password is null or an empty string', 'password'); 
 		
-		if (!$expirationInterval)
-			throw new ArgumentNullException('expirationInterval');
-		if ($expirationInterval->gettimestamp() <= 0)
-			throw new ArgumentException('$expirationInterval must be positive',
-				'expirationInterval');
-				
-		$encodedPassword = $this->encodePassword($password);
+		if ($this->getResetPasswordKey())
+			return $this->_resetPasswordKey;
+           
+		$key = self::generateKey();
+
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
-			"SET secondaryPassword = '".DataBase::escape($encodedPassword)."', ".
-				"secondaryPasswordStartTime = NOW(), ".
-				"secondaryPasswordStartIP = '".DataBase::escape(Request::getIP())."', ".
-				"secondaryPasswordExpirationTime = ".
-					"NOW() + INTERVAL $expirationTime->getseconds() SECOND ".
-			"WHERE id = '$this->_id'");
-			
-		$this->_hasSecondaryPassword = true;
-		$this->_secondaryPasswordStartTime = new DateTime();
-		$this->_secondaryPasswordExpirationTime = DateTime::getNow()->
-			add($expirationInterval);
-		$this->_secondaryPasswordStartIP = Request::getIP();
-	}
+			"SET resetPasswordKey = '".DataBase::escape($key)."', ".
+				"resetPasswordStartTime = NOW(), ".
+				"resetPasswordIP = '".DataBase::escape(Request::getIP())."' ".
+			"WHERE id = '$this->_id'");	
+		$this->_resetPasswordKey = $key;       
+		$this->_resetPasswordIP = Request::getIP();     
+		$this->_resetPasswordStartTime = new DateTime();
+		
+		return $key;
+	}         
 	
 	/**
-	 * If there was a secondary password, deletes it
+	 * Deletes a reset password key generated by resetPassword()
 	 */
-	public function deleteSecondaryPassword() {
-		$this->checkDisposed();;
-			
+	public function deleteResetPasswordKey() {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
-			"SET secondaryPassword = '', ".
-				"secondaryPasswordStartTime = '0000-00-00 00:00:00', ".
-				"secondaryPasswordStartIP = '', ".
-				"secondaryPasswordExpirationTime = '0000-00-00 00:00:00' ".
-			"WHERE id = '$this->_id'");
-			
-		$this->_hasSecondaryPassword = false;
-		$this->_secondaryPasswordStartTime = null;
-		$this->_secondaryPasswordExpirationTime = null;
-		$this->_secondaryPasswordStartIP = '';
+			"SET resetPasswordKey = '', ".
+				"resetPasswordStartTime = '0000-00-00 00:00:00', ".
+				"resetPassword = '' ".
+			"WHERE id = '$this->_id'");	
+		$this->_resetPasswordKey = '';       
+		$this->_resetPasswordIP = '';     
+		$this->_resetPasswordStartTime = null;
 	}
 	
 	/**
@@ -1422,9 +1408,8 @@ final class User extends Model {
 				"user.unconfirmedEmailStartTime, user.unconfirmedEmailKey, ".
 				"user.registrationTime, user.registrationIP, user.lastLoginTime, ".
 				"user.lastLoginIP, user.lastVisibleLoginTime, ".
-				"(user.secondaryPassword != '') AS hasSecondaryPassword, ".
-				"user.secondaryPasswordStartTime, ".
-				"user.secondaryPasswordExpirationTime, user.secondaryPasswordStartIP ".    
+				"user.resetPasswordKey, user.resetPasswordIP, ".
+				"user.resetPasswordStartTime ".    
 			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ",
 			/* translating */
 			"WHERE user.id = '$this->_id'");
@@ -1458,18 +1443,14 @@ final class User extends Model {
 		$this->_lastVisibleLoginTime =
 			$result->get('lastVisibleLoginTime') != '0000-00-00 00:00:00' ? 
 			new DateTime($result->get('lastVisibleLoginTime')) : null;   
-		$this->_hasSecondaryPassword = $result->get('hasSecondaryPassword');  
-		if ($this->_hasSecondaryPassword) {
-			$this->_secondaryPasswordStartTime =
-				new DateTime($result->get('secondaryPasswordStartTime'));   
-			$this->_secondaryPasswordStartIP =             
-				$result->get('secondaryPasswordStartIP');   
-			$this->_secondaryPasswordExpirationTime =
-				new DateTime($result->get('secondaryPasswordExpirationTime'));
+		$this->_resetPasswordKey = $result->get('resetPasswordKey');
+		if ($this->_resetPasswordKey) {
+			$this->_resetPasswordIP = $result->get('resetPasswordIP');
+			$this->_resetPasswordStartTime =
+				new DateTime($result->get('resetPasswordStartTime'));
 		} else {
-			$this->_secondaryPasswordStartTime = null;
-			$this->_secondaryPasswordStartIP = '';
-			$this->_secondaryPasswordExpirationTime = null;    
+			$this->_resetPasswordStartTime = null;
+			$this->_resetPasswordIP = '';    
 		}
 
 		return true;
@@ -1544,5 +1525,7 @@ final class User extends Model {
 				Request::getIP().time()), 0, 16); 
 	} 
 }
+
+User::__init();
 
 ?>

@@ -146,8 +146,7 @@ class LoginPage extends TreePageNode {
 				$template->set('userName',
 					Environment::getCurrent()->getUser()->getName());
 				if ($password = Request::getPOST('password')) {
-					if (Environment::getCurrent()->getUser()->checkPassword($password,
-						$foo))
+					if (Environment::getCurrent()->getUser()->checkPassword($password))
 					{
 						Environment::getCurrent()->getSession()->confirm();
 						$state = 'finished';
@@ -207,8 +206,7 @@ class LoginPage extends TreePageNode {
 	 */
 	private static function login(&$user = null) {  
  		// If there is already a session started, remove this session later
-		$oldSession =
-			Session::getByKey(DataBase::escape(Request::getCookie('session')));
+		$oldSession = Session::getByKey(Request::getCookie('session'));
 
 		$userName = Request::getPOST('user');
 		$password = Request::getPOST('password');
@@ -216,7 +214,7 @@ class LoginPage extends TreePageNode {
 		$user = User::getByName($userName);
 		if ($user) {
 			if ($user->isEnabled()) {
-				if ($user->checkPassword($password, $isSecondaryPassword)) {
+				if ($user->checkPassword($password)) {
 					// If there is a session of this user, delete it		
 					$session = Session::getByUser($user);
 					if ($session)
@@ -227,7 +225,7 @@ class LoginPage extends TreePageNode {
 						$oldSession->delete();
 						
 					// Create new session
-					$session = Session::createNew($user, $hidden, $isSecondaryPassword);
+					$session = Session::createNew($user, $hidden);
 					
 					$user->updateLoginTime($hidden);
 					
