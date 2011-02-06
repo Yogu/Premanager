@@ -1,6 +1,7 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\QueryList\QueryOperation;
 use Premanager\Execution\Options;
 use Premanager\Execution\Environment;
 use Premanager\IO\Config;
@@ -174,7 +175,7 @@ final class User extends Model {
 	 *
 	 * @param string $name user name                         
 	 * @param string $password unencoded password    
-	 * @param string $email the user's email address
+	 * @param string $email the user's email address. Must not be used yet.
 	 * @param bool $isEnabled true, if this account can be used to login
 	 * @return Premanager\Models\User the new user
 	 * @throws Premanage\NameConflictOperation the name is already assigned to a
@@ -199,6 +200,9 @@ final class User extends Model {
 		if (!$password)
 			throw new ArgumentException('$password is an empty string or contains '.
 				'only whitespaces', 'password');
+		if ($email && !self::isEmailAvailable($email))
+			throw new ArgumentException('There is already a user using this email '.
+				'address');
 	
 		$id = DataBaseHelper::insert('Premanager', 'Users', 
 			DataBaseHelper::UNTRANSLATED_NAME, $name,
@@ -264,6 +268,29 @@ final class User extends Model {
 		return DataBaseHelper::isNameAvailable('Premanager', 'Users', 0, $name,
 			($ignoreThis instanceof User ? $ignoreThis->_id : null));
 	}
+	
+	/**
+	 * Checks whether the specified email is not already assigned to a user
+	 * 
+	 * Note: this does NOT check whether the email is valid (see isValidEmail())
+	 * 
+	 * @param string $email the email to check
+	 * @param Premanager\Models\User|null $ignoreThis a user which may have
+	 *   the name; it is excluded
+	 * @return bool true, if this email is available
+	 */
+	public static function isEmailAvailable($email, $ignoreThis = null) {
+		$l = self::getUsers();
+		$l = $l->filter($l->expr(QueryOperation::LOGICAL_OR,
+			$l->exprEqual($l->exprMember('email'), $email),
+			$l->exprEqual($l->exprMember('unconfirmedEmail'), $email)));
+		if ($ignoreThis instanceof User)
+			$l = $l->filter(
+				$l->exprUnequal(
+					$l->exprThis(),
+					$ignoreThis));
+		return $l->getCount() == 0;
+	} 
 			 
 	/**
 	 * Gets the guest user
@@ -833,12 +860,17 @@ final class User extends Model {
 	 * 
 	 * This value will be changed in data base and in this object.
 	 *
-	 * @param string $email the new email address
+	 * @param string $email the new email address. Must not be used yet.
 	 */
 	public function setEmail($email) {     
 		$this->checkDisposed();
 			
-		$email = \trim($email);
+		$email = trim($email);
+			
+		// Check if email address exists
+		if ($email && !self::isEmailAvailable($email))
+			throw new ArgumentException('There is already a user using this email '.
+				'address');
 			
 		DataBaseHelper::update('Premanager', 'Users',
 			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
@@ -969,7 +1001,7 @@ final class User extends Model {
 	 *
 	 * A random key is generated that is needed to confirm this email address.
 	 *
-	 * @param string $email the email address
+	 * @param string $email the email address. Must not be in use yet.
 	 * @return string the random key needed to confirm the email address
 	 */
 	public function setUnconfirmedEmail($email) {
@@ -978,6 +1010,9 @@ final class User extends Model {
 		$email = \trim($email);
 		if (!$email)
 			throw new ArgumentException('$email is null or an empty string', 'email');
+		if (!self::isEmailAvailable($email))
+			throw new ArgumentException('There is already a user using this email '.
+				'address');
            
 		$key = self::generateKey();
 		     
@@ -1027,15 +1062,9 @@ final class User extends Model {
 	 *
 	 * If there was no unconfirmed email address set, clears email property and
 	 * changes status as mentioned above
-	 *
-	 * @param string $email
 	 */
-	public function confirmUnconfirmedEmail($email) {
+	public function confirmUnconfirmedEmail() {
 		$this->checkDisposed();
-			
-		$email = trim($email);
-		if (!$email)
-			throw new ArgumentException('$email is null or an empty string', 'email');
 			
 		// Store unconfirmed email before it's lost
 		$email = $this->getUnconfirmedEmail();

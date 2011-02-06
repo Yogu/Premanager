@@ -95,6 +95,7 @@ class EditUserPage extends UserFormPage {
 		return array(
 			'name' => $this->_user->getName(),
 			'email' => $this->_user->getEmail(),
+			'emailConfirmation' => $this->_user->getEmail(),
 			'isEnabled' => $this->_user->isEnabled());
 	}
 	

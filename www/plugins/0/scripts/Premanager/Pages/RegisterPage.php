@@ -80,6 +80,9 @@ class RegisterPage extends TreeFormPageNode {
 			if (!User::isValidEmail($email))
 				$errors[] = array('email',
 					Translation::defaultGet('Premanager', 'invalidEmailAddressError'));
+			else if (!User::isEmailAvailable($email))
+				$errors[] = array('email', Translation::defaultGet('Premanager',
+					'emailAddressAlreadyInUseError'));
 			else if (!$emailConfirmation)
 				$errors[] = array('emailConfirmation', Translation::defaultGet(
 					'Premanager', 'noEmailConfirmationInputtedError'));

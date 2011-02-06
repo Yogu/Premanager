@@ -97,6 +97,9 @@ abstract class UserFormPage extends FormPageNode {
 			if (!User::isValidEmail($email))
 				$errors[] = array('email',
 					Translation::defaultGet('Premanager', 'invalidEmailAddressError'));
+			else if (!User::isEmailAvailable($email, $this->_user))
+				$errors[] = array('email', Translation::defaultGet('Premanager',
+					'emailAddressAlreadyInUseError'));
 			else if (!$emailConfirmation)
 				$errors[] = array('emailConfirmation', Translation::defaultGet(
 					'Premanager', 'noEmailConfirmationInputtedError'));
