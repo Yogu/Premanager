@@ -47,16 +47,16 @@ class DataBaseConnection extends Module {
 				$this->getError());
 			
 		// Set connection character set to UTF-8
-		if (!@\mysql_query("SET NAMES 'utf8'"))
+		if (!@\mysql_query("SET NAMES 'utf8'", $this->_link))
 			throw new DataBaseException('Could not set data base character set: '.
 				$this->getgetError());
 		
 		// Enable strict mode
-		if (!@\mysql_query("SET sql_mode = 'STRICT_ALL_TABLES'"))      
+		if (!@\mysql_query("SET sql_mode = 'STRICT_ALL_TABLES'", $this->_link))      
 			throw new DataBaseException('Could not enable strict mode in data base: '.
 				$this->getError());
 			
-		if (!@mysql_query("SET time_zone = '+0:00';"))
+		if (!@mysql_query("SET time_zone = '+0:00';", $this->_link))
 			throw new DataBaseException("Could not select data base UTC+0 ".
 				"timezone: ".$this->getError());
 			

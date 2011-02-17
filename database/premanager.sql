@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 06. Februar 2011 um 00:36
+-- Erstellungszeit: 17. Februar 2011 um 19:46
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.4
 
@@ -25,7 +25,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Tabellenstruktur für Tabelle `premanager_0_groupright`
 --
 -- Erzeugt am: 31. Dezember 2010 um 17:10
--- Aktualisiert am: 05. Februar 2011 um 17:06
+-- Aktualisiert am: 08. Februar 2011 um 17:02
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -67,9 +67,10 @@ INSERT INTO `premanager_0_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
 (24, 26, '2010-12-31 17:26:15'),
 (21, 26, '2010-12-31 17:26:30'),
 (3, 25, '2011-01-24 18:39:59'),
+(2, 28, '2011-02-08 17:01:08'),
 (1, 27, '2011-02-05 16:40:13'),
-(2, 27, '2011-01-28 21:32:48'),
-(2, 28, '2011-01-28 21:32:48');
+(2, 27, '2011-02-08 17:01:08'),
+(2, 30, '2011-02-08 17:01:08');
 
 -- --------------------------------------------------------
 
@@ -241,9 +242,8 @@ INSERT INTO `premanager_0_groupstranslation` (`id`, `languageID`, `name`, `text`
 --
 -- Tabellenstruktur für Tabelle `premanager_0_languages`
 --
--- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 07. Oktober 2010 um 19:10
--- Letzter Check am: 07. Oktober 2010 um 20:10
+-- Erzeugt am: 16. Februar 2011 um 18:11
+-- Aktualisiert am: 16. Februar 2011 um 18:33
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_languages` (
@@ -260,12 +260,11 @@ CREATE TABLE IF NOT EXISTS `premanager_0_languages` (
   `creatorIP` varchar(255) COLLATE utf8_bin NOT NULL,
   `editorID` int(10) unsigned NOT NULL,
   `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
-  `shortDateTimeFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'Y-m-d H:i',
   `shortDateFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'Y-m-d',
   `shortTimeFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'H:i',
-  `longDateTimeFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'j F Y H:i',
   `longDateFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'j F Y',
   `longTimeFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'H:i',
+  `dateTimePhraseFormat` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'Y-m-d H:i',
   `order` int(10) unsigned NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -286,10 +285,10 @@ CREATE TABLE IF NOT EXISTS `premanager_0_languages` (
 -- Daten für Tabelle `premanager_0_languages`
 --
 
-INSERT INTO `premanager_0_languages` (`id`, `name`, `title`, `englishTitle`, `isDefault`, `isInternational`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `shortDateTimeFormat`, `shortDateFormat`, `shortTimeFormat`, `longDateTimeFormat`, `longDateFormat`, `longTimeFormat`, `order`, `timestamp`) VALUES
-(1, 'de', 'Deutsch', 'German', 1, 0, '2010-02-13 18:23:49', '2010-02-13 18:23:49', 0, 0, '127.0.0.1', 0, '127.0.0.1', 'j.m.Y H:i', 'j.m.Y', 'H:i', '|l, j. F Y|, H:i', '|l, j. F Y|', 'H:i', 0, '2010-03-05 23:06:50'),
-(2, 'en', 'English', 'English', 0, 1, '2010-02-13 21:57:46', '2010-02-13 21:57:46', 0, 2, '127.0.0.1', 2, '127.0.0.1', 'm/d/Y H:i', 'm/d/Y', 'H:i', '|F n, Y|, h:i a', '|F n, Y|', 'h:i a', 1, '2010-04-10 22:00:16'),
-(3, 'fr', 'Français', 'French', 0, 0, '2010-04-07 23:08:47', '2010-04-07 23:08:47', 0, 2, '127.0.0.1', 2, '127.0.0.1', 'j-m-Y', 'j-m-Y H:i', 'H:i', 'l j F Y H:i', 'l j F Y', 'H:i', 2, '2010-04-10 22:00:19');
+INSERT INTO `premanager_0_languages` (`id`, `name`, `title`, `englishTitle`, `isDefault`, `isInternational`, `createTime`, `editTime`, `editTimes`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `shortDateFormat`, `shortTimeFormat`, `longDateFormat`, `longTimeFormat`, `dateTimePhraseFormat`, `order`, `timestamp`) VALUES
+(1, 'de', 'Deutsch', 'German', 1, 0, '2010-02-13 18:23:49', '2010-02-13 18:23:49', 0, 0, '127.0.0.1', 0, '127.0.0.1', 'j.m.Y', 'H:i', '|l, j. F Y|', 'H:i', '|~\\a\\m l, j. F Y, | \\u\\m H:i \\U\\h\\r', 0, '2011-02-16 18:30:31'),
+(2, 'en', 'English', 'English', 0, 1, '2010-02-13 21:57:46', '2010-02-13 21:57:46', 0, 2, '127.0.0.1', 2, '127.0.0.1', 'm/d/Y', 'H:i', '|F j, Y|', 'h:i a', '|~\\o\\n l, F jS, Y \\a\\t H:i', 1, '2011-02-16 18:33:25'),
+(3, 'fr', 'Français', 'French', 0, 0, '2010-04-07 23:08:47', '2010-04-07 23:08:47', 0, 2, '127.0.0.1', 2, '127.0.0.1', 'j-m-Y H:i', 'H:i', 'l j F Y', 'H:i', 'Y-m-d H:i', 2, '2011-02-16 18:20:08');
 
 -- --------------------------------------------------------
 
@@ -425,7 +424,7 @@ INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 05. Februar 2011 um 18:06
+-- Aktualisiert am: 16. Februar 2011 um 21:26
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -448,7 +447,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
   KEY `parentID` (`parentID`),
   KEY `projectID` (`projectID`),
   KEY `treeID` (`treeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=157 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=159 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodes`:
@@ -469,7 +468,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
 --
 
 INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAccessRestriction`, `hasPanel`, `createTime`, `editTime`, `creatorID`, `creatorIP`, `editorID`, `editorIP`, `editTimes`, `timestamp`) VALUES
-(90, 94, 0, 0, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:14:55', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:31'),
+(90, 94, 0, 24, 1, 0, '2010-06-09 20:21:34', '2011-02-08 16:57:24', 2, '127.0.0.1', 2, '127.0.0.1', 5, '2011-02-08 18:10:36'),
 (89, 93, 0, 21, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:16:05', 2, '127.0.0.1', 2, '127.0.0.1', 3, '2011-01-28 21:13:17'),
 (88, 92, 0, 19, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:14:28', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:04'),
 (83, 93, 0, 4, 1, 0, '2010-06-09 20:21:34', '2011-01-21 22:15:14', 2, '127.0.0.1', 2, '127.0.0.1', 2, '2011-01-21 23:14:50'),
@@ -486,7 +485,9 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 (111, 94, 0, 0, 1, 0, '2010-06-26 19:07:54', '2010-06-26 19:07:54', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2010-10-06 19:24:39'),
 (144, 0, 118, 0, 1, 0, '2010-11-14 20:51:53', '2010-11-14 20:51:53', 0, '127.0.0.1', 0, '127.0.0.1', 0, '2010-11-14 21:51:29'),
 (139, 0, 117, 0, 1, 0, '2010-11-14 20:06:32', '2010-11-14 20:06:32', 0, '127.0.0.1', 0, '127.0.0.1', 0, '2010-11-14 21:06:08'),
-(156, 92, 0, 20, 1, 0, '2011-01-24 17:26:08', '2011-01-24 17:26:08', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2011-01-24 18:35:12');
+(156, 92, 0, 20, 1, 0, '2011-01-24 17:26:08', '2011-02-08 15:20:24', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2011-02-08 16:20:00'),
+(157, 94, 0, 23, 1, 0, '2011-02-08 15:19:24', '2011-02-08 15:20:13', 2, '127.0.0.1', 2, '127.0.0.1', 1, '2011-02-08 16:21:00'),
+(158, 94, 0, 25, 1, 0, '2011-02-08 16:57:37', '2011-02-08 16:57:37', 2, '127.0.0.1', 2, '127.0.0.1', 0, '2011-02-16 21:10:31');
 
 -- --------------------------------------------------------
 
@@ -494,7 +495,7 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 -- Tabellenstruktur für Tabelle `premanager_0_nodesname`
 --
 -- Erzeugt am: 14. November 2010 um 22:10
--- Aktualisiert am: 24. Januar 2011 um 18:25
+-- Aktualisiert am: 08. Februar 2011 um 17:57
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -510,7 +511,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
   KEY `languageID` (`languageID`),
   KEY `name` (`name`),
   KEY `nodeID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=56 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=63 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodesname`:
@@ -528,7 +529,7 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (43, 93, 'mitglieder', 1, 1, '2011-01-15 00:54:11'),
 (2, 91, 'projekte', 1, 1, '2010-11-14 22:11:44'),
 (3, 89, 'registrierung', 1, 1, '2010-11-14 22:11:44'),
-(47, 90, 'login-data', 2, 1, '2011-01-21 23:14:31'),
+(47, 90, 'login-data', 2, 0, '2011-02-08 16:58:10'),
 (5, 92, 'admin', 1, 1, '2011-01-09 15:44:20'),
 (46, 94, 'my-account', 2, 1, '2011-01-21 23:14:20'),
 (8, 88, 'struktur', 1, 1, '2010-11-14 22:15:19'),
@@ -541,7 +542,7 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (45, 88, 'structure', 2, 1, '2011-01-21 23:14:04'),
 (44, 91, 'projects', 2, 1, '2011-01-21 23:02:30'),
 (30, 94, 'mein-konto', 1, 1, '2011-01-14 22:39:08'),
-(35, 90, 'anmeldungsdaten', 1, 1, '2011-01-15 00:12:54'),
+(35, 90, 'anmeldungsdaten', 1, 0, '2011-02-08 16:58:26'),
 (48, 93, 'members', 2, 1, '2011-01-21 23:14:43'),
 (49, 83, 'login', 2, 1, '2011-01-21 23:14:50'),
 (50, 80, 'users', 2, 1, '2011-01-21 23:14:58'),
@@ -549,7 +550,14 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (52, 89, 'register', 2, 1, '2011-01-21 23:15:17'),
 (53, 82, 'who-is-online', 2, 1, '2011-01-21 23:15:32'),
 (54, 81, 'groups', 2, 1, '2011-01-21 23:16:15'),
-(55, 156, 'stile', 1, 1, '2011-01-24 18:25:44');
+(55, 156, 'stile', 1, 1, '2011-01-24 18:25:44'),
+(56, 157, 'passwort-ändern', 1, 1, '2011-02-08 16:19:00'),
+(57, 157, 'change-password', 2, 1, '2011-02-08 16:19:49'),
+(58, 156, 'styles', 2, 1, '2011-02-08 16:20:00'),
+(59, 90, 'edit-account', 2, 1, '2011-02-08 16:58:10'),
+(60, 90, 'registrierungsdaten', 1, 0, '2011-02-08 17:57:00'),
+(61, 90, 'e-mail-ändern', 1, 1, '2011-02-08 17:57:00'),
+(62, 158, 'benutzernamen-ändern', 1, 1, '2011-02-08 17:57:13');
 
 -- --------------------------------------------------------
 
@@ -557,7 +565,7 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_nodestranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 24. Januar 2011 um 18:46
+-- Aktualisiert am: 08. Februar 2011 um 18:02
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -586,7 +594,7 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (93, 1, 'mitglieder', 'Mitglieder', '2010-06-09 22:30:44'),
 (91, 1, 'projekte', 'Projekte', '2010-06-09 22:29:10'),
 (89, 1, 'registrierung', 'Registrierung', '2010-06-09 22:29:15'),
-(90, 1, 'anmeldungsdaten', 'Anmeldungsdaten', '2010-06-09 22:29:22'),
+(90, 1, 'e-mail-ändern', 'E-Mail-Adresse ändern', '2011-02-08 17:57:00'),
 (92, 1, 'admin', 'Administration', '2011-01-09 15:44:20'),
 (96, 1, 'benutzer', 'Benutzerliste', '2010-06-12 00:24:51'),
 (95, 1, '', 'Startseite', '2010-06-09 22:34:29'),
@@ -604,7 +612,7 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (88, 2, 'structure', 'Structure', '2011-01-21 23:14:04'),
 (91, 2, 'projects', 'Projects', '2011-01-21 23:02:30'),
 (94, 2, 'my-account', 'My Account', '2011-01-21 23:14:20'),
-(90, 2, 'login-data', 'Login Data', '2011-01-21 23:14:31'),
+(90, 2, 'edit-account', 'Edit Account', '2011-02-08 16:58:10'),
 (93, 2, 'members', 'Members', '2011-01-21 23:14:43'),
 (83, 2, 'login', 'Login', '2011-01-21 23:14:50'),
 (80, 2, 'users', 'Users', '2011-01-21 23:14:58'),
@@ -612,7 +620,11 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (89, 2, 'register', 'Register', '2011-01-21 23:15:41'),
 (82, 2, 'who-is-online', 'Who is online?', '2011-01-21 23:15:32'),
 (81, 2, 'groups', 'Groups', '2011-01-21 23:16:15'),
-(156, 1, 'stile', 'Stile', '2011-01-24 18:25:44');
+(156, 1, 'stile', 'Stile', '2011-01-24 18:25:44'),
+(157, 1, 'passwort-ändern', 'Passwort ändern', '2011-02-08 16:19:00'),
+(157, 2, 'change-password', 'Change Password', '2011-02-08 16:19:49'),
+(156, 2, 'styles', 'Styles', '2011-02-08 16:20:00'),
+(158, 1, 'benutzernamen-ändern', 'Benutzernamen ändern', '2011-02-08 17:57:13');
 
 -- --------------------------------------------------------
 
@@ -620,7 +632,7 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 -- Tabellenstruktur für Tabelle `premanager_0_options`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 05. Februar 2011 um 17:06
+-- Aktualisiert am: 16. Februar 2011 um 20:56
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -639,14 +651,14 @@ CREATE TABLE IF NOT EXISTS `premanager_0_options` (
   `projectMaxValue` int(11) DEFAULT NULL,
   `userMinValue` int(11) DEFAULT NULL,
   `userMaxValue` int(11) DEFAULT NULL,
-  `editTime` datetime NOT NULL,
+  `editTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `editTimes` int(10) unsigned NOT NULL DEFAULT '0',
-  `editorID` int(10) unsigned NOT NULL,
-  `editorIP` varchar(255) COLLATE utf8_bin NOT NULL,
+  `editorID` int(10) unsigned NOT NULL DEFAULT '0',
+  `editorIP` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_options`:
@@ -661,15 +673,17 @@ CREATE TABLE IF NOT EXISTS `premanager_0_options` (
 --
 
 INSERT INTO `premanager_0_options` (`id`, `pluginID`, `name`, `type`, `minValue`, `maxValue`, `defaultValue`, `globalValue`, `projectsCanOverwrite`, `usersCanOverwrite`, `projectMinValue`, `projectMaxValue`, `userMinValue`, `userMaxValue`, `editTime`, `editTimes`, `editorID`, `editorIP`, `timestamp`) VALUES
-(1, 0, 'sessionLength', 'int', 0, NULL, '3600', '3600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
-(2, 0, 'cookiePrefix', 'string', NULL, NULL, 'premanager_', NULL, b'0', b'0', NULL, NULL, NULL, NULL, '2010-02-15 22:13:30', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
+(1, 0, 'session.length', 'int', 0, NULL, '3600', '3600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 17:53:30'),
+(2, 0, 'cookie.prefix', 'string', NULL, NULL, 'premanager_', NULL, b'0', b'0', NULL, NULL, NULL, NULL, '2010-02-15 22:13:30', 0, 2, '127.0.0.1', '2011-02-16 17:53:23'),
 (4, 0, 'viewonlineLength', 'int', 0, NULL, '300', '300', b'0', b'0', NULL, NULL, NULL, NULL, '2010-03-03 21:35:44', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
-(5, 0, 'itemsPerPage', 'int', 1, NULL, '20', '20', b'0', b'1', NULL, NULL, NULL, 100, '2010-03-06 13:59:28', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
-(6, 0, 'email', 'string', NULL, NULL, 'test@example.org', 'info@yogularm.de', b'0', b'0', NULL, NULL, NULL, NULL, '2010-05-07 19:20:20', 0, 2, '127.0.0.1', '2010-10-07 21:07:32'),
-(7, 0, 'resetPasswordKeyExpirationTime', 'int', 0, NULL, '172800', '172800', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-05 17:01:08'),
-(8, 0, 'avatarWidth', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
-(9, 0, 'avatarHeight', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2010-10-07 21:07:32'),
-(10, 0, 'loginConfirmationLength', 'int', 1, NULL, '600', '600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-01-02 18:58:08');
+(5, 0, 'list.items-per-page', 'int', 1, NULL, '20', '20', b'0', b'1', NULL, NULL, NULL, 100, '2010-03-06 13:59:28', 0, 2, '127.0.0.1', '2011-02-16 17:53:16'),
+(6, 0, 'email.from-address', 'string', NULL, NULL, 'test@example.org', 'info@yogularm.de', b'0', b'0', NULL, NULL, NULL, NULL, '2010-05-07 19:20:20', 0, 2, '127.0.0.1', '2011-02-16 17:53:07'),
+(7, 0, 'reset-password.expiration-time', 'int', 0, NULL, '172800', '172800', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 17:50:36'),
+(8, 0, 'avatar.max-width', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 17:52:14'),
+(9, 0, 'avatar.max-height', 'int', 1, NULL, '80', '80', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 17:51:54'),
+(10, 0, 'login-confirmation.length', 'int', 1, NULL, '600', '600', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 17:51:44'),
+(11, 0, 'unconfirmed-email.expiration-time', 'int', 0, NULL, '86400', '86400', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 18:35:24'),
+(12, 0, 'viewonline.max-session-age', 'int', 0, NULL, '300', '300', b'0', b'0', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 0, 0, '', '2011-02-16 20:28:04');
 
 -- --------------------------------------------------------
 
@@ -904,7 +918,7 @@ INSERT INTO `premanager_0_projectstranslation` (`id`, `languageID`, `title`, `su
 -- Tabellenstruktur für Tabelle `premanager_0_rights`
 --
 -- Erzeugt am: 31. Dezember 2010 um 13:42
--- Aktualisiert am: 24. Januar 2011 um 18:46
+-- Aktualisiert am: 08. Februar 2011 um 17:02
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_rights` (
@@ -916,7 +930,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_rights` (
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`),
   KEY `scope` (`scope`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_rights`:
@@ -944,7 +958,8 @@ INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `scope`, `timestamp
 (26, 0, 'manageRights', 'both', '2010-12-31 13:43:46'),
 (27, 0, 'register', 'organization', '2011-01-02 17:29:53'),
 (28, 0, 'registerWithoutEmail', 'organization', '2011-01-02 17:29:53'),
-(29, 0, 'manageStyles', 'organization', '2011-01-24 18:38:53');
+(29, 0, 'manageStyles', 'organization', '2011-01-24 18:38:53'),
+(30, 0, 'changeUserName', 'organization', '2011-02-08 17:00:11');
 
 -- --------------------------------------------------------
 
@@ -952,7 +967,7 @@ INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `scope`, `timestamp
 -- Tabellenstruktur für Tabelle `premanager_0_rightstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 24. Januar 2011 um 18:46
+-- Aktualisiert am: 08. Februar 2011 um 17:02
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -993,7 +1008,9 @@ INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `desc
 (15, 1, 'Blog-Artikel veröffentlichen', 'Erlaubt es, neue Blog-Artikel und Änderungen an existierenden Artikeln zu veröffentlichen, sowie ältere Versionen wiederherzustellen und Artikel zu verstecken', '2010-06-11 15:45:16'),
 (18, 1, 'Benutzer erstellen', 'Erlaubt es, neue Benutzerkonten zu erstellen', '2010-12-31 14:31:15'),
 (19, 1, 'Benutzer löschen', 'Erlaubt es, Benutzerkonten zu löschen', '2010-12-31 14:31:15'),
-(29, 1, 'Stile verwalten', 'Erlaubt es, Stile zu (de-)aktivieren und den Standardstil auszuwählen', '2011-01-24 18:39:34');
+(29, 1, 'Stile verwalten', 'Erlaubt es, Stile zu (de-)aktivieren und den Standardstil auszuwählen', '2011-01-24 18:39:34'),
+(30, 1, 'Eigenen Benutzernamen ändern', 'Erlaubt es, den eigenen Benutzernamen nachträglich zu ändern', '2011-02-08 17:00:54'),
+(30, 2, 'Change own user name', 'Allows to change the own user name', '2011-02-08 17:00:54');
 
 -- --------------------------------------------------------
 
@@ -1001,7 +1018,7 @@ INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `desc
 -- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
 -- Erzeugt am: 02. Januar 2011 um 16:00
--- Aktualisiert am: 06. Februar 2011 um 01:35
+-- Aktualisiert am: 16. Februar 2011 um 21:26
 -- Letzter Check am: 02. Januar 2011 um 16:00
 --
 
@@ -1023,7 +1040,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=88 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=97 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_sessions`:
@@ -1038,8 +1055,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
 --
 
 INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `confirmationExpirationTime`, `timestamp`) VALUES
-(87, 79, '2011-02-06 00:32:10', '2011-02-06 00:35:37', '81f9f016ae4867bbc082f8d2f3df9d42150d9c27a16ebcfc49d96a257dbc1cea', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b10) Gecko/20100101 Firefox/4.0b10', 0, 0, 0, 0, '0000-00-00 00:00:00', '2011-02-06 01:35:13'),
-(85, 2, '2011-02-06 00:31:03', '2011-02-06 00:32:24', 'db015bb41bf9d959ae7112c90c5ccb275a8ae9aabe5e91b8bc32ece70f049dd6', '127.0.0.1', 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.84 Safari/534.13', 0, 0, 0, 0, '2011-02-06 00:41:16', '2011-02-06 01:32:00');
+(96, 2, '2011-02-17 19:41:18', '2011-02-17 19:46:39', '0c626c995967b640c8b03b65e7f815da389421a225e86ed6f03bb787f87e9c3d', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b11) Gecko/20100101 Firefox/4.0b11', 0, 0, 0, 0, '2011-02-17 19:56:38', '2011-02-17 20:46:15');
 
 -- --------------------------------------------------------
 
@@ -1082,7 +1098,7 @@ INSERT INTO `premanager_0_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) 
 -- Tabellenstruktur für Tabelle `premanager_0_strings`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 06. Februar 2011 um 00:29
+-- Aktualisiert am: 16. Februar 2011 um 21:26
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -1093,7 +1109,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=623 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=650 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_strings`:
@@ -1681,7 +1697,32 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (619, 0, 'passwordLostKeyUserDisabledError', '2011-02-06 00:02:30'),
 (620, 0, 'passwordLostInvalidKeyError', '2011-02-06 00:03:07'),
 (621, 0, 'passwordLostThirdMessage', '2011-02-06 00:09:23'),
-(622, 0, 'emailAddressAlreadyInUseError', '2011-02-06 00:29:14');
+(622, 0, 'emailAddressAlreadyInUseError', '2011-02-06 00:29:14'),
+(623, 0, 'noCurrentPasswordInputtetError', '2011-02-08 16:21:31'),
+(626, 0, 'guestChangesPasswordMessage', '2011-02-08 16:46:22'),
+(627, 0, 'changePasswordMessage', '2011-02-08 16:48:22'),
+(628, 0, 'currentPasswordLabel', '2011-02-08 16:48:38'),
+(629, 0, 'currentPasswordDescription', '2011-02-08 16:48:49'),
+(630, 0, 'wrongCurrentPasswordInputtetError', '2011-02-08 16:51:21'),
+(631, 0, 'changedEmailToUnconfirmedMessage', '2011-02-08 18:06:31'),
+(632, 0, 'guestChangesEmailMessage', '2011-02-08 18:08:18'),
+(633, 0, 'cantRemoveEmailError', '2011-02-08 18:08:54'),
+(634, 0, 'emailNotChangedMessage', '2011-02-16 18:03:07'),
+(635, 0, 'todayPhrase', '2011-02-16 18:23:40'),
+(636, 0, 'yesterdayPhrase', '2011-02-16 18:23:45'),
+(637, 0, 'tomorrowPhrase', '2011-02-16 18:23:50'),
+(638, 0, 'emailConfirmedAccountActivatedMessage', '2011-02-16 20:11:39'),
+(639, 0, 'emailConfirmedMessage', '2011-02-16 20:12:46'),
+(640, 0, 'guestChangesUserNameMessage', '2011-02-16 21:09:10'),
+(641, 0, 'changeUserNameLabel', '2011-02-16 21:12:17'),
+(642, 0, 'changeUserNameDescription', '2011-02-16 21:12:24'),
+(643, 0, 'changeUserNameMessage', '2011-02-16 21:16:45'),
+(644, 0, 'userNameChangedMessage', '2011-02-16 21:19:02'),
+(645, 0, 'changeOrRemoveEmailMessage', '2011-02-16 21:22:13'),
+(646, 0, 'changeEmailMessage', '2011-02-16 21:22:27'),
+(647, 0, 'registrationEmailOptionalMessage', '2011-02-16 21:44:50'),
+(648, 0, 'registrationMessage', '2011-02-16 21:45:49'),
+(649, 0, 'userAvatarPageTitle', '2011-02-17 20:43:14');
 
 -- --------------------------------------------------------
 
@@ -1689,7 +1730,7 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 06. Februar 2011 um 00:29
+-- Aktualisiert am: 16. Februar 2011 um 21:26
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
@@ -1777,9 +1818,9 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (33, 1, 'Möchtest du es erneut versuchen?', '2010-03-04 21:53:37'),
 (33, 2, 'Do you want to try it again?', '2010-03-04 21:53:37'),
 (34, 2, 'You have been logged in successfully.', '2010-03-05 16:43:29'),
-(35, 1, 'Momentan ist kein Besucher auf dieser Website.', '2010-03-05 16:48:21'),
-(35, 2, 'At the moment, there is no visitor of this web site', '2010-03-05 16:48:21'),
-(36, 1, 'Diese Seite zeigt dir, welche Mitglieder in den letzten {timeSpan} Minuten online waren.', '2010-03-05 16:51:46'),
+(35, 1, 'Momentan ist kein registrierter Benutzer auf dieser Website.', '2011-02-16 21:24:54'),
+(35, 2, 'At the moment, there is no registered user on this web site', '2011-02-16 21:25:16'),
+(36, 1, 'Diese Seite zeigt dir, welche registrierten Benutzer in den letzten {timeSpan} Minuten online waren.', '2011-02-16 21:25:55'),
 (36, 2, 'Here you can see which users were online in the past {timeSpan} minutes.', '2010-03-05 16:51:46'),
 (38, 1, 'Letzte Aktivität', '2010-03-05 17:04:39'),
 (38, 2, 'Last action', '2010-03-05 17:04:39'),
@@ -1925,9 +1966,8 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (127, 2, 'Up', '2010-03-06 23:19:22'),
 (128, 1, 'Benutzer', '2010-03-07 00:27:35'),
 (128, 2, 'Users', '2010-03-07 00:23:45'),
-(129, 1, 'Auf dieser Seite sind alle registrierten Benutzer, automatisierten Bots und das Gastkonto aufgelistet.', '2010-03-07 00:34:52'),
+(129, 1, 'Auf dieser Seite sind alle registrierten Benutzer und das Gastkonto aufgelistet.', '2011-02-16 21:24:20'),
 (130, 1, 'Zurzeit sind keine Benutzerkonten angelegt.', '2010-03-07 00:34:52'),
-(129, 2, 'Here you see all registered users, automated bots and the guest account.', '2010-03-07 00:34:52'),
 (130, 2, 'There are no user accounts at the moment.', '2010-03-07 00:34:52'),
 (131, 1, 'Benutzerkonten', '2010-03-07 00:39:06'),
 (131, 2, 'User Accounts', '2010-03-07 00:39:06'),
@@ -2263,7 +2303,7 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (311, 2, 'Re-enter the same password here.', '2010-05-08 19:18:43'),
 (312, 1, 'E-Mail-Adresse', '2010-05-08 19:23:23'),
 (312, 2, 'E-mail address', '2010-05-08 19:23:23'),
-(313, 1, 'Bitte gib hier eine E-Mail-Addresse ein, auf deren Posteingang du zugriff hast.', '2010-05-08 19:24:23'),
+(313, 1, 'Bitte gib hier eine E-Mail-Addresse ein, auf deren Posteingang du Zugriff hast.', '2011-02-16 20:30:44'),
 (313, 2, 'Please enter your e-mail address.', '2010-05-08 19:24:23'),
 (314, 1, 'Wenn E-Mails von dieser Seite empfangen können möchtest, wie z.B. für die Funktion &quot;Passwort vergessen&quot;, gib hier deine E-Mail-Adresse ein.', '2011-01-28 22:04:55'),
 (314, 2, 'If you want to receive e-mails of this site, e.g. for &quot;password lost&quot; function, enter it here.', '2010-05-08 19:26:21'),
@@ -2322,9 +2362,9 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (352, 1, 'Herzlich Willkommen bei {organizationTitle}, {userName}!\r\n\r\nDamit deine E-Mail-Adresse verwendet werden kann, muss sie bestätigt werden. Klicke dafür einfach auf den folgenden Link:\r\n\r\n{linkURL}\r\n\r\nWenn du Probleme beim öffnen des Links hast, markiere die obenstehende Adresse, kopiere sie in die Zwischenablage und füge sie in der Adresszeile deines Browsers ein.\r\n\r\nVielen Dank für die Registrierung!', '2011-01-29 17:40:38'),
 (614, 1, 'Bitte gebe die E-Mail-Adresse ein.', '2011-02-05 17:39:52'),
 (353, 1, 'Herzlich Willkommen bei {organizationTitle html}!', '2010-05-22 21:55:58'),
-(354, 1, 'Herzlich Willkommen bei {organizationTitle html}!', '2010-05-22 21:56:14');
+(354, 1, 'Herzlich Willkommen bei {organizationTitle html}!', '2010-05-22 21:56:14'),
+(355, 1, 'Bestätigung der E-Mail-Adresse', '2010-05-22 22:00:04');
 INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `timestamp`) VALUES
-(355, 1, 'Bestätigung der E-Mail-Adresse', '2010-05-22 22:00:04'),
 (356, 1, 'Hallo {userName html},</p>\r\n\r\n<p>Die Funktion &quot;Passwort vergessen%quot; wurde mit deinem Benutzerkonto durchgeführt.</p>\r\n\r\n<p>Wenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.</p>\r\n\r\n<p>Klicke auf den folgenden Link, um ein neues Passwort einzugeben:</p>\r\n\r\n<p><a href="{linkURL}">{linkURL html}</a></p>\r\n\r\n<p>Wenn du Probleme beim öffnen des Links hast, markiere die obenstehende Adresse, kopiere sie in die Zwischenablage und füge sie in der Adresszeile deines Browsers ein.', '2011-02-05 17:59:18'),
 (357, 1, 'Hallo {userName},\r\n\r\nDie Funktion "Passwort vergessen" wurde mit deinem Benutzerkonto durchgeführt.\r\n\r\nWenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.\r\n\r\nKlicke auf den folgenden Link, um ein neues Passwort einzugeben:\r\n\r\n{linkURL html}\r\n\r\nWenn du Probleme beim öffnen des Links hast, markiere die obenstehende Adresse, kopiere sie in die Zwischenablage und füge sie in der Adresszeile deines Browsers ein.', '2011-02-05 18:11:54'),
 (358, 1, 'Bedauerlicherweise ist beim Versenden der E-Mail ein Problem aufgetreten, sodass die Passwort-vergessen-Funktion nicht durchgeführt werden konnte. Wir bitten, dies zu entschuldigen und sich an die Administration zu wenden.', '2011-02-05 18:03:02'),
@@ -2342,9 +2382,9 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (370, 1, 'Wenn du das Passwort ändern möchtest, gib hier das neue Passwort ein.', '2010-05-24 19:40:47'),
 (371, 1, 'Wenn du das Passwort ändern möchtest, gib hier das neue Passwort erneut ein.', '2010-05-24 19:40:47'),
 (372, 1, 'Nur angemeldete Benutzer können Registrierungsdaten bearbeiten.', '2010-05-24 21:29:41'),
-(373, 1, 'Es ist ein Problem beim Versenden der E-Mail-Adresse aufgetreten, die den Aktivierungscode für eingegebene E-Mail-Adresse. Bitte wende dich an die Administration.', '2010-05-24 22:22:18'),
+(373, 1, 'Bedauerlicherweise ist beim Versenden der E-Mail ein Problem aufgetreten, sodass die neue E-Mail-Adresse nicht bestätigt werden kann. Wir bitten, dies zu entschuldigen und sich an die Administration zu wenden.', '2011-02-08 18:04:30'),
 (374, 1, 'Die Änderungen an deinen Registrierungsdaten wurden gespeichert.', '2010-05-24 22:25:36'),
-(375, 1, 'Dein Passwort wurde geändert. Wenn du dich das nächste Mal anmeldet, musst du das eben eingegebene Passwort benutezn.', '2010-05-24 22:25:36'),
+(375, 1, 'Dein Passwort wurde geändert. Wenn du dich das nächste Mal anmeldest, musst du das eben eingegebene Passwort benutzen.', '2011-02-08 16:52:49'),
 (376, 1, 'Die neue E-Mail-Adresse wurde noch nicht bestätigt. Solange wird die Änderung deiner E-Mail-Adresse wirkungslos bleiben. In den nächsten Minuten solltest du eine E-Mail erhalten, in der die nötigen Schritte erläutert sind, um die E-Mail-Adresse zu bestätigen. Bitte prüfe auch den Ordner für Spam-Verdacht, falls du innerhalb der nächsten Minuten keine E-Mail erhalten solltest.', '2010-05-24 22:28:27'),
 (377, 1, 'Zurück', '2010-05-24 22:29:54'),
 (377, 2, 'Back', '2010-05-24 22:29:54'),
@@ -2583,7 +2623,32 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (619, 1, 'Dein Benutzerkonto wurde zwischenzeitlich gesperrt. Du kannst daher weder dein Passwort ändern, noch dich anmelden. Für weitere Informationen kontaktiere bitte die Administration.', '2011-02-06 00:02:30'),
 (620, 1, 'Der Link ist entweder ungültig oder abgelaufen.', '2011-02-06 00:03:07'),
 (621, 1, 'Das Passwort wurde erfolgreich geändert. In Zukunft wirst du dich damit anmelden können. Für diese Sitzung wurdest du automatisch angemeldet.', '2011-02-06 00:09:23'),
-(622, 1, 'Diese E-Mail-Adresse wurde schon für ein anderes Benutzerkonto verwendet.', '2011-02-06 00:29:14');
+(622, 1, 'Diese E-Mail-Adresse wurde schon für ein anderes Benutzerkonto verwendet.', '2011-02-06 00:29:14'),
+(623, 1, 'Bitte gib dein aktuelles Passwort ein.', '2011-02-08 16:50:31'),
+(627, 1, 'Auf dieser Seite kannst du das Passwort für dein Benutzerkonto ändern. Dafür musst du zunächst dein aktuelles Passwort eingeben. Wenn du das nicht mehr weißt, benutze bitte das Formular <a href="./{passwordLostURL html}">Passwort vergessen</a>.', '2011-02-08 16:48:22'),
+(626, 1, 'Du kannst dein Passwort nicht ändern, da du nicht angemeldet bist.', '2011-02-08 16:46:22'),
+(628, 1, 'Aktuelles Passwort', '2011-02-08 16:48:38'),
+(629, 1, 'Gib hier das Passwort ein, mit dem du dich bisher angemeldet hast.', '2011-02-08 16:48:49'),
+(630, 1, 'Das aktuelle Passwort, das du eingegeben hast, ist falsch.', '2011-02-08 16:51:21'),
+(631, 1, 'Du hast diese E-Mail-Adresse schon einmal eingegeben, aber noch nicht bestätigt. Wenn du die Bestätigungs-E-Mail nicht erhalten hast, kannst du die Änderung der Adresse {expirationTime dateTimePhrase} erneut durchführen.', '2011-02-16 18:21:56'),
+(632, 1, 'Du kannst deine E-Mail-Adresse nicht ändern, da du nicht angemeldet bist.', '2011-02-08 18:08:18'),
+(633, 1, 'Du darfst deine E-Mail-Adresse  zwar ändern, jedoch nicht entfernen.', '2011-02-08 18:08:54'),
+(634, 1, 'Die E-Mail-Adresse, die du eingegeben hast, ist bereits als deine E-Mail-Adresse registriert.', '2011-02-16 18:03:07'),
+(635, 1, 'heute', '2011-02-16 18:23:40'),
+(636, 1, 'gestern', '2011-02-16 18:23:45'),
+(637, 1, 'morgen', '2011-02-16 18:23:50'),
+(638, 1, 'Die E-Mail-Adresse wurde erfolgreich bestätigt und damit dein Benutzerkonto aktiviert. Du kannst dich ab sofort mit dem Benutzernamen und dem Password, die du bei deiner Registrierung angegeben hast, anmelden. Benutze das unten stehende Formular, wenn du dich sofort amelden willst.', '2011-02-16 20:11:39'),
+(639, 1, 'Die E-Mail-Adresse <a href="mailto:{email html}" class="email">{email html}</a> wurde erfolgreich bestätigt. Funktionen wie z.B. &quot;Passwort vergessen&quot; werden ab jetzt auf diese Adresse ausgeführt.', '2011-02-16 20:12:46'),
+(640, 1, 'Um deinen Benutzernamen zu ändern, musst du dich zunächst anmelden.', '2011-02-16 21:09:10'),
+(641, 1, 'Neuer Name', '2011-02-16 21:15:22'),
+(642, 1, 'Gib hier den neuen Benutzernamen ein.', '2011-02-16 21:12:24'),
+(643, 1, 'Wenn du deinen eigenen Benutzernamen ändern möchtest, gib hier den neuen Namen ein und klicke auf &quot;Absenden&quot;', '2011-02-16 21:16:45'),
+(644, 1, 'Dein Benutzername wurde geändert. Melde dich das nächste mal mit dem neuen Benutzernamen an.', '2011-02-16 21:19:02'),
+(645, 1, 'Hier kannst du eine E-Mail-Adresse ändern oder entfernen. Wenn du dieses Formular mit einer neuen Adresse abgeschickt hast, bekommst du eine E-Mail mit einem Internetlink. Klicke auf diesen Link, um zu beweisen, dass du die E-Mail erhalten hast und die E-Mail-Adresse dir gehört.', '2011-02-16 21:23:05'),
+(646, 1, 'Hier kannst du eine E-Mail-Adresse ändern. Wenn du dieses Formular mit einer neuen Adresse abgeschickt hast, bekommst du eine E-Mail mit einem Internetlink. Klicke auf diesen Link, um zu beweisen, dass du die E-Mail erhalten hast und die E-Mail-Adresse dir gehört.', '2011-02-16 21:23:14'),
+(647, 1, 'Um ein Benutzerkonto  zu erstellen, musst du dir lediglich einen noch nicht verwendeten Benutzernamen und ein geheimes Passwort ausdenken. Darüber hinaus kannst du eine E-Mail-Adresse angeben, um z.B. dein Passwort zurücksetzen zu können, falls du es vergessen solltest.', '2011-02-16 21:46:19'),
+(648, 1, 'Um ein Benutzerkonto  zu erstellen, musst du dir lediglich einen noch nicht verwendeten Benutzernamen und ein geheimes Passwort ausdenken sowie eine E-Mail-Adresse angeben, auf deren Posteingang du zugreifen kannst.', '2011-02-16 21:45:49'),
+(649, 1, 'Avatar', '2011-02-17 20:43:14');
 
 -- --------------------------------------------------------
 
@@ -2662,7 +2727,7 @@ INSERT INTO `premanager_0_stylestranslation` (`id`, `languageID`, `title`, `desc
 -- Tabellenstruktur für Tabelle `premanager_0_trees`
 --
 -- Erzeugt am: 22. November 2010 um 19:31
--- Aktualisiert am: 05. Februar 2011 um 17:35
+-- Aktualisiert am: 16. Februar 2011 um 21:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
@@ -2675,7 +2740,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`),
   KEY `scope` (`scope`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=23 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=26 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_trees`:
@@ -2696,7 +2761,10 @@ INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `key`, `ti
 (19, 0, 'Premanager\\Pages\\StructureOverviewPage', 'both', 'structure', '2011-01-07 13:44:23'),
 (20, 0, 'Premanager\\Pages\\StylesPage', 'organization', 'styles', '2011-01-24 18:25:23'),
 (21, 0, 'Premanager\\Pages\\RegisterPage', 'organization', 'register', '2011-01-28 21:11:36'),
-(22, 0, 'Premanager\\Pages\\PasswordLostPage', 'organization', 'password-lost', '2011-02-05 17:35:28');
+(22, 0, 'Premanager\\Pages\\PasswordLostPage', 'organization', 'password-lost', '2011-02-05 17:35:28'),
+(23, 0, 'Premanager\\Pages\\ChangePasswordPage', 'organization', 'change-password', '2011-02-08 16:18:34'),
+(24, 0, 'Premanager\\Pages\\ChangeEmailPage', 'organization', 'change-email', '2011-02-08 18:10:11'),
+(25, 0, 'Premanager\\Pages\\ChangeUserNamePage', 'organization', 'chagne-user-name', '2011-02-16 21:10:07');
 
 -- --------------------------------------------------------
 
@@ -2704,7 +2772,7 @@ INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `key`, `ti
 -- Tabellenstruktur für Tabelle `premanager_0_usergroup`
 --
 -- Erzeugt am: 28. Dezember 2010 um 22:29
--- Aktualisiert am: 06. Februar 2011 um 00:39
+-- Aktualisiert am: 16. Februar 2011 um 20:26
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -2743,7 +2811,8 @@ INSERT INTO `premanager_0_usergroup` (`userID`, `groupID`, `joinTime`, `joinIP`,
 (79, 26, '2010-12-29 23:49:17', '127.0.0.1', '2010-12-30 00:48:53'),
 (79, 20, '2010-12-29 23:49:17', '127.0.0.1', '2010-12-30 00:48:53'),
 (2, 25, '2011-01-02 17:22:23', '127.0.0.1', '2011-01-02 18:21:59'),
-(79, 21, '2010-12-31 17:55:27', '127.0.0.1', '2010-12-31 18:55:03');
+(79, 21, '2010-12-31 17:55:27', '127.0.0.1', '2010-12-31 18:55:03'),
+(128, 2, '2011-02-16 19:22:45', '127.0.0.1', '2011-02-16 20:22:21');
 
 -- --------------------------------------------------------
 
@@ -2779,7 +2848,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
 -- Tabellenstruktur für Tabelle `premanager_0_users`
 --
 -- Erzeugt am: 05. Februar 2011 um 17:00
--- Aktualisiert am: 06. Februar 2011 um 00:51
+-- Aktualisiert am: 16. Februar 2011 um 21:26
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_users` (
@@ -2809,7 +2878,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
   UNIQUE KEY `name` (`name`),
   KEY `status` (`status`),
   KEY `resetPasswordKey` (`resetPasswordKey`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=128 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=129 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_users`:
@@ -2823,8 +2892,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
 
 INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `resetPasswordKey`, `resetPasswordStartTime`, `resetPasswordIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `styleID`, `timestamp`) VALUES
 (0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00', '', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 0, '2011-02-05 17:34:55'),
-(2, 'Yogu', '2010-02-13 18:27:13', '127.0.0.1', '2011-02-06 00:31:03', '2011-02-06 00:31:03', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '006600', 'yogu@example.com', '', '2010-05-24 21:19:05', '4PfhJMFZ', 'enabled', 0, 1, 'image/png', 1, '2011-02-06 01:30:39'),
-(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-02-06 00:32:10', '2011-02-06 00:32:10', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '24ab464d34c6c6ad', '2011-02-06 00:31:30', '127.0.0.1', '64002E', 'markus@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-06 01:31:46');
+(2, 'Yogu', '2010-02-13 18:27:13', '127.0.0.1', '2011-02-17 19:41:18', '2011-02-17 19:41:18', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '006600', 'yogu@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 1, '2011-02-17 20:40:54'),
+(128, 'Test-User', '2011-02-16 19:22:45', '127.0.0.1', '2011-02-16 19:23:01', '2011-02-16 19:23:01', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '000000', 'test@user.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-16 20:22:37'),
+(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-02-06 00:32:10', '2011-02-06 00:32:10', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '64002E', 'markus@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-08 16:15:43');
 
 -- --------------------------------------------------------
 
@@ -2832,7 +2902,7 @@ INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registratio
 -- Tabellenstruktur für Tabelle `premanager_0_usersname`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 06. Februar 2011 um 00:39
+-- Aktualisiert am: 16. Februar 2011 um 21:26
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -2848,7 +2918,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_usersname` (
   KEY `userID` (`id`),
   KEY `languageID` (`languageID`),
   KEY `inUse` (`inUse`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=132 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=134 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_usersname`:
@@ -2864,12 +2934,14 @@ CREATE TABLE IF NOT EXISTS `premanager_0_usersname` (
 
 INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inUse`, `timestamp`) VALUES
 (1, 2, 'jan', 1, 0, '2011-01-28 20:55:38'),
-(2, 2, 'yogu', 1, 1, '2011-01-28 20:55:38'),
+(2, 2, 'yogu', 1, 1, '2011-02-16 21:19:43'),
 (4, 0, 'guest', 2, 1, '2010-05-24 19:58:28'),
 (5, 0, 'anonymous', 0, 0, '2010-04-23 22:31:27'),
 (74, 0, 'invité', 3, 1, '2010-05-24 21:13:23'),
 (73, 0, 'gast', 1, 1, '2010-05-24 21:14:44'),
-(83, 79, 'markus', 1, 1, '2010-12-30 00:48:32');
+(83, 79, 'markus', 1, 1, '2010-12-30 00:48:32'),
+(133, 2, 'yogu2', 1, 0, '2011-02-16 21:19:43'),
+(132, 128, 'test-user', 1, 1, '2011-02-16 20:22:21');
 
 -- --------------------------------------------------------
 
@@ -2877,7 +2949,7 @@ INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inU
 -- Tabellenstruktur für Tabelle `premanager_0_userstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 06. Februar 2011 um 00:51
+-- Aktualisiert am: 16. Februar 2011 um 20:26
 -- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
@@ -2910,7 +2982,10 @@ INSERT INTO `premanager_0_userstranslation` (`id`, `languageID`, `title`, `times
 (0, 2, 'Guest', '2011-02-05 16:18:03'),
 (2, 3, 'Administrateur', '2011-02-05 16:18:03'),
 (79, 3, 'Project Member', '2011-02-05 16:18:03'),
-(0, 3, 'Invité', '2011-02-05 16:18:03');
+(0, 3, 'Invité', '2011-02-05 16:18:03'),
+(128, 1, 'Registrierter Benutzer', '2011-02-16 20:22:21'),
+(128, 2, 'Registered User', '2011-02-16 20:22:21'),
+(128, 3, 'Utilisateur inscrit', '2011-02-16 20:22:21');
 
 -- --------------------------------------------------------
 

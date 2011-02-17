@@ -38,15 +38,23 @@ class Rights {
 		&$errorResponse, $active = true) {
 		if (!is_array($right))
 			$rights = array($right);
-		else
+		else if ($right instanceof Right)
 			$rights = $right;
-		foreach ($rights as &$right)
-			self::validateProject($right, $project);
+		else
+			throw new ArgumentException('$right must be either an instance of '.
+				'Premanager\Models\Right or an array of such objects');
+		foreach ($rights as &$right) {
+			if (!($right instanceof Right))
+				throw new ArgumentException(
+					'An item of the $right array is no Premanager\Models\Right', 'right');
+				self::validateProject($right, $project);
+		}
 		unset($right);
 				
 		if (!$active || Environment::getCurrent()->getSession() && 
 			Environment::getCurrent()->getSession()->isConfirmed())
 		{
+			$ok = true;
 			foreach ($rights as $right)	{
 				$ok = Environment::getCurrent()->getUser()->hasRight($right, $project);
 				if ($ok)

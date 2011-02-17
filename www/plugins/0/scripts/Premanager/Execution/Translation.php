@@ -1,8 +1,8 @@
 <?php
 namespace Premanager\Execution;
 
+use Premanager\DateTime;
 use Premanager\Debug\Debug;
-
 use Premanager\Module;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\ArgumentException;
@@ -122,32 +122,32 @@ class Translation extends Module {
 						
 						case 'longDateTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->getlongDateTimeFormat()) : '';
+								$this->_environment->getLanguage()->getLongDateTimeFormat()) : '';
 						break;	         				      
 						
 						case 'longDate':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->getlongDateFormat()) : '';
+								$this->_environment->getLanguage()->getLongDateFormat()) : '';
 						break;	           				      
 						
 						case 'longTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->getlongTimeFormat()) : '';
+								$this->_environment->getLanguage()->getLongTimeFormat()) : '';
 						break;	   				      
 						
 						case 'shortDateTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->getshortDateTimeFormat()) : '';
+								$this->_environment->getLanguage()->getShortDateTimeFormat()) : '';
 						break;	         				      
 						
 						case 'shortDate':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->getshortDateFormat()) : '';
-						break;	           				      
+								$this->_environment->getLanguage()->getShortDateFormat()) : '';
+						break;
 						
 						case 'shortTime':
 							$value = $value instanceof DateTime ? $value->format(
-								$this->_environment->getlanguage()->getshortTimeFormat()) : '';
+								$this->_environment->getLanguage()->getShortTimeFormat()) : '';
 						break;
 						
 						default:

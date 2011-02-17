@@ -13,7 +13,7 @@
 			<dd>
 				<input type="password" name="password" id="Premanager_LoginPage_password" class="small" />
 				{if !$hidePasswordLostHint}
-					<p>{string Premanager loginFailedPasswordLostMessage} <a href="./{$passwordLostURL}">{string Premanager loginFailedPasswordLostLinkText}</a></p>
+					<p>{string Premanager loginFailedPasswordLostMessage} <a href="./{treeURL Premanager password-lost}">{string Premanager loginFailedPasswordLostLinkText}</a></p>
 				{/if}	
 			</dd>
 		</dl>  

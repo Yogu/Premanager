@@ -1,3 +1,9 @@
+{if $emailOptional}
+	<p>{string Premanager registrationEmailOptionalMessage}</p>
+{else}
+	<p>{string Premanager registrationMessage}</p>
+{/if}
+
 {form showErrors=true}
 	<fieldset class="inputs">
 		{formElement

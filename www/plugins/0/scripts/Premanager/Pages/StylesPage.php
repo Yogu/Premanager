@@ -40,14 +40,16 @@ class StylesPage extends TreePageNode {
 	 */
 	public function getResponse() {
 		if (!Rights::requireRight(Right::getByName('Premanager', 'manageStyles'),
-			null, $errorResponse, false));
+			null, $errorResponse, false))
+			return $errorResponse;
 		
 		$list = self::getList();
 		$notGuest = !!Environment::getCurrent()->getUser()->getID();
 			
 		if (Request::getPOST('submit')) {
 			if (!Rights::requireRight(Right::getByName('Premanager', 'manageStyles'),
-				null, $errorResponse));
+				null, $errorResponse))
+				return $errorResponse;
 			
 			$isEnabled = Request::getPOST('isEnabled');
 			if (!is_array($isEnabled))

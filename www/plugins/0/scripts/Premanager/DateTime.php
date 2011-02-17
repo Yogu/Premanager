@@ -1,8 +1,8 @@
 <?php
 namespace Premanager;
 
+use Premanager\Debug\Debug;
 use Premanager\Execution\Translation;
-
 use Premanager\TimeSpan;
 
 /**
@@ -373,7 +373,7 @@ class DateTime extends Module {
 	public function addSeconds($value) {
 		if (!Types::isInteger($value))
 			throw new ArgumentException('$value must be an integer', 'value');
-		return $this->add(new TimeSpan(0, 0, 0, 0, 0, $value));
+		return $this->add(new TimeSpan(0, 0, 0, $value));
 	}
 	
 	/**

@@ -71,7 +71,6 @@ class ProjectsPage extends TreeListPageNode {
 		foreach ($models as $model) {
 			$list[] = new ProjectPage($this, $model);
 		}
-		$list[] = new AddProjectPage($this);
 		return $list;
 	}
 	

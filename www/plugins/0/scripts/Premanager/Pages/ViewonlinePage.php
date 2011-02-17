@@ -42,8 +42,11 @@ class ViewonlinePage extends TreePageNode {
 		
 		$page = new Page($this);
 		$page->title = Translation::defaultGet('Premanager', 'viewonline');
+		$minutes = floor(Options::defaultGet('Premanager',
+			'viewonline.max-session-age') / 60);
 		$page->createMainBlock(Translation::defaultGet('Premanager',
-			count($list) ? 'viewonlineMessage' : 'viewonlineEmpty'));
+			count($list) ? 'viewonlineMessage' : 'viewonlineEmpty',
+			array('timeSpan' => $minutes)));
 		
 		if (count($list)) {
 			$template = new Template('Premanager', 'viewonlineHead');
