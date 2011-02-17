@@ -565,7 +565,23 @@ final class User extends Model {
 		if ($this->_unconfirmedEmailStartTime === false)
 			$this->load();
 		return $this->_unconfirmedEmailStartTime;	
-	}                          
+	}                               
+
+	/**
+	 * Gets the date/time the unconfirmed email expires
+	 *
+	 * @return Premanager\DateTime
+	 */
+	public function getUnconfirmedEmailExpirationTime() {
+		$this->checkDisposed();
+			
+		$time = $this->getUnconfirmedEmailStartTime();
+		if ($time)
+			return $time->add(TimeSpan::fromSeconds(Options::defaultGet('Premanager',
+				'unconfirmed-email.expiration-time')));
+		else
+			return null;
+	}                   
 
 	/**
 	 * Gets a key that is needed to confirm the unconfirmed email address
