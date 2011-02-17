@@ -27,9 +27,10 @@ final class Language extends Model {
 	private $_title;
 	private $_englishTitle;
 	private $_shortDateFormat;
-	private $_shortTimeFormat;  
+	private $_shortTimeFormat;
 	private $_longDateFormat;
-	private $_longTimeFormat;    
+	private $_longTimeFormat;
+	private $_dateTimePhraseFormat;
 	private $_creatorID;
 	private $_createTime;
 	private $_editor;
@@ -349,6 +350,8 @@ final class Language extends Model {
 					'longDateFormat'),
 				'longTimeFormat' => array(DataType::STRING, 'getLongTimeFormat',
 					'longTimeFormat'),
+				'dateTimePhraseFormat' => array(DataType::STRING,
+					'getDateTimePhraseFormat', 'dateTimePhraseFormat'),
 				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
 				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
 					'createTime'),
@@ -487,7 +490,20 @@ final class Language extends Model {
 		if ($this->_longTimeFormat === null)
 			$this->load();
 		return $this->_longTimeFormat;	
-	}                 
+	}       
+
+	/**
+	 * Gets the date/time phrase format string
+	 *
+	 * @return string
+	 */
+	public function getDateTimePhraseFormat() {
+		$this->checkDisposed();
+			
+		if ($this->_dateTimePhraseFormat === null)
+			$this->load();
+		return $this->_dateTimePhraseFormat;	
+	}              
 
 	/**
 	 * Gets the user that has created this language
@@ -708,20 +724,21 @@ final class Language extends Model {
 			"SELECT language.name, language.title, language.englishTitle, ".
 				"language.longDateFormat, language.longTimeFormat, ".
 				"language.shortDateFormat, language.shortTimeFormat, ".
-				"language.createTime, language.editTime, language.creatorID, ".
-				"language.editorID ".
+				"language.dateTimePhraseFormat, language.createTime, ".
+				"language.editTime, language.creatorID, language.editorID ".
 			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 			"WHERE language.id = '$this->_id'");
-		
+
 		if (!$result->next())
 			return false;
-		
-		$this->_name = $result->get('name');   
-		$this->_title = $result->get('title');          
-		$this->_longDateFormat = $result->get('longDateFormat'); 
-		$this->_longTimeFormat = $result->get('longTimeFormat');  
-		$this->_shortDateFormat = $result->get('shortDateFormat');      
-		$this->_shortTimeFormat = $result->get('shortTimeFormat');  
+
+		$this->_name = $result->get('name');
+		$this->_title = $result->get('title');
+		$this->_longDateFormat = $result->get('longDateFormat');
+		$this->_longTimeFormat = $result->get('longTimeFormat');
+		$this->_shortDateFormat = $result->get('shortDateFormat');
+		$this->_shortTimeFormat = $result->get('shortTimeFormat');
+		$this->_dateTimePhraseFormat = $result->get('dateTimePhraseFormat');
 		$this->_englishTitle = $result->get('englishTitle');       
 		$this->_createTime = new DateTime($result->get('createTime'));
 		$this->_creatorID = $result->get('creatorID');

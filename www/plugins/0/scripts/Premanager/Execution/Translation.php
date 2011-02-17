@@ -150,6 +150,11 @@ class Translation extends Module {
 								$this->_environment->getLanguage()->getShortTimeFormat()) : '';
 						break;
 						
+						case 'dateTimePhrase':
+							$value = $value instanceof DateTime ? $value->format(
+								$this->_environment->getLanguage()->getDateTimePhraseFormat()) : '';
+						break;
+						
 						default:
 							if (Strings::substring($modifier, 0, 2) == 'if') {
 								if (preg_match(

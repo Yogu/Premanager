@@ -562,6 +562,12 @@ class DateTime extends Module {
 				$format =
 					Environment::getCurrent()->getLanguage()->getShortTimeFormat();
 				break;
+				
+			case DateTimeFormat::DATE_TIME_PHRASE:
+			case 'date-time-phrase':
+				$format =
+					Environment::getCurrent()->getLanguage()->getDateTimePhraseFormat();
+				break;
 			
 			default:
 				if (!is_string($format))
@@ -574,10 +580,11 @@ class DateTime extends Module {
 			// Check wheater date part shall be replaced by e.g. 'Today'
 			$dateFormatCache[$format] = array(              
 				'isShort' => Strings::indexOf($format, '|') !== false,
+				'isPhrase' => strpos($format, '|~') !== false,
 				'shortFormat' => Strings::substring($format, 0,
 			    Strings::indexOf($format, '|')) . '||' .
 					Strings::substring(Strings::strrchr($format, '|'), 1),
-				'longFormat' => str_replace('|', '', $format)); 
+				'longFormat' => ltrim(str_replace('|', '', $format), '~')); 
 			
 			$dateFormatCache[$format]['localizer'] = $localizer;  
 				
@@ -602,12 +609,13 @@ class DateTime extends Module {
 			$this->compareTo($midnight->subtract(TimeSpan::fromDays(1))) >= 0 && 
 			$this->compareTo($midnight->add(TimeSpan::fromDays(2))) <= 0)
 		{
+			$p = $dateFormatCache[$format]['isPhrase'] ? 'Phrase' : '';
 			if ($this->compareTo($midnight->add(TimeSpan::fromDays(1))) > 0) {
-				$day = Translation::defaultGet('Premanager', 'tomorrow');
+				$day = Translation::defaultGet('Premanager', 'tomorrow'.$p);
 			} else if ($this->compareTo($midnight) > 0) {
-				$day = Translation::defaultGet('Premanager', 'today');
+				$day = Translation::defaultGet('Premanager', 'today'.$p);
 			} else {
-				$day = Translation::defaultGet('Premanager', 'yesterday');
+				$day = Translation::defaultGet('Premanager', 'yesterday'.$p);
 			}
 			
 			// Return the day component followed by the short time component (the
