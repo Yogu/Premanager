@@ -374,12 +374,16 @@ class Environment extends Module {
 	}
 	
 	/**
-	 * Has to be called after logout
+	 * Has to be called when the session changes
 	 * 
-	 * @return string
+	 * @param Premanager\Models\Session $session the new session
 	 */
-	public function notfifyLoggedOut() {
-		$this->_session = null;
+	public function notifySessionChanged($session) {
+		if ($session && !($session instanceof Session))
+			throw new ArgumentException('$session must be either null or an '.
+				'instance of Premanager\Models\Session', 'session');
+		
+		$this->_session = $session;
 		$this->_sessionLoading = false;
 	}
 	

@@ -1187,7 +1187,7 @@ final class User extends Model {
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." ".
 			"SET resetPasswordKey = '', ".
 				"resetPasswordStartTime = '0000-00-00 00:00:00', ".
-				"resetPassword = '' ".
+				"resetPasswordIP = '' ".
 			"WHERE id = '$this->_id'");	
 		$this->_resetPasswordKey = '';       
 		$this->_resetPasswordIP = '';     

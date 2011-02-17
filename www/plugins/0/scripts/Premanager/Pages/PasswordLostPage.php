@@ -143,10 +143,13 @@ class PasswordLostPage extends TreeFormPageNode {
 				
 			// Create new session
 			$session = Session::createNew($user, false);
+			Environment::getCurrent()->notifySessionChanged($session);
 			$user->updateLoginTime($hidden);
 			
 			// Set session cookie
 			Output::setCookie('session', $session->getKey());
+			
+			$user->deleteResetPasswordKey();
 			
 			return Page::createMessagePage($this,
 				Translation::defaultGet('Premanager', 'passwordLostThirdMessage'));
@@ -166,7 +169,7 @@ class PasswordLostPage extends TreeFormPageNode {
 				'passwordLostEmailPlainMessage', $params);
 			$mail->createMainBlock('<p>'.Translation::defaultGet('Premanager',
 				'passwordLostEmailMessage', $params).'</p>');
-			if ($mail->send($email, $user->getName())) {
+			if ($mail->send($user->getEmail(), $user->getName())) {
 				return Page::createMessagePage($this, Translation::defaultGet(
 					'Premanager', 'passwordLostSucceededMessage'));
 			} else {    
