@@ -73,11 +73,11 @@ class ViewonlinePage extends TreePageNode {
 		static $cache;
 		if (!$cache) {
 			$cache = Session::getSessions();
-			/*$cache = $cache->filter(
+			$cache = $cache->filter(
 				$cache->expr(QueryOperation::GREATER,
 					$cache->exprMember('lastRequestTime'),
 					DateTime::getNow()->addSeconds(
-						Options::defaultGet('Premanager', 'viewonlineLength'))));*/
+						-Options::defaultGet('Premanager', 'viewonline.max-session-age'))));
 			$cache = $cache->sort(array(
 				new SortRule($cache->exprMember('lastRequestTime'))));
 		}

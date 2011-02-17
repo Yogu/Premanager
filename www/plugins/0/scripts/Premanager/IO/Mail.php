@@ -103,7 +103,7 @@ class Mail extends Module {
 		$bodyBoundary = self::generateBoundary();
 		$htmlBoundary = self::generateBoundary();
 		
-		$fromAddress = Options::defaultGet('Premanager', 'email');
+		$fromAddress = Options::defaultGet('Premanager', 'email.from-address');
 		$fromName = Project::getOrganization()->getTitle(); 
 	
 		$from = "$fromName <$fromAddress>";

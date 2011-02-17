@@ -76,7 +76,7 @@ final class User extends Model {
 			"SET resetPasswordKey = '', resetPasswordIP = '', ".
 				"resetPasswordStartTime = '0000-00-00 00:00:00' ".
 			"WHERE resetPasswordStartTime < DATE_SUB(NOW(), INTERVAL ".
-				Options::defaultGet('Premanager', 'resetPasswordKeyExpirationTime').
+				Options::defaultGet('Premanager', 'reset-password.expiration-time').
 				" SECOND)");
 	}
 	
@@ -1201,8 +1201,8 @@ final class User extends Model {
 			throw new FileNotFoundException('Avatar file does not exist', $fileName);
 			
 		$picture = Picture::loadFromFile($fileName,
-			Options::defaultGet('Premanager', 'avatarWidth'),
-			Options::defaultGet('Premanager', 'avatarHeight'));
+			Options::defaultGet('Premanager', 'avatar.max-width'),
+			Options::defaultGet('Premanager', 'avatar.max-height'));
 			
 		$picture->saveToFile(Config::$storePath.'Premanager/avatars/'.$this->_id);
 

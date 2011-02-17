@@ -230,7 +230,7 @@ class Request {
 	 * @return string
 	 */
 	public static function getCookie($name) {
-		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
+		$prefix = Options::defaultGet('Premanager', 'cookie.prefix');
 		$value = array_key_exists($prefix.$name, $_COOKIE) ?
 			$_COOKIE[$prefix.$name] : null;
 		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())

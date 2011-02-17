@@ -43,7 +43,7 @@ class Output {
 			throw new ArgumentException('$exprie must be either null or a '.
 				'Premanager\TimeSpan', 'expire');
 
-		$prefix = Options::defaultGet('Premanager', 'cookiePrefix');
+		$prefix = Options::defaultGet('Premanager', 'cookie.prefix');
 		if (!setcookie($prefix.$name, $value,
 			$expirationTime, $url->getpath(), $serverName)) {
 			throw new InvalidOperationException('Failed to set cookie: page output '.

@@ -64,7 +64,7 @@ abstract class ListPageNode extends PageNode {
 			
 		if ($itemsPerPage === null)
 			$this->_itemsPerPage = 
-				(int)Options::defaultGet('Premanager', 'itemsPerPage');
+				(int)Options::defaultGet('Premanager', 'list.items-per-page');
 		else
 			$this->_itemsPerPage = (int)$itemsPerPage;
 	}

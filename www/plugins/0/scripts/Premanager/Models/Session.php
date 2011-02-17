@@ -57,7 +57,7 @@ final class Session extends Model {
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"WHERE lastRequestTime < DATE_SUB(NOW(), INTERVAL ".
-				Options::defaultGet('Premanager', 'sessionLength')." SECOND)");
+				Options::defaultGet('Premanager', 'session.length')." SECOND)");
 	}
 	
 	private static function createFromID($id, $userID = null, $key = null, 
@@ -473,7 +473,7 @@ final class Session extends Model {
 	public function confirm()  {
 		$this->checkDisposed();
 		
-		$length = Options::defaultGet('Premanager', 'loginConfirmationLength');
+		$length = Options::defaultGet('Premanager', 'login-confirmation.length');
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"SET confirmationExpirationTime = ".
