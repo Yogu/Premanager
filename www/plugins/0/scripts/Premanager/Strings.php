@@ -96,7 +96,35 @@ class Strings {
 	 */
 	public static function unitize($name) {
 	 	return self::toLower(self::normalize($name));
-	}   
+	}
+	
+	/**
+	 * Formats a given count of bytes as file size
+	 * 
+	 * @param $bytes the count of bytes
+	 * @param $digits the count of digits to display
+	 * @return string the formatted file size string
+	 */
+	public static function formatFileSize($bytes, $digits = 3) {
+		$units = array('Byte', 'Bytes', 'KB', 'MB', 'GB', 'TB', 'EB');
+		
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+		
+		$bytes /= pow(1024, $pow);
+		                                             
+		$int = floor($bytes);
+		$precision = $digits - strlen(floor($bytes));
+		if ($precision > 0 && $pow != 0) {
+			$fractional = round(($bytes-$int) * pow(10, $precision));
+			$fractional = "," . str_pad($fractional, $precision, '0');
+		}
+		$index = $pow + 1;
+		if ($index == 1 && $bytes == 1)
+			$index = 0;
+		return $int.$fractional.' '.$units[$index];
+	} 
 }
 
 ?>

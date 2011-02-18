@@ -58,9 +58,15 @@ class UserPage extends PageNode {
 	 * @return Premanager\Execution\PageNode the child node or null if not found
 	 */
 	public function getChildByName($name) {
-		if ($name == 'edit' &&
-			Rights::hasRight(Right::getByName('Premanager', 'editUsers')))
-			return new EditUserPage($this, $this->_user);
+		if ($name == 'avatar')
+			return new UserAvatarPage($this, $this->_user);
+		
+		if (Rights::hasRight(Right::getByName('Premanager', 'editUsers'))) {
+			if ($name == 'edit')
+				return new EditUserPage($this, $this->_user);
+			if ($name == 'change-avatar')
+				return new UserChangeAvatarPage($this, $this->_user);
+		}
 		if ($name == 'delete' && $this->_user->getID() &&
 			Rights::hasRight(Right::getByName('Premanager', 'deleteUsers')))
 			return new DeleteUserPage($this, $this->_user);
@@ -157,6 +163,12 @@ class UserPage extends PageNode {
 				Translation::defaultGet('Premanager', 'viewUserRights'), 
 				Translation::defaultGet('Premanager', 'viewUserRightsDescription'),
 				'Premanager/images/tools/rights.png');
+				
+		if (Rights::hasRight(Right::getByName('Premanager', 'editUsers')))
+			$page->toolbar[] = new ToolBarItem($this->getURL().'/change-avatar',
+				Translation::defaultGet('Premanager', 'changeAvatar'), 
+				Translation::defaultGet('Premanager', 'changeAvatarDescription'),
+				'Premanager/images/tools/avatar.png');
 			
 		return $page;
 	}

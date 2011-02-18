@@ -1,6 +1,8 @@
 <?php             
 namespace Premanager\Models;
 
+use Premanager\Media\Image;
+
 use Premanager\QueryList\QueryOperation;
 use Premanager\Execution\Options;
 use Premanager\Execution\Environment;
@@ -40,7 +42,7 @@ final class User extends Model {
 	private $_title;
 	private $_color;  
 	private $_hasAvatar; 
-	private $_avatarMIME;
+	private $_avatarType;
 	private $_status;   
 	private $_hasPersonalSidebar;    
 	private $_email; 
@@ -349,8 +351,8 @@ final class User extends Model {
 				'name' => array(DataType::STRING, 'getName', 'name'),
 				'title' => array(DataType::STRING, 'getTitle', '*title'),
 				'color' => array(DataType::STRING, 'getColor', 'color'),
-				'hasAvatar' => array(DataType::BOOLEAN, 'getHasAvatar', 'hasAvatar'),
-				'avatarMIME' => array(DataType::STRING, 'getAvatarMIME', 'avatarMIME'),
+				'hasAvatar' => array(DataType::BOOLEAN, 'hasAvatar', 'hasAvatar'),
+				'avatarType' => array(DataType::STRING, 'getAvatarType', 'avatarMIME'),
 				'enabled' => array(DataType::BOOLEAN, 'isEnabled',
 					'!status! = "enabled"'),
 				'hasPersonalSidebar' => array(DataType::BOOLEAN,
@@ -449,7 +451,7 @@ final class User extends Model {
 	 *
 	 * @return bool
 	 */
-	public function getHasAvatar() {
+	public function hasAvatar() {
 		$this->checkDisposed();
 			
 		if ($this->_hasAvatar === null)
@@ -458,16 +460,16 @@ final class User extends Model {
 	}                 
 
 	/**
-	 * Gets the mime type of the avatar
+	 * Gets the MIME type of the avatar
 	 *
 	 * @return string
 	 */
-	public function getAvatarMIME() {
+	public function getAvatarType() {
 		$this->checkDisposed();
 			
-		if ($this->_avatarMIME === null)
+		if ($this->_avatarType === null)
 			$this->load();
-		return $this->_avatarMIME;	
+		return $this->_avatarType;	
 	}                  
 
 	/**
@@ -1195,41 +1197,86 @@ final class User extends Model {
 	}
 	
 	/**
-	 * Loads a picture from a file and sets it as the new avatar of this user
+	 * Gets the path to the avatar of this user
+	 * 
+	 * @return string the file name or null, if this user does not have an avatar
+	 */
+	public function getAvatarFileName() {
+		if ($this->hasAvatar())
+			return Config::getStorePathOf('Premanager') . '/avatars/' . $this->_id;
+	}
+	
+	/**
+	 * Gets the path to the default avatar
+	 * 
+	 * @return string the path to the default avatar
+	 */
+	public static function getDefaultAvatarFileName() {
+		return Config::getPluginPathOf('Premanager').'/includes/defaultAvatar.png';
+	}
+	
+	/**
+	 * Gets the MIME type of the default avatar
+	 * 
+	 * @return string the MIME type of the default avatar
+	 */
+	public static function getDefaultAvatarType() {
+		return 'image/png';
+	}
+	
+	/**
+	 * Loads the avatar of this user and gets it as Image instance
+	 *
+	 * @return Premanager\Media\Image $image the avatar image or null if this user
+	 *   does not have an avatar
+	 * @throws Premanager\CorruptDataException avatar file is missing or could not
+	 *   be loaded
+	 */
+	public function getAvatar() {
+		$this->checkDisposed();
+		
+		if ($this->hasAvatar()) {
+			$fileName = $this->getAvatarFileName();
+			if (!File::exists($fileName))
+				throw new CorruptDataException('Avatar file for the user '.$this->_id.
+					' is missing');
+				
+			$image = Image::fromFile($fileName);
+			if (!$image)
+				throw new CorruptDataException('Avatar file for the user '.$this->_id.
+					'could not be loaded');
+			return $image;
+		} else
+			return null;
+	}
+	
+	/**
+	 * Sets an image as avatar for this user.
+	 * 
+	 * If it is too large, it is scaled down.
 	 *
 	 * If this user has already an avatar, the old avatar is deleted.
 	 *
-	 * If the file does not exist, throws an IOException.
-	 *
-	 * If the file format is not supported, throws a
-	 * UnsupportedFileFormatException
-	 *
-	 * @param string $fileName The path to a picture file
+	 * @param Premanager\Media\Image $image the new avatar image
 	 */
-	public function loadAvatarFromFile($fileName) {
+	public function setAvatar(Image $image) {
 		$this->checkDisposed();
 		
-		if (!$fileName)
-			throw new ArgumentException('$fileName is null or an empty string',
-				'fileName');
-				
-		if (!File::exists($fileName))
-			throw new FileNotFoundException('Avatar file does not exist', $fileName);
-			
-		$picture = Picture::loadFromFile($fileName,
+		$image->resizeProportionally(
 			Options::defaultGet('Premanager', 'avatar.max-width'),
 			Options::defaultGet('Premanager', 'avatar.max-height'));
 			
-		$picture->saveToFile(Config::$storePath.'Premanager/avatars/'.$this->_id);
+		$image->saveToFile(
+			Config::getStorePathOf('Premanager') . '/avatars/' . $this->_id);
 
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager', 'Users')."  ".
 			"SET hasAvatar = '1', ".
-				"avatarMIME = '".DataBase::escape($picture->getMIME())."' ".
+				"avatarMIME = '".DataBase::escape($image->getType())."' ".
 			"WHERE id = '$this->_id'");
 			
 		$this->_hasAvatar = true;
-		$this->_avatarMIME = $picture->getMIME();
+		$this->_avatarType = $image->getType();
 	}
 	
 	/**
@@ -1243,12 +1290,13 @@ final class User extends Model {
 			"SET hasAvatar = '0' ".
 			"WHERE id = '$this->_id'");	
 			
-		$fileName = Config::$storePath.'Premanager/avatars/'.$this->_id;
+		
+		$fileName = Config::getStorePathOf('Premanager').'/avatars/'.$this->_id;
 		if (File::exists($fileName))
 			File::delete($fileName);
 			
 		$this->_hasAvatar = false;
-		$this->_avatarMIME = '';
+		$this->_avatarType = '';
 	}       
 	
 	/**
@@ -1469,7 +1517,7 @@ final class User extends Model {
 		$this->_color = $result->get('color');
 		$this->_title = $result->get('title');
 		$this->_hasAvatar = !!$result->get('hasAvatar');
-		$this->_avatarMIME = $result->get('avatarMIME');
+		$this->_avatarType = $result->get('avatarMIME');
 		$this->_status = $result->get('status');
 		$this->_hasPersonalSidebar = $result->get('hasPersonalSidebar');  
 		$this->_email = $result->get('email'); 

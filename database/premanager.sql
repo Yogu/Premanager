@@ -693,6 +693,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_plugins` (
 INSERT INTO `premanager_0_plugins` (`id`, `name`, `initializerClass`, `backendTreeClass`, `timestamp`) VALUES
 (0, 'Premanager', 'Premanager\\Initializer', 'Premanager\\Pages\\Backend\\BackendPage', '2011-02-18 21:45:39'),
 (2, 'Blog', '', '', '2010-02-17 21:29:49'),
+(7, 'Widgets', '', '', '2011-02-18 22:54:57'),
 (6, 'Wiki', '', '', '2010-04-01 15:50:51');
 
 -- --------------------------------------------------------
@@ -1626,7 +1627,9 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (646, 0, 'changeEmailMessage', '2011-02-16 21:22:27'),
 (647, 0, 'registrationEmailOptionalMessage', '2011-02-16 21:44:50'),
 (648, 0, 'registrationMessage', '2011-02-16 21:45:49'),
-(649, 0, 'userAvatarPageTitle', '2011-02-17 20:43:14');
+(649, 0, 'userAvatarPageTitle', '2011-02-17 20:43:14'),
+(650, 0, 'changeAvatarFileTooLargeError', '2011-02-18 22:08:01'),
+(651, 0, 'guestChangesAvatarMessage', '2011-02-18 22:30:35');
 
 -- --------------------------------------------------------
 
@@ -2266,7 +2269,7 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (354, 1, 'Herzlich Willkommen bei {organizationTitle html}!', '2010-05-22 21:56:14'),
 (355, 1, 'Bestätigung der E-Mail-Adresse', '2010-05-22 22:00:04');
 INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `timestamp`) VALUES
-(356, 1, 'Hallo {userName html},</p>\r\n\r\n<p>Die Funktion &quot;Passwort vergessen%quot; wurde mit deinem Benutzerkonto durchgeführt.</p>\r\n\r\n<p>Wenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.</p>\r\n\r\n<p>Klicke auf den folgenden Link, um ein neues Passwort einzugeben:</p>\r\n\r\n<p><a href="{linkURL}">{linkURL html}</a></p>\r\n\r\n<p>Wenn du Probleme beim öffnen des Links hast, markiere die obenstehende Adresse, kopiere sie in die Zwischenablage und füge sie in der Adresszeile deines Browsers ein.', '2011-02-05 17:59:18'),
+(356, 1, 'Hallo {userName html},</p>\r\n\r\n<p>Die Funktion &quot;Passwort vergessen&quot; wurde mit deinem Benutzerkonto durchgeführt.</p>\r\n\r\n<p>Wenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.</p>\r\n\r\n<p>Klicke auf den folgenden Link, um ein neues Passwort einzugeben:</p>\r\n\r\n<p><a href="{linkURL}">{linkURL html}</a></p>\r\n\r\n<p>Wenn du Probleme beim öffnen des Links hast, markiere die obenstehende Adresse, kopiere sie in die Zwischenablage und füge sie in der Adresszeile deines Browsers ein.', '2011-02-17 21:28:14'),
 (357, 1, 'Hallo {userName},\r\n\r\nDie Funktion "Passwort vergessen" wurde mit deinem Benutzerkonto durchgeführt.\r\n\r\nWenn du das nicht warst, kannst du diese E-Mail einfach ignorieren. Melde dich beim nächsten Mal einfach ganz normal an.\r\n\r\nKlicke auf den folgenden Link, um ein neues Passwort einzugeben:\r\n\r\n{linkURL html}\r\n\r\nWenn du Probleme beim öffnen des Links hast, markiere die obenstehende Adresse, kopiere sie in die Zwischenablage und füge sie in der Adresszeile deines Browsers ein.', '2011-02-05 18:11:54'),
 (358, 1, 'Bedauerlicherweise ist beim Versenden der E-Mail ein Problem aufgetreten, sodass die Passwort-vergessen-Funktion nicht durchgeführt werden konnte. Wir bitten, dies zu entschuldigen und sich an die Administration zu wenden.', '2011-02-05 18:03:02'),
 (359, 1, 'In den nächsten Minuten solltest du eine E-Mail erhalten, in der die weiteren Schritte beschrieben sind. Bitte prüfe auch den Ordner für Spam-Verdacht, falls du innerhalb der nächsten Minuten keine E-Mail erhalten solltest.', '2011-02-05 18:01:06'),
@@ -2549,7 +2552,9 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (646, 1, 'Hier kannst du eine E-Mail-Adresse ändern. Wenn du dieses Formular mit einer neuen Adresse abgeschickt hast, bekommst du eine E-Mail mit einem Internetlink. Klicke auf diesen Link, um zu beweisen, dass du die E-Mail erhalten hast und die E-Mail-Adresse dir gehört.', '2011-02-16 21:23:14'),
 (647, 1, 'Um ein Benutzerkonto  zu erstellen, musst du dir lediglich einen noch nicht verwendeten Benutzernamen und ein geheimes Passwort ausdenken. Darüber hinaus kannst du eine E-Mail-Adresse angeben, um z.B. dein Passwort zurücksetzen zu können, falls du es vergessen solltest.', '2011-02-16 21:46:19'),
 (648, 1, 'Um ein Benutzerkonto  zu erstellen, musst du dir lediglich einen noch nicht verwendeten Benutzernamen und ein geheimes Passwort ausdenken sowie eine E-Mail-Adresse angeben, auf deren Posteingang du zugreifen kannst.', '2011-02-16 21:45:49'),
-(649, 1, 'Avatar', '2011-02-17 20:43:14');
+(649, 1, 'Avatar', '2011-02-17 20:43:14'),
+(650, 1, 'Die Datei, die du hochladen wolltest, ist zu groß. Die maximale Dateigröße beträgt {maxSize html}.', '2011-02-18 22:08:01'),
+(651, 1, 'Um deinen Avatar zu ändern, musst du dich zunächst anmelden.', '2011-02-18 22:30:35');
 
 -- --------------------------------------------------------
 
@@ -2656,7 +2661,8 @@ INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `key`, `ti
 (22, 0, 'Premanager\\Pages\\PasswordLostPage', 'organization', 'password-lost', '2011-02-05 17:35:28'),
 (23, 0, 'Premanager\\Pages\\ChangePasswordPage', 'organization', 'change-password', '2011-02-08 16:18:34'),
 (24, 0, 'Premanager\\Pages\\ChangeEmailPage', 'organization', 'change-email', '2011-02-08 18:10:11'),
-(25, 0, 'Premanager\\Pages\\ChangeUserNamePage', 'organization', 'chagne-user-name', '2011-02-16 21:10:07');
+(25, 0, 'Premanager\\Pages\\ChangeUserNamePage', 'organization', 'chagne-user-name', '2011-02-16 21:10:07'),
+(26, 0, 'Premanager\\Pages\\ChangeAvatarPage', 'organization', 'change-avatar', '2011-02-18 22:26:19');
 
 -- --------------------------------------------------------
 

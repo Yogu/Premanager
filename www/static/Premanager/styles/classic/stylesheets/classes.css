@@ -881,7 +881,11 @@ input[type=reset].main,
 input[type=button].main,
 button.main {
 	font-weight: bold;
-}     
+}
+
+input[type=file] {
+	width: auto;
+}
 
 /* ========== Input Errors ========== */
 

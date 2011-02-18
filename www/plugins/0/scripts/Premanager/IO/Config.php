@@ -23,6 +23,7 @@ class Config {
 	private static $_varDumpReturnsHTML;
 	private static $_isLoginDisabled;
 	private static $_isDebugMode;
+	private static $_maxUploadFileSize;
 	
 	/**
 	 * Gets the root path of this premanager installation (without trailing slash)
@@ -278,6 +279,25 @@ class Config {
 		if (self::$_securityCode === null)
 			self::loadFromFile();
 		return self::$_securityCode;
+	}
+	
+	public static function getMaxUploadFileSize() {
+		if (self::$_maxUploadFileSize === null) {
+			$size = ini_get('upload_max_filesize');
+			$chr = strtoupper(substr($size, -1));
+			if (!is_numeric($chr)) {
+				$size = substr($size, 0, -1);
+				$units = array('K', 'M', 'G', 'T', 'E');
+				for ($i = 0; i < count($units); $i++) {
+					if ($chr == $units[$i]) {
+						$size *= pow(1024, $i + 1);
+						break;
+					}
+				}
+			}
+			self::$_maxUploadFileSize = $size;
+		}
+		return self::$_maxUploadFileSize;
 	}
 	
 	private static function loadFromFile() {
