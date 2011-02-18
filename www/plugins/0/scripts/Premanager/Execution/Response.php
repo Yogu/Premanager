@@ -97,7 +97,14 @@ abstract class Response extends Module {
 	 * instead.
 	 */
 	public function send() {
-		// Let php generate the html status code phrase
+		$this->sendHeaders();
+		echo $this->getContent();
+	}
+	
+	/**
+	 * Sends only the headers
+	 */
+	protected function sendHeaders() {
 		$code = $this->getStatusCode();
 		header('HTTP/1.1 '.$code.' '.self::$_statusPhrases[$code], true,
 			$code);
@@ -106,8 +113,6 @@ abstract class Response extends Module {
 		if (Strings::substring($contentType, 0, 4) == 'text')
 			$contentType .= '; charset=UTF-8';
 		header('Content-Type: '.$contentType);
-		
-		echo $this->getContent();
 	}
 }
 
