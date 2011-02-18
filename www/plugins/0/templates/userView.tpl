@@ -9,7 +9,7 @@
 		<dd><span style="color: #{$user->getColor()}">{html $user->getTitle()}</span></dd>
 	</dl>   
 
-	{if $user->gethasAvatar()}
+	{if $user->hasAvatar()}
 		<dl>
 			<dt>{string Premanager label array(label=string(Premanager avatar))}</dt>
 			<dd><img alt="{string Premanager avatarOf array(userName=$user->getName())}" src="./{$node->getURL()}/avatar" /></dd>

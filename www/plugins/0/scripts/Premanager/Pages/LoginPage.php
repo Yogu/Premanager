@@ -261,7 +261,7 @@ class LoginPage extends TreePageNode {
 		if ($session)
 			$session->delete();
 		Output::deleteCookie('session');
-		Environment::getCurrent()->notfifyLoggedOut();
+		Environment::getCurrent()->notifySessionChanged(null);
 		self::$loggedOut->call();
 	}  
 }

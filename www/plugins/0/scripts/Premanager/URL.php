@@ -40,7 +40,7 @@ class URL extends Module {
 		$this->_originalURL = $url;
 		
 		/*
-		 * source code for $compiledPattern
+		 * source code for $pattern
 		 * 
 		 * source: ABNF from http://tools.ietf.org/html/rfc3986#appendix-A
 		 * 

@@ -14,7 +14,8 @@ class FileNotFoundException extends IOException {
 	 * @param string $fileName the path to the missing file
 	 */
 	public function __construct($message = '', $fileName = '') {
-		parent::__construct($message);
+		parent::__construct($message .
+			($fileName ? (" (File Name: ".$fileName.")") : ''));
 		$this->_fileName = $fileName;
 	}
 	
