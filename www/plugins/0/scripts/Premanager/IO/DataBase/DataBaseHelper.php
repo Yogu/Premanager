@@ -25,11 +25,10 @@ class DataBaseHelper extends Module {
 	 *
 	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
-	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime,
-	 *   creatorID and creatorIP fields; EDITOR_FIELDS: table contains editTime,
-	 *   editorID, editorIP and editTimes fields; IS_TREE: table is a tree table; 
-	 *   UNTRANSLATED_NAME: name field is in item table instead of translation
-	 *   table)
+	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime and
+	 *   creatorID fields; EDITOR_FIELDS: table contains editTime, editorID, and
+	 *   editTimes fields; IS_TREE: table is a tree table;UNTRANSLATED_NAME: name
+	 *   field is in item table instead of translation table)
 	 * @param string name: name value (can be omitted at values / translatedValues
 	 *   parameter)
 	 * @param array $values array with name-value pairs to insert into the item
@@ -43,7 +42,6 @@ class DataBaseHelper extends Module {
 	public static function insert($plugin, $table, $flags, $name,
 		array $values, array $translatedValues, $parentID = null) {
 		$user = Environment::getCurrent()->getuser()->getid();
-		$ip = Request::getIP();
 		$lang = Environment::getCurrent()->getlanguage()->getid();   
 		
 		if (($flags & self::IS_TREE)) {
@@ -58,13 +56,11 @@ class DataBaseHelper extends Module {
 		if ($flags & self::CREATOR_FIELDS) {
 			$values['createTime!'] = 'NOW()';
 			$values['creatorID'] = $user;
-			$values['creatorIP'] = $ip;
 		}
 		
 		if ($flags & self::EDITOR_FIELDS) {  
 			$values['editTime!'] = 'NOW()';
 			$values['editorID'] = $user;
-			$values['editorIP'] = $ip;
 			$values['editTimes'] = 0;
 		}
 
@@ -171,11 +167,10 @@ class DataBaseHelper extends Module {
 	 *
 	 * @param string $plugin name of the plugin that holds the item table
 	 * @param string $table name of item table (_un_encoded)
-	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime,
-	 *   creatorID and creatorIP fields; EDITOR_FIELDS: table contains editTime,
-	 *   editorID, editorIP and editTimes fields; IS_TREE: table is a tree table; 
-	 *   UNTRANSLATED_NAME: name field is in item table instead of translation
-	 *   table)       
+	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime and
+	 *   creatorID fields; EDITOR_FIELDS: table contains editTime, editorID, and
+	 *   editTimes fields; IS_TREE: table is a tree table;UNTRANSLATED_NAME: name
+	 *   field is in item table instead of translation table)
 	 * @param int $id: id of item that should be updated
 	 * @param string|null name: name value (can be omitted at values /
 	 *   translatedValues parameter); if null, name is not updated
@@ -192,7 +187,6 @@ class DataBaseHelper extends Module {
 		array $values, array $translatedValues, $parentID = null,
 		$isNameInUseCallback = null) {
 		$user = Environment::getCurrent()->getuser()->getid();
-		$ip = Request::getIP();
 		$lang = Environment::getCurrent()->getlanguage()->getid();
 		
 		if (!Types::isInteger($id) || $id < 0)
@@ -204,7 +198,6 @@ class DataBaseHelper extends Module {
 		if ($flags & self::EDITOR_FIELDS) {  
 			$values['editTime!'] = 'NOW()';
 			$values['editorID'] = $user;
-			$values['editorIP'] = $ip;
 			$values['editTimes!'] = 'editTimes + 1';
 		}       
 			
