@@ -223,9 +223,9 @@ class QueryExpression extends Module {
 				
 			case QueryOperation::EQUAL:		
 			case QueryOperation::UNEQUAL:
-				if (!$operand0 || !$operand1 ||
+				if (!$operand0 || (!$operand0->_memberInfo && (!$operand1 ||
 					!($operand1 instanceof QueryExpression) ||
-					$operand0->_type != $operand1->_type)
+					$operand0->_type != $operand1->_type)))
 					throw new ArgumentException(
 						'Invalid operands for the equality testing operator');
 				$this->_operand0 = $operand0;
@@ -445,7 +445,7 @@ class QueryExpression extends Module {
 					else if (!$this->_operand1->_operation &&
 						$field = $this->_operand0->getQuery())
 					{
-						$id = $this->_operand1->_value->getID();
+						$id = $this->_operand1 ? $this->_operand1->_value->getID() : 0;
 						return '('.$field.') = '.DataBase::escape($id); 
 					}
 				}

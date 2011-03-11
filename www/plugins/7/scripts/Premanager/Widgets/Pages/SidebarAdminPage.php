@@ -1,5 +1,7 @@
 <?php
-namespace Premanager\Pages;
+namespace Premanager\Widgets\Pages;
+
+use Premanager\Widgets\WidgetClass;
 
 use Premanager\Execution\TreePageNode;
 use Premanager\Models\Project;
@@ -29,9 +31,10 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that shows a list of all users
+ * A page that allows to edit the sidebar of all guests and users without own
+ * sidebar
  */
-class ViewonlinePage extends TreePageNode {	
+class SidebarAdminPage extends TreePageNode {	
 	/**
 	 * Performs a call of this page and creates the response object
 	 * 
@@ -41,25 +44,17 @@ class ViewonlinePage extends TreePageNode {
 		$list = self::getList();
 		
 		$page = new Page($this);
-		$page->title = Translation::defaultGet('Premanager', 'viewonline');
-		$minutes = floor(Options::defaultGet('Premanager',
-			'viewonline.max-session-age') / 60);
-		$page->createMainBlock(Translation::defaultGet('Premanager',
-			count($list) ? 'viewonlineMessage' : 'viewonlineEmpty',
-			array('timeSpan' => $minutes)));
+		$page->title =
+			Translation::defaultGet('Premanager.Widgets', 'sidebarAdmin');
+		$page->createMainBlock(Translation::defaultGet('Premanager.Widgets',
+			'sidebarAdminMessage'));
 		
-		if (count($list)) {
-			$template = new Template('Premanager', 'viewonlineHead');
-			$head = $template->get();
-			
-			$template = new Template('Premanager', 'viewonlineBody');
-			$template->set('organization', Project::getOrganization());
-			$template->set('sessions', $list);
-			$template->set('node', $this);
-			$body = $template->get();
-			
-			$page->appendBlock(PageBlock::createTable($head, $body));
-		}
+		$template = new Template('Premanager.Widgets', 'sidebarAdmin');
+		$template->set('widgetClasses', self::getList());
+		$page->appendBlock(PageBlock::createSimple(
+			Translation::defaultGet('Premanager.Widgets', 'sidebarAdmin'),
+			$template->get()));
+		$page->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
 		
 		return $page;
 	} 
@@ -69,17 +64,12 @@ class ViewonlinePage extends TreePageNode {
 	 * 
 	 * @return Premanager\QueryList\QueryList the list of sessions
 	 */
-	public static function getList() {
+	private static function getList() {
 		static $cache;
 		if (!$cache) {
-			$cache = Session::getSessions();
-			$cache = $cache->filter(
-				$cache->expr(QueryOperation::GREATER,
-					$cache->exprMember('lastRequestTime'),
-					DateTime::getNow()->addSeconds(
-						-Options::defaultGet('Premanager', 'viewonline.max-session-age'))));
+			$cache = WidgetClass::getWidgetClasses();
 			$cache = $cache->sort(array(
-				new SortRule($cache->exprMember('lastRequestTime'))));
+				new SortRule($cache->exprMember('title'))));
 		}
 		return $cache;
 	}

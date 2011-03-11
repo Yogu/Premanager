@@ -67,10 +67,12 @@ class DataBaseHelper extends Module {
 		if ($flags & self::IS_TREE)
 			$values['parentID'] = $parentID;
 			
-		if ($flags & self::UNTRANSLATED_NAME)
-			$values['name'] = $name;
-		else
-			$translatedValues['name'] = $name;
+		if ($name !== null) {
+			if ($flags & self::UNTRANSLATED_NAME)
+				$values['name'] = $name;
+			else
+				$translatedValues['name'] = $name;
+		}
 		   
 		// Prepare query
 		$nameString = '';
@@ -127,7 +129,8 @@ class DataBaseHelper extends Module {
 
 		// -------------- Name ------------
 		
-		self::insertName($plugin, $table, $flags, $id, $name, $parentID);
+		if ($name !== null)
+			self::insertName($plugin, $table, $flags, $id, $name, $parentID);
 		
 		return $id;
 	}

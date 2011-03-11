@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 18. Februar 2011 um 22:25
+-- Erstellungszeit: 11. März 2011 um 23:21
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.4
 
@@ -23,6 +23,10 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groupright`
+--
+-- Erzeugt am: 31. Dezember 2010 um 17:10
+-- Aktualisiert am: 08. Februar 2011 um 17:02
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupright` (
@@ -73,6 +77,9 @@ INSERT INTO `premanager_0_groupright` (`groupID`, `rightID`, `timestamp`) VALUES
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groups`
 --
+-- Erzeugt am: 18. Februar 2011 um 23:23
+-- Aktualisiert am: 18. Februar 2011 um 23:23
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -122,6 +129,9 @@ INSERT INTO `premanager_0_groups` (`id`, `parentID`, `color`, `priority`, `autoJ
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groupsname`
+--
+-- Erzeugt am: 28. Dezember 2010 um 13:41
+-- Aktualisiert am: 21. Januar 2011 um 23:19
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupsname` (
@@ -175,6 +185,9 @@ INSERT INTO `premanager_0_groupsname` (`nameID`, `id`, `name`, `inUse`, `languag
 --
 -- Tabellenstruktur für Tabelle `premanager_0_groupstranslation`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 21. Januar 2011 um 23:31
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_groupstranslation` (
   `id` int(10) unsigned NOT NULL,
@@ -227,6 +240,9 @@ INSERT INTO `premanager_0_groupstranslation` (`id`, `languageID`, `name`, `text`
 --
 -- Tabellenstruktur für Tabelle `premanager_0_languages`
 --
+-- Erzeugt am: 18. Februar 2011 um 23:23
+-- Aktualisiert am: 18. Februar 2011 um 23:23
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_languages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -275,6 +291,9 @@ INSERT INTO `premanager_0_languages` (`id`, `name`, `title`, `englishTitle`, `is
 --
 -- Tabellenstruktur für Tabelle `premanager_0_log`
 --
+-- Erzeugt am: 10. Januar 2011 um 19:31
+-- Aktualisiert am: 10. Januar 2011 um 19:31
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -308,6 +327,10 @@ CREATE TABLE IF NOT EXISTS `premanager_0_log` (
 --
 -- Tabellenstruktur für Tabelle `premanager_0_markuplanguages`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -333,6 +356,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguages` (
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_markuplanguagestranslation`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguagestranslation` (
@@ -360,6 +386,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_markuplanguagestranslation` (
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_nodegroup`
+--
+-- Erzeugt am: 21. Januar 2011 um 21:36
+-- Aktualisiert am: 21. Januar 2011 um 22:31
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodegroup` (
@@ -390,6 +419,9 @@ INSERT INTO `premanager_0_nodegroup` (`nodeID`, `groupID`, `timestamp`) VALUES
 --
 -- Tabellenstruktur für Tabelle `premanager_0_nodes`
 --
+-- Erzeugt am: 18. Februar 2011 um 23:24
+-- Aktualisiert am: 09. März 2011 um 15:45
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -408,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodes` (
   KEY `parentID` (`parentID`),
   KEY `projectID` (`projectID`),
   KEY `treeID` (`treeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=159 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=161 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodes`:
@@ -448,12 +480,18 @@ INSERT INTO `premanager_0_nodes` (`id`, `parentID`, `projectID`, `treeID`, `noAc
 (139, 0, 117, 0, 1, 0, '2010-11-14 20:06:32', '2010-11-14 20:06:32', 0, 0, 0, '2010-11-14 21:06:08'),
 (156, 92, 0, 20, 1, 0, '2011-01-24 17:26:08', '2011-02-08 15:20:24', 2, 2, 1, '2011-02-08 16:20:00'),
 (157, 94, 0, 23, 1, 0, '2011-02-08 15:19:24', '2011-02-08 15:20:13', 2, 2, 1, '2011-02-08 16:21:00'),
-(158, 94, 0, 25, 1, 0, '2011-02-08 16:57:37', '2011-02-08 16:57:37', 2, 2, 0, '2011-02-16 21:10:31');
+(158, 94, 0, 25, 1, 0, '2011-02-08 16:57:37', '2011-02-08 16:57:37', 2, 2, 0, '2011-02-16 21:10:31'),
+(159, 94, 0, 28, 1, 0, '2011-03-09 14:19:17', '2011-03-09 14:19:17', 2, 2, 0, '2011-03-09 15:22:36'),
+(160, 92, 0, 27, 1, 0, '2011-03-09 14:21:42', '2011-03-09 14:21:42', 2, 2, 0, '2011-03-09 15:22:36');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_nodesname`
+--
+-- Erzeugt am: 14. November 2010 um 22:10
+-- Aktualisiert am: 09. März 2011 um 15:21
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
@@ -468,7 +506,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_nodesname` (
   KEY `languageID` (`languageID`),
   KEY `name` (`name`),
   KEY `nodeID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=63 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=64 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_nodesname`:
@@ -514,12 +552,17 @@ INSERT INTO `premanager_0_nodesname` (`nameID`, `id`, `name`, `languageID`, `inU
 (59, 90, 'edit-account', 2, 1, '2011-02-08 16:58:10'),
 (60, 90, 'registrierungsdaten', 1, 0, '2011-02-08 17:57:00'),
 (61, 90, 'e-mail-ändern', 1, 1, '2011-02-08 17:57:00'),
-(62, 158, 'benutzernamen-ändern', 1, 1, '2011-02-08 17:57:13');
+(62, 158, 'benutzernamen-ändern', 1, 1, '2011-02-08 17:57:13'),
+(63, 160, 'sidebar', 1, 1, '2011-03-09 15:21:18');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_nodestranslation`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 09. März 2011 um 15:45
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_nodestranslation` (
@@ -577,12 +620,17 @@ INSERT INTO `premanager_0_nodestranslation` (`id`, `languageID`, `name`, `title`
 (157, 1, 'passwort-ändern', 'Passwort ändern', '2011-02-08 16:19:00'),
 (157, 2, 'change-password', 'Change Password', '2011-02-08 16:19:49'),
 (156, 2, 'styles', 'Styles', '2011-02-08 16:20:00'),
-(158, 1, 'benutzernamen-ändern', 'Benutzernamen ändern', '2011-02-08 17:57:13');
+(158, 1, 'benutzernamen-ändern', 'Benutzernamen ändern', '2011-02-08 17:57:13'),
+(159, 1, 'sidebar', 'Sidebar', '2011-03-09 15:18:53'),
+(160, 1, 'sidebar', 'Sidebar', '2011-03-09 15:21:18');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_options`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:24
+-- Aktualisiert am: 18. Februar 2011 um 23:24
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_options` (
@@ -638,6 +686,9 @@ INSERT INTO `premanager_0_options` (`id`, `pluginID`, `name`, `type`, `minValue`
 --
 -- Tabellenstruktur für Tabelle `premanager_0_panelobjects`
 --
+-- Erzeugt am: 11. März 2011 um 22:10
+-- Aktualisiert am: 11. März 2011 um 22:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_panelobjects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -651,7 +702,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_panelobjects` (
   PRIMARY KEY (`id`),
   KEY `nodeID` (`nodeID`),
   KEY `userID` (`userID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_panelobjects`:
@@ -659,22 +710,20 @@ CREATE TABLE IF NOT EXISTS `premanager_0_panelobjects` (
 --       `premanager_0_nodes` -> `id`
 --   `userID`
 --       `premanager_0_users` -> `id`
---   `widgetID`
---       `premanager_0_widgets` -> `id`
 --
 
 --
 -- Daten für Tabelle `premanager_0_panelobjects`
 --
 
-INSERT INTO `premanager_0_panelobjects` (`id`, `nodeID`, `userID`, `widgetID`, `group`, `order`, `isMinimized`, `timestamp`) VALUES
-(1, 79, NULL, 1, 0, 0, 0, '2010-07-04 12:42:41'),
-(2, 79, NULL, 2, 1, 0, 0, '2010-07-04 12:42:41');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_plugins`
+--
+-- Erzeugt am: 03. November 2010 um 12:51
+-- Aktualisiert am: 11. März 2011 um 22:16
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_plugins` (
@@ -693,13 +742,16 @@ CREATE TABLE IF NOT EXISTS `premanager_0_plugins` (
 INSERT INTO `premanager_0_plugins` (`id`, `name`, `initializerClass`, `backendTreeClass`, `timestamp`) VALUES
 (0, 'Premanager', 'Premanager\\Initializer', 'Premanager\\Pages\\Backend\\BackendPage', '2011-02-18 21:45:39'),
 (2, 'Blog', '', '', '2010-02-17 21:29:49'),
-(7, 'Widgets', '', '', '2011-02-18 22:54:57'),
+(7, 'Premanager.Widgets', 'Premanager\\Widgets\\Initializer', '', '2011-03-11 22:03:24'),
 (6, 'Wiki', '', '', '2010-04-01 15:50:51');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_projectoptions`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projectoptions` (
@@ -727,6 +779,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_projectoptions` (
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_projects`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:24
+-- Aktualisiert am: 18. Februar 2011 um 23:24
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projects` (
@@ -763,6 +818,10 @@ INSERT INTO `premanager_0_projects` (`id`, `name`, `createTime`, `editTime`, `ed
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_projectsname`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 28. Januar 2011 um 20:52
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projectsname` (
@@ -804,6 +863,10 @@ INSERT INTO `premanager_0_projectsname` (`nameID`, `id`, `name`, `inUse`, `langu
 --
 -- Tabellenstruktur für Tabelle `premanager_0_projectstranslation`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 09. März 2011 um 15:00
+-- Letzter Check am: 09. März 2011 um 15:00
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_projectstranslation` (
   `id` int(10) unsigned NOT NULL,
@@ -840,6 +903,9 @@ INSERT INTO `premanager_0_projectstranslation` (`id`, `languageID`, `title`, `su
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_rights`
+--
+-- Erzeugt am: 31. Dezember 2010 um 13:42
+-- Aktualisiert am: 08. Februar 2011 um 17:02
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_rights` (
@@ -886,6 +952,10 @@ INSERT INTO `premanager_0_rights` (`id`, `pluginID`, `name`, `scope`, `timestamp
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_rightstranslation`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 08. Februar 2011 um 17:02
+-- Letzter Check am: 03. Januar 2011 um 16:58
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_rightstranslation` (
@@ -934,6 +1004,10 @@ INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `desc
 --
 -- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
+-- Erzeugt am: 02. Januar 2011 um 16:00
+-- Aktualisiert am: 12. März 2011 um 00:16
+-- Letzter Check am: 09. März 2011 um 15:00
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -953,7 +1027,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=98 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=100 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_sessions`:
@@ -968,43 +1042,16 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
 --
 
 INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `confirmationExpirationTime`, `timestamp`) VALUES
-(97, 2, '2011-02-18 20:33:43', '2011-02-18 21:32:16', '2a288709b4a3a75828c29a4c5035fe445573a223e92b26a8a867d6eb8b4154be', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b11) Gecko/20100101 Firefox/4.0b11', 0, 0, 0, 0, '2011-02-18 21:29:15', '2011-02-18 22:31:52');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `premanager_0_sidebar`
---
-
-CREATE TABLE IF NOT EXISTS `premanager_0_sidebar` (
-  `userID` int(11) NOT NULL,
-  `widgetID` int(11) NOT NULL,
-  `order` int(10) unsigned NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`userID`,`widgetID`),
-  KEY `order` (`order`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- RELATIONEN DER TABELLE `premanager_0_sidebar`:
---   `userID`
---       `premanager_0_users` -> `id`
---   `widgetID`
---       `premanager_0_widgets` -> `id`
---
-
---
--- Daten für Tabelle `premanager_0_sidebar`
---
-
-INSERT INTO `premanager_0_sidebar` (`userID`, `widgetID`, `order`, `timestamp`) VALUES
-(0, 1, 1, '2010-03-04 18:41:10'),
-(0, 2, 0, '2010-03-04 18:41:13');
+(99, 2, '2011-03-11 23:09:16', '2011-03-11 23:13:05', 'bebd799d53a3453384be658e5b5cd7f0239ef4876f8559cb1d2ea399f9fd5db3', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b12) Gecko/20100101 Firefox/4.0b12', 0, 0, 0, 0, '0000-00-00 00:00:00', '2011-03-12 00:12:41');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_strings`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 11. März 2011 um 23:06
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
@@ -1014,7 +1061,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=652 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=656 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_strings`:
@@ -1629,12 +1676,19 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (648, 0, 'registrationMessage', '2011-02-16 21:45:49'),
 (649, 0, 'userAvatarPageTitle', '2011-02-17 20:43:14'),
 (650, 0, 'changeAvatarFileTooLargeError', '2011-02-18 22:08:01'),
-(651, 0, 'guestChangesAvatarMessage', '2011-02-18 22:30:35');
+(651, 0, 'guestChangesAvatarMessage', '2011-02-18 22:30:35'),
+(652, 7, 'sidebarAdmin', '2011-03-09 15:23:32'),
+(653, 7, 'sidebarAdminMessage', '2011-03-09 15:30:27'),
+(654, 7, 'viewonlineWidgetTitle', '2011-03-09 15:48:58'),
+(655, 7, 'noUserOnline', '2011-03-11 23:06:45');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 11. März 2011 um 23:06
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
@@ -2554,12 +2608,19 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (648, 1, 'Um ein Benutzerkonto  zu erstellen, musst du dir lediglich einen noch nicht verwendeten Benutzernamen und ein geheimes Passwort ausdenken sowie eine E-Mail-Adresse angeben, auf deren Posteingang du zugreifen kannst.', '2011-02-16 21:45:49'),
 (649, 1, 'Avatar', '2011-02-17 20:43:14'),
 (650, 1, 'Die Datei, die du hochladen wolltest, ist zu groß. Die maximale Dateigröße beträgt {maxSize html}.', '2011-02-18 22:08:01'),
-(651, 1, 'Um deinen Avatar zu ändern, musst du dich zunächst anmelden.', '2011-02-18 22:30:35');
+(651, 1, 'Um deinen Avatar zu ändern, musst du dich zunächst anmelden.', '2011-02-18 22:30:35'),
+(652, 1, 'Standard-Sidebar', '2011-03-09 15:23:32'),
+(653, 1, 'Auf dieser Seite kannst du die Sidebar bearbeiten, die Gästen und allen Benutzern, die keine eigene Sidebar haben, angezeigt wird. Je nach Konfiguration können registrierte Benutzer diese Sidebar überschreiten und ihre eigene gestalten.</p><p>Die Sidebar besteht aus so genannten <i>Widgets</i>. Links siehst du alle verfügbaren, rechts alle in die Sidebar eingebauten Widgets. Um ein Widget aus der linken Spalte in die Sidebar einzufügen, bestehende Widgets zu entfernen oder zu verschieben, benutze die entsprechenden Schaltflächen.', '2011-03-09 15:30:27'),
+(654, 1, 'Wer ist online?', '2011-03-09 15:48:58'),
+(655, 1, 'Momentan ist kein registrierter Benutzer auf dieser Seite.', '2011-03-11 23:06:45');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_styles`
+--
+-- Erzeugt am: 24. Januar 2011 um 19:04
+-- Aktualisiert am: 28. Januar 2011 um 21:15
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_styles` (
@@ -2595,6 +2656,9 @@ INSERT INTO `premanager_0_styles` (`id`, `pluginID`, `isDefault`, `isEnabled`, `
 --
 -- Tabellenstruktur für Tabelle `premanager_0_stylestranslation`
 --
+-- Erzeugt am: 24. Januar 2011 um 19:04
+-- Aktualisiert am: 24. Januar 2011 um 19:04
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stylestranslation` (
   `id` int(11) NOT NULL,
@@ -2626,6 +2690,9 @@ INSERT INTO `premanager_0_stylestranslation` (`id`, `languageID`, `title`, `desc
 --
 -- Tabellenstruktur für Tabelle `premanager_0_trees`
 --
+-- Erzeugt am: 22. November 2010 um 19:31
+-- Aktualisiert am: 09. März 2011 um 15:21
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2637,7 +2704,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_trees` (
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`),
   KEY `scope` (`scope`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=27 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=29 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_trees`:
@@ -2662,12 +2729,18 @@ INSERT INTO `premanager_0_trees` (`id`, `pluginID`, `class`, `scope`, `key`, `ti
 (23, 0, 'Premanager\\Pages\\ChangePasswordPage', 'organization', 'change-password', '2011-02-08 16:18:34'),
 (24, 0, 'Premanager\\Pages\\ChangeEmailPage', 'organization', 'change-email', '2011-02-08 18:10:11'),
 (25, 0, 'Premanager\\Pages\\ChangeUserNamePage', 'organization', 'chagne-user-name', '2011-02-16 21:10:07'),
-(26, 0, 'Premanager\\Pages\\ChangeAvatarPage', 'organization', 'change-avatar', '2011-02-18 22:26:19');
+(26, 0, 'Premanager\\Pages\\ChangeAvatarPage', 'organization', 'change-avatar', '2011-02-18 22:26:19'),
+(27, 7, 'Premanager\\Widgets\\Pages\\SidebarAdminPage', 'organization', 'sidebar-admin', '2011-03-09 15:21:38'),
+(28, 7, 'Premanager\\Widgets\\Pages\\SidebarPage', 'organization', 'sidebar', '2011-03-09 15:21:55');
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_usergroup`
+--
+-- Erzeugt am: 28. Dezember 2010 um 22:29
+-- Aktualisiert am: 09. März 2011 um 15:00
+-- Letzter Check am: 09. März 2011 um 15:00
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_usergroup` (
@@ -2713,6 +2786,9 @@ INSERT INTO `premanager_0_usergroup` (`userID`, `groupID`, `joinTime`, `joinIP`,
 --
 -- Tabellenstruktur für Tabelle `premanager_0_useroptions`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
   `optionID` int(10) unsigned NOT NULL,
@@ -2737,6 +2813,10 @@ CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_users`
+--
+-- Erzeugt am: 05. Februar 2011 um 17:00
+-- Aktualisiert am: 12. März 2011 um 00:16
+-- Letzter Check am: 09. März 2011 um 15:00
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_users` (
@@ -2780,7 +2860,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
 
 INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `resetPasswordKey`, `resetPasswordStartTime`, `resetPasswordIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `styleID`, `timestamp`) VALUES
 (0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00', '', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 0, '2011-02-18 22:19:37'),
-(2, 'Yogu', '2010-02-13 18:27:13', '127.0.0.1', '2011-02-18 20:33:43', '2011-02-18 20:33:43', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '006600', 'yogu@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 1, '2011-02-18 22:31:42'),
+(2, 'Yogu', '2010-02-13 18:27:13', '127.0.0.1', '2011-03-11 23:09:16', '2011-03-11 23:09:16', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '006600', 'yogu@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 1, '2011-03-12 00:08:52'),
 (128, 'Test-User', '2011-02-16 19:22:45', '127.0.0.1', '2011-02-16 19:23:01', '2011-02-16 19:23:01', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '000000', 'test@user.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-16 20:22:37'),
 (79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-02-06 00:32:10', '2011-02-06 00:32:10', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '64002E', 'markus@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-08 16:15:43');
 
@@ -2788,6 +2868,10 @@ INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registratio
 
 --
 -- Tabellenstruktur für Tabelle `premanager_0_usersname`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 09. März 2011 um 15:00
+-- Letzter Check am: 09. März 2011 um 15:00
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_usersname` (
@@ -2832,6 +2916,10 @@ INSERT INTO `premanager_0_usersname` (`nameID`, `id`, `name`, `languageID`, `inU
 --
 -- Tabellenstruktur für Tabelle `premanager_0_userstranslation`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 09. März 2011 um 15:00
+-- Letzter Check am: 09. März 2011 um 15:00
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_0_userstranslation` (
   `id` int(10) unsigned NOT NULL,
@@ -2870,33 +2958,11 @@ INSERT INTO `premanager_0_userstranslation` (`id`, `languageID`, `title`, `times
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `premanager_0_widgets`
---
-
-CREATE TABLE IF NOT EXISTS `premanager_0_widgets` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `pluginID` int(10) unsigned NOT NULL,
-  `class` varchar(255) COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
---
--- RELATIONEN DER TABELLE `premanager_0_widgets`:
---   `pluginID`
---       `premanager_0_plugins` -> `id`
---
-
---
--- Daten für Tabelle `premanager_0_widgets`
---
-
-
--- --------------------------------------------------------
-
---
 -- Tabellenstruktur für Tabelle `premanager_2_articles`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_2_articles` (
@@ -2937,6 +3003,10 @@ INSERT INTO `premanager_2_articles` (`id`, `createTime`, `editTime`, `editTimes`
 --
 -- Tabellenstruktur für Tabelle `premanager_2_articlesname`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_2_articlesname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2976,6 +3046,9 @@ INSERT INTO `premanager_2_articlesname` (`nameID`, `id`, `name`, `languageID`, `
 --
 -- Tabellenstruktur für Tabelle `premanager_2_articlestranslation`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_2_articlestranslation` (
   `id` int(10) unsigned NOT NULL,
@@ -3010,6 +3083,9 @@ INSERT INTO `premanager_2_articlestranslation` (`id`, `languageID`, `publishedRe
 
 --
 -- Tabellenstruktur für Tabelle `premanager_2_revisions`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:12
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_2_revisions` (
@@ -3060,6 +3136,10 @@ INSERT INTO `premanager_2_revisions` (`id`, `articleID`, `revision`, `languageID
 --
 -- Tabellenstruktur für Tabelle `premanager_6_articles`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_6_articles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -3098,6 +3178,10 @@ INSERT INTO `premanager_6_articles` (`id`, `categoryID`, `createTime`, `editTime
 --
 -- Tabellenstruktur für Tabelle `premanager_6_articlesname`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_6_articlesname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -3132,6 +3216,9 @@ INSERT INTO `premanager_6_articlesname` (`nameID`, `id`, `name`, `languageID`, `
 --
 -- Tabellenstruktur für Tabelle `premanager_6_articlestranslation`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_6_articlestranslation` (
   `id` int(10) unsigned NOT NULL,
@@ -3165,6 +3252,10 @@ INSERT INTO `premanager_6_articlestranslation` (`id`, `languageID`, `name`, `tit
 
 --
 -- Tabellenstruktur für Tabelle `premanager_6_categories`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_6_categories` (
@@ -3208,6 +3299,10 @@ INSERT INTO `premanager_6_categories` (`id`, `parentID`, `indexArticleID`, `crea
 --
 -- Tabellenstruktur für Tabelle `premanager_6_categoriesname`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+-- Letzter Check am: 07. Oktober 2010 um 20:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_6_categoriesname` (
   `nameID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -3242,6 +3337,9 @@ INSERT INTO `premanager_6_categoriesname` (`nameID`, `id`, `name`, `languageID`,
 --
 -- Tabellenstruktur für Tabelle `premanager_6_categoriestranslation`
 --
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:10
+--
 
 CREATE TABLE IF NOT EXISTS `premanager_6_categoriestranslation` (
   `id` int(10) unsigned NOT NULL,
@@ -3274,6 +3372,10 @@ INSERT INTO `premanager_6_categoriestranslation` (`id`, `languageID`, `name`, `t
 
 --
 -- Tabellenstruktur für Tabelle `premanager_6_revisions`
+--
+-- Erzeugt am: 07. Oktober 2010 um 20:10
+-- Aktualisiert am: 07. Oktober 2010 um 19:12
+-- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_6_revisions` (
@@ -3310,6 +3412,177 @@ CREATE TABLE IF NOT EXISTS `premanager_6_revisions` (
 INSERT INTO `premanager_6_revisions` (`id`, `articleID`, `revision`, `languageID`, `createTime`, `creatorID`, `creatorIP`, `text`, `summary`, `timestamp`) VALUES
 (1, 1, 1, 1, '2010-04-01 16:41:33', 2, '127.0.0.1', 'Juvenile Studios ist eine Film-Crew, bestehend aus dreizehn Kindern und Jugendlichen zwischen neun und 16 Jahren. Im Herbst 2008 Jahres drehten sie einen fünfzehnminütigen Spielfilm und begeisterten damit weitere Schauspieler. Januar 2009 fand die Premiere des zweiten Films Das Puzzle der Waisen statt. Momentan arbeitet das Team an dem Film Zwei Gesichter, Trau schau wem!.', 'Biography copied from http://www.lastfm.de/music/Juvenile+Studios/+wiki', '2010-04-01 16:44:44'),
 (2, 1, 1, 2, '2010-04-01 16:47:04', 2, '127.0.0.1', 'Juvenile Studios is a film crew of thirteen children and juveniles between nine and 16 years. In autumn 2008, they produced a fifteen-minute movie and attracked further actors. In January, 2010, there was the premiere of their second film called "Das Puzzle der Waisen". At the moment the crew is producing "Zwei Gesichter, Trau schau wem!"', 'Copied from null-project''s description', '2010-04-01 16:47:04');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_7_widgetclasses`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:07
+-- Aktualisiert am: 09. März 2011 um 15:16
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_7_widgetclasses` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pluginID` int(10) unsigned NOT NULL,
+  `class` varchar(255) COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+
+--
+-- RELATIONEN DER TABELLE `premanager_7_widgetclasses`:
+--   `pluginID`
+--       `premanager_0_plugins` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_7_widgetclasses`
+--
+
+INSERT INTO `premanager_7_widgetclasses` (`id`, `pluginID`, `class`, `timestamp`) VALUES
+(1, 7, 'Premanager\\Widgets\\ViewonlineWidget', '2011-03-09 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_7_widgetclassestranslation`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:06
+-- Aktualisiert am: 09. März 2011 um 15:17
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_7_widgetclassestranslation` (
+  `id` int(10) unsigned NOT NULL,
+  `languageID` int(11) unsigned NOT NULL,
+  `title` varchar(255) COLLATE utf8_bin NOT NULL,
+  `description` text COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`languageID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- RELATIONEN DER TABELLE `premanager_7_widgetclassestranslation`:
+--   `id`
+--       `premanager_7_widgetclasses` -> `id`
+--   `languageID`
+--       `premanager_0_languages` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_7_widgetclassestranslation`
+--
+
+INSERT INTO `premanager_7_widgetclassestranslation` (`id`, `languageID`, `title`, `description`, `timestamp`) VALUES
+(1, 1, 'Wer ist online?', 'Zeigt eine Liste der Benutzer, die gerade angemeldet sind', '2011-03-09 15:17:00');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_7_widgetoptions`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:10
+-- Aktualisiert am: 18. Februar 2011 um 23:10
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_7_widgetoptions` (
+  `id` int(10) unsigned NOT NULL,
+  `widgetClassID` int(10) unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `type` varchar(255) COLLATE utf8_bin NOT NULL,
+  `defalutValue` text COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `widgetClassID` (`widgetClassID`,`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- RELATIONEN DER TABELLE `premanager_7_widgetoptions`:
+--   `widgetClassID`
+--       `premanager_7_widgetclasses` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_7_widgetoptions`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_7_widgetoptionvalues`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:10
+-- Aktualisiert am: 18. Februar 2011 um 23:10
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_7_widgetoptionvalues` (
+  `optionID` int(10) unsigned NOT NULL,
+  `widgetID` int(10) unsigned NOT NULL,
+  `value` text COLLATE utf8_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`optionID`,`widgetID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- RELATIONEN DER TABELLE `premanager_7_widgetoptionvalues`:
+--   `optionID`
+--       `premanager_7_widgetoptions` -> `id`
+--   `widgetID`
+--       `premanager_7_widgets` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_7_widgetoptionvalues`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `premanager_7_widgets`
+--
+-- Erzeugt am: 18. Februar 2011 um 23:02
+-- Aktualisiert am: 11. März 2011 um 22:13
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_7_widgets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `widgetClassID` int(10) unsigned NOT NULL,
+  `nodeID` int(10) unsigned NOT NULL,
+  `userID` int(10) unsigned NOT NULL,
+  `row` int(10) unsigned NOT NULL,
+  `order` int(10) unsigned NOT NULL,
+  `isMinimized` tinyint(1) NOT NULL DEFAULT '0',
+  `createTime` datetime NOT NULL,
+  `editTime` datetime NOT NULL,
+  `creatorID` int(10) unsigned NOT NULL,
+  `editorID` int(10) unsigned NOT NULL,
+  `editTimes` int(10) unsigned NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+
+--
+-- RELATIONEN DER TABELLE `premanager_7_widgets`:
+--   `creatorID`
+--       `premanager_0_users` -> `id`
+--   `editorID`
+--       `premanager_0_users` -> `id`
+--   `nodeID`
+--       `premanager_0_nodes` -> `id`
+--   `userID`
+--       `premanager_0_users` -> `id`
+--   `widgetClassID`
+--       `premanager_7_widgetclasses` -> `id`
+--
+
+--
+-- Daten für Tabelle `premanager_7_widgets`
+--
+
+INSERT INTO `premanager_7_widgets` (`id`, `widgetClassID`, `nodeID`, `userID`, `row`, `order`, `isMinimized`, `createTime`, `editTime`, `creatorID`, `editorID`, `editTimes`, `timestamp`) VALUES
+(1, 1, 0, 0, 0, 0, 0, '2011-03-11 22:13:15', '2011-03-11 22:13:15', 2, 2, 0, '2011-03-11 22:13:15');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

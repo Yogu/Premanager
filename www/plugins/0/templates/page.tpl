@@ -63,6 +63,9 @@
 				<link rel="stylesheet" type="text/css" href="{html $stylesheet->getURL()}" media="{html $stylesheet->getMedia()}" />
 			{/if}
 		{/foreach}
+		{foreach $stylesheets stylesheet}
+			<link rel="stylesheet" type="text/css" href="{html $staticURLPrefix}{html $stylesheet}" media="all" />
+		{/foreach}
 		                       
 		<script type="text/javascript">var Config = \{emptyURLPrefix:'{escape $emptyURLPrefix}', staticURLPrefix:'{escape $staticURLPrefix}'};</script>                                                                                                      
 		<script type="text/javascript" src="{$staticURLPrefix}Premanager/scripts/prototype.js"></script>
@@ -75,6 +78,8 @@
 	</head>
 	
 	<body class="page{if $sidebar} has-sidebar{/if}">
+		{$top}
+		
 		<header id="header">
 			<hgroup>
 				<h1 id="organization-heading"><a href="./">{html $organization->getTitle()}</a></h1>
@@ -84,6 +89,8 @@
 			</hgroup>
 		</header>
 		
+		{$afterHeader}
+		
 		<nav id="navbar">
 			<ul>                         
 				{foreach $hierarchy|reverse item}
@@ -91,6 +98,8 @@
 				{/foreach}			
 			</ul>		
 		</nav>
+		
+		{$afterNavigation}
 			
 		{if $isList && $node->getPageCount() > 1}
 			<div id="pagination">
@@ -125,6 +134,8 @@
 			</div>			
 		{/if}
 		
+		{$afterPagination}
+		
 		{if count($toolbar)}
 			<ul class="toolbar" id="toolbar">
 				{foreach $toolbar item}
@@ -132,6 +143,8 @@
 				{/foreach}
 			</ul>
 		{/if}
+		
+		{$afterToolbar}
 
 		<nav id="navigation-tree">
 			<ul class="tree">
@@ -139,14 +152,10 @@
 			</ul>
 		</nav>
 		
-		{if $sidebar}
-			<aside id="sidebar">
-				{$sidebar}
-			</aside>
-		{/if} 
+		{$afterNavigationTree} 
 
 		<div id="content">
-			{$global}
+			{$contentTop}
 		
 			{if $log}
 				<section class="block" id="log">
@@ -166,6 +175,8 @@
 					</div>
 				</section>
 			{/if}
+				
+			{$afterLog}
 			
 			{foreach $blocks row}
 				<div class="block-row">
@@ -178,7 +189,11 @@
 					{/foreach}
 				</div>
 			{/foreach}
+			
+			{$contentBottom}
 		</div>
+		
+		{$beforeFooter}
 		
 		<footer id="footer">
 			<p>{html $organization->getCopyright()}</p>
@@ -191,5 +206,7 @@
 			</nav>*}
 			<p id="footer-time-info">{timeInfo()}</p>
 		</footer>
+		
+		{$bottom}
 	</body>
 </html>

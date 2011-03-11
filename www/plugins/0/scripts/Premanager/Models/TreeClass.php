@@ -144,7 +144,7 @@ final class TreeClass extends Model {
 			throw new ArgumentException('$className does not refer to an '.
 				'existing class', 'className');
 		
-		// Check if the class extends TreeNode
+		// Check if the class extends PageNode
 		$class = $className;
 		while ($class != 'Premanager\Execution\PageNode') {
 			$class = get_parent_class($class);

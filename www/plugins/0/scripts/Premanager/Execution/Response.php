@@ -97,7 +97,7 @@ abstract class Response extends Module {
 	 * instead.
 	 */
 	public function send() {
-		$this->sendHeaders();
+		//$this->sendHeaders();
 		echo $this->getContent();
 	}
 	

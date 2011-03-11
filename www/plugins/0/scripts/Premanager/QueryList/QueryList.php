@@ -342,11 +342,6 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * @return Premanager\QueryList\QueryExpression
 	 */
 	public function exprEqual($operand0, $operand1) {
-		if ($operand0 === null)
-			throw ArgumentNullException('operand0');
-		if ($operand1 === null)
-			throw ArgumentNullException('operand1');
-		
 		if ($operand0 !== null && !($operand0 instanceof QueryExpression))
 			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);
 		if ($operand1 !== null && !($operand1 instanceof QueryExpression))
@@ -365,9 +360,9 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	public function exprUnequal($operand0, $operand1) {
 		if ($operand0 === null)
-			throw ArgumentNullException('operand0');
+			throw new ArgumentNullException('operand0');
 		if ($operand1 === null)
-			throw ArgumentNullException('operand1');
+			throw new ArgumentNullException('operand1');
 		
 		if ($operand0 !== null && !($operand0 instanceof QueryExpression))
 			$operand0 = new QueryExpression($this->_modelType, 0, $operand0);

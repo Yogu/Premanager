@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\Pages;
+namespace Premanager\Widgets\Pages;
 
 use Premanager\Execution\TreePageNode;
 use Premanager\Models\Project;
@@ -29,9 +29,9 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that shows a list of all users
+ * A page that allows to edit the own sidebar
  */
-class ViewonlinePage extends TreePageNode {	
+class SidebarPage extends TreePageNode {	
 	/**
 	 * Performs a call of this page and creates the response object
 	 * 
@@ -69,7 +69,7 @@ class ViewonlinePage extends TreePageNode {
 	 * 
 	 * @return Premanager\QueryList\QueryList the list of sessions
 	 */
-	public static function getList() {
+	private static function getList() {
 		static $cache;
 		if (!$cache) {
 			$cache = Session::getSessions();

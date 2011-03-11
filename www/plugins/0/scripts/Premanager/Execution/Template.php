@@ -92,10 +92,53 @@ class Template extends Module {
 	 * Sets a key-value pair of data
 	 * 
 	 * @param string $name the name
-	 * @param string $value the value
+	 * @param mixed $value the value
 	 */
 	public function set($name, $value) {
 		$this->_data->assign($name, $value);
+	}
+		
+	/**
+	 * Sets a key-value pair of data
+	 * 
+	 * @param string $name the name
+	 * @param mixed $value the value
+	 */
+	public function __set($name, $value) {
+		$this->set($name, $value);
+	}
+		
+	/**
+	 * Gets a value of the key-value pairs
+	 * 
+	 * @param string $name the name
+	 * @return mixed the value
+	 */
+	public function getValue($name) {
+		if ($this->_data->isAssigned($name))
+			return $this->_data->get($name);
+		else
+			return null;
+	}
+		
+	/**
+	 * Gets a value of the key-value pairs
+	 * 
+	 * @param string $name the name
+	 * @return mixed the value
+	 */
+	public function __get($name) {
+		return $this->getValue($name);
+	}
+	
+	/**
+	 * Checks whether there is a data entry with the specified name
+	 * .
+	 * @param string $name the name to check whether existing or not
+	 * @return boolean true, if this name exists, false if it does not
+	 */
+	public function __isset($name) {
+		return $this->_data->isAssigned($name);
 	}
 	
 	/**

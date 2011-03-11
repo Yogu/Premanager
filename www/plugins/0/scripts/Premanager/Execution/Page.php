@@ -1,6 +1,8 @@
 <?php 
 namespace Premanager\Execution;
 
+use Premanager\Event;
+
 use Premanager\Premanager;
 use Premanager\Debug\Debug;
 use Premanager\Models\StructureNode;
@@ -17,6 +19,10 @@ class Page extends Response {
 	 * @var Premanager\Execution\PageNode
 	 */
 	private $_node;
+	/**
+	 * @var array
+	 */
+	private $_stylesheets = array();
 	
 	// ===========================================================================
 	
@@ -59,6 +65,22 @@ class Page extends Response {
 	 * @var array
 	 */
 	public $toolbar = array();
+	
+	// ===========================================================================
+	
+	/**
+	 * Is called directly before the template is rendered
+	 * 
+	 * Parameters:
+	 * - template: the Premanager\Execution\Template object
+	 * 
+	 * @var Premanager\Event
+	 */
+	public static $templatePreparedEvent;
+	
+	public static function __init() {
+		self::$templatePreparedEvent = new Event(__CLASS__);
+	}
 	
 	// ===========================================================================
 	
@@ -135,6 +157,15 @@ class Page extends Response {
 	}
 	
 	/**
+	 * Adds a stylesheet reference to the page
+	 * 
+	 * @param string $url the url to the stylesheet
+	 */
+	public function addStylesheet($url) {
+		$this->_stylesheets[] = $url;
+	}
+	
+	/**
 	 * Gets the node that has created this page
 	 * 
 	 * @return Premanager\Execution\PageNode
@@ -170,6 +201,7 @@ class Page extends Response {
 		$template->set('navigationTree', $navigationTree);
 		$template->set('blocks', $this->blocks);
 		$template->set('toolbar', $this->toolbar);
+		$template->set('stylesheets', $this->_stylesheets);
 		$template->set('environment', Environment::getCurrent());
 		$template->set('organization', Project::getOrganization());
 		$template->set('canonicalURLPrefix', URL::fromTemplate(
@@ -179,6 +211,8 @@ class Page extends Response {
 		if (Config::isDebugMode())
 			$template->set('log', Debug::getLog());
 		$template->set('version', Premanager::getVersionInfo());
+		
+		self::$templatePreparedEvent->call($this, array('template' => $template));
 		
 		return $template->get();
 	}
@@ -201,5 +235,7 @@ class Page extends Response {
 		return $this->statusCode;
 	}
 }
+
+Page::__init();
 
 ?>

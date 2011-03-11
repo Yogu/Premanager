@@ -6,7 +6,7 @@ if (typeof(Premanager) == 'undefined')
 //TODO: replace these with translated string
 Premanager.Translation = {
 	titleDivider: ' – '
-}
+};
 
 Premanager.SmartPageload = {
 	init: function() {
