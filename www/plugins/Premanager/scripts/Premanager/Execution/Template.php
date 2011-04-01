@@ -55,8 +55,7 @@ class Template extends Module {
 		$disableCompressor = false) {
 		parent::__construct();
 		
-		$pluginID = Plugin::getIDFromName($pluginName);
-		$this->_path = Config::getPluginPath().'/'.$pluginID.'/templates/'.
+		$this->_path = Config::getPluginPathOf($pluginName).'/templates/'.
 			$templateName.'.tpl';
 		if (!File::exists($this->_path))
 			throw new FileNotFoundException('The template file does not exist '.

@@ -66,7 +66,7 @@ class Config {
 	 * @return string
 	 */
 	public static function getPluginPathOf($pluginName) {
-		return self::getPluginPath().'/'.Plugin::getIDFromName($pluginName);
+		return self::getPluginPath().'/'.$pluginName;
 	}
 	
 	/**
@@ -97,7 +97,7 @@ class Config {
 	 * @return string
 	 */
 	public static function getStorePathOf($pluginName) {
-		return self::getStorePath().'/'.Plugin::getIDFromName($pluginName);
+		return self::getStorePath().'/'.$pluginName;
 	}
 	
 	/**
@@ -118,7 +118,7 @@ class Config {
 	 * @return string
 	 */
 	public static function getCachePathOf($pluginName) {
-		return self::getCachePath().'/'.Plugin::getIDFromName($pluginName);
+		return self::getCachePath().'/'.$pluginName;
 	}
 	
 	/**

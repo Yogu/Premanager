@@ -13,8 +13,13 @@ function autoload($className) {
 	if (!$paths) {
 		$paths = array();
 		foreach (new DirectoryIterator(__DIR__) as $fileInfo) {
-	    if ($fileInfo->isDir() && !$fileInfo->isDot()) 
-	    	$paths[] = $fileInfo->getPathname();
+	    if ($fileInfo->isDir() && !$fileInfo->isDot()) {
+	    	$name = $fileInfo->getPathname();
+	    	if ($name == 'Premanager')
+	    		array_unshift($paths, $name);
+	    	else
+	    		$paths[] = $name;
+	    }
 		}
 	}
 	
