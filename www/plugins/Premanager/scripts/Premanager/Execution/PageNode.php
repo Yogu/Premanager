@@ -299,8 +299,8 @@ abstract class PageNode extends Module {
 		$navigationTree = array();
 		$node = $activeNode;
 		while ($node) {
-			//TODO: replace constant count (5) by option value
-			$children = $node->getChildren(5, $prev);
+			$count = Options::defaultGet('Premanager', 'page-tree.max-child-count');
+			$children = $node->getChildren($count, $prev);
 			for ($i = 0; $i < count($children); $i++) {
 				if ($prev && $children[$i]->equals($prev))
 					$children[$i] = $navigationTree;

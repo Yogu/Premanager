@@ -614,20 +614,20 @@ fieldset.inputs > dl > dd.float-right {
 	float: right;
 }
 
-#sidebar fieldset.inputs input {
+.widget fieldset.inputs input {
 	width: 100%; 	      
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 }
 
-#sidebar fieldset.inputs > dl > dt {
+.widget fieldset.inputs > dl > dt {
 	width: 60px;
 	
 	font-weight: normal;
 }   
 
-#sidebar fieldset.inputs > dl > dd {
+.widget fieldset.inputs > dl > dd {
 	margin-left: 60px;
 }     
 

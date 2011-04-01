@@ -61,3 +61,23 @@
 .widget > .controls .move-down-button:after {
 	content: url("../images/arrow-down.png") "";
 } */
+
+.premanager-widgets-clock-widget {
+	text-align: center;
+}
+
+.premanager-widgets-clock-widget .clocktime {
+	display: block;
+	margin: 6px 0;
+	
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.premanager-widgets-clock-widget .date {
+	display: block;
+	margin: 3px 0;
+	
+	font-size: 14px;
+	font-weight: bold;
+}

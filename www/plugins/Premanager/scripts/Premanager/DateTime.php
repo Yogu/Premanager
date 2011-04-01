@@ -472,10 +472,12 @@ class DateTime extends Module {
 	 * Converts the date time value to a string
 	 * 
 	 * @param string $format a formatting mask
+	 * @param bool $enableShortForms specify false to avoid repacing the current
+	 *   date by 'today'
 	 * @return string the formatted string. If not specified, the long date
 	 *   time format of the current environment language is used.
 	 */
-	public function format($format = null) {
+	public function format($format = null, $enableShortForms = true) {
 		static $localizer;
 		static $dateFormatCache;
 		static $midnight;
@@ -605,7 +607,7 @@ class DateTime extends Module {
 			
 		// Use short representation (with YESTERDAY, TODAY or TOMORROW instead
 		// of the part embedded in |), if this date/time is in the correct range
-		if ($dateFormatCache[$format]['isShort'] &&
+		if ($enableShortForms &&  $dateFormatCache[$format]['isShort'] &&
 			$this->compareTo($midnight->subtract(TimeSpan::fromDays(1))) >= 0 && 
 			$this->compareTo($midnight->add(TimeSpan::fromDays(2))) <= 0)
 		{

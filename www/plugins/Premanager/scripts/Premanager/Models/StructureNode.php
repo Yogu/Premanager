@@ -115,7 +115,7 @@ final class StructureNode extends Model {
 		$instance->_hasPanel = $hasPanel;
 		self::$_instances[$id] = $instance;
 		return $instance;
-	} 
+	}
 	
 	/**
 	 * Gets a structure node using its id
