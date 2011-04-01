@@ -1,8 +1,11 @@
 <?php
 namespace Premanager\Widgets;
 
-use Premanager\QueryList\QueryOperation;
+use Premanager\ArgumentException;
 
+use Premanager\IO\DataBase\DataBaseHelper;
+use Premanager\QueryList\SortRule;
+use Premanager\QueryList\QueryOperation;
 use Premanager\Module;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Models\User;
@@ -121,6 +124,8 @@ class WidgetCollection extends Module {
 				$l->exprAnd(
 					$l->exprEqual($l->exprMember('structureNode'), $this->_structureNode),
 					$l->exprEqual($l->exprMember('user'), $this->_user)));
+			$l = $l->sort(array(
+				new SortRule($l->exprMember('order'))));
 			$this->_widgets = $l;
 		}
 		return $this->_widgets;
@@ -135,10 +140,12 @@ class WidgetCollection extends Module {
 	public function insertNewWidget(WidgetClass $widgetClass) {
 		$order = $this->getCount();
 		
-		$id = DataBaseHelper::insert('Premanager.Widgets', 'Widgets', 0, null,
+		$id = DataBaseHelper::insert('Premanager.Widgets', 'Widgets',
+			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
+			DataBaseHelper::NO_TRANSLATION, null,
 			array(
 				'widgetClassID' => $widgetClass->getID(),
-				'structureNodeID' => $structureNode ? $structureNode->getID() : 0,
+				'nodeID' => $structureNode ? $structureNode->getID() : 0,
 				'userID' => $user ? $user->getID() : 0,
 				'order' => $order),
 			array());
@@ -163,6 +170,77 @@ class WidgetCollection extends Module {
 			$this->_count = $result->get('count');
 		}
 		return $this->_count;
+	}
+	
+	/**
+	 * Removes the specified widget from this list and deletes and disposes the
+	 * widget
+	 * 
+	 * @param Widget $widget the widget to remove
+	 */
+	public function remove(Widget $widget) {
+		if ($widget->getWidgetCollection() != $this)
+			throw new ArgumentException('The specified widget does not belong to '.
+				'this widget collection');
+			
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
+			"SET `order` = `order` - 1 ".
+			"WHERE `order` > ".$widget->getOrder());
+			
+		$widget->internalDelete();
+	}
+	
+	public function moveUp(Widget $widget) {
+		if ($widget->getWidgetCollection() != $this)
+			throw new ArgumentException('The specified widget does not belong to '.
+				'this widget collection');
+			
+		// Do not remove when first widget
+		if ($widget->getOrder() > 0) {
+			// Move top one down
+			DataBase::query(
+				"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
+				"SET `order` = `order` + 1 ".
+				"WHERE `order` = ".($widget->getOrder() - 1));
+			
+			// Move this up
+			DataBase::query(
+				"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
+				"SET `order` = `order` - 1 ".
+				"WHERE id = ".$widget->getID());
+			
+			$this->refreshOrder();
+		}
+	}
+	
+	public function moveDown(Widget $widget) {
+		if ($widget->getWidgetCollection() != $this)
+			throw new ArgumentException('The specified widget does not belong to '.
+				'this widget collection');
+			
+		// Do not remove when last widget
+		if ($widget->getOrder() < $this->getWidgets()->getCount() - 1) {
+			// Move bottom one up
+			DataBase::query(
+				"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
+				"SET `order` = `order` - 1 ".
+				"WHERE `order` = ".($widget->getOrder() + 1));
+			
+			// Move this down
+			DataBase::query(
+				"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
+				"SET `order` = `order` + 1 ".
+				"WHERE id = ".$widget->getID());
+			
+			$this->refreshOrder();
+		}
+	}
+	
+	private function refreshOrder() {
+		foreach ($this->getWidgets() as $widget) {
+			$widget->internalRefreshOrder();
+		}
 	}
 }
 

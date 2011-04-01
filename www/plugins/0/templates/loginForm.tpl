@@ -13,7 +13,7 @@
 			<dd>
 				<input type="password" name="password" id="Premanager_LoginPage_password" class="small" />
 				{if !$hidePasswordLostHint}
-					<p>{string Premanager loginFailedPasswordLostMessage} <a href="./{treeURL Premanager password-lost}">{string Premanager loginFailedPasswordLostLinkText}</a></p>
+					<p>{string Premanager loginFailedPasswordLostMessage} <a href="./{html treeURL(Premanager password-lost)}">{string Premanager loginFailedPasswordLostLinkText}</a></p>
 				{/if}	
 			</dd>
 		</dl>  
@@ -34,7 +34,7 @@
 	
 	{if $canRegister}
 		<div class="info-box">
-			<p>{string Premanager loginRegisterTip} <a href="./{treeURL Premanager register}">{string Premanager loginRegisterTipLinkText}</a></p>
+			<p>{string Premanager loginRegisterTip} <a href="./{html treeURL(Premanager register)}">{string Premanager loginRegisterTipLinkText}</a></p>
 		</div>
 	{/if}
 {/form}

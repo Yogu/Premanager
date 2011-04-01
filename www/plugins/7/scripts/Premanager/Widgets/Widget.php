@@ -1,6 +1,8 @@
 <?php             
 namespace Premanager\Widgets;
 
+use Premanager\Models\Plugin;
+
 use Premanager\Execution\Template;
 
 use Premanager\NotImplementedException;
@@ -58,6 +60,10 @@ abstract class Widget extends Model {
 	 * @var Premanager\Models\StructureNode
 	 */
 	private $_structureNode;
+	/**
+	 * @var int
+	 */
+	private $_order;
 	
 	/**
 	 * @var array
@@ -109,6 +115,8 @@ abstract class Widget extends Model {
 			"INNER JOIN ".DataBase::formTableName('Premanager.Widgets', 'Widgets').
 				" AS widget ON widget.widgetClassID = widgetClass.id ".
 			"WHERE widget.id = '$id'");
+		if (!$result->next())
+			return null;
 		$class = $result->get('class');
 				
 		$instance = new $class();
@@ -131,15 +139,13 @@ abstract class Widget extends Model {
 	public static function getByID($id) {
 		$id = (int)$id;
 			
-		if (\array_key_exists($id, self::$_instances)) {
+		if (!Types::isInteger($id) || $id < 0)
+			return null;
+		else if (\array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];
 		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
+			// This method already checks if the model exists
+			return self::createFromID($id);
 		}
 	}
 	    
@@ -184,7 +190,8 @@ abstract class Widget extends Model {
 					'widgetClassID'),
 				'structureNode' => array(StructureNode::getDescriptor(),
 					'getStructureNode', 'nodeID'),
-				'user' => array(User::getDescriptor(), 'getUser', 'userID')),
+				'user' => array(User::getDescriptor(), 'getUser', 'userID'),
+				'order' => array(DataType::NUMBER, 'getOrder', 'order')),
 				'Premanager.Widgets', 'Widgets', array(__CLASS__, 'getByID'), false);
 		}
 		return self::$_descriptor;
@@ -229,7 +236,7 @@ abstract class Widget extends Model {
 		if ($this->_structureNode === null) {
 			if ($this->_structureNodeID === null)
 				$this->load();
-			$this->_structureNode = Plugin::getByID($this->_structureNodeID);
+			$this->_structureNode = StructureNode::getByID($this->_structureNodeID);
 		}
 		return $this->_structureNode;
 	}      
@@ -246,7 +253,7 @@ abstract class Widget extends Model {
 		if ($this->_user === null) {
 			if ($this->_userID === null)
 				$this->load();
-			$this->_user = Plugin::getByID($this->_userID);
+			$this->_user = User::getByID($this->_userID);
 		}
 		return $this->_user;
 	}
@@ -261,28 +268,22 @@ abstract class Widget extends Model {
 		$this->checkDisposed();
 			
 		if ($this->getStructureNode())
-			return WidgetCollection::getWidgetPage($this->getStructureNode(),
-				$this->getUser());
+			throw new NotImplementedException();
 		else 
-			return WidgetCollection::getSidebar($this->getUser());
+			return Sidebar::get($this->getUser());
 	}
 	
 	/**
-	 * Deletes and disposes this widget
+	 * Gets a number that defines the index of this widget in a column
+	 * 
+	 * @return int the order number
 	 */
-	public function delete() {         
+	public function getOrder() {
 		$this->checkDisposed();
 		
-		DataBaseHelper::delete('Premanager.Widgets', 'Widgets', 0,
-			$this->_id);
-			
-		//TODO: Delete options
-			
-		if (self::$_count !== null)
-			self::$_count--;	
-	
-		$this->_id = null;
-		$this->dispose();
+		if ($this->_order === null)
+			$this->load();
+		return $this->_order;
 	}
 	
 	/**
@@ -304,6 +305,17 @@ abstract class Widget extends Model {
 	}
 	
 	/**
+	 * Gets a url, if this widget should be linked to it
+	 * 
+	 * Inherited classes can override this method.
+	 * 
+	 * @return string the relative url or an empty string
+	 */
+	public function getLinkURL() {
+		return '';
+	}
+	
+	/**
 	 * Gets the html code of the widget including its surrounding block
 	 * 
 	 * @return the html code of the widget
@@ -312,6 +324,20 @@ abstract class Widget extends Model {
 		$template = new Template('Premanager.Widgets', 'widget');
 		$template->set('widget', $this);
 		return $template->get();
+	}
+	
+	public function internalRefreshOrder() {
+		$this->_order = 0;
+	}
+	
+	public function internalDelete() {
+		DataBaseHelper::delete('Premanager.Widgets', 'Widgets',
+			DataBaseHelper::NO_TRANSLATION | DataBaseHelper::NO_NAME, $this->_id);
+			
+		//TODO: Delete options
+		
+		$this->_id = 0;
+		$this->dispose();
 	}
 
 	// ===========================================================================
@@ -323,7 +349,7 @@ abstract class Widget extends Model {
 	 * 
 	 * @return string the content in HMTL
 	 */
-	public static function getSamleContent() {
+	public static function getSampleContent() {
 		throw new NotImplementedException(
 			'Premanager\Widgets\Widget::getSamleContent() method is not implemented '.
 			'by inheriting class '.get_class($this));
@@ -333,7 +359,8 @@ abstract class Widget extends Model {
 	
 	private function load() {
 		$result = DataBase::query(
-			"SELECT widget.widgetClassID, widget.nodeID, widget.userID ".
+			"SELECT widget.widgetClassID, widget.nodeID, widget.userID, ".
+				"widget.order ".
 			"FROM ".DataBase::formTableName('Premanager.Widgets', 'Widgets').
 				" AS widget ".
 			"WHERE widget.id = '$this->_id'");
@@ -344,6 +371,7 @@ abstract class Widget extends Model {
 		$this->_widgetClassID = $result->get('widgetClassID');
 		$this->_structureNodeID = $result->get('nodeID');
 		$this->_userID = $result->get('userID');
+		$this->_order = $result->get('order');
 		
 		return true;
 	}      

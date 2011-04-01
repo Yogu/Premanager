@@ -1,7 +1,7 @@
 {if $sessions}
 	<ul class="list">
 		{foreach $sessions session}
-			<li><a class="user" style="color: #{$session->getUser()->getColor()};" href="./{treeURL Premanager users}/{url $session->getUser()->getName()}}">{html $session->getUser()->getName()}</a></li>
+			<li><a href="./{treeURL Premanager users}/{url $session->getUser()->getName()}}"><span class="user user-name" style="color: #{$session->getUser()->getColor()};">{html $session->getUser()->getName()}</span></a></li>
 		{/foreach}
 	</ul>
 {else}

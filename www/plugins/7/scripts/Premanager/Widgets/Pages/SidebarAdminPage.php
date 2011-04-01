@@ -1,6 +1,12 @@
 <?php
 namespace Premanager\Widgets\Pages;
 
+use Premanager\Widgets\Widget;
+
+use Premanager\Execution\Redirection;
+
+use Premanager\Widgets\Sidebar;
+
 use Premanager\Widgets\WidgetClass;
 
 use Premanager\Execution\TreePageNode;
@@ -35,19 +41,73 @@ use Premanager\IO\Output;
  * sidebar
  */
 class SidebarAdminPage extends TreePageNode {	
+	private $_sidebar;
+
+	// ===========================================================================
+	
+	/**
+	 * Creates a new SidebarAdminPage
+	 * 
+	 * @param Premanager\Execution\ParentNode $parent the parent node
+	 * @param Premanager\Models\StructureNode $structureNode the structure node
+	 *   this page node is embedded in
+	 */
+	public function __construct($parent, StructureNode $structureNode) {
+		parent::__construct($parent, $structureNode);
+		$this->_sidebar = Sidebar::getDefault();
+	}
+	
+	// ===========================================================================
+	
 	/**
 	 * Performs a call of this page and creates the response object
 	 * 
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
+		if (!Rights::requireRight(
+			Right::getByName('Premanager.Widgets', 'editDefaultSidebar'),
+			null, $errorResponse, false))
+			return $errorResponse;
+			
+		if (Request::getPOST('add')) {
+			$id = Request::getPOST('widget-class-id');
+			$widgetClass = WidgetClass::getByID($id);
+			if ($widgetClass) {
+				if (!Rights::requireRight(
+					Right::getByName('Premanager.Widgets', 'editDefaultSidebar'),
+					null, $errorResponse))
+					return $errorResponse;
+				
+				$this->_sidebar->insertNewWidget($widgetClass);
+			}
+			return new Redirection();
+		} else if (Request::getPOST('widget-id')) {
+			$id = Request::getPOST('widget-id');
+			$widget = Widget::getByID($id);
+			if ($widget && $widget->getWidgetCollection() == $this->_sidebar) {
+				if (!Rights::requireRight(
+					Right::getByName('Premanager.Widgets', 'editDefaultSidebar'),
+					null, $errorResponse))
+					return $errorResponse;
+				
+				if (Request::getPOST('remove'))
+					$this->_sidebar->remove($widget);
+				else if (Request::getPOST('move-up'))
+					$this->_sidebar->moveUp($widget);
+				else if (Request::getPOST('move-down'))
+					$this->_sidebar->moveDown($widget);
+			}
+			return new Redirection();
+		}
+		
 		$list = self::getList();
 		
 		$page = new Page($this);
 		$page->title =
 			Translation::defaultGet('Premanager.Widgets', 'sidebarAdmin');
-		$page->createMainBlock(Translation::defaultGet('Premanager.Widgets',
-			'sidebarAdminMessage'));
+		$page->createMainBlock('<p>'.Translation::defaultGet('Premanager.Widgets',
+			'sidebarAdminMessage').'</p>');
 		
 		$template = new Template('Premanager.Widgets', 'sidebarAdmin');
 		$template->set('widgetClasses', self::getList());

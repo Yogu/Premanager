@@ -2,22 +2,24 @@
 namespace Premanager\Widgets;
 
 use Premanager\Execution\PageNode;
+use Premanager\IO\Request;
+use Premanager\Execution\Redirection;
+use Premanager\Execution\Environment;
 use Premanager\Execution\Template;
 use Premanager\Pages\ViewonlinePage;
 use Premanager\Execution\Translation;
 use Premanager\Execution\PageBlock;
 
-class ViewonlineWidget extends Widget {
+class LoginWidget extends Widget {
 	/**
 	 * Gets the content of this widget in HTML
 	 * 
 	 * @return string the content in HTML
 	 */
 	public function getContent() {
-		$list = ViewonlinePage::getList()->getAll();
-					
-		$template = new Template('Premanager.Widgets', 'viewonlineWidget');
-		$template->set('sessions', $list);
+		$template = new Template('Premanager.Widgets', 'loginWidget');
+		$template->set('currentSession', Environment::getCurrent()->getSession());
+		$template->set('referer', Request::getRequestURL());
 		return $template->get();
 	}
 	
@@ -29,8 +31,8 @@ class ViewonlineWidget extends Widget {
 	public static function getSampleContent() {
 		$list = ViewonlinePage::getList()->getAll();
 					
-		$template = new Template('Premanager.Widgets', 'viewonlineWidget');
-		$template->set('sessions', $list);
+		$template = new Template('Premanager.Widgets', 'loginWidget');
+		$template->set('isDemo', true);
 		return $template->get();
 	}
 	
@@ -40,7 +42,7 @@ class ViewonlineWidget extends Widget {
 	 * @return string the relative url or an empty string
 	 */
 	public function getLinkURL() {
-		return PageNode::getTreeURL('Premanager', 'viewonline');
+		return PageNode::getTreeURL('Premanager', 'login');
 	}
 }
 

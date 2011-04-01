@@ -23,7 +23,7 @@
 		{if $user->hasAvatar()}
 			<dl>
 				<dt>{string Premanager label array(label=string(Premanager currentAvatar))}</dt>
-				<dd><img alt="{string Premanager avatarOf array(userName=$user->getName())}" src="./{treeURL Premanager users}/{html $user->getName()}/avatar" /></span>
+				<dd><img alt="{string Premanager avatarOf array(userName=$user->getName())}" src="./{html treeURL(Premanager users)}/{html $user->getName()}/avatar" /></span>
 			</dl>
 			{$t1 = selectAvatarExisting}
 			{$t2 = selectAvatarExistingDescription}

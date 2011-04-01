@@ -160,12 +160,12 @@
 	border: none !important;
 }
 
-#sidebar > .block > div > .list > li,
-#sidebar > .block > div > .list > li > a {
+.widget > .content > .list > li,
+.widget > .content > .list > li > a {
 	padding: 3px 4px;
 } 
 
-#sidebar > .block > div > .list > li > a {
+.widget > .content > .list > li > a {
  	margin: -4px;
 }            
 

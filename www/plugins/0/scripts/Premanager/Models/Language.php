@@ -108,7 +108,9 @@ final class Language extends Model {
 	public static function getByID($id) {
 		$id = (int)$id;
 			
-		if (\array_key_exists($id, self::$_instances)) {
+		if (!Types::isInteger($id) || $id < 0)
+			return null;
+		else if (\array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];
 		} else {
 			$instance = self::createFromID($id);

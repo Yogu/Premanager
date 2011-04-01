@@ -1,3 +1,63 @@
+@carset "utf-8";
+
 .widget-container {
-	
+	overflow: hidden;	
 }
+
+.widget-container > .widget,
+#sidebar.editing > .widget {
+	position: relative;
+}
+
+.widget-container > .widget > .content,
+#sidebar.editing > .widget > .content {
+	min-height: 60px;	
+}
+
+.widget-container > .widget {
+	width: 200px;
+	display: block;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	float: left;
+}
+
+.widget-container > .widget:after,
+#sidebar.editing > .widget:after {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;	
+	
+	background: rgba(0, 0, 0, 0.4);
+	
+	content: '';
+}
+
+.widget > .controls {
+	position: absolute;
+	bottom: 0px;
+	text-align: center;
+	width: 100%;
+	padding-right: 20px;
+	z-index: 2;	
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-khtml-box-sizing: border-box;
+	
+	background: transparent;
+}
+
+/* does not work
+.widget > .controls .move-up-button:after {
+	content: url("../images/arrow-up.png") "";
+}
+
+.widget > .controls .move-down-button:after {
+	content: url("../images/arrow-down.png") "";
+} */

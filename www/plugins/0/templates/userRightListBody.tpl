@@ -6,7 +6,7 @@
 				<span class="detail">{$right->getDescription()}</span>
 			</td>
 			{*<td>
-				<a href="./{treeURL Premanager groups}/{url $Premanager_User_groupName}">
+				<a href="./{html treeURL(Premanager groups)}/{url $Premanager_User_groupName}">
 					<span class="title" style="color: #{$Premanager_User_groupColor};">{html $Premanager_User_groupName}</span>
 				</a>
 			</td>*}

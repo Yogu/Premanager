@@ -101,7 +101,7 @@ final class StructureNode extends Model {
 			return $instance;	
 		}
 
-		if (!Types::isInteger($id) || $id <= 0)
+		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException(
 				'$id must be a positive integer value', 'id'); 
 
@@ -128,7 +128,9 @@ final class StructureNode extends Model {
 		
 		// This switch allows not to call load() on models that have already been
 		// created
-		if (\array_key_exists($id, self::$_instances)) {
+		if (!Types::isInteger($id) || $id <= 0)
+			return null;
+		else if (\array_key_exists($id, self::$_instances)) {
 			return self::$_instances[$id];
 		} else {
 			$instance = self::createFromID($id);

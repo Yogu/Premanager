@@ -1,11 +1,15 @@
 <?php
 namespace Premanager\Widgets;
 
+use Premanager\Execution\Template;
+
+use Premanager\Widgets\Pages\SidebarAdminPage;
 use Premanager\Module;
 use Premanager\Widgets\Sidebar;
 use Premanager\Execution\Environment;
 use Premanager\Widgets\WidgetCollection;
 use Premanager\Execution\Page;
+use Premanager\IO\Config;
 use Premanager\Debug\Debug;
 use Premanager\Media\Image;
 use Premanager\Media\ImageLoader;
@@ -22,9 +26,25 @@ class Initializer extends Module implements PluginInitializer {
 	 */
 	public function primaryInit() {
 		Page::$templatePreparedEvent->register(function($sender, $params) {
-			$sidebar = Sidebar::getExisting(Environment::getCurrent()->getUser());
+			if (Environment::getCurrent()->getPageNode() instanceof SidebarAdminPage){
+				$sidebar = Sidebar::getDefault();
+				$sidebarTemplate =
+					new Template('Premanager.Widgets', 'sidebarAdminSidebar');
+				$sidebarTemplate->set('widgets', $sidebar->getWidgets());
+				$sidebarHTML = $sidebarTemplate->get();
+			} else {
+				$sidebar = Sidebar::getExisting(Environment::getCurrent()->getUser());
+				$sidebarHTML = $sidebar->getHTML();
+			}
+		
 			$template = $params['template'];
-			$template->afterNavigationTree .= $sidebar->getHTML();
+			if ($sidebarHTML) {
+				$template->afterNavigationTree .= $sidebarHTML;
+				$template->bodyClasses .= ' has-sidebar';
+			}
+		});
+		Page::$generatingContentEvent->register(function($sender, $params) {
+			$sender->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
 		});
 	}
 	

@@ -78,8 +78,16 @@ class Page extends Response {
 	 */
 	public static $templatePreparedEvent;
 	
+	/**
+	 * Is called directly before the content for a page is generated
+	 * 
+	 * @var Premanager\Event
+	 */
+	public static $generatingContentEvent;
+	
 	public static function __init() {
 		self::$templatePreparedEvent = new Event(__CLASS__);
+		self::$generatingContentEvent = new Event(__CLASS__);
 	}
 	
 	// ===========================================================================
@@ -180,6 +188,8 @@ class Page extends Response {
 	 * @return string
 	 */
 	public function getContent() {
+		self::$generatingContentEvent->call($this, array());
+		
 		$template = new Template('Premanager', 'page');
 		
 		// Get list of node, parent of node, parent of parent of node ...

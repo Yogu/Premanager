@@ -77,7 +77,7 @@
 		{$head}
 	</head>
 	
-	<body class="page{if $sidebar} has-sidebar{/if}">
+	<body class="page {$bodyClasses}">
 		{$top}
 		
 		<header id="header">

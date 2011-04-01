@@ -1,0 +1,14 @@
+.widget-container {
+	padding: 20px;
+	
+	background-color: #004381;
+	border-radius: 5px;         
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.widget-container > .widget:after {
+	border-radius: 5px;         
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}

@@ -16,7 +16,9 @@ class DataBaseHelper extends Module {
 	const EDITOR_FIELDS = 0x02;
 	const IS_TREE = 0x04;
 	const IGNORE_THIS = 0x08;
-	const UNTRANSLATED_NAME = 0x10;    
+	const UNTRANSLATED_NAME = 0x10;
+	const NO_TRANSLATION = 0x20;
+	const NO_NAME = 0x40;
 
 	// ===========================================================================
 	
@@ -27,7 +29,7 @@ class DataBaseHelper extends Module {
 	 * @param string $table name of item table (_un_encoded)
 	 * @param int $flags a set (CREATOR_FIELDS: table contains createTime and
 	 *   creatorID fields; EDITOR_FIELDS: table contains editTime, editorID, and
-	 *   editTimes fields; IS_TREE: table is a tree table;UNTRANSLATED_NAME: name
+	 *   editTimes fields; IS_TREE: table is a tree table; UNTRANSLATED_NAME: name
 	 *   field is in item table instead of translation table)
 	 * @param string name: name value (can be omitted at values / translatedValues
 	 *   parameter)
@@ -49,6 +51,9 @@ class DataBaseHelper extends Module {
 				throw new ArgumentException('$parentID must be a nonnegative integer '.
 					'value if $flags contains IS_TREE');
 		}
+		
+		if ($flags & self::NO_TRANSLATION)
+			$flags |= self::UNTRANSLATED_NAME;
 		
 		// -------------- Item ------------
 			
@@ -81,10 +86,10 @@ class DataBaseHelper extends Module {
 			if (is_bool($v)) $v = $v ? '1' : '0';
 			if ($n[Strings::length($n)-1] == '!') {
 				$n = Strings::substring($n, 0, Strings::length($n)-1);
-				$nameString .= ", $n";
+				$nameString .= ", `$n`";
 				$valueString .= ", $v";
 			} else {
-				$nameString .= ", $n";
+				$nameString .= ", `$n`";
 				$valueString .= ", '".DataBase::escape($v)."'";
 			}
 		} 
@@ -99,33 +104,34 @@ class DataBaseHelper extends Module {
 		$id = DataBase::getInsertID();
 			
 		// -------------- Translation ------------
-		
-		// Extend value array
-		$translatedValues['id'] = $id;
-		$translatedValues['languageID'] = $lang; 
-		
-		// Prepare query
-		$nameString = '';
-		$valueString = '';
-		foreach ($translatedValues as $n => $v) {
-			if (is_bool($v)) $v = $v ? '1' : '0';
-			if ($n[Strings::length($n)-1] == '!') {
-				$n = Strings::substring($n, 0, Strings::length($n)-1);
-				$nameString .= ", $n";
-				$valueString .= ", $v";
-			} else {
-				$nameString .= ", $n";
-				$valueString .= ", '".DataBase::escape($v)."'";
-			}
-		} 
-		$nameString = trim($nameString, ', '); 
-		$valueString = trim($valueString, ', ');
-		
-		// Execute query
-		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName($plugin, $table.'Translation')." ".
-			"($nameString) ".
-			"VALUES ($valueString)");
+		if (!($flags & self::NO_TRANSLATION)) {
+			// Extend value array
+			$translatedValues['id'] = $id;
+			$translatedValues['languageID'] = $lang; 
+			
+			// Prepare query
+			$nameString = '';
+			$valueString = '';
+			foreach ($translatedValues as $n => $v) {
+				if (is_bool($v)) $v = $v ? '1' : '0';
+				if ($n[Strings::length($n)-1] == '!') {
+					$n = Strings::substring($n, 0, Strings::length($n)-1);
+					$nameString .= ", `$n`";
+					$valueString .= ", $v";
+				} else {
+					$nameString .= ", `$n`";
+					$valueString .= ", '".DataBase::escape($v)."'";
+				}
+			} 
+			$nameString = trim($nameString, ', '); 
+			$valueString = trim($valueString, ', ');
+			
+			// Execute query
+			DataBase::query(
+				"INSERT INTO ".DataBase::formTableName($plugin, $table.'Translation')." ".
+				"($nameString) ".
+				"VALUES ($valueString)");
+		}
 
 		// -------------- Name ------------
 		
@@ -156,13 +162,15 @@ class DataBaseHelper extends Module {
 			"DELETE FROM ".DataBase::formTableName($plugin, $table)." ".
 			"WHERE id = '$id'");
 
-		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName($plugin, $table.'Translation')." ".
-			"WHERE id = '$id'");	
+		if (!($flags & self::NO_TRANSLATION))
+			DataBase::query(
+				"DELETE FROM ".DataBase::formTableName($plugin, $table.'Translation').
+				" WHERE id = '$id'");	
 			
-		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName($plugin, $table.'Name')." ".
-			"WHERE id = '$id'");	
+		if (!($flags & self::NO_NAME))
+			DataBase::query(
+				"DELETE FROM ".DataBase::formTableName($plugin, $table.'Name')." ".
+				"WHERE id = '$id'");	
 	}   
 	
 	/**
@@ -220,9 +228,9 @@ class DataBaseHelper extends Module {
 			if (is_bool($v)) $v = $v ? '1' : '0';
 			if ($n[Strings::length($n)-1] == '!') {
 				$n = Strings::substring($n, 0, Strings::length($n)-1);
-				$queryString .= ", $n = $v";
+				$queryString .= ", `$n` = $v";
 			} else {
-				$queryString .= ", $n = '".DataBase::escape($v)."'";
+				$queryString .= ", `$n` = '".DataBase::escape($v)."'";
 			}
 		} 
 		$queryString = trim($queryString, ', ');
@@ -236,63 +244,64 @@ class DataBaseHelper extends Module {
 		}		
 			
 		// -------------- Translation ------------
-		
-		// Check if translation already exists
-		$result = DataBase::query(
-			"SELECT languageID ".
-			"FROM ".DataBase::formTableName($plugin, $table.'Translation')." translation ".
-			"WHERE translation.id = '$id' ".
-				"AND translation.languageID = '$lang'");
-		if ($result->next()) {
-			// Prepare query
-			$queryString = '';
-			foreach ($translatedValues as $n => $v) {
-				if (is_bool($v)) $v = $v ? '1' : '0';
-				if ($n[Strings::length($n)-1] == '!') {
-					$n = Strings::substring($n, 0, String::length($n)-1);
-					$queryString .= ", $n = $v";
-				} else {
-					$queryString .= ", $n = '".DataBase::escape($v)."'";
+		if (!($flags & self::NO_TRANSLATION)) {
+			// Check if translation already exists
+			$result = DataBase::query(
+				"SELECT languageID ".
+				"FROM ".DataBase::formTableName($plugin, $table.'Translation')." translation ".
+				"WHERE translation.id = '$id' ".
+					"AND translation.languageID = '$lang'");
+			if ($result->next()) {
+				// Prepare query
+				$queryString = '';
+				foreach ($translatedValues as $n => $v) {
+					if (is_bool($v)) $v = $v ? '1' : '0';
+					if ($n[Strings::length($n)-1] == '!') {
+						$n = Strings::substring($n, 0, String::length($n)-1);
+						$queryString .= ", `$n` = $v";
+					} else {
+						$queryString .= ", `$n` = '".DataBase::escape($v)."'";
+					}
+				} 
+				$queryString = trim($queryString, ', ');
+				
+				// Execute query   
+				if ($queryString) {
+					DataBase::query(
+						"UPDATE ".DataBase::formTableName($plugin, $table.'Translation')." ".
+						"SET $queryString ".
+						"WHERE id = '$id' ".
+							"AND languageID = '$lang'");
 				}
-			} 
-			$queryString = trim($queryString, ', ');
-			
-			// Execute query   
-			if ($queryString) {
-				DataBase::query(
-					"UPDATE ".DataBase::formTableName($plugin, $table.'Translation')." ".
-					"SET $queryString ".
-					"WHERE id = '$id' ".
-						"AND languageID = '$lang'");
-			}
-		} else {           
-			// Extend value array
-			$translatedValues['id'] = $id;
-			$translatedValues['languageID'] = $lang;
-			            
-			// Prepare query
-			$nameString = '';
-			$valueString = ''; 
-			foreach ($translatedValues as $n => $v) {
-				if (is_bool($v)) $v = $v ? '1' : '0';
-				if ($n[Strings::length($n)-1] == '!') {
-					$n = Strings::substring($n, 0, Strings::length($n)-1);
-					$nameString .= ", $n";
-					$valueString .= ", $v";
-				} else {
-					$nameString .= ", $n";
-					$valueString .= ", '".DataBase::escape($v)."'";
+			} else {           
+				// Extend value array
+				$translatedValues['id'] = $id;
+				$translatedValues['languageID'] = $lang;
+				            
+				// Prepare query
+				$nameString = '';
+				$valueString = ''; 
+				foreach ($translatedValues as $n => $v) {
+					if (is_bool($v)) $v = $v ? '1' : '0';
+					if ($n[Strings::length($n)-1] == '!') {
+						$n = Strings::substring($n, 0, Strings::length($n)-1);
+						$nameString .= ", `$n`";
+						$valueString .= ", $v";
+					} else {
+						$nameString .= ", `$n`";
+						$valueString .= ", '".DataBase::escape($v)."'";
+					}
+				} 
+				$nameString = trim($nameString, ', '); 
+				$valueString = trim($valueString, ', ');
+				
+				// Execute query
+				if ($nameString) {
+					DataBase::query(
+						"INSERT INTO ".DataBase::formTableName($plugin, $table.'Translation')." ".
+						"($nameString) ".
+						"VALUES ($valueString)");
 				}
-			} 
-			$nameString = trim($nameString, ', '); 
-			$valueString = trim($valueString, ', ');
-			
-			// Execute query
-			if ($nameString) {
-				DataBase::query(
-					"INSERT INTO ".DataBase::formTableName($plugin, $table.'Translation')." ".
-					"($nameString) ".
-					"VALUES ($valueString)");
 			}
 		}
 	

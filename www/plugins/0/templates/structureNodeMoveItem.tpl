@@ -1,6 +1,6 @@
 <li{if $selected==$node} class="selected"{/if}{if $node==$structureNode} class="active"{/if}>
 	<div>
-		<a href="./{treeURL Premanager structure}/{$url}">{html $node->getTitle()}</a>
+		<a href="./{html treeURL(Premanager structure)}/{$url}">{html $node->getTitle()}</a>
 		
 		<ul class="toolbar show-titles">
 			{if $node != $structureNode}

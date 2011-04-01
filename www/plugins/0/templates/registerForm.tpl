@@ -56,6 +56,6 @@
 	</fieldset>     
 		
 	<div class="info-box">
-		<p>{string Premanager registerLoginTip} <a href="./{treeURL Premanager login}">{string Premanager registerLoginTipLinkText}</a></p>
+		<p>{string Premanager registerLoginTip} <a href="./{html treeURL(Premanager login)}">{string Premanager registerLoginTipLinkText}</a></p>
 	</div>
 {/form}
