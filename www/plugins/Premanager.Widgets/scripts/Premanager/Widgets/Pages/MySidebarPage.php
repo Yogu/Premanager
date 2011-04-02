@@ -1,6 +1,8 @@
 <?php
 namespace Premanager\Widgets\Pages;
 
+use Premanager\Execution\Environment;
+
 use Premanager\Widgets\Widget;
 
 use Premanager\Execution\Redirection;
@@ -37,10 +39,9 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that allows to edit the sidebar of all guests and users without own
- * sidebar
+ * A page that allows to edit the own sidebar
  */
-class SidebarAdminPage extends SidebarPage {
+class MySidebarPage extends SidebarPage {
 	/**
 	 * Creates a new SidebarAdminPage
 	 * 
@@ -49,7 +50,8 @@ class SidebarAdminPage extends SidebarPage {
 	 *   this page node is embedded in
 	 */
 	public function __construct($parent, StructureNode $structureNode) {
-		parent::__construct($parent, $structureNode, Sidebar::getDefault());
+		parent::__construct($parent, $structureNode, 
+			Sidebar::get(Environment::getCurrent()->getUser()));
 	}
 	
 	// ===========================================================================
@@ -60,17 +62,20 @@ class SidebarAdminPage extends SidebarPage {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		$response = parent::getResponse(
-			Right::getByName('Premanager.Widgets', 'editDefaultSidebar'));
+		if (!$this->getSidebar()->getUser())
+			return Page::createMessagePage($this, Translation::defaultGet(
+				'Premanager.Widgets', 'guestEditsSidebarMessage'));
+		
+		$response = parent::getResponse();
 		if ($response)
 			return $response;
 			
 		$page = new Page($this);
 		$page->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
 		$page->title =
-			Translation::defaultGet('Premanager.Widgets', 'sidebarAdmin');
+			Translation::defaultGet('Premanager.Widgets', 'mySidebar');
 		$page->createMainBlock('<p>'.Translation::defaultGet('Premanager.Widgets',
-			'sidebarAdminMessage').'</p>');
+			'mySidebarMessage').'</p>');
 		$page->appendBlock(parent::getWidgetClassesBlock());
 		return $page;
 	} 

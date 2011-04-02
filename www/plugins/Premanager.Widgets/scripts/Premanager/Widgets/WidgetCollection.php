@@ -145,8 +145,8 @@ class WidgetCollection extends Module {
 			DataBaseHelper::NO_TRANSLATION, null,
 			array(
 				'widgetClassID' => $widgetClass->getID(),
-				'nodeID' => $structureNode ? $structureNode->getID() : 0,
-				'userID' => $user ? $user->getID() : 0,
+				'nodeID' => $this->_structureNodeID,
+				'userID' => $this->_userID,
 				'order' => $order),
 			array());
 		
@@ -186,7 +186,9 @@ class WidgetCollection extends Module {
 		DataBase::query(
 			"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
 			"SET `order` = `order` - 1 ".
-			"WHERE `order` > ".$widget->getOrder());
+			"WHERE nodeID = '".$this->_structureNodeID."' ".
+				"AND userID = '".$this->_userID."'".
+				"AND `order` > ".$widget->getOrder());
 			
 		$widget->internalDelete();
 	}
@@ -202,7 +204,9 @@ class WidgetCollection extends Module {
 			DataBase::query(
 				"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
 				"SET `order` = `order` + 1 ".
-				"WHERE `order` = ".($widget->getOrder() - 1));
+				"WHERE nodeID = '".$this->_structureNodeID."' ".
+					"AND userID = '".$this->_userID."'".
+					"AND `order` = ".($widget->getOrder() - 1));
 			
 			// Move this up
 			DataBase::query(
@@ -225,7 +229,9 @@ class WidgetCollection extends Module {
 			DataBase::query(
 				"UPDATE ".DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
 				"SET `order` = `order` - 1 ".
-				"WHERE `order` = ".($widget->getOrder() + 1));
+				"WHERE nodeID = '".$this->_structureNodeID."' ".
+					"AND userID = '".$this->_userID."'".
+					"AND `order` = ".($widget->getOrder() + 1));
 			
 			// Move this down
 			DataBase::query(

@@ -1,6 +1,10 @@
 <?php
 namespace Premanager\Widgets;
 
+use Premanager\Widgets\Pages\MySidebarPage;
+
+use Premanager\Widgets\Pages\SidebarPage;
+
 use Premanager\Execution\Template;
 
 use Premanager\Widgets\Pages\SidebarAdminPage;
@@ -26,19 +30,25 @@ class Initializer extends Module implements PluginInitializer {
 	 */
 	public function primaryInit() {
 		Page::$templatePreparedEvent->register(function($sender, $params) {
-			if (Environment::getCurrent()->getPageNode() instanceof SidebarAdminPage){
+			$pageNode = Environment::getCurrent()->getPageNode();
+			if ($pageNode instanceof SidebarAdminPage)
 				$sidebar = Sidebar::getDefault();
+			else if ($pageNode instanceof MySidebarPage)
+				$sidebar = Sidebar::get(Environment::getCurrent()->getUser());
+			else
+				$sidebar = Sidebar::getExisting(Environment::getCurrent()->getUser());
+				
+			if (Environment::getCurrent()->getPageNode() instanceof SidebarPage) {
 				$sidebarTemplate =
 					new Template('Premanager.Widgets', 'sidebarAdminSidebar');
 				$sidebarTemplate->set('widgets', $sidebar->getWidgets());
 				$sidebarHTML = $sidebarTemplate->get();
 			} else {
-				$sidebar = Sidebar::getExisting(Environment::getCurrent()->getUser());
 				$sidebarHTML = $sidebar->getHTML();
 			}
 		
 			$template = $params['template'];
-			if ($sidebarHTML) {
+			if (trim($sidebarHTML)) {
 				$template->afterNavigationTree .= $sidebarHTML;
 				$template->bodyClasses .= ' has-sidebar';
 			}

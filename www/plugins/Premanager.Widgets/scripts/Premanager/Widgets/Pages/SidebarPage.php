@@ -1,6 +1,14 @@
 <?php
 namespace Premanager\Widgets\Pages;
 
+use Premanager\Widgets\Widget;
+
+use Premanager\Execution\Redirection;
+
+use Premanager\Widgets\Sidebar;
+
+use Premanager\Widgets\WidgetClass;
+
 use Premanager\Execution\TreePageNode;
 use Premanager\Models\Project;
 use Premanager\Execution\Options;
@@ -29,59 +37,101 @@ use Premanager\ArgumentException;
 use Premanager\IO\Output;
 
 /**
- * A page that allows to edit the own sidebar
+ * An abstract class for pages that allow to edit a sidebar
  */
-class SidebarPage extends TreePageNode {	
+abstract class SidebarPage extends TreePageNode {	
+	private $_sidebar;
+
+	// ===========================================================================
+	
+	/**
+	 * Creates a new SidebarAdminPage
+	 * 
+	 * @param Premanager\Execution\ParentNode $parent the parent node
+	 * @param Premanager\Models\StructureNode $structureNode the structure node
+	 *   this page node is embedded in
+	 * @param Premanager\Widgets\Sidebar $sidebar the sidebar to edit
+	 */
+	public function __construct($parent, StructureNode $structureNode,
+		Sidebar $sidebar)
+	{
+		parent::__construct($parent, $structureNode);
+		$this->_sidebar = $sidebar;
+	}
+	
+	// ===========================================================================
+	
 	/**
 	 * Performs a call of this page and creates the response object
 	 * 
 	 * @return Premanager\Execution\Response the response object to send
 	 */
-	public function getResponse() {
-		$list = self::getList();
-		
-		$page = new Page($this);
-		$page->title = Translation::defaultGet('Premanager', 'viewonline');
-		$minutes = floor(Options::defaultGet('Premanager',
-			'viewonline.max-session-age') / 60);
-		$page->createMainBlock(Translation::defaultGet('Premanager',
-			count($list) ? 'viewonlineMessage' : 'viewonlineEmpty',
-			array('timeSpan' => $minutes)));
-		
-		if (count($list)) {
-			$template = new Template('Premanager', 'viewonlineHead');
-			$head = $template->get();
+	public function getResponse(Right $requiredRight = null) {
+		if ($requiredRight && !Rights::requireRight($requiredRight, null,
+			$errorResponse, false))
+			return $errorResponse;
 			
-			$template = new Template('Premanager', 'viewonlineBody');
-			$template->set('organization', Project::getOrganization());
-			$template->set('sessions', $list);
-			$template->set('node', $this);
-			$body = $template->get();
-			
-			$page->appendBlock(PageBlock::createTable($head, $body));
+		if (Request::getPOST('add')) {
+			$id = Request::getPOST('widget-class-id');
+			$widgetClass = WidgetClass::getByID($id);
+			if ($widgetClass) {
+				if ($requiredRight && !Rights::requireRight($requiredRight, null,
+					$errorResponse))
+					return $errorResponse;
+				
+				$this->_sidebar->insertNewWidget($widgetClass);
+			}
+			return new Redirection();
+		} else if (Request::getPOST('widget-id')) {
+			$id = Request::getPOST('widget-id');
+			$widget = Widget::getByID($id);
+			if ($widget && $widget->getWidgetCollection() == $this->_sidebar) {
+				if ($requiredRight && !Rights::requireRight($requiredRight, null,
+					$errorResponse))
+					return $errorResponse;
+				
+				if (Request::getPOST('remove'))
+					$this->_sidebar->remove($widget);
+				else if (Request::getPOST('move-up'))
+					$this->_sidebar->moveUp($widget);
+				else if (Request::getPOST('move-down'))
+					$this->_sidebar->moveDown($widget);
+			}
+			return new Redirection();
 		}
-		
-		return $page;
-	} 
+	}
 
 	/**
-	 * Gets the list of viewonline sessions sorted by last request time
+	 * Gets the list of widget classes sorted by their title
 	 * 
-	 * @return Premanager\QueryList\QueryList the list of sessions
+	 * @return Premanager\QueryList\QueryList the list of widget classes
 	 */
 	private static function getList() {
 		static $cache;
 		if (!$cache) {
-			$cache = Session::getSessions();
-			$cache = $cache->filter(
-				$cache->expr(QueryOperation::GREATER,
-					$cache->exprMember('lastRequestTime'),
-					DateTime::getNow()->addSeconds(
-						-Options::defaultGet('Premanager', 'viewonline.max-session-age'))));
+			$cache = WidgetClass::getWidgetClasses();
 			$cache = $cache->sort(array(
-				new SortRule($cache->exprMember('lastRequestTime'))));
+				new SortRule($cache->exprMember('title'))));
 		}
 		return $cache;
+	}
+	
+	/**
+	 * Gets the sidebar edited by this page
+	 * 
+	 * @return Premanager\Widgets\Sidebar the sidebar
+	 */
+	protected function getSidebar() {
+		return $this->_sidebar;
+	}
+	
+	protected static function getWidgetClassesBlock() {
+		$list = self::getList();
+		$template = new Template('Premanager.Widgets', 'widgetClasses');
+		$template->set('widgetClasses', self::getList());
+		return PageBlock::createSimple(
+			Translation::defaultGet('Premanager.Widgets', 'widgetClassesTitle'),
+			$template->get());
 	}
 }
 

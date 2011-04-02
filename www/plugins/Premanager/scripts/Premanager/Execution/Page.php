@@ -170,7 +170,8 @@ class Page extends Response {
 	 * @param string $url the url to the stylesheet
 	 */
 	public function addStylesheet($url) {
-		$this->_stylesheets[] = $url;
+		if (array_search($url, $this->_stylesheets) === false)
+			$this->_stylesheets[] = $url;
 	}
 	
 	/**
