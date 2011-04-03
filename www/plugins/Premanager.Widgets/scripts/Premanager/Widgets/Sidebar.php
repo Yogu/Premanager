@@ -47,11 +47,13 @@ class Sidebar extends WidgetCollection {
 	 * @return Premanager\Widgets\Sidebar
 	 */
 	public static function getExisting(User $user = null) {
-		$sidebar = self::get($user);
-		if (!$user || !$user->getID() || $sidebar->getCount())
-			return $sidebar;
-		else
-			return self::getDefault();
+		if ($user && $user->getID()) {
+			$sidebar = self::get($user);
+			if ($sidebar->isExisting())
+				return $sidebar;
+		}
+		
+		return self::getDefault();
 	}
 	
 	/**
@@ -63,6 +65,18 @@ class Sidebar extends WidgetCollection {
 		$template = new Template('Premanager.Widgets', 'sidebar');
 		$template->set('widgets', $this->getWidgets());
 		return $template->get();
+	}
+	/**
+	 * Checks whether this widget collection exists, i.e. the user has created
+	 * its own sidebar / widget page
+	 * 
+	 * @return bool true, if this widget collection exists, false otherwise
+	 */
+	public function isExisting() {
+		if (!$this->getUser())
+			return true;
+		else
+			return parent::isExisting();
 	}
 }
 

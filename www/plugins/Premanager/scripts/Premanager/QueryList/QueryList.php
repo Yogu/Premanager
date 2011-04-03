@@ -512,6 +512,13 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		}
 		return $this->_strategy;
 	}
+	
+	/**
+	 * Clears all the cache for this query list
+	 */
+	public function clearCache() {
+		$this->getStrategy()->clearCache();
+	}
 }
 
 ?>

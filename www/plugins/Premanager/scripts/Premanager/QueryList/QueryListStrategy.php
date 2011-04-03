@@ -91,6 +91,15 @@ abstract class QueryListStrategy extends Module  {
 	public function isIndexValid($index) {
 		return $index >= 0 && $index < $this->getCount();
 	}
+	
+	/**
+	 * Clears all the cache for this query list
+	 * 
+	 * Must only be overwritten if the strategy has a cache
+	 */
+	public function clearCache() {
+		
+	}
 }
 
 ?>

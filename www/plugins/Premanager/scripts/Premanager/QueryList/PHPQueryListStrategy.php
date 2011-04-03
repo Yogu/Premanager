@@ -236,6 +236,16 @@ class PHPQueryListStrategy extends QueryListStrategy {
 		
 		return array_slice($this->_items, $index, $count);
 	}
+	
+	/**
+	 * Clears all the cache for this query list
+	 */
+	public function clearCache() {
+		$this->_items = null;
+		$this->_count = null;
+		$this->_queryItemIndex = 0;
+		$this->_completed = null;
+	}
 
 	// ===========================================================================
 	

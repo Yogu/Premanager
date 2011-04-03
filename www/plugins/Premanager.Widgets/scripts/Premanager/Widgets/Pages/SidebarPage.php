@@ -79,16 +79,31 @@ abstract class SidebarPage extends TreePageNode {
 					$errorResponse))
 					return $errorResponse;
 				
+				if (!$this->_sidebar->isExisting()) {
+					$this->_sidebar->applyFrom(Sidebar::getDefault());
+					$this->_sidebar->setIsExisting(true);
+				}
 				$this->_sidebar->insertNewWidget($widgetClass);
 			}
 			return new Redirection();
-		} else if (Request::getPOST('widget-id')) {
+		} else if (Request::getPOST('remove') || Request::getPOST('move-up') ||
+			Request::getPOST('remove-down'))
+		{
 			$id = Request::getPOST('widget-id');
 			$widget = Widget::getByID($id);
 			if ($widget && $widget->getWidgetCollection() == $this->_sidebar) {
 				if ($requiredRight && !Rights::requireRight($requiredRight, null,
 					$errorResponse))
 					return $errorResponse;
+			
+				if (!$this->_sidebar->isExisting()) {
+					$this->_sidebar->applyFrom(Sidebar::getDefault());
+					$this->_sidebar->setIsExisting(true);
+					
+					// ID has changed - get new widget
+					$widget = Widget::getWidgets()->getByIndex($widget->getOrder());
+					Debug::assert($newWidget != null);
+				}
 				
 				if (Request::getPOST('remove'))
 					$this->_sidebar->remove($widget);

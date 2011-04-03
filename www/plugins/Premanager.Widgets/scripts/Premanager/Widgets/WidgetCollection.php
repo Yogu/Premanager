@@ -36,9 +36,13 @@ class WidgetCollection extends Module {
 	 */
 	private $_count;
 	/**
-	 * @var array
+	 * @var Premanager\QueryList\QueryList
 	 */
 	private $_widgets;
+	/**
+	 * @var bool
+	 */
+	private $_isExisting;
 	
 	/**
 	 * @var Premanager\QueryList\QueryList
@@ -113,7 +117,8 @@ class WidgetCollection extends Module {
 	}
 	
 	/**
-	 * Gets a list of widgets contained by this collection
+	 * Gets a list of widgets contained by this collection, correctly sorted by
+	 * their order number
 	 * 
 	 * @return Premanager\QueryList\QueryList
 	 */
@@ -151,6 +156,10 @@ class WidgetCollection extends Module {
 			array());
 		
 		$widget = Widget::getByID($id);
+		if ($this->_widgets)
+			$this->_widgets->clearCache();
+		if ($this->_count !== null)
+			$this->_count++;
 		return $widget;
 	}
 	
@@ -191,8 +200,20 @@ class WidgetCollection extends Module {
 				"AND `order` > ".$widget->getOrder());
 			
 		$widget->internalDelete();
+		if ($this->_widgets)
+			$this->_widgets->clearCache();
+		if ($this->_count !== null)
+			$this->_count--;
 	}
 	
+	/**
+	 * Moves the specified widget one step upward. If the specified widget is
+	 * already the first one, nothing is done.
+	 * 
+	 * @param Premanage\Widgets\Widget $widget the widget to move up
+	 * @throws Premanager\ArgumentException the widget does not belong to this
+	 *   collection
+	 */
 	public function moveUp(Widget $widget) {
 		if ($widget->getWidgetCollection() != $this)
 			throw new ArgumentException('The specified widget does not belong to '.
@@ -215,9 +236,19 @@ class WidgetCollection extends Module {
 				"WHERE id = ".$widget->getID());
 			
 			$this->refreshOrder();
+			if ($this->_widgets)
+				$this->_widgets->clearCache();
 		}
 	}
 	
+	/**
+	 * Moves the specified widget one step downward. If the specified widget is
+	 * already the last one, nothing is done.
+	 * 
+	 * @param Premanage\Widgets\Widget $widget the widget to move down
+	 * @throws Premanager\ArgumentException the widget does not belong to this
+	 *   collection
+	 */
 	public function moveDown(Widget $widget) {
 		if ($widget->getWidgetCollection() != $this)
 			throw new ArgumentException('The specified widget does not belong to '.
@@ -240,7 +271,80 @@ class WidgetCollection extends Module {
 				"WHERE id = ".$widget->getID());
 			
 			$this->refreshOrder();
+			if ($this->_widgets)
+				$this->_widgets->clearCache();
 		}
+	}
+	
+	/**
+	 * Deletes all widgets of this collection and clears the list
+	 */
+	public function clear() {
+		DataBase::query(
+			"DELETE FROM ".
+				DataBase::formTableName('Premanager.Widgets', 'Widgets')." ".
+			"WHERE nodeID = '".$this->_structureNodeID."' ".
+				"AND userID = '".$this->_userID."'");
+		if ($this->_widgets)
+			$this->_widgets->clearCache();
+	}
+	
+	/**
+	 * Clears this collection and adds new instances of all widgets in the
+	 * specified collection, copiing all options
+	 * 
+	 * @param WidgetCollection $other
+	 */
+	public function applyFrom(WidgetCollection $other) {
+		$this->clear();
+		foreach ($other->getWidgets() as $widget) {
+			$this->insertNewWidget($widget->getWidgetClass());
+		}
+	}
+	
+	/**
+	 * Checks whether this widget collection exists, i.e. the user has created
+	 * its own sidebar / widget page
+	 * 
+	 * @return bool true, if this widget collection exists, false otherwise
+	 */
+	public function isExisting() {
+		if ($this->_isExisting === null) {
+			$result = DataBase::query(
+				"SELECT userID ".
+				"FROM ".DataBase::formTableName('Premanager.Widgets',
+					'WidgetCollections')." ".
+				"WHERE nodeID = '".$this->_structureNodeID."' ".
+					"AND userID = '".$this->_userID."'");
+			$this->_isExisting = $result->next();
+		}
+		return $this->_isExisting;
+	}
+	
+	/**
+	 * Sets the flag whether this widget collection exists. This does neither add
+	 * nor remove widgets.
+	 * 
+	 * @param bool $value the new value for the is-existing flag
+	 */
+	public function setIsExisting($value) {
+		if ($this->_isExisting !== null && $value == $this->_isExisting)
+			return;
+		
+		if ($value) {
+			DataBase::query(
+				"REPLACE INTO ".DataBase::formTableName('Premanager.Widgets',
+					'WidgetCollections'). " ".
+				"SET nodeID = '".$this->_structureNodeID."', ".
+					"userID = '".$this->_userID."'");
+		} else {
+			DataBase::query(
+				"DELETE FROM ".DataBase::formTableName('Premanager.Widgets', 
+					'WidgetCollections')." ".
+				"WHERE nodeID = '".$this->_structureNodeID."' ".
+					"AND userID = '".$this->_userID."'");
+		}
+		$this->_isExisting = $value;
 	}
 	
 	private function refreshOrder() {

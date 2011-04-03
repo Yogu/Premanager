@@ -33,8 +33,6 @@ class Initializer extends Module implements PluginInitializer {
 			$pageNode = Environment::getCurrent()->getPageNode();
 			if ($pageNode instanceof SidebarAdminPage)
 				$sidebar = Sidebar::getDefault();
-			else if ($pageNode instanceof MySidebarPage)
-				$sidebar = Sidebar::get(Environment::getCurrent()->getUser());
 			else
 				$sidebar = Sidebar::getExisting(Environment::getCurrent()->getUser());
 				

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 02. April 2011 um 22:12
+-- Erstellungszeit: 03. April 2011 um 20:37
 -- Server Version: 5.1.41
 -- PHP-Version: 5.3.4
 
@@ -1009,7 +1009,7 @@ INSERT INTO `premanager_0_rightstranslation` (`id`, `languageID`, `title`, `desc
 -- Tabellenstruktur für Tabelle `premanager_0_sessions`
 --
 -- Erzeugt am: 02. Januar 2011 um 16:00
--- Aktualisiert am: 02. April 2011 um 23:48
+-- Aktualisiert am: 03. April 2011 um 22:12
 -- Letzter Check am: 09. März 2011 um 15:00
 --
 
@@ -1031,7 +1031,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
   KEY `archivedSessionID` (`userID`,`lastRequestTime`),
   KEY `hidden` (`hidden`),
   KEY `projectID` (`projectID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=114 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=119 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_sessions`:
@@ -1046,7 +1046,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_sessions` (
 --
 
 INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTime`, `key`, `ip`, `userAgent`, `secondaryPasswordUsed`, `hidden`, `projectID`, `isFirstRequest`, `confirmationExpirationTime`, `timestamp`) VALUES
-(113, 2, '2011-04-02 22:07:27', '2011-04-02 22:11:59', '19f334c1e5c5a0a7e3ee4e8850768635427dca6c66bfe3371ef48fe2eb6ebd23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0) Gecko/20100101 Firefox/4.0', 0, 0, 0, 0, '2011-04-02 22:19:11', '2011-04-03 00:11:35');
+(118, 2, '2011-04-03 20:36:31', '2011-04-03 20:36:53', '0f6fa0e690e66b6c10a67f99ff1f48691b5055e6c619064d5aa2e07496259911', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0) Gecko/20100101 Firefox/4.0', 0, 0, 0, 0, '2011-04-03 20:46:48', '2011-04-03 22:36:29');
 
 -- --------------------------------------------------------
 
@@ -1054,7 +1054,7 @@ INSERT INTO `premanager_0_sessions` (`id`, `userID`, `startTime`, `lastRequestTi
 -- Tabellenstruktur für Tabelle `premanager_0_strings`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 02. April 2011 um 23:44
+-- Aktualisiert am: 03. April 2011 um 22:23
 -- Letzter Check am: 07. Oktober 2010 um 20:10
 --
 
@@ -1065,7 +1065,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_strings` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `pluginID` (`pluginID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=672 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=675 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_0_strings`:
@@ -1699,7 +1699,10 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 (669, 7, 'guestEditsSidebarMessage', '2011-04-02 23:30:38'),
 (668, 7, 'sidebarAdmin', '2011-04-02 23:22:36'),
 (670, 7, 'mySidebar', '2011-04-02 23:31:08'),
-(671, 7, 'mySidebarMessage', '2011-04-02 23:32:30');
+(671, 7, 'mySidebarMessage', '2011-04-02 23:32:30'),
+(672, 7, 'resetMySidebarMessage', '2011-04-03 22:19:36'),
+(673, 7, 'resetMySidebarButton', '2011-04-03 22:19:36'),
+(674, 7, 'resetMySidebarConfirmation', '2011-04-03 22:23:30');
 
 -- --------------------------------------------------------
 
@@ -1707,7 +1710,7 @@ INSERT INTO `premanager_0_strings` (`id`, `pluginID`, `name`, `timestamp`) VALUE
 -- Tabellenstruktur für Tabelle `premanager_0_stringstranslation`
 --
 -- Erzeugt am: 07. Oktober 2010 um 20:10
--- Aktualisiert am: 02. April 2011 um 23:44
+-- Aktualisiert am: 03. April 2011 um 22:08
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_0_stringstranslation` (
@@ -2646,7 +2649,10 @@ INSERT INTO `premanager_0_stringstranslation` (`id`, `languageID`, `value`, `tim
 (669, 1, 'Um die Sidebar anzupassen, musst du dich zunächst anmelden.', '2011-04-02 23:30:38'),
 (668, 1, 'Standard-Sidebar', '2011-04-02 23:22:36'),
 (670, 1, 'Sidebar anpassen', '2011-04-02 23:31:08'),
-(671, 1, 'Hier kannst du die Sidebar nach deinen Wünschen anpassen.</p><p>Unten siehst du alle verfügbare <i>Widgets</i>, die du per Knopfdruck in die Sidebar einbauen kannst. Die in die Sidebar eingebauten Widgets verfügen über Schaltflächen zum Verschieben und Löschen.', '2011-04-02 23:32:30');
+(671, 1, 'Hier kannst du die Sidebar nach deinen Wünschen anpassen.</p><p>Unten siehst du alle verfügbare <i>Widgets</i>, die du per Knopfdruck in die Sidebar einbauen kannst. Die in die Sidebar eingebauten Widgets verfügen über Schaltflächen zum Verschieben und Löschen.', '2011-04-02 23:32:30'),
+(672, 1, 'Du kannst die Änderungen, die du an der Sidebar vorgenommen hast, auch zurücknehmen und zur Standard-Sidebar zurückkehren.', '2011-04-03 22:08:13'),
+(673, 1, 'Sidebar zurücksetzen', '2011-04-03 22:08:24'),
+(674, 1, 'Möchtest du alle Änderungen, die du an der Sidebar vorgenommen hast, zurücknehmen und die Standard-Sidebar wiederherstellen?', '2011-04-03 22:23:08');
 
 -- --------------------------------------------------------
 
@@ -2849,7 +2855,7 @@ CREATE TABLE IF NOT EXISTS `premanager_0_useroptions` (
 -- Tabellenstruktur für Tabelle `premanager_0_users`
 --
 -- Erzeugt am: 05. Februar 2011 um 17:00
--- Aktualisiert am: 02. April 2011 um 22:48
+-- Aktualisiert am: 03. April 2011 um 22:12
 -- Letzter Check am: 09. März 2011 um 15:00
 --
 
@@ -2894,9 +2900,9 @@ CREATE TABLE IF NOT EXISTS `premanager_0_users` (
 
 INSERT INTO `premanager_0_users` (`id`, `name`, `registrationTime`, `registrationIP`, `lastLoginTime`, `lastVisibleLoginTime`, `lastLoginIP`, `password`, `resetPasswordKey`, `resetPasswordStartTime`, `resetPasswordIP`, `color`, `email`, `unconfirmedEmail`, `unconfirmedEmailStartTime`, `unconfirmedEmailKey`, `status`, `hasPersonalSidebar`, `hasAvatar`, `avatarMIME`, `styleID`, `timestamp`) VALUES
 (0, 'Guest', '2010-02-13 18:25:43', '127.0.0.1', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00', '', '5C5C5C', '', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 0, '2011-02-18 22:19:37'),
-(2, 'Yogu', '2010-02-13 18:27:13', '127.0.0.1', '2011-04-02 22:07:27', '2011-04-02 22:07:27', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '006600', 'yogu@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 1, '2011-04-03 00:07:03'),
+(2, 'Yogu', '2010-02-13 18:27:13', '127.0.0.1', '2011-04-03 20:36:31', '2011-04-03 20:36:31', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '006600', 'yogu@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 1, 'image/png', 1, '2011-04-03 22:36:07'),
 (128, 'Test-User', '2011-02-16 19:22:45', '127.0.0.1', '2011-02-16 19:23:01', '2011-02-16 19:23:01', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '000000', 'test@user.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-16 20:22:37'),
-(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-02-06 00:32:10', '2011-02-06 00:32:10', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '64002E', 'markus@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-02-08 16:15:43');
+(79, 'Markus', '2010-12-29 23:48:56', '127.0.0.1', '2011-04-03 20:35:46', '2011-04-03 20:35:46', '127.0.0.1', 'abf342b4aa81567e3b3d05629961a1598111470658e69d7fce7bc841413cff98', '', '0000-00-00 00:00:00', '', '64002E', 'markus@example.com', '', '0000-00-00 00:00:00', '', 'enabled', 0, 0, '', 0, '2011-04-03 22:35:22');
 
 -- --------------------------------------------------------
 
@@ -3450,26 +3456,6 @@ INSERT INTO `premanager_6_revisions` (`id`, `articleID`, `revision`, `languageID
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `premanager_7_sidebars`
---
--- Erzeugt am: 02. April 2011 um 23:45
--- Aktualisiert am: 02. April 2011 um 23:45
---
-
-CREATE TABLE IF NOT EXISTS `premanager_7_sidebars` (
-  `userID` int(10) unsigned NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`userID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Daten für Tabelle `premanager_7_sidebars`
---
-
-
--- --------------------------------------------------------
-
---
 -- Tabellenstruktur für Tabelle `premanager_7_widgetclasses`
 --
 -- Erzeugt am: 18. Februar 2011 um 23:07
@@ -3541,6 +3527,29 @@ INSERT INTO `premanager_7_widgetclassestranslation` (`id`, `languageID`, `title`
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `premanager_7_widgetcollections`
+--
+-- Erzeugt am: 03. April 2011 um 21:24
+-- Aktualisiert am: 03. April 2011 um 22:35
+--
+
+CREATE TABLE IF NOT EXISTS `premanager_7_widgetcollections` (
+  `userID` int(10) unsigned NOT NULL,
+  `nodeID` int(10) unsigned NOT NULL DEFAULT '0',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`userID`,`nodeID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Daten für Tabelle `premanager_7_widgetcollections`
+--
+
+INSERT INTO `premanager_7_widgetcollections` (`userID`, `nodeID`, `timestamp`) VALUES
+(2, 0, '2011-04-03 22:34:09');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `premanager_7_widgetoptions`
 --
 -- Erzeugt am: 18. Februar 2011 um 23:10
@@ -3604,8 +3613,8 @@ CREATE TABLE IF NOT EXISTS `premanager_7_widgetoptionvalues` (
 --
 -- Tabellenstruktur für Tabelle `premanager_7_widgets`
 --
--- Erzeugt am: 18. Februar 2011 um 23:02
--- Aktualisiert am: 03. April 2011 um 00:11
+-- Erzeugt am: 03. April 2011 um 21:25
+-- Aktualisiert am: 03. April 2011 um 22:36
 --
 
 CREATE TABLE IF NOT EXISTS `premanager_7_widgets` (
@@ -3622,8 +3631,9 @@ CREATE TABLE IF NOT EXISTS `premanager_7_widgets` (
   `editorID` int(10) unsigned NOT NULL,
   `editTimes` int(10) unsigned NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=49 ;
+  PRIMARY KEY (`id`),
+  KEY `nodeID` (`nodeID`,`userID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=85 ;
 
 --
 -- RELATIONEN DER TABELLE `premanager_7_widgets`:
@@ -3644,12 +3654,14 @@ CREATE TABLE IF NOT EXISTS `premanager_7_widgets` (
 --
 
 INSERT INTO `premanager_7_widgets` (`id`, `widgetClassID`, `nodeID`, `userID`, `column`, `order`, `isMinimized`, `createTime`, `editTime`, `creatorID`, `editorID`, `editTimes`, `timestamp`) VALUES
-(48, 1, 0, 0, 0, 1, 0, '2011-04-02 22:11:53', '2011-04-02 22:11:53', 2, 2, 0, '2011-04-03 00:11:29'),
+(84, 1, 0, 0, 0, 1, 0, '2011-04-03 20:36:53', '2011-04-03 20:36:53', 2, 2, 0, '2011-04-03 22:36:29'),
 (40, 2, 0, 0, 0, 0, 0, '2011-04-02 22:09:19', '2011-04-02 22:09:19', 2, 2, 0, '2011-04-03 00:11:19'),
-(46, 1, 0, 2, 0, 3, 0, '2011-04-02 22:11:20', '2011-04-02 22:11:20', 2, 2, 0, '2011-04-03 00:10:56'),
-(45, 3, 0, 2, 0, 2, 0, '2011-04-02 22:11:18', '2011-04-02 22:11:18', 2, 2, 0, '2011-04-03 00:10:54'),
-(44, 2, 0, 2, 0, 1, 0, '2011-04-02 22:11:13', '2011-04-02 22:11:13', 2, 2, 0, '2011-04-03 00:10:49'),
-(43, 5, 0, 2, 0, 0, 0, '2011-04-02 22:11:10', '2011-04-02 22:11:10', 2, 2, 0, '2011-04-03 00:10:46');
+(83, 3, 0, 79, 0, 2, 0, '2011-04-03 20:36:02', '2011-04-03 20:36:02', 79, 79, 0, '2011-04-03 22:35:38'),
+(82, 1, 0, 79, 0, 1, 0, '2011-04-03 20:36:02', '2011-04-03 20:36:02', 79, 79, 0, '2011-04-03 22:35:38'),
+(81, 2, 0, 79, 0, 0, 0, '2011-04-03 20:36:02', '2011-04-03 20:36:02', 79, 79, 0, '2011-04-03 22:35:38'),
+(80, 5, 0, 2, 0, 0, 0, '2011-04-03 20:34:33', '2011-04-03 20:34:33', 2, 2, 0, '2011-04-03 22:34:17'),
+(79, 1, 0, 2, 0, 2, 0, '2011-04-03 20:34:33', '2011-04-03 20:34:33', 2, 2, 0, '2011-04-03 22:34:14'),
+(78, 2, 0, 2, 0, 1, 0, '2011-04-03 20:34:33', '2011-04-03 20:34:33', 2, 2, 0, '2011-04-03 22:34:17');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

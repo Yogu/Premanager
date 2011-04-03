@@ -291,6 +291,16 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 		} else
 			return $index < $this->getCount();
 	}
+	
+	/**
+	 * Clears all the cache for this query list
+	 */
+	public function clearCache() {
+		$this->_items = null;
+		$this->_count = null;
+		$this->_currentResult = null;
+		$this->_currentResultCounter = null;
+	}
 
 	// ===========================================================================
 	

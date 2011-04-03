@@ -65,6 +65,20 @@ class MySidebarPage extends SidebarPage {
 		if (!$this->getSidebar()->getUser())
 			return Page::createMessagePage($this, Translation::defaultGet(
 				'Premanager.Widgets', 'guestEditsSidebarMessage'));
+			
+		if (Request::getPOST('confirm')) {	
+			$this->getSidebar()->setIsExisting(false);
+			return new Redirection($this->getURL());
+		} else if (Request::getPOST('cancel')) {
+			return new Redirection($this->getURL());
+		} else if (Request::getPOST('reset')) {
+			$page = new Page($this);
+			$template = new Template('Premanager', 'confirmation');
+			$template->set('message', Translation::defaultGet('Premanager.Widgets',
+				'resetMySidebarConfirmation'));
+			$page->createMainBlock($template->get());
+			return $page;
+		}
 		
 		$response = parent::getResponse();
 		if ($response)
@@ -74,8 +88,9 @@ class MySidebarPage extends SidebarPage {
 		$page->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
 		$page->title =
 			Translation::defaultGet('Premanager.Widgets', 'mySidebar');
-		$page->createMainBlock('<p>'.Translation::defaultGet('Premanager.Widgets',
-			'mySidebarMessage').'</p>');
+		$template = new Template('Premanager.Widgets', 'mySidebar');
+		$template->set('sidebar', $this->getSidebar());
+		$page->createMainBlock($template->get());
 		$page->appendBlock(parent::getWidgetClassesBlock());
 		return $page;
 	} 
