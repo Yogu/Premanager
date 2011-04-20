@@ -218,10 +218,8 @@ class DataBaseConnection extends Module {
 	 * @return string the formatted table identifier
 	 */
 	public function formTableName($plugin, $table) {
-		$pluginID = Plugin::getIDFromName($plugin);
-		if ($pluginID === null)
-			throw new ArgumentException('There is no plugin called '.$plugin);
-		return Strings::toLower($this->_prefix.$pluginID.'_'.$table);
+		$plugin = str_replace('.', '_', $plugin);
+		return Strings::toLower($this->_prefix.$plugin.'_'.$table);
 	}
 }
 

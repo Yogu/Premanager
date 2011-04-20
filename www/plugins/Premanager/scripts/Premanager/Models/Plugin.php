@@ -238,7 +238,7 @@ final class Plugin extends Model {
 			$cache = array();
 			$result = DataBase::query(
 				"SELECT plugin.id, plugin.name ".
-				"FROM ".Config::getDataBasePrefix()."0_plugins AS plugin");
+				"FROM ".Config::getDataBasePrefix()."premanager_plugins AS plugin");
 			while ($result->next()) {
 				$cache[$result['name']] = $result['id'];
 			}
