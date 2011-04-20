@@ -1,14 +1,11 @@
 <?php
 namespace Premanager\Widgets\Pages;
 
+use Premanager\Pages\AddGroupHomePage;
 use Premanager\Widgets\Widget;
-
 use Premanager\Execution\Redirection;
-
 use Premanager\Widgets\Sidebar;
-
 use Premanager\Widgets\WidgetClass;
-
 use Premanager\Execution\TreePageNode;
 use Premanager\Models\Project;
 use Premanager\Execution\Options;
@@ -40,62 +37,34 @@ use Premanager\IO\Output;
  * A page that allows to edit the sidebar of all guests and users without own
  * sidebar
  */
-class SidebarAdminPage extends SidebarPage {
-	private $_structureNode;
+class UserSidebarPage extends SidebarPage {
+	private $_sidebarTranslation = 'userSidebar';
+	private $_resetSidebarConfirmationTranslation = 'resetSidebarConfirmation';
+	private $_templateName = 'userSidebar';
+	private $_right;
 	
 	/**
 	 * Creates a new SidebarAdminPage
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
-	 * @param Premanager\Models\StructureNode $structureNode the structure node
-	 *   this page node is embedded in
+	 * @param Premanager\Models\User $user the user whose sidebar to be edited
 	 */
-	public function __construct($parent, StructureNode $structureNode) {
-		$this->_structureNode = $structureNode;
-		
-		if (Request::getGET('user'))
-			$user = User::getByName(Request::getGET('user'));
-		if ($user && $user->getID())
-			$sidebar = Sidebar::get($user);
+	public function __construct($parent, User $user, $sidebarTranslation = null,
+		$resetSidebarConfirmationTranslation = null, $templateName = null,
+		$right = false)
+	{
+		parent::__construct($parent, Sidebar::get($user));
+		if ($sidebarTranslation)
+			$this->_sidebarTranslation = $sidebarTranslation;
+		if ($resetSidebarConfirmationTranslation)
+			$this->_resetSidebarConfirmationTranslation =
+				$resetSidebarConfirmationTranslation;
+		if ($templateName)
+			$this->_templateName = $templateName;
+		if ($right !== false)
+			$this->_right = $right;
 		else
-			$sidebar = Sidebar::getDefault();
-		parent::__construct($parent, $sidebar);
-	}
-	/**
-	 * Gets the child specified by its name
-	 * 
-	 * @param string $name the child's expected name
-	 * @return Premanager\Execution\PageNode the child node or null if not found
-	 */
-	public function getChildByName($name) {
-		$user = User::getByName($name);
-		if ($user)
-			return new UserSidebarPage($this, $user);
-	}
-	
-	/**
-	 * Gets an array of all child page nodes
-	 * 
-	 * @param int $count the number of items the array should contain at most or
-	 *   -1 if all available items should be contained
-	 * @param Premanager\Execution\PageNode $referenceNode the page node that
-	 *   should be always in the array
-	 * @return array an array of the child Premanager\Execution\PageNode's
-	 */
-	public function getChildren($count = -1, PageNode $referenceNode = null) {
-		$referenceModel = $referenceNode instanceof UserPage ?
-			$referenceNode->getUser() : null;
-		$users = User::getUsers();
-		$users = $users->sort(array(new SortRule($users->exprMember('name'))));
-		$models = $this->getChildrenHelper($users, $referenceModel,
-			$count);
-			
-		$list = array();
-		foreach ($users as $user) {
-			if ($user->getID())
-				$list[] = new UserSidebarPage($this, $user);
-		}
-		return $list;
+			$this->_right = Right::getByName('Premanager.Widgets', 'editUserSidebars');
 	}
 	
 	// ===========================================================================
@@ -106,19 +75,36 @@ class SidebarAdminPage extends SidebarPage {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		$right = $this->getSidebar()->getUser() ? 'editUserSidebars' :
-			'editDefaultSidebar';
-		$response = parent::getResponse(
-			Right::getByName('Premanager.Widgets', $right));
+		if (!$this->getSidebar()->getUser())
+			return Page::createMessagePage($this, Translation::defaultGet(
+				'Premanager.Widgets', 'editingGuestsSidebarError'));
+			
+		if (Request::getPOST('confirm')) {	
+			$this->getSidebar()->setIsExisting(false);
+			return new Redirection($this->getURL());
+		} else if (Request::getPOST('cancel')) {
+			return new Redirection($this->getURL());
+		} else if (Request::getPOST('reset')) {
+			$page = new Page($this);
+			$template = new Template('Premanager', 'confirmation');
+			$template->set('message', Translation::defaultGet('Premanager.Widgets',
+				$this->_resetSidebarConfirmationTranslation));
+			$page->createMainBlock($template->get());
+			return $page;
+		}
+		
+		$response = parent::getResponse($this->_right);
 		if ($response)
 			return $response;
 			
 		$page = new Page($this);
 		$page->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
 		$page->title =
-			Translation::defaultGet('Premanager.Widgets', 'sidebarAdmin');
-		$page->createMainBlock('<p>'.Translation::defaultGet('Premanager.Widgets',
-			'sidebarAdminMessage').'</p>');
+			Translation::defaultGet('Premanager.Widgets',
+				$this->_sidebarTranslation);
+		$template = new Template('Premanager.Widgets', $this->_templateName);
+		$template->set('sidebar', $this->getSidebar());
+		$page->createMainBlock($template->get());
 		$page->appendBlock(parent::getWidgetClassesBlock());
 		return $page;
 	} 
@@ -142,7 +128,8 @@ class SidebarAdminPage extends SidebarPage {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->_structureNode->getname();
+		return $this->getSidebar()->getUser() ?
+			 $this->getSidebar()->getUser()->getName() : '';
 	}
 	
 	/**
@@ -152,7 +139,8 @@ class SidebarAdminPage extends SidebarPage {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this->_structureNode->gettitle();
+		return $this->getSidebar()->getUser() ?
+			$this->getSidebar()->getUser()->getName() : '';
 	}
 	
 	/**
@@ -161,9 +149,9 @@ class SidebarAdminPage extends SidebarPage {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof SidebarAdminPage &&
-			$other->_structureNode == $this->_structureNode; 
-	}	 
+		return $other instanceof UserSidebarPage &&
+			$other->getSidebar() == $this->getSidebar(); 
+	}	    
 }
 
 ?>

@@ -1,12 +1,15 @@
 <?php
 namespace Premanager\Widgets;
 
+use Premanager\Execution\Rights;
+use Premanager\Models\Right;
+use Premanager\Execution\Translation;
+use Premanager\Execution\ToolBarItem;
+use Premanager\Pages\UserPage;
 use Premanager\Widgets\Pages\MySidebarPage;
-
 use Premanager\Widgets\Pages\SidebarPage;
-
 use Premanager\Execution\Template;
-
+use Premanager\Execution\PageNode;
 use Premanager\Widgets\Pages\SidebarAdminPage;
 use Premanager\Module;
 use Premanager\Widgets\Sidebar;
@@ -35,7 +38,7 @@ class Initializer extends Module implements PluginInitializer {
 				$sidebar = Sidebar::getDefault();
 			else
 				$sidebar = Sidebar::getExisting(Environment::getCurrent()->getUser());
-				
+
 			if (Environment::getCurrent()->getPageNode() instanceof SidebarPage) {
 				$sidebarTemplate =
 					new Template('Premanager.Widgets', 'sidebarAdminSidebar');
@@ -52,7 +55,23 @@ class Initializer extends Module implements PluginInitializer {
 			}
 		});
 		Page::$generatingContentEvent->register(function($sender, $params) {
-			$sender->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
+			$page = $sender;
+			$page->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
+			
+			if ($page->getNode() instanceof UserPage) {
+				$user = $page->getNode()->getUser();
+				if ($user->getID() && Rights::hasRight(Right::getByName(
+					'Premanager.Widgets','editUserSidebars')))
+				{
+					$page->toolbar[] = new ToolBarItem(
+						PageNode::getTreeURL('Premanager.Widgets', 'sidebar-admin').
+							'?user='.$user->getName(),
+						Translation::defaultGet('Premanager.Widgets', 'userSidebar'), 
+						Translation::defaultGet('Premanager.Widgets',
+							'userSidebarDescription'),
+						'Premanager.Widgets/images/tools/sidebar.png');
+					}
+			} 
 		});
 	}
 	

@@ -169,3 +169,68 @@ ul.location > li,
 .block-footer {
 	padding: 5px;
 }
+
+/* ========== Content - Sidebar ========== */
+
+body.has-sidebar #content {
+	padding-right: 220px;	
+}
+
+#sidebar {
+	float: right;
+	width: 180px;
+	margin-left: 20px;
+	padding: 5px;
+}
+
+#toolbar + * + #sidebar {
+	margin-top: 40px;
+	position: absolute;
+	right: 10px;
+}
+
+.widget > header {
+	font-size: 12px;
+	line-height: 12px;
+	font-weight: bold;
+	padding: 3px;
+	
+	border-top: 1px solid #D7DEF1;
+	border-bottom: 1px solid #D7DEF1;
+}
+
+.widget > .content {
+	margin-bottom: 1px;
+}
+
+.widget > .content,
+.widget {
+	border-bottom: 1px solid #D7DEF1; 
+}
+
+.widget > header > a {
+	display: block;
+	margin: -3px;
+	padding: 3px;
+	
+	color: #000000;
+}
+
+.widget > header > a:hover {
+	background: #D7DEF1;
+	
+	color: #000000;
+	text-decoration: none;
+}
+
+.widget > div {
+	margin-left: 0;
+}
+
+.widget > .content > ul.list {
+	border-top: none;
+}
+
+.widget > .content > ul.list > li:last-child {
+	border-bottom: none;
+}

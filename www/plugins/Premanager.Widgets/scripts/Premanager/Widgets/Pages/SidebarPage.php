@@ -39,7 +39,7 @@ use Premanager\IO\Output;
 /**
  * An abstract class for pages that allow to edit a sidebar
  */
-abstract class SidebarPage extends TreePageNode {	
+abstract class SidebarPage extends PageNode {	
 	private $_sidebar;
 
 	// ===========================================================================
@@ -48,12 +48,9 @@ abstract class SidebarPage extends TreePageNode {
 	 * Creates a new SidebarAdminPage
 	 * 
 	 * @param Premanager\Execution\ParentNode $parent the parent node
-	 * @param Premanager\Models\StructureNode $structureNode the structure node
-	 *   this page node is embedded in
 	 * @param Premanager\Widgets\Sidebar $sidebar the sidebar to edit
 	 */
-	public function __construct($parent, StructureNode $structureNode,
-		Sidebar $sidebar)
+	public function __construct($parent, Sidebar $sidebar)
 	{
 		parent::__construct($parent, $structureNode);
 		$this->_sidebar = $sidebar;
@@ -136,7 +133,7 @@ abstract class SidebarPage extends TreePageNode {
 	 * 
 	 * @return Premanager\Widgets\Sidebar the sidebar
 	 */
-	protected function getSidebar() {
+	public function getSidebar() {
 		return $this->_sidebar;
 	}
 	

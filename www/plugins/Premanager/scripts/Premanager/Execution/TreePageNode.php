@@ -64,7 +64,6 @@ abstract class TreePageNode extends PageNode {
 		return $other instanceof TreePageNode &&
 			$other->_structureNode == $this->_structureNode; 
 	}	   
-	
 }
 
 ?>

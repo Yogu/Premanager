@@ -41,7 +41,9 @@ use Premanager\IO\Output;
 /**
  * A page that allows to edit the own sidebar
  */
-class MySidebarPage extends SidebarPage {
+class MySidebarPage extends UserSidebarPage {
+	private $_structureNode;
+	
 	/**
 	 * Creates a new SidebarAdminPage
 	 * 
@@ -50,8 +52,10 @@ class MySidebarPage extends SidebarPage {
 	 *   this page node is embedded in
 	 */
 	public function __construct($parent, StructureNode $structureNode) {
-		parent::__construct($parent, $structureNode, 
-			Sidebar::get(Environment::getCurrent()->getUser()));
+		parent::__construct($parent, Environment::getCurrent()->getUser(),
+			'mySidebar', 'restMySidebarMessage', 'mySidebar');
+		
+		$this->_structureNode = $structureNode;
 	}
 	
 	// ===========================================================================
@@ -66,34 +70,37 @@ class MySidebarPage extends SidebarPage {
 			return Page::createMessagePage($this, Translation::defaultGet(
 				'Premanager.Widgets', 'guestEditsSidebarMessage'));
 			
-		if (Request::getPOST('confirm')) {	
-			$this->getSidebar()->setIsExisting(false);
-			return new Redirection($this->getURL());
-		} else if (Request::getPOST('cancel')) {
-			return new Redirection($this->getURL());
-		} else if (Request::getPOST('reset')) {
-			$page = new Page($this);
-			$template = new Template('Premanager', 'confirmation');
-			$template->set('message', Translation::defaultGet('Premanager.Widgets',
-				'resetMySidebarConfirmation'));
-			$page->createMainBlock($template->get());
-			return $page;
-		}
-		
-		$response = parent::getResponse();
-		if ($response)
-			return $response;
-			
-		$page = new Page($this);
-		$page->addStylesheet('Premanager.Widgets/stylesheets/stylesheet.css');
-		$page->title =
-			Translation::defaultGet('Premanager.Widgets', 'mySidebar');
-		$template = new Template('Premanager.Widgets', 'mySidebar');
-		$template->set('sidebar', $this->getSidebar());
-		$page->createMainBlock($template->get());
-		$page->appendBlock(parent::getWidgetClassesBlock());
-		return $page;
+		return parent::getResponse();
 	} 
+	
+	/**
+	 * Gets the name that is used in urls
+	 * 
+	 * @return string
+	 */
+	public function getName() {
+		return $this->_structureNode->getname();
+	}
+	
+	/**
+	 * Gets the displayed title that is used when the titles of the parent nodes
+	 * are also displayed
+	 * 
+	 * @return string
+	 */
+	public function getTitle() {
+		return $this->_structureNode->gettitle();
+	}
+	
+	/**
+	 * Checks if this object represents the same page as $other
+	 * 
+	 * @param Premanager\Execution\PageNode $other
+	 */
+	public function equals(PageNode $other) {
+		return $other instanceof TreePageNode &&
+			$other->_structureNode == $this->_structureNode; 
+	}	 
 }
 
 ?>
