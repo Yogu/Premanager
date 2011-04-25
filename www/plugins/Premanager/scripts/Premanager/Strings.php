@@ -99,6 +99,25 @@ class Strings {
 	}
 	
 	/**
+	 * Tranforms the string to lower case and replaces all characters that are
+	 * neither letters, nor arabic digits by hyphens
+	 * 
+	 * @param string $str the input string
+	 * @return the simplified string
+	 */
+	public static function simplify($str) {
+		// iconv('ASCII//TRANSLIT') would also be possible, but it works different
+		// on different machines. The lastest version inserts qoutation marks before
+		// umlauts. Ugly!
+		// Modifier 'u': unicode
+		$str = trim(mb_strtolower(
+			preg_replace('/[^\w0-9]+/u', '-', $satz), 'utf-8'), '-');
+		if (!$str)
+			$str = '-';
+		return $str;
+	}
+	
+	/**
 	 * Formats a given count of bytes as file size
 	 * 
 	 * @param $bytes the count of bytes
