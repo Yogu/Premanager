@@ -18,9 +18,9 @@ use Premanager\IO\DataBase\DataBase;
 use Premanager\Execution\Options;
 use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\DataType;
               
 /**
  * A session of a logged-in user
@@ -234,7 +234,7 @@ final class Session extends Model {
 	/**
 	 * Gets a list of sessions
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getSessions() {
 		if (!self::$_queryList)
@@ -245,7 +245,7 @@ final class Session extends Model {
 	/**
 	 * Gets a boulde of information about this model
 	 *
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {

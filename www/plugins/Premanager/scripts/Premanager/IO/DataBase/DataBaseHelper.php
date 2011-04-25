@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\IO\DataBase;
 
+use Premanager\DateTime;
 use Premanager\Types;
 use Premanager\Strings;
 use Premanager\ArgumentException;
@@ -19,6 +20,7 @@ class DataBaseHelper extends Module {
 	const UNTRANSLATED_NAME = 0x10;
 	const NO_TRANSLATION = 0x20;
 	const NO_NAME = 0x40;
+	const NAME_GROUPED_BY_MONTH = 0x80;
 
 	// ===========================================================================
 	
@@ -135,8 +137,14 @@ class DataBaseHelper extends Module {
 
 		// -------------- Name ------------
 		
-		if ($name !== null)
-			self::insertName($plugin, $table, $flags, $id, $name, $parentID);
+		if ($name !== null) {
+			if ($flags & self::NAME_GROUPED_BY_MONTH)
+				$param = DateTime::getNow();
+			else
+				$param = $parentID;
+				
+			self::insertName($plugin, $table, $flags, $id, $name, $param);
+		}
 		
 		return $id;
 	}
@@ -189,13 +197,14 @@ class DataBaseHelper extends Module {
 	 *   table (if name ends with ! the value will not be escaped)
 	 * @param array $translatedValues array with name-value pairs to insert into
 	 *   the translated table (if name ends with ! the value will not be escaped)
-	 * @param int|null $parentID id of parent item, if $flags contains IS_TREE
-	 *   (can be omitted at values parameter)
+	 * @param int|null $param id of parent item, if $flags contains IS_TREE
+	 *   (can be omitted at values parameter); create date/time, if $flags
+	 *   contains NAME_GROUPED_BY_MONTH
 	 * @param callback|null $isNameInuseCallback callback function that specifies
 	 *   whether a name is still in use, or null to use the default method
 	 */
 	public static function update($plugin, $table, $flags, $id, $name,
-		array $values, array $translatedValues, $parentID = null,
+		array $values, array $translatedValues, $param = null,
 		$isNameInUseCallback = null) {
 		$user = Environment::getCurrent()->getuser()->getid();
 		$lang = Environment::getCurrent()->getlanguage()->getid();
@@ -307,7 +316,7 @@ class DataBaseHelper extends Module {
 	
 		if ($name !== null) {
 			// -------------- Name ------------
-			self::insertName($plugin, $table, $flags, $id, $name, $parentID);
+			self::insertName($plugin, $table, $flags, $id, $name, $param);
 			
 			// Check names assigned to this item, check if they are still in use and
 			// update, if neccessary, their language
@@ -372,16 +381,24 @@ class DataBaseHelper extends Module {
 	 * @param string $name: name to be checked       
 	 * @param int|null $ignoreID: the id of the item whose names should be
 	 * 	ignored; specify null to ignore no item 
-	 * @param int|null $parentID id of parent item, if $flags contains IS_TREE
+	 * @param mixed $param id of parent item, if $flags contains IS_TREE;
+	 *   the create time, if $flags contains NAME_GROUPED_BY_MONTH
 	 * @return bool true, if this name is available, otherwise, false
 	 */
 	public static function isNameAvailable($plugin, $table, $flags, $name,
-		$ignoreID = null, $parentID = null) {
+		$ignoreID = null, $param = null) {
 		
 		if (($flags & self::IS_TREE)) {
-			if (!Types::isInteger($parentID) || $parentID < 0)
-				throw new ArgumentException('$flags contains IS_TREE, but $parentID '.
+			if (!Types::isInteger($param) || $param < 0)
+				throw new ArgumentException('$flags contains IS_TREE, but $param '.
 					'is not a nonnegative integer');
+		}
+		
+		if ($flags & self::NAME_GROUPED_BY_MONTH) {
+			if (!$param)
+				$param = DateTime::getNow();
+			$startTime = new DateTime($param->getYear(),  $param->getMonth(), 1);
+			$endTime = $startTime->addMonths(1);
 		}
 		
 		$result = DataBase::query(
@@ -390,7 +407,10 @@ class DataBaseHelper extends Module {
 			"INNER JOIN ".DataBase::formTableName($plugin, $table)." item ".
 				"ON name.id = item.id ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."' ".
-				($flags & self::IS_TREE ? "AND item.parentID = '$parentID' " :'').
+				($flags & self::IS_TREE ? "AND item.parentID = '$param' " :'').
+				($flags & self::NAME_GROUPED_BY_MONTH ?
+					"AND item.createTime >= '$startTime' ".
+					"AND itme.createTime < '$endTime' " :'').
 				"AND inUse ".
 				($ignoreID !== null ? "AND item.id != '$ignoreID'" : ''));
 		return !$result->next();
@@ -411,13 +431,19 @@ class DataBaseHelper extends Module {
 		$result = DataBase::query(
 			"SELECT ".
 				($flags & self::IS_TREE ? "item.parentID, " : '').
+				($flags & self::NAME_GROUPED_BY_MONTH ? "item.createTime, " : '').
 				($flags & self::UNTRANSLATED_NAME ? "item.name " : "translation.name ").
 			"FROM ".DataBase::formTableName($plugin, $table)." AS item ",
 			/* translating */
 			"WHERE item.id = '$id'");
 		while ($result->next()) {
+			if ($flags & self::IS_TREE)
+				$param = $result->get('parentID');
+			else if ($flags & self::NAME_GROUPED_BY_MONTH)
+				$param = $result->get('createTime');
+			
 			self::insertName($plugin, $table, $flags, $id, $result->get('name'),
-				$flags & self::IS_TREE ? $result->get('parentID') : null);
+				$param);
 		}
 	}    
 	
@@ -425,7 +451,7 @@ class DataBaseHelper extends Module {
 	 * Checks whether a name is available. If not, generates an available name
 	 * that consists the preferred name and a number
 	 * 
-	 * @param callback $isAvailableNameCallback the callback for the
+	 * @param callback $isNameAvailableCallback the callback for the
 	 *   isNameAvailable method
 	 * @param string $preferredName the preferred name
 	 * @param Premanager\Model|null $ignoreThis a model which may have the name;
@@ -460,19 +486,20 @@ class DataBaseHelper extends Module {
 	 * @param int $flags a set (IS_TREE: table is a tree table) 
 	 * @param int $id id of item to which the name has to be assigned
 	 * @param string $name name to assign
-	 * @param int|null $parentID id of parent item, if $flags contains IS_TREE
+	 * @param mixed $param id of parent item, if $flags contains IS_TREE;
+	 *   a date/time, if $flags contains NAME_GROUPED_BY_MONTH
 	 */
 	private static function insertName($plugin, $table, $flags, $id, $name,
-		$parentID = null) {  
-		$lang = Environment::getCurrent()->getlanguage()->getid();
+		$param = null) {  
+		$lang = Environment::getCurrent()->getLanguage()->getID();
 		$name = DataBase::escape(Strings::unitize($name));
 		
 		if (!Types::isInteger($id) || $id < 0)
 			throw new ArgumentException('$id must be a positive integer value', 'id');
 		
 		if ($flags & self::IS_TREE) {
-			if (!Types::isInteger($parentID) || $parentID < 0)
-				throw new ArgumentException('$parentID must be a positive integer '.
+			if (!Types::isInteger($param) || $param < 0)
+				throw new ArgumentException('$param must be a nonnegative integer '.
 					'value if $flags contains IS_TREE');
 					
 			$result = DataBase::query(
@@ -480,7 +507,22 @@ class DataBaseHelper extends Module {
 				"FROM ".DataBase::formTableName($plugin, $table.'Name')." AS name ".
 				"INNER JOIN ".DataBase::formTableName($plugin, $table)." AS item ".
 					"ON name.id = item.id ".
-				"WHERE item.parentID = '$parentID' ".
+				"WHERE item.parentID = '$param' ".
+					"AND LOWER(name.name) = '$name'");
+		} else if ($flags & self::NAME_GROUPED_BY_MONTH) {
+			if (!($param instanceof DateTime))
+				throw new ArgumentException('$param must be a Premanager\DataTime '.
+					'object if $flags contains NAME_GROUPED_BY_MONTH');
+			$startTime = new DateTime($param->getYear(),  $param->getMonth(), 1);
+			$endTime = $startTime->addMonths(1);
+					
+			$result = DataBase::query(
+				"SELECT nameID ".
+				"FROM ".DataBase::formTableName($plugin, $table.'Name')." AS name ".
+				"INNER JOIN ".DataBase::formTableName($plugin, $table)." AS item ".
+					"ON name.id = item.id ".
+				"WHERE item.createTime >= '$startTime' ".
+					"AND itme.createTime < '$endTime' ".
 					"AND LOWER(name.name) = '$name'");
 		} else {
 			$result = DataBase::query(

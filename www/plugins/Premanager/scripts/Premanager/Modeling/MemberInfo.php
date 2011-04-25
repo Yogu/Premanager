@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\Debug\Debug;
 use Premanager\ArgumentNullException;
@@ -23,12 +23,12 @@ class MemberInfo extends Module{
 	/**
 	 * Creates a new MemberInfo setting its properties
 	 * 
-	 * @param Premanager\QueryList\ModelDescriptor the model that contains this
+	 * @param Premanager\Modeling\ModelDescriptor the model that contains this
 	 *   member
 	 * @param string $name the member name
-	 * @param int $kind enum Premanager\QueryList\MemberKind
-	 * @param int|Premanager\QueryList\ModelDescriptor $type
-	 *   enum Premanager\QueryList\DataType or a model descriptor
+	 * @param int $kind enum Premanager\Modeling\MemberKind
+	 * @param int|Premanager\Modeling\ModelDescriptor $type
+	 *   enum Premanager\Modeling\DataType or a model descriptor
 	 * @param string $fieldName the name of the field the value of this member is
 	 *   stored in (must be a field of the table specified by the model
 	 *   descriptor) 
@@ -57,7 +57,7 @@ class MemberInfo extends Module{
 	/**
 	 * Gets the model that contains this member
 	 * 
-	 * @return Premanager\QueryList\MemberInfo
+	 * @return Premanager\Modeling\MemberInfo
 	 */
 	public function getModelDescriptor() {
 		return $this->_modelDescriptor;
@@ -75,7 +75,7 @@ class MemberInfo extends Module{
 	/**
 	 * Gets the member kind
 	 * 
-	 * @return int enum Premanager\QueryList\MemberKind
+	 * @return int enum Premanager\Modeling\MemberKind
 	 */
 	public function getKind() {
 		return $this->_kind;
@@ -84,7 +84,7 @@ class MemberInfo extends Module{
 	/**
 	 * Gets the result type
 	 * 
-	 * @return int|string enum Premanager\QueryList\DataType or a class name
+	 * @return int|string enum Premanager\Modeling\DataType or a class name
 	 */
 	public function getType() {
 		return $this->_type;

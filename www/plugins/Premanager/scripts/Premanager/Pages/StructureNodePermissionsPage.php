@@ -7,7 +7,7 @@ use Premanager\Types;
 use Premanager\Models\Group;
 use Premanager\Execution\FormPageNode;
 use Premanager\Models\StructureNodeType;
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortRule;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
@@ -84,7 +84,7 @@ class StructureNodePermissionsPage extends FormPageNode {
 	/**
 	 * Gets the list of groups sorted by project and grou pname
 	 * 
-	 * @return Premanager\QueryList\QueryList the list of users
+	 * @return Premanager\Modeling\QueryList the list of users
 	 */
 	private static function getList() {
 		static $list;

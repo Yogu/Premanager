@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 class QueryOperation {
 	const NONE = 0;

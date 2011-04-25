@@ -3,7 +3,7 @@ namespace Premanager\Pages;
 
 use Premanager\Models\StructureNodeType;
 
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortRule;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Execution\Redirection;
@@ -28,7 +28,7 @@ use Premanager\IO\Output;
  */
 class EditStructureNodePage extends StructureNodeFormPage {
 	/**
-	 * @var Premanager\QueryList\QueryList
+	 * @var Premanager\Modeling\QueryList
 	 */
 	private $_childList;
 	private $_realURL;

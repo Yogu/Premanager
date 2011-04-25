@@ -5,9 +5,9 @@ use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Debug\Debug;
-use Premanager\QueryList\SortDirection;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortDirection;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -110,7 +110,7 @@ class UsersPage extends TreeListPageNode {
 	/**
 	 * Gets the list of users sorted by name
 	 * 
-	 * @return Premanager\QueryList\QueryList the list of users
+	 * @return Premanager\Modeling\QueryList the list of users
 	 */
 	private static function getList() {
 		static $cache;

@@ -308,7 +308,10 @@ class DateTime extends Module {
 	public function addYears($value) {
 		if (!Types::isInteger($value))
 			throw new ArgumentException('$value must be an integer', 'value');
-		return $this->add(new TimeSpan($value, 0, 0, 0, 0, 0));
+			
+		return new DateTime($this->getYear() + $value, $this->getMonth(),
+			$this->getDay(), $this->getHour(), $this->getMinute(), $this->getSecond(),
+			$this->_timeZone);
 	}
 	
 	/**
@@ -321,7 +324,14 @@ class DateTime extends Module {
 	public function addMonths($value) {
 		if (!Types::isInteger($value))
 			throw new ArgumentException('$value must be an integer', 'value');
-		return $this->add(new TimeSpan(0, $value, 0, 0, 0, 0));
+			
+		// December + 2 is February: 12 + 2 - 1 = 13; 13 % 12 = 1; 1 + 1 = 2
+		$month = $this->getMonth() + $value - 1;
+		$year = $this->getYear() + floor($month / 12);
+		$month = ($month - 1) % 12 + 1;
+			
+		return new DateTime($year, $month, $this->getDay(), $this->getHour(),
+			$this->getMinute(), $this->getSecond(), $this->_timeZone);
 	}
 	
 	/**

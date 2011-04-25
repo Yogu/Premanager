@@ -1,13 +1,13 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\Debug\Debug;
 use Premanager\NotImplementedException;
 use Premanager\Types;
 use Premanager\Execution\Template;
 use Premanager\Model;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;
@@ -58,7 +58,7 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 	// ===========================================================================
 	
 	/**
-	 * Creates a new Premanager\QueryList\FullQueryQueryListStrategy
+	 * Creates a new Premanager\Modeling\FullQueryQueryListStrategy
 	 * 
 	 * The last two arguments can be passed for performance reasons if the values
 	 * are already calculated
@@ -66,9 +66,9 @@ class FullQueryQueryListStrategy extends QueryListStrategy {
 	 * @param Premanage\QueryList\QueryList $queryList the query list this
 	 *   strategy is linked to
 	 * @param string|null $filterQuery if specified, the query for the filter
-	 *   expression (Premanager\QueryList\QueryExpression::getQuery()
+	 *   expression (Premanager\Modeling\QueryExpression::getQuery()
 	 * @param array|null $sortQueries if specified, an array of the queries fo all
-	 *   sort rules (Premanager\QueryList\SortRule::getQuery()
+	 *   sort rules (Premanager\Modeling\SortRule::getQuery()
 	 */
 	public function __construct(QueryList $queryList, $filterQuery,
 		array $sortQueries) {

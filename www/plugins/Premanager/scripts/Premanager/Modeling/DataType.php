@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 /**
  * Defines the type of a field or expression

@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\Debug\Debug;
 use Premanager\IO\DataBase\DataBase;
@@ -9,7 +9,7 @@ use Premanager\InvalidOperationException;
 use Premanager\Module;
 use Premanager\Types;
 use Premanager\Model;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\DataType;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;
 use Premanager\InvalidEnumArgumentException;
@@ -18,12 +18,12 @@ use Premanager\InvalidEnumArgumentException;
  * Defines an operating expression with one or more operands
  * 
  * The following operators are available:
- * - Premanager\QueryList\QueryOperation::MEMBER
- * - Premanager\QueryList\QueryOperation::NOT
+ * - Premanager\Modeling\QueryOperation::MEMBER
+ * - Premanager\Modeling\QueryOperation::NOT
  *   * !bool - $operand0 is a BOOLEAN expression
- * - Premanager\QueryList\QueryOperation::NEGATE
+ * - Premanager\Modeling\QueryOperation::NEGATE
  *   * !bool - $operand0 is a NUMBER expression
- * - Premanager\QueryList\QueryOperation::NEGATE
+ * - Premanager\Modeling\QueryOperation::NEGATE
  *   * !bool - $operand0 is a NUMBER expression
  *   
  */
@@ -33,23 +33,23 @@ class QueryExpression extends Module {
 	 */
 	private $_operation;
 	/**
-	 * @var Premanager\QueryList\QueryExpression
+	 * @var Premanager\Modeling\QueryExpression
 	 */
 	private $_operand0;
 	/**
-	 * @var Premanager\QueryList\QueryExpression
+	 * @var Premanager\Modeling\QueryExpression
 	 */
 	private $_operand1;
 	/**
-	 * @var Premanager\QueryList\QueryExpression
+	 * @var Premanager\Modeling\QueryExpression
 	 */
 	private $_operand2;
 	/**
-	 * @var Premanager\QueryList\MemberInfo
+	 * @var Premanager\Modeling\MemberInfo
 	 */
 	private $_memberInfo;
 	/**
-	 * @var int|Premanager\QueryList\ModelDescriptor
+	 * @var int|Premanager\Modeling\ModelDescriptor
 	 */
 	private $_type;
 	/**
@@ -57,7 +57,7 @@ class QueryExpression extends Module {
 	 */
 	private $_value;
 	/**
-	 * @var Premanager\QueryList\ModelDescriptor
+	 * @var Premanager\Modeling\ModelDescriptor
 	 */
 	private $_objectType;
 	
@@ -66,15 +66,15 @@ class QueryExpression extends Module {
 	/**
 	 * Creates a new QueryExpression.
 	 * 
-	 * @param Premanager\QueryList\ModelDescriptor $objectType the type of "this"
+	 * @param Premanager\Modeling\ModelDescriptor $objectType the type of "this"
 	 * @param mixed $operation the operation
-	 *   (enum Premanager\QueryList\QueryOperation). NONE menas that $operand0 is
+	 *   (enum Premanager\Modeling\QueryOperation). NONE menas that $operand0 is
 	 *   a literal
-	 * @param Premanager\QueryList\QueryExpression $operand0 the first operand.
+	 * @param Premanager\Modeling\QueryExpression $operand0 the first operand.
 	 *   Needs to be specified if $operation is an operation!
-	 * @param Premanager\QueryList\QueryExpression|Premanager\QueryList\MemberInfo
+	 * @param Premanager\Modeling\QueryExpression|Premanager\Modeling\MemberInfo
 	 *   $operand1 member, if $operatoin is MEMBER, the second operand otherwise
-	 * @param Premanager\QueryList\QueryExpression $operand2 the third operand,
+	 * @param Premanager\Modeling\QueryExpression $operand2 the third operand,
 	 *   if needed
 	 */
 	public function __construct(ModelDescriptor $objectType, $operation,
@@ -288,7 +288,7 @@ class QueryExpression extends Module {
 					if (!$this->_type instanceof ModelDescriptor)
 						throw new ArgumentException('The static method getDescriptor() of '.
 							'the class of the argument ('.$class.') does not return a '.
-							'Premanager\QueryList\ModelDescriptor.', 'operand0');
+							'Premanager\Modeling\ModelDescriptor.', 'operand0');
 				} else
 					throw new ArgumentException('Operation NONE expects '.
 						'a number, bool, string, Premanager\DateTime, '.
@@ -300,7 +300,7 @@ class QueryExpression extends Module {
 			
 			default:
 				throw new InvalidEnumArgumentException('operation', $operation,
-					'Premanager\QueryList\QueryOperation');
+					'Premanager\Modeling\QueryOperation');
 		}
 		$this->_operation = $operation;
 	}
@@ -339,7 +339,7 @@ class QueryExpression extends Module {
 	/**
 	 * Gets the type of "this"
 	 * 
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public function getObjectType() {
 		return $this->_objectType;

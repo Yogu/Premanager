@@ -1,11 +1,11 @@
 <?php                 
 namespace Premanager\Models;
 
+use Premanager\Modeling\Model;
 use Premanager\Execution\Environment;
 use Premanager\NameConflictException;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\Module;
-use Premanager\Model;
 use Premanager\DateTime;
 use Premanager\Types;
 use Premanager\Strings;
@@ -16,18 +16,16 @@ use Premanager\IO\CorruptDataException;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\DataType;
 
 /**
  * A user group
  */
 final class Group extends Model {
-	private $_id;
 	private $_projectID;
 	private $_project;
-	private $_name;
 	private $_title;  
 	private $_color;
 	private $_text;
@@ -37,76 +35,22 @@ final class Group extends Model {
 	private $_rights;
 	private $_simpleRightList;
 	private $_members;
-	private $_creator;   
-	private $_creatorID;
-	private $_createTime;
-	private $_editor;    
-	private $_editorID;
-	private $_editTime; 
 	
-	private static $_instances = array();
-	private static $_count;
+	/**
+	 * @var Premanager\Models\GroupModel
+	 */
 	private static $_descriptor;
-	private static $_queryList;
-
-	// ===========================================================================  
 	
-	protected function __construct() {
-		parent::__construct();	
+	// ===========================================================================
+
+	/**
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Models\GroupModel
+	 */
+	public static function getDescriptor() {
+		return GroupModel::getInstance();
 	}
-	
-	private static function createFromID($id, $name = null, $title = null,
-		$color = null, $priority = null, $autoJoin = null, $projectID = null) {
-		
-		if ($name !== null)
-			$name = \trim($name);
-		if ($title !== null)
-			$title = \trim($title);
-		if ($color !== null)
-			$color = \trim($color);  
-		if ($autoJoin !== null)
-			$autoJoin = !!$autoJoin;      
-				
-		if ($priority !== null && (!Types::isInteger($priority) || $priority < 0))
-			throw new ArgumentException(
-				'$priority must be a positive integer value or null', 'priority');  
-		
-		if (array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id]; 
-
-			if ($instance->_name === null)
-				$instance->_name = $name;
-			if ($instance->_title === null)
-				$instance->_title = $title;
-			if ($instance->_color === null)
-				$instance->_color = $color;
-			if ($instance->_priority === null)             
-				$instance->_priority = $priority;
-			if ($instance->_autoJoin === null)
-				$instance->_hasAvatar = $autoJoin;
-			if ($instance->_projectID === null)
-				$instance->_projectID = $projectID;
-				
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
-				
-		$instance = new self();
-		$instance->_id = $id;
-		$instance->_name = $name;
-		$instance->_title = $title;	
-		$instance->_color = $color;    
-		$instance->_priority = $priority;
-		$instance->_autoJoin = $autoJoin;	 
-		$instance->_projectID = $projectID;
-		self::$_instances[$id] = $instance;
-		return $instance;
-	} 
-
-	// =========================================================================== 
 	
 	/**
 	 * Gets a group class using its id
@@ -115,21 +59,8 @@ final class Group extends Model {
 	 * @return Premanager\Models\Group
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
-	} 
+		return self::getModelDescriptor()->getByID($id);
+	}
                                
 	/**
 	 * Gets a group using its name and the project it is contained by
@@ -138,22 +69,11 @@ final class Group extends Model {
 	 *
 	 * @param Premanager\Models\Project $project the project the group is
 	 *   contained by
-	 * @param string $name name of user
+	 * @param string $name name of the group
 	 * @return Premanager\Models\Group  
 	 */
 	public static function getByName(Project $project, $name) {
-		$result = DataBase::query(
-			"SELECT name.id ".            
-			"FROM ".DataBase::formTableName('Premanager', 'GroupsName')." AS name ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'Groups').
-				" AS grp ON grp.id = name.id ".
-			"WHERE grp.parentID = '".$project->getID()."' AND ".
-				"name.name = '".DataBase::escape(Strings::unitize($name))."'");
-		if ($result->next()) {
-			$user = self::createFromID($result->get('id'));
-			return $user;
-		}
-		return null;
+		return self::getModelDescriptor()->getByName($project, $name);
 	}
 	
 	/**
@@ -173,67 +93,10 @@ final class Group extends Model {
 	 * @return Premanager\Models\Group
 	 */
 	public static function createNew($name, $title, $color, $text, $priority,
-		Project $project, $autoJoin = false, $loginConfirmationRequired = false) {
-		$name = Strings::normalize($name);
-		$title = \trim($title);
-		$color = \trim($color);
-		$text = \trim($text);      
-		$autoJoin = !!$autoJoin;  
-		$loginConfirmationRequired = !!$loginConfirmationRequired;
-		
-		if (!$name)
-			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');
-		if (!self::isValidName($name))
-			throw new ArgumentException('$name must not contain slashes', 'name');
-		if (!self::isNameAvailable($name, $project))
-			throw new NameConflictException('This name is already assigned to a '.
-				'group in the same project', $name);
-		if (!$title)
-			throw new ArgumentException(
-				'$title is an empty string or contains only whitespaces', 'title');  
-		if (!$text)
-			throw new ArgumentException(
-				'$text is an empty string or contains only whitespaces', 'text');
-		if (!$color)
-			throw new ArgumentException(
-				'$color is an empty string or contains only whitespaces', 'color');
-		if (!self::isValidColor($color))
-			throw new FormatException(
-				'$color is not a valid hexadecimal RRGGBB color', 'color');    
-		if ($project->getID())
-			$priority = 0;  
-		else if (!Types::isInteger($priority) || $priority < 0)
-			throw new ArgumentException(
-				'$priority must be a nonnegative integer value', 'priority');
-
-		$id = DataBaseHelper::insert('Premanager', 'Groups',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::IS_TREE /* for project */, $name,
-			array(
-				'color' => $color,
-				'priority' => $priority,
-				'autoJoin' => $autoJoin,
-				'loginConfirmationRequired' => $loginConfirmationRequired),
-			array(
-				'name' => $name,
-				'title' => $title,
-				'text' => $text),
-			$project->getID()
-		);
-		
-		$group = self::createFromID($id, $name, $title, $color, $priority,
-			$autoJoin, $project->getID());
-		$group->_loginConfirmationRequired = $loginConfirmationRequired;
-		$group->_creator = Environment::getCurrent()->getUser();
-		$group->_createTime = new DateTime();
-		$group->_editor = Environment::getCurrent()->getUser();
-		$group->_editTime = new DateTime();
-
-		if (self::$_count !== null)
-			self::$_count++;
-		
-		return $group;
+		Project $project, $autoJoin = false, $loginConfirmationRequired = false)
+	{
+		return self::getDescriptor()->createNew($name, $title, $color, $text,
+			$priority, $project, $autoJoin, $loginConfirmationRequired);
 	}      
 
 	/**
@@ -271,12 +134,9 @@ final class Group extends Model {
 	 * @return bool true, if $name is available
 	 */
 	public static function isNameAvailable($name, Project $project,
-		$ignoreThis = null)
+		Group $ignoreThis = null)
 	{
-		return DataBaseHelper::isNameAvailable('Premanager', 'Groups',
-			DataBaseHelper::IS_TREE, /* for project id */ $name,
-			($ignoreThis instanceof Group ? $ignoreThis->_id : null),
-			$project->getID());
+		return $this->getDescriptor()->isNameAvailable($name, $project, $ignoreThis);
 	}
 	    
 	/**
@@ -285,63 +145,30 @@ final class Group extends Model {
 	 * @return int
 	 */
 	public static function getCount() {
-		if (self::$_count === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(grp.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp");
-			self::$_count = $result->get('count');
-		}
-		return self::$_count;
-	}  
+		$result = DataBase::query(
+			"SELECT COUNT(grp.id) AS count ".
+			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp");
+		return $result->get('count');
+	}
 
 	/**
 	 * Gets a list of groups
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getGroups() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
+		return self::getDescriptor()->getQueryList();
 	}     
 
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\QueryList\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'project' => array(Project::getDescriptor(), 'getProject', 'parentID'),
-				'name' => array(DataType::STRING, 'getName', '*name'),
-				'title' => array(DataType::STRING, 'getTitle', '*title'),
-				'color' => array(DataType::STRING, 'getColor', 'color'),
-				'text' => array(DataType::STRING, 'getText', '*text'),
-				'priority' => array(DataType::NUMBER, 'getPriority', 'priority'),
-				'autoJoin' => array(DataType::BOOLEAN, 'getAutoJoin', 'autoJoin'),
-				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
-				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
-					'createTime'),
-				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
-				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
-				'Premanager', 'Groups', array(__CLASS__, 'getByID'));
-		}
-		return self::$_descriptor;
-	}
-
-	// ===========================================================================
+	// ==========================================================================
 	
 	/**
-	 * Gets the id of this group
-	 *
-	 * @return int
+	 * Gets the Group model descriptor
+	 * 
+	 * @return Premanager\Models\GroupModel the Group model descriptor
 	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
+	public function getModelDescriptor() {
+		return self::getDescriptor();
 	}
 
 	/**
@@ -370,12 +197,8 @@ final class Group extends Model {
 	 * @return string
 	 */
 	public function getName() {
-		$this->checkDisposed();
-			
-		if ($this->_name === null)
-			$this->load();
-		return $this->_name;	
-	}    
+		return parent::getName();	
+	}
 
 	/**
 	 * Gets the title members of this group have
@@ -530,14 +353,7 @@ final class Group extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public function getCreator() {
-		$this->checkDisposed();
-			
-		if ($this->_creator === null) {
-			if (!$this->_creatorID)
-				$this->load();
-			$this->_creator = User::getByID($this->_creatorID);
-		}
-		return $this->_creator;	
+		return parent::getCreator();
 	}                        
 
 	/**
@@ -546,11 +362,7 @@ final class Group extends Model {
 	 * @return Premanager\DateTime
 	 */
 	public function getCreateTime() {
-		$this->checkDisposed();
-			
-		if ($this->_createTime === null)
-			$this->load();
-		return $this->_createTime;	
+		return parent::getCreateTime();
 	}                               
 
 	/**
@@ -559,14 +371,7 @@ final class Group extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public function getEditor() {
-		$this->checkDisposed();
-			
-		if ($this->_editor === null) {
-			if (!$this->_editorID)
-				$this->load();
-			$this->_editor = User::getByID($this->_editorID);
-		}
-		return $this->_editor;	
+		return parent::getEditor();
 	}                        
 
 	/**
@@ -575,17 +380,22 @@ final class Group extends Model {
 	 * @return Premanager\DateTime
 	 */
 	public function getEditTime() {
-		$this->checkDisposed();
-			
-		if ($this->_editTime === null)
-			$this->load();
-		return $this->_editTime;	
+		return parent::getEditTime();
 	}      
+	
+	/**
+	 * Gets the count of times this group has been edited
+	 * 
+	 * @return Premanager\DateTime the count of edit times
+	 */
+	protected function getEditTimes() {
+		return parent::getEditTimes();
+	}
 	
 	/**
 	 * Gets the list of group members
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public function getMembers() {
 		$this->checkDisposed();
@@ -632,7 +442,6 @@ final class Group extends Model {
 		else			
 			$loginConfirmationRequired = !!$loginConfirmationRequired;
 		
-		
 		if (!$name)
 			throw new ArgumentException(
 				'$name is an empty string or contains only whitespaces', 'name');
@@ -657,30 +466,25 @@ final class Group extends Model {
 			throw new ArgumentException(
 				'$priority must be a nonnegative integer value', 'priority');
 			
-		DataBaseHelper::update('Premanager', 'Groups', 
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
-			$this->_id, $name,
+		$this->update(
 			array(
 				'color' => $color,
 				'priority' => $priority,
 				'autoJoin' => $autoJoin,
 				'loginConfirmationRequired' => $loginConfirmationRequired),
 			array(
-				'name' => $name,
 				'title' => $title,
 				'text' => $text),
+			$name,
 			$this->getProject()->getID()
 		);
 		
-		$this->_name = $name;
 		$this->_title = $title;	
 		$this->_color = $color;   
 		$this->_text = $text;     
 		$this->_priority = $priority;	
 		$this->_autoJoin = $autoJoin;
 		$this->_loginConfirmationRequired = $loginConfirmationRequired;
-		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getUser();
 		
 		// User's color and title might have changed
 		User::clearAllCache();
@@ -724,8 +528,6 @@ final class Group extends Model {
 	 */
 	public function delete() {         
 		$this->checkDisposed();
-			
-		DataBaseHelper::delete('Premanager', 'Groups', 0, $this->_id);      
 			    
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
@@ -737,45 +539,41 @@ final class Group extends Model {
 			
 		// User's color and title might have changed
 		User::clearAllCache();
-
-		unset(self::$_instances[$this->_id]);
-		if (self::$_count !== null)
-			self::$_count--;
-		foreach (self::$_instances as $instance)
-			$instance::$_index = null;		
 	
-		$this->dispose();
+		parent::delete();
 	}  
 
 	// ===========================================================================       
 	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT translation.name, translation.title, grp.color, grp.priority, ".
-				"grp.autoJoin, grp.parentID, grp.creatorID, ".
-				"grp.editorID, grp.createTime, grp.editTime, ".
-				"grp.loginConfirmationRequired ".
-			"FROM ".DataBase::formTableName('Premanager', 'Groups')." AS grp ",
-			/* translating */
-			"WHERE grp.id = '$this->_id'");
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields = array(
+			'name' => 'translation.name',
+			'title' => 'translation.title',
+			'color' => 'item.color',
+			'priority' => 'item.priority',
+			'autoJoin' => 'item.autoJoin',
+			'projectID' => 'item.projectID',
+			'loginConfirmationRequired' => 'item.loginConfirmationRequired'
+		);
 		
-		if (!$result->next())
-			return false;
+		if ($values = parent::load($fields)) {
+			$this->_title = $values['title'];
+			$this->_color = $values['color'];
+			$this->_priority = $values['priority'];
+			$this->_autoJoin = !!$values['autoJoin'];
+			$this->_loginConfirmationRequired = !!$values['loginConfirmationRequired'];
+			$this->_projectID = $values['projectID'];
+		}
 		
-		$this->_name = $result->get('name');
-		$this->_title = $result->get('title');
-		$this->_color = $result->get('color');
-		$this->_priority = $result->get('priority');
-		$this->_autoJoin = !!$result->get('autoJoin');
-		$this->_loginConfirmationRequired =
-			!!$result->get('loginConfirmationRequired');
-		$this->_projectID = $result->get('parentID');
-		$this->_creatorID = $result->get('creatorID');
-		$this->_editorID = $result->get('editorID');
-		$this->_createTime = new DateTime($result->get('createTime'));
-		$this->_editTime = new DateTime($result->get('editTime'));
-		
-		return true;
+		return $values;
 	}      
 	
 	private function loadRights() {

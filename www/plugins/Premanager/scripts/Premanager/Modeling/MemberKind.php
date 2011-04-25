@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 class MemberKind {
 	const PROPERTY = 0;

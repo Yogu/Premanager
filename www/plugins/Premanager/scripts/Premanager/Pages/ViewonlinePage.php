@@ -10,9 +10,9 @@ use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Debug\Debug;
-use Premanager\QueryList\SortDirection;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortDirection;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -67,7 +67,7 @@ class ViewonlinePage extends TreePageNode {
 	/**
 	 * Gets the list of viewonline sessions sorted by last request time
 	 * 
-	 * @return Premanager\QueryList\QueryList the list of sessions
+	 * @return Premanager\Modeling\QueryList the list of sessions
 	 */
 	public static function getList() {
 		static $cache;

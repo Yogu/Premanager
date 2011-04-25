@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\InvalidEnumArgumentException;
 use Premanager\ArgumentNullException;
@@ -12,7 +12,7 @@ use Premanager\Types;
  */
 class SortRule extends Module{
 	/**
-	 * @var Premanager\QueryList\QueryExpression
+	 * @var Premanager\Modeling\QueryExpression
 	 */
 	private $_expression;
 	/**
@@ -25,10 +25,10 @@ class SortRule extends Module{
 	/**
 	 * Creates a new SortRules and sets its properties
 	 * 
-	 * @param Premanager\QueryList\QueryExpression the expression that defines the
+	 * @param Premanager\Modeling\QueryExpression the expression that defines the
 	 *   order; must be one of NUMBER, BOOLEAN, STRING, DATE_TIME or TIME_SPAN
 	 * @param int $direction the direction in which to sort
-	 *   (enum Premanager\QueryList\SortDirection); default is ASCENDING
+	 *   (enum Premanager\Modeling\SortDirection); default is ASCENDING
 	 */
 	public function __construct(QueryExpression $expression, $direction =
 		SortDirection::ASCENDING) {
@@ -52,7 +52,7 @@ class SortRule extends Module{
 				break;
 			default:
 				throw new InvalidEnumArgumentException('direction', $direction,
-					'Premanager\QueryList\SortDirection');
+					'Premanager\Modeling\SortDirection');
 		}
 		
 		$this->_expression = $expression;
@@ -64,7 +64,7 @@ class SortRule extends Module{
 	/**
 	 * Gets the expression that defines the order
 	 * 
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function getExpression() {
 		return $this->_expression;
@@ -72,7 +72,7 @@ class SortRule extends Module{
 	
 	/**
 	 * Gets the direction in which to sort
-	 * (enum Premanager\QueryList\SortDirection)
+	 * (enum Premanager\Modeling\SortDirection)
 	 * 
 	 * @return int
 	 */
@@ -83,7 +83,7 @@ class SortRule extends Module{
 	/**
 	 * Gets the type of models this rule can be evaluated on
 	 * 
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public function getObjectType() {
 		return $this->_expression->getObjectType();

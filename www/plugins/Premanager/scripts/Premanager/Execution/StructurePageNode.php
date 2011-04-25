@@ -2,7 +2,7 @@
 namespace Premanager\Execution;
 
 use Premanager\Models\Right;
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortRule;
 use Premanager\Debug\Debug;
 use Premanager\IO\Output;
 use Premanager\Execution\Template;
@@ -27,7 +27,7 @@ class StructurePageNode extends PageNode {
 	 */
 	private $_isRootNode;
 	/**
-	 * @var Premanager\QueryList\QueryList
+	 * @var Premanager\Modeling\QueryList
 	 */
 	private $_listCache;
 	

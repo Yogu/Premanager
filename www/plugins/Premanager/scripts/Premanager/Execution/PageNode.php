@@ -8,7 +8,7 @@ use Premanager\Models\Plugin;
 use Premanager\Strings;
 use Premanager\Models\Project;
 use Premanager\Model;
-use Premanager\QueryList\QueryList;
+use Premanager\Modeling\QueryList;
 use Premanager\DateTime;
 use Premanager\Debug\Debug;
 use Premanager\ArgumentException;
@@ -89,7 +89,7 @@ abstract class PageNode extends Module {
 	 * Gets an array of the models to be included for the result of getChildren()
 	 * 
 	 * @param int $count the count parameter of getChildren
-	 * @param Premanager\QueryList\QueryList $list the list that contains the
+	 * @param Premanager\Modeling\QueryList $list the list that contains the
 	 *   models of the child page nodes 
 	 * @param Premanager\Model $model the model of this page node
 	 * @return array an array of models to be included

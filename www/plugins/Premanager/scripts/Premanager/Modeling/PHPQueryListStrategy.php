@@ -1,12 +1,12 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\NotImplementedException;
 use Premanager\Types;
 use Premanager\Execution\Template;
 use Premanager\Model;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;

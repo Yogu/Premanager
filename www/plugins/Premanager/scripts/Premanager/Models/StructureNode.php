@@ -3,8 +3,8 @@ namespace Premanager\Models;
 
 use Premanager\Execution\Environment;
 use Premanager\IO\DataBase\DataBaseHelper;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\DateTime;
@@ -21,9 +21,9 @@ use Premanager\Models\StructureNode;
 use Premanager\Models\TreeClass;
 use Premanager\Models\Project;
 use Premanaager\Models\Groups;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\DataType;
 use Premanager\IO\DataBase\DataBase;
 
 /**
@@ -145,7 +145,7 @@ final class StructureNode extends Model {
 	/**
 	 * Gets a list of structure nodes
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getStructureNodes() {
 		if (!self::$_queryList)
@@ -156,7 +156,7 @@ final class StructureNode extends Model {
 	/**
 	 * Gets a boulde of information about this model
 	 *
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {
@@ -414,7 +414,7 @@ final class StructureNode extends Model {
 	/**
 	 * Gets a list of child nodes
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public function getChildren() {
 		$this->checkDisposed();
@@ -478,7 +478,7 @@ final class StructureNode extends Model {
 	/**
 	 * Gets a list of groups that can access this node
 	 *
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public function getAuthorizedGroups() {     
 		$this->checkDisposed();
@@ -662,12 +662,6 @@ final class StructureNode extends Model {
 				'parentID' => $parent->getid()),
 			array()
 		);           
-		
-		// Update child count
-		if ($this->getParent()->_childCount !== null)
-			$this->getParent()->_childCount--;
-		if ($parent->_childCount !== null)	
-			$parent->_childCount++;
 		
 		$this->_parentID = $parent->getID();
 		$this->_parent = $parent;

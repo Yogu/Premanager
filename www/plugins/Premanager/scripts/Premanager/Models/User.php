@@ -2,15 +2,14 @@
 namespace Premanager\Models;
 
 use Premanager\Media\Image;
-
-use Premanager\QueryList\QueryOperation;
+use Premanager\Modeling\QueryOperation;
 use Premanager\Execution\Options;
 use Premanager\Execution\Environment;
 use Premanager\IO\Config;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\NameConflictException;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\ArgumentNullException;
 use Premanager\ArgumentOutOfRangeException;
 use Premanager\InvalidEnumArgumentException;
@@ -28,17 +27,15 @@ use Premanager\IO\FileNotFoundException;
 use Premanager\IO\CorruptDataException;
 use Premanager\IO\Request;
 use Premanager\IO\DataBase\DataBase;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\DataType;
 use Premanager\Execution\Translation;
 
 /**
  * A user
  */
 final class User extends Model {
-	private $_id;
-	private $_name;
 	private $_title;
 	private $_color;
 	private $_hasAvatar;
@@ -62,10 +59,10 @@ final class User extends Model {
 	private $_groups;
 	private $_rights = array();
 
-	private static $_instances = array();
-	private static $_count;
+	/**
+	 * @var Premanager\Models\UserModel
+	 */
 	private static $_descriptor;
-	private static $_queryList;
 
 	const EMAIL_PATTERN = '[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]{0,2}[a-z0-9])?';
 
@@ -82,98 +79,37 @@ final class User extends Model {
 				" SECOND)");
 	}
 
-	protected function __construct() {
-		parent::__construct();
-	}
-
-	private static function createFromID($id, $name = null, $title = null,
-		$color = null, $hasAvatar = null, $status = null) {
-
-		if ($name !== null)
-			$name = trim($name);
-		if ($title !== null)
-			$title = trim($title);
-		if ($color !== null)
-			$color = trim($color);
-		if ($hasAvatar !== null)
-			$hasAvatar = !!$hasAvatar;
-
-		if (array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id];
-			if ($name !== null)
-				$instance->_name = $name;
-			if ($title !== null)
-				$instance->_title = $title;
-			if ($color !== null)
-				$instance->_color = $color;
-			if ($hasAvatar !== null)
-				$instance->_hasAvatar = $hasAvatar;
-			if ($status !== null)
-				$instance->_status = $status;
-
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
-
-		$instance = new User();
-		$instance->_id = $id;
-		$instance->_name = $name;
-		$instance->_title = $title;
-		$instance->_color = $color;
-		$instance->_hasAvatar = $hasAvatar;
-		$instance->_status = $status;
-		self::$_instances[$id] = $instance;
-		return $instance;
-	}
-
-	// ===========================================================================
-
 	/**
-	 * Gets a user using its id
+	 * Gets a boulde of information about this model
 	 *
+	 * @return Premanager\Models\UserModel
+	 */
+	public static function getDescriptor() {
+		return UserModel::getInstance();
+	}
+	
+	/**
+	 * Gets a user class using its id
+	 * 
 	 * @param int $id
-	 * @return Premanager\Models\User the user or null, if $id does not exist
+	 * @return Premanager\Models\User
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		if (array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getModelDescriptor()->getByID($id);
 	}
-
+                               
 	/**
-	 * Creates a user that exists already in data base, using its name
+	 * Gets a user using its name
 	 *
 	 * Returns null if $name is not found
 	 *
 	 * @param string $name name of user
-	 * @return User
+	 * @return Premanager\Models\User 
 	 */
 	public static function getByName($name) {
-		$result = DataBase::query(
-			"SELECT name.id ".
-			"FROM ".DataBase::formTableName('Premanager', 'UsersName')." AS name ".
-			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
-		if ($result->next()) {
-			$user = self::createFromID($result->get('id'));
-			return $user;
-		}
-		return null;
+		return self::getModelDescriptor()->getByName($name);
 	}
-
+	
 	/**
 	 * Creates a new user and inserts it into data base
 	 *
@@ -188,51 +124,8 @@ final class User extends Model {
 	public static function createNew($name, $password, $email = '',
 		$isEnabled = true)
 	{
-		$name = Strings::normalize($name);
-		$password = trim($password);
-		$email = trim($email);
-		$status = $isEnabled ? 'enabled' : 'disabled';
-
-		if (!$name)
-			throw new ArgumentException('$name is an empty string or contains only '.
-				'whitespaces', 'name');
-		if (!self::isValidName($name))
-			throw new ArgumentException('$name is not a valid user name');
-		if (!self::isNameAvailable($name, $this))
-			throw new NameConflictException('This name is already assigned to a user',
-				$name);
-		if (!$password)
-			throw new ArgumentException('$password is an empty string or contains '.
-				'only whitespaces', 'password');
-		if ($email && !self::isEmailAvailable($email))
-			throw new ArgumentException('There is already a user using this email '.
-				'address');
-
-		$id = DataBaseHelper::insert('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME, $name,
-			array(
-				'registrationTime!' => "NOW()",
-				'registrationIP' => Request::getIP(),
-				'password' => self::encodePassword($password),
-				'email' => $email,
-				'status' => $status),
-			array(
-				'title' => '')
-		);
-
-		$user = self::createFromID($id, $name, null, null, false, $status);
-		$user->joinAutoJoinGroups();
-
-		// Set color and title fields
-		$user->clearCache();
-
-		$user->_registrationTime = new DateTime();
-		$user->_registrationIP = Request::getIP();
-
-		if (self::$_count !== null)
-			self::$_count++;
-
-		return $user;
+		return self::getDescriptor()->createNew($name, $password, $email,
+			$isEnabled);
 	}
 
 	/**
@@ -269,8 +162,7 @@ final class User extends Model {
 	 * @return bool true, if $name is available
 	 */
 	public static function isNameAvailable($name, $ignoreThis = null) {
-		return DataBaseHelper::isNameAvailable('Premanager', 'Users', 0, $name,
-			($ignoreThis instanceof User ? $ignoreThis->_id : null));
+		return $this->getDescriptor()->isNameAvailable($name, $ignoreThis);
 	}
 
 	/**
@@ -283,7 +175,7 @@ final class User extends Model {
 	 *   the name; it is excluded
 	 * @return bool true, if this email is available
 	 */
-	public static function isEmailAvailable($email, $ignoreThis = null) {
+	public static function isEmailAvailable($email, User $ignoreThis = null) {
 		$l = self::getUsers();
 		$l = $l->filter($l->expr(QueryOperation::LOGICAL_OR,
 			$l->exprEqual($l->exprMember('email'), $email),
@@ -299,10 +191,10 @@ final class User extends Model {
 	/**
 	 * Gets the guest user
 	 *
-	 * @return User
+	 * @return Premanager\Models\User
 	 */
 	public static function getGuest() {
-		return self::createFromID(0);
+		return self::getByID(0);
 	}
 
 	/**
@@ -311,24 +203,19 @@ final class User extends Model {
 	 * @return int
 	 */
 	public static function getCount() {
-		if (self::$_count === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(user.userID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user");
-			self::$_count = $result->get('count');
-		}
-		return self::$_count;
+		$result = DataBase::query(
+			"SELECT COUNT(user.userID) AS count ".
+			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user");
+		return $result->get('count');
 	}
 
 	/**
 	 * Gets a list of users
 	 *
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getUsers() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
+		return self::getDescriptor()->getQueryList();
 	}
 
 	/**
@@ -341,72 +228,15 @@ final class User extends Model {
 		}
 	}
 
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\QueryList\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'name' => array(DataType::STRING, 'getName', 'name'),
-				'title' => array(DataType::STRING, 'getTitle', '*title'),
-				'color' => array(DataType::STRING, 'getColor', 'color'),
-				'hasAvatar' => array(DataType::BOOLEAN, 'hasAvatar', 'hasAvatar'),
-				'avatarType' => array(DataType::STRING, 'getAvatarType', 'avatarMIME'),
-				'enabled' => array(DataType::BOOLEAN, 'isEnabled',
-					'!status! = "enabled"'),
-				'hasPersonalSidebar' => array(DataType::BOOLEAN,
-					'getHasPersonalSidebar', 'hasPersonalSidebar'),
-				'email' => array(DataType::STRING, 'getEmail', 'email'),
-				'style' => array(Style::getDescriptor(), 'getStyle', 'styleID'),
-				'unconfirmedEmail' => array(DataType::STRING, 'getUnconfirmedEmail',
-					'unconfirmedEmail'),
-				'unconfirmedEmailStartTime' => array(DataType::STRING,
-					'getUnconfirmedEmailStartTime', 'unconfirmedEmailStartTime'),
-				'unconfirmedEmailKey' => array(DataType::STRING,
-					'getUnconfirmedEmailKey', 'unconfirmedEmailKey'),
-				'enableOnEmailConfirmation' => array(DataType::BOOLEAN,
-					'getEnableOnEmailConfirmation', '!status! = "waitForEmail"'),
-				'registrationTime' => array(DataType::DATE_TIME, 'getRegistrationTime',
-					'registrationTime'),
-				'registrationIP' => array(DataType::STRING, 'getRegistrationIP',
-					'registrationIP'),
-				'lastLoginTime' => array(DataType::DATE_TIME, 'getLastLoginTime',
-					'lastLoginTime'),
-				'lastLoginIP' => array(DataType::STRING, 'getLastLoginIP',
-					'lastLoginIP'),
-				'lastVisibleLoginTime' => array(DataType::DATE_TIME,
-					'getLastVisibleLoginTime', 'lastVisibleLoginTime'),
-				'lastLoginTime' => array(DataType::DATE_TIME, 'getLastLoginTime',
-					'lastLoginTime'),
-				'lastVisibleLoginTime' => array(DataType::DATE_TIME,
-					'getLastVisibleLoginTime', 'lastVisibleLoginTime'),
-				'resetPasswordKey' => array(DataType::STRING,
-					'getResetPasswordKey', 'resetPasswordKey'),
-				'resetPasswordIP' => array(DataType::STRING,
-					'getResetPasswordIP', 'resetPasswordIP'),
-				'resetPasswordStartTime' => array(DataType::DATE_TIME,
-					'getResetPasswordStartTime', 'resetPasswordStartTime'),
-				'resetPasswordExpirationTime' => array(DataType::DATE_TIME,
-					'getResetPasswordExpirationTime', null)),
-				'Premanager', 'Users', array(__CLASS__, 'getByID'), true);
-		}
-		return self::$_descriptor;
-	}
-
 	// ===========================================================================
-
+	
 	/**
-	 * Gets the id of this user
-	 *
-	 * @return int
+	 * Gets the User model descriptor
+	 * 
+	 * @return Premanager\Models\UserModel the User model descriptor
 	 */
-	public function getID() {
-		$this->checkDisposed();
-
-		return $this->_id;
+	public function getModelDescriptor() {
+		return self::getDescriptor();
 	}
 
 	/**
@@ -415,11 +245,7 @@ final class User extends Model {
 	 * @return string
 	 */
 	public function getName() {
-		$this->checkDisposed();
-
-		if ($this->_name === null)
-			$this->load();
-		return $this->_name;
+		return parent::getName();
 	}
 
 	/**
@@ -775,7 +601,7 @@ final class User extends Model {
 	/**
 	 * Gets the list of groups this user is a member of
 	 *
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public function getGroups() {
 		$this->checkDisposed();
@@ -789,6 +615,7 @@ final class User extends Model {
 	/**
 	 * Checks whether this user is member of a specified group
 	 *
+	 * @param Premanager\Models\Group $group group to check
 	 * @return bool
 	 */
 	public function isInGroup(Group $group) {
@@ -806,6 +633,7 @@ final class User extends Model {
 	/**
 	 * Checks whether this user is member of a group of the specified project
 	 *
+	 * @param Premanager\Models\Project $project project to check
 	 * @return bool
 	 */
 	public function isProjectMemberOf(Project $project) {
@@ -891,12 +719,11 @@ final class User extends Model {
 		if ($email && !self::isEmailAvailable($email))
 			throw new ArgumentException('There is already a user using this email '.
 				'address');
-
-		DataBaseHelper::update('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
-			array('email' => $email),
-			array()
-		);
+			
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." AS user ".
+			"SET user.email = '".DataBase::escape($email)."' ".
+			"WHERE user.id = $this->_id");
 
 		$this->_email = $email;
 	}
@@ -919,15 +746,14 @@ final class User extends Model {
 		if ($style !== null && !($style instanceof Style))
 			throw new ArgumentException(
 				'$style must be either null or a Premanager\Models\Style', 'style');
-
-		DataBaseHelper::update('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, null,
-			array('styleID' => $style ? $style->getID() : 0),
-			array()
-		);
+			
+		DataBase::query(
+			"UPDATE ".DataBase::formTableName('Premanager', 'Users')." AS user ".
+			"SET user.email = '".($style ? $style->getID() : 0)."' ".
+			"WHERE user.id = $this->_id");
 
 		$this->_style = $style;
-		$this->_styleID = $style->getID();
+		$this->_styleID = $style ? $style->getID() : 0;
 	}
 
 	/**
@@ -940,9 +766,7 @@ final class User extends Model {
 
 		if (!$this->_id)
 			throw new InvalidOperationException(
-				'The guest accoutn can not be deleted');
-
-		DataBaseHelper::delete('Premanager', 'Users', 0, $this->_id);
+				'The guest account can not be deleted');
 
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserGroup')." ".
@@ -952,11 +776,7 @@ final class User extends Model {
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'UserOptions')." ".
 			"WHERE userID = '$this->_id'");
 
-		unset(self::$_instances[$this->_id]);
-		if (self::$_count !== null)
-			self::$_count--;
-
-		$this->dispose();
+		parent::delete();
 	}
 
 	/**
@@ -964,7 +784,7 @@ final class User extends Model {
 	 *
 	 * If this user is already in that group, nothing is done.
 	 *
-	 * @param Group $group
+	 * @param Premanager\Models\Group $group
 	 */
 	public function joinGroup(Group $group) {
 		$this->checkDisposed();
@@ -994,7 +814,7 @@ final class User extends Model {
 	 *
 	 * If this user is not a member of that group, nothing is done.
 	 *
-	 * @param Group $group
+	 * @param Premanager\Models\Group $group
 	 */
 	public function leaveGroup(Group $group) {
 		$this->checkDisposed();
@@ -1027,7 +847,7 @@ final class User extends Model {
 	public function setUnconfirmedEmail($email) {
 		$this->checkDisposed();
 
-		$email = \trim($email);
+		$email = trim($email);
 		if (!$email)
 			throw new ArgumentException('$email is null or an empty string', 'email');
 		if (!self::isEmailAvailable($email))
@@ -1044,7 +864,7 @@ final class User extends Model {
 			"WHERE id = '$this->_id'");
 		$this->_unconfirmedEmailKey = $key;
 		$this->_unconfirmedEmail = $email;
-		$this->_unconfirmedEmailStartTime = new DateTime();
+		$this->_unconfirmedEmailStartTime = DateTime::getNow();
 
 		return $key;
 	}
@@ -1391,10 +1211,10 @@ final class User extends Model {
 				(!$hidden ? ", lastVisibleLoginTime = NOW()" : '').
 			"WHERE id = '$this->_id'");
 
-		$this->_lastLoginTime = new DateTime();
+		$this->_lastLoginTime = DateTime::getNow();
 		$this->_lastLoginIP = Request::getIP();
 		if (!$hidden)
-			$this->_lastVisibleLoginTime = new DateTime();
+			$this->_lastVisibleLoginTime = DateTime::getNow();
 	}
 
 	// moved to bottom because Eclipse seems to have trouble with lambda.
@@ -1449,33 +1269,40 @@ final class User extends Model {
 						"'".Environment::getCurrent()->$language->getid()."', ".
 						"'".DataBase::escape($this->_name)."')");
 			}
-
-			$callback = function($name, &$languageID) {
-				$result = DataBase::query(
-					"SELECT translation.languageID ".
-					"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
-					"INNER JOIN ".
-						DataBase::formTableName('Premanager', 'StringsTranslation').
-						" AS translation ".
-						"ON string.id = translation.id ".
-					"WHERE string.pluginID = '0' ".
-						"AND string.name = 'guest' ".
-						"AND LOWER(translation.value) = '".
-							DataBase::escape(Strings::unitize($name))."'");
-				if ($result->next()) {
-					$languageID = $result->get('languageID');
-					return true;
-				} else
-					return false;
-			};
 		} else
 			$data = array('name' => $this->_name);
 
-		DataBaseHelper::update('Premanager', 'Users',
-			DataBaseHelper::UNTRANSLATED_NAME,
-			$this->_id, $name, $data, array(), $callback);
-
-		$this->_name = $name;
+		$this->update($data, array(), $name);
+	}
+	
+	/**
+	 * Gets all names used by this model and their languages
+	 * 
+	 * @return array array($name =>
+	 *   array('languageID' => $languageID, 'nameGroup' => $nameGroup))
+	 */
+	protected function getNamesInUse() {
+		$this->checkDisposed();
+		
+		if (!$this->_id) {
+			$result = DataBase::query(
+				"SELECT translation.value, translation.languageID ".
+				"FROM ".DataBase::formTableName('Premanager', 'Strings')." AS string ".
+				"INNER JOIN ".
+					DataBase::formTableName('Premanager', 'StringsTranslation').
+					" AS translation ".
+					"ON string.id = translation.id ".
+				"WHERE string.pluginID = '0' ".
+					"AND string.name = 'guest'");
+			$names = array();
+			while ($result->next()) {
+				$names[$result->get('name')] = array(
+					'languageID' => $result->get('languageID'),
+					'nameGroup' => '');
+			}
+			return $names;
+		} else
+			return parent::getNamesInUse();
 	}
 
 	// ===========================================================================
@@ -1494,61 +1321,69 @@ final class User extends Model {
 				'9e4d3431361375e515abd82e261ceb04b14cf517426a8ce74ffbdde9239da356'.
 				Config::getSecurityCode().$password));
 	}
-
-	private function load() {
-		$result = DataBase::query(
-			"SELECT user.name, user.color, translation.title, user.hasAvatar, ".
-				"user.avatarMIME, user.status, user.hasPersonalSidebar, ".
-				"user.styleID, user.email, user.unconfirmedEmail, ".
-				"user.unconfirmedEmailStartTime, user.unconfirmedEmailKey, ".
-				"user.registrationTime, user.registrationIP, user.lastLoginTime, ".
-				"user.lastLoginIP, user.lastVisibleLoginTime, ".
-				"user.resetPasswordKey, user.resetPasswordIP, ".
-				"user.resetPasswordStartTime ".
-			"FROM ".DataBase::formTableName('Premanager', 'Users')." AS user ",
-			/* translating */
-			"WHERE user.id = '$this->_id'");
-
-		if (!$result->next())
-			return false;
-
-		if ($this->_id)
-			$this->_name = $result->get('name');
-		else
-			$this->_name = Translation::defaultGet('Premanager', 'guest');
-		$this->_color = $result->get('color');
-		$this->_title = $result->get('title');
-		$this->_hasAvatar = !!$result->get('hasAvatar');
-		$this->_avatarType = $result->get('avatarMIME');
-		$this->_status = $result->get('status');
-		$this->_hasPersonalSidebar = $result->get('hasPersonalSidebar');
-		$this->_email = $result->get('email');
-		$this->_styleID = $result->get('styleID');
-		$this->_unconfirmedEmail = $result->get('unconfirmedEmail');
-		$this->_unconfirmedEmailStartTime = $this->_unconfirmedEmail ?
-			new DateTime($result->get('unconfirmedEmailStartTime')) : null;
-		$this->_unconfirmedEmailKey = $result->get('unconfirmedEmailKey');
-		$this->_registrationTime =
-			new DateTime($result->get('registrationTime'));
-		$this->_registrationIP = $result->get('registrationIP');
-		$this->_lastLoginTime =
-			$result->get('lastLoginTime') != '0000-00-00 00:00:00' ?
-			new DateTime($result->get('lastLoginTime')) : null;
-		$this->_lastLoginIP = $result->get('lastLoginIP');
-		$this->_lastVisibleLoginTime =
-			$result->get('lastVisibleLoginTime') != '0000-00-00 00:00:00' ?
-			new DateTime($result->get('lastVisibleLoginTime')) : null;
-		$this->_resetPasswordKey = $result->get('resetPasswordKey');
-		if ($this->_resetPasswordKey) {
-			$this->_resetPasswordIP = $result->get('resetPasswordIP');
-			$this->_resetPasswordStartTime =
-				new DateTime($result->get('resetPasswordStartTime'));
-		} else {
-			$this->_resetPasswordStartTime = null;
-			$this->_resetPasswordIP = '';
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields = array(
+			'color',
+			'translation.title',
+			'hasAvatar',
+			'avatarMIME',
+			'status',
+			'styleID',
+			'email',
+			'unconfirmedEmail',
+			'registrationTime',
+			'registrationIP',
+			'lastLoginTime',
+			'lastLoginIP',
+			'lastVisibleLoginTime',
+			'resetPasswordKey',
+			'resetPasswordIP',
+			'resetPasswordStartTime'
+		);
+		
+		if ($values = parent::load($fields)) {
+			$this->_color = $values['color'];
+			$this->_title = $values['title'];
+			$this->_hasAvatar = !!$values['hasAvatar'];
+			$this->_avatarType = $values['avatarMIME'];
+			$this->_status = $values['status'];
+			$this->_hasPersonalSidebar = $values['hasPersonalSidebar'];
+			$this->_email = $values['email'];
+			$this->_styleID = $values['styleID'];
+			$this->_unconfirmedEmail = $values['unconfirmedEmail'];
+			$this->_unconfirmedEmailStartTime = $this->_unconfirmedEmail ?
+				new DateTime($values['unconfirmedEmailStartTime']) : null;
+			$this->_unconfirmedEmailKey = $values['unconfirmedEmailKey'];
+			$this->_registrationTime =
+				new DateTime($values['registrationTime']);
+			$this->_registrationIP = $values['registrationIP'];
+			$this->_lastLoginTime =
+				$values['lastLoginTime'] != '0000-00-00 00:00:00' ?
+				new DateTime($values['lastLoginTime']) : null;
+			$this->_lastLoginIP = $values['lastLoginIP'];
+			$this->_lastVisibleLoginTime =
+				$values['lastVisibleLoginTime'] != '0000-00-00 00:00:00' ?
+				new DateTime($values['lastVisibleLoginTime']) : null;
+			$this->_resetPasswordKey = $values['resetPasswordKey'];
+			if ($this->_resetPasswordKey) {
+				$this->_resetPasswordIP = $values['resetPasswordIP'];
+				$this->_resetPasswordStartTime =
+					new DateTime($values['resetPasswordStartTime']);
+			} else {
+				$this->_resetPasswordStartTime = null;
+				$this->_resetPasswordIP = '';
+			}
 		}
-
-		return true;
+		
+		return $values;
 	}
 
 	/**

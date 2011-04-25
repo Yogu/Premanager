@@ -1,5 +1,5 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 /**
  * Specifies the direction in which to sort elements of a list	

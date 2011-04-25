@@ -18,9 +18,9 @@ use Premanager\Types;
 use Premanager\IO\CorrputDataException;
 use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\DataType;
-use Premanager\QueryList\ModelDescriptor;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\DataType;
+use Premanager\Modeling\ModelDescriptor;
               
 /**
  * A style
@@ -207,7 +207,7 @@ final class Style extends Model {
 	/**
 	 * Gets a list of style classes
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getStyles() {
 		if (!self::$_queryList)
@@ -218,7 +218,7 @@ final class Style extends Model {
 	/**
 	 * Gets a boulde of information about this model
 	 *
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {

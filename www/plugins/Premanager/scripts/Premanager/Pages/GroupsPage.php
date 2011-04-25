@@ -8,7 +8,7 @@ use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -115,7 +115,7 @@ class GroupsPage extends TreeListPageNode {
 	/**
 	 * Gets the list of groups sorted by project and name
 	 * 
-	 * @return Premanager\QueryList\QueryList the list of groups
+	 * @return Premanager\Modeling\QueryList the list of groups
 	 */
 	private static function getList() {
 		static $cache;
@@ -131,7 +131,7 @@ class GroupsPage extends TreeListPageNode {
 	/**
 	 * Gets the list of projects sorted by name
 	 * 
-	 * @return Premanager\QueryList\QueryList the list of projects
+	 * @return Premanager\Modeling\QueryList the list of projects
 	 */
 	private static function getProjectList() {
 		static $cache;

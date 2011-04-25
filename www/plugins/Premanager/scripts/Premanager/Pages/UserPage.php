@@ -1,9 +1,9 @@
 <?php
 namespace Premanager\Pages;
 
-use Premanager\QueryList\SortDirection;
-use Premanager\QueryList\SortRule;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\SortDirection;
+use Premanager\Modeling\SortRule;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Execution\Environment;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
@@ -33,7 +33,7 @@ class UserPage extends PageNode {
 	 */
 	private $_user;
 	/**
-	 * @var Premanager\QueryList\QueryList
+	 * @var Premanager\Modeling\QueryList
 	 */
 	private $_list;
 

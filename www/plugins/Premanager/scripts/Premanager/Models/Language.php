@@ -14,9 +14,9 @@ use Premanager\Debug\Debug;
 use Premanager\Debug\AssertionFailedException;
 use Premanager\IO\CorruptDataException;
 use Premanager\IO\DataBase\DataBase;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\DataType;
            
 /**
  * A language
@@ -204,7 +204,7 @@ final class Language extends Model {
 	/**
 	 * Gets a list of languages
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getLanguages() {
 		if (!self::$_queryList)
@@ -330,7 +330,7 @@ final class Language extends Model {
 	/**
 	 * Gets a boulde of information about this model
 	 *
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {

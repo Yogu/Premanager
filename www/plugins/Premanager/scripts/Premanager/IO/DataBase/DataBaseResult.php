@@ -102,6 +102,21 @@ class DataBaseResult extends Module implements \ArrayAccess, \Countable {
 	}
 	
 	/**
+	 * Gets the current row as array
+	 * 
+	 * @return array the current row
+	 */
+	public function getRow() {
+ 		if (!$this->_nextCalled) 
+   		$this->next(); 
+		if ($this->_eof)
+			return null;
+		else {
+			return $this->_row;
+		}
+	}
+	
+	/**
 	 * Gets the count of fields of the current row
 	 * 
 	 * @return int the count of fields

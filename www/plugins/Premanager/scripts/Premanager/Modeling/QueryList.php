@@ -1,12 +1,12 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\Debug\Debug;
 use Premanager\Types;
 use Premanager\Execution\Template;
 use Premanager\Model;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;
@@ -20,11 +20,11 @@ use Premanager\IO\DataBase\DataBase;
 class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	\Countable {
 	/**
-	 * @var Premanager\QueryList\ModelDescriptor
+	 * @var Premanager\Modeling\ModelDescriptor
 	 */
 	private $_modelType;
 	/**
-	 * @var Premanager\QueryList\QueryExpression
+	 * @var Premanager\Modeling\QueryExpression
 	 */
 	private $_filter;
 	/**
@@ -32,7 +32,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 */
 	private $_sortRules = array();
 	/**
-	 * @var Premanager\QueryList\QueryListStrategy
+	 * @var Premanager\Modeling\QueryListStrategy
 	 */
 	private $_strategy;
 	/**
@@ -48,12 +48,12 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	// ===========================================================================
 	
 	/**
-	 * Creates a new Premanager\QueryList\QueryList
+	 * Creates a new Premanager\Modeling\QueryList
 	 * 
-	 * @param Premanager\QueryList\ModelDescriptor $modelType the type of items
-	 * @param Premanager\QueryList\QueryExpression $filter a filter the items 
+	 * @param Premanager\Modeling\ModelDescriptor $modelType the type of items
+	 * @param Premanager\Modeling\QueryExpression $filter a filter the items 
 	 *   must match
-	 * @param array $sortRules an array of Premanager\QueryList\SortRule objects
+	 * @param array $sortRules an array of Premanager\Modeling\SortRule objects
 	 * 
 	 * @throws Premanager\ArgumentException $filter is not valid for lists of the
 	 *   type specified by $modelType - or - $filter contains invalid elements
@@ -85,7 +85,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets the model descriptor for the models contained by this list
 	 * 
-	 * @return Premanager\QueryList\ModelDescriptor the model descriptor for the
+	 * @return Premanager\Modeling\ModelDescriptor the model descriptor for the
 	 *   models contained by this list
 	 */
 	public function getModelType() {			
@@ -95,7 +95,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets the filter used for this query list
 	 * 
-	 * @return Premanager\QueryList\QueryExpression the expression used as filter
+	 * @return Premanager\Modeling\QueryExpression the expression used as filter
 	 *   or null if the query list is not filtered
 	 */
 	public function getFilter() {			
@@ -105,7 +105,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets the sort rules specified for this query list
 	 * 
-	 * @return array an array of Premanager\QueryList\SortRule objects
+	 * @return array an array of Premanager\Modeling\SortRule objects
 	 */
 	public function getSortRules() {			
 		return $this->_sortRules;
@@ -223,7 +223,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * Gets a list that contains all items of this list for that the speicified
 	 * condition is true
 	 * 
-	 * @param Premanager\QueryList\QueryExpression $condition the expression that
+	 * @param Premanager\Modeling\QueryExpression $condition the expression that
 	 *   is checked for each item
 	 * @return QueryList a list of all items for that the condition is true
 	 */
@@ -339,7 +339,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 *
 	 * @param mixed $operand0 the first operand
 	 * @param mixed the second operand
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function exprEqual($operand0, $operand1) {
 		if ($operand0 !== null && !($operand0 instanceof QueryExpression))
@@ -356,7 +356,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 *
 	 * @param mixed $operand0 the first operand
 	 * @param mixed the second operand
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function exprUnequal($operand0, $operand1) {
 		if ($operand0 === null)
@@ -376,11 +376,11 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets an expression
 	 *
-	 * @param int operation enum Premanager\QueryList\QueryOperation 
+	 * @param int operation enum Premanager\Modeling\QueryOperation 
 	 * @param mixed $operand0 the first operand
 	 * @param mixed $operand1 the second operand
 	 * @param mixed $operand2 the third operand
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function expr($operation, $operand0, $operand1 = null,
 		$operand2 = null) {
@@ -400,7 +400,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * 
 	 * @param mixed $operand0 the first operand
 	 * @param mixed the second operand
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function exprAnd($operand0, $operand1) {
 		if (!($operand0 instanceof QueryExpression))
@@ -417,7 +417,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	 * 
 	 * @param mixed $operand0 the first operand
 	 * @param mixed the second operand
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function exprOr($operand0, $operand1) {
 		if (!($operand0 instanceof QueryExpression))
@@ -432,10 +432,10 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets an MEMBER expression
 	 * 
-	 * @param Premanager\QueryList\QueryExpression|string $arg0 a MODEL expression
+	 * @param Premanager\Modeling\QueryExpression|string $arg0 a MODEL expression
 	 *   or the member name if the model is the object itself
 	 * @param string|null $arg1 the member name
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function exprMember($arg0, $arg1 = null) {
 		if ($arg0 instanceof QueryExpression &&
@@ -461,7 +461,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets a THIS expression which points to the model itself
 	 *
-	 * @return Premanager\QueryList\QueryExpression
+	 * @return Premanager\Modeling\QueryExpression
 	 */
 	public function exprThis() {
 		return new QueryExpression($this->_modelType, QueryOperation::THIS, null);
@@ -478,7 +478,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 		for ($i = 0; $i < count($sortRules); $i++) {
 			if (!($rule instanceof SortRule))
 				throw new ArgumentException('Item '.$i.' of the $sortRules array '.
-					'is not an instance of Premanager\QueryList\SortRule', 'sortRules');
+					'is not an instance of Premanager\Modeling\SortRule', 'sortRules');
 			if ($rule->getobjectType() != $modelType)
 				throw new ArgumentException('Item '.$i.' of the $sortRules array '.
 					'is valid for lists fo the type specified by modelType (see '.
@@ -489,7 +489,7 @@ class QueryList extends Module implements \ArrayAccess, \IteratorAggregate,
 	/**
 	 * Gets the strategy to be used for this query
 	 * 
-	 * @return Premanager\QueryList\QueryListStrategy
+	 * @return Premanager\Modeling\QueryListStrategy
 	 */
 	private function getStrategy() {
 		if (!$this->_strategy) {

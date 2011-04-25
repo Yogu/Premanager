@@ -8,9 +8,9 @@ use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
-use Premanager\QueryList\SortDirection;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\SortRule;
+use Premanager\Modeling\SortDirection;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -35,7 +35,7 @@ class StructureNodePage extends PageNode {
 	 */
 	private $_structureNode;
 	/**
-	 * @var Premanager\QueryList\QueryList
+	 * @var Premanager\Modeling\QueryList
 	 */
 	private $_childList;
 	private $_realURL;
@@ -200,7 +200,7 @@ class StructureNodePage extends PageNode {
 	/**
 	 * Gets the list of child structure nodes
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	private function getChildList(){
 		if ($this->_childList == null) {

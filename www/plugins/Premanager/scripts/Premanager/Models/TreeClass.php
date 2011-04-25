@@ -16,9 +16,9 @@ use Premanager\Debug\Debug;
 use Premanager\Processing\TreeNode;
 use Premanager\Models\Plugin;
 use Premanager\Models\StructureNode;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\DataType;
 use Premanager\IO\DataBase\DataBase;
               
 /**
@@ -35,11 +35,11 @@ final class TreeClass extends Model {
 	private static $_instances = array();
 	private static $_count;
 	/**
-	 * @var Premanager\QueryList\ModelDescriptor
+	 * @var Premanager\Modeling\ModelDescriptor
 	 */
 	private static $_descriptor;
 	/**
-	 * @var Premanager\QueryList\QueryList
+	 * @var Premanager\Modeling\QueryList
 	 */
 	private static $_queryList;
 
@@ -210,7 +210,7 @@ final class TreeClass extends Model {
 	/**
 	 * Gets a list of tree classes
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getTreeClasses() {
 		if (!self::$_queryList)
@@ -221,7 +221,7 @@ final class TreeClass extends Model {
 	/**
 	 * Gets a boulde of information about this model
 	 *
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {

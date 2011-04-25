@@ -17,9 +17,9 @@ use Premanager\Debug\Debug;
 use Premanager\Processing\TreeNode;
 use Premanager\Models\Plugin;
 use Premanager\Models\StructureNode;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\QueryList;
-use Premanager\QueryList\DataType;
+use Premanager\Modelling\ModelDescriptor;
+use Premanager\Modelling\QueryList;
+use Premanager\Modelling\DataType;
 use Premanager\IO\DataBase\DataBase;
 
 /**

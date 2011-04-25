@@ -17,7 +17,7 @@
 				{/if}
 			
 				{if $error}
-					{toolbarItem
+					{toolBarItem
 						title=string(Premanager insertNodeHere)
 						description=string(Premanager $error)
 						url=$pageNode->getURL()
@@ -25,7 +25,7 @@
 						enabled=false
 					}
 				{else}
-					{toolbarItem
+					{toolBarItem
 						title=string(Premanager insertNodeHere)
 						description=string(Premanager insertNodeHereDescription)
 						url=$pageNode->getURL()

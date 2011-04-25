@@ -8,8 +8,8 @@ use Premanager\IO\Config;;
 use Premanager\IO\Output;
 use Premanager\Execution\PageNode;
 use Premanager\Execution\StructurePageNode;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
 use Premanager\Models\User;
 use Premanager\Models\Group;
@@ -32,6 +32,7 @@ class Premanager extends Module {
 	public static function run() {
 		if (self::$_isRunning)
 			throw new InvalidOperationException('Premanager is already running');
+			
 		
 		// Call the primary init routines of all plugins, e.g. to assign event
 		// handlers

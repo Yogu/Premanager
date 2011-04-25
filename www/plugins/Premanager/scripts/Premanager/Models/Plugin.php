@@ -6,8 +6,8 @@ use Premanager\Execution\PageNode;
 use Premanager\IO\Config;
 use Premanager\Execution\PluginInitializer;
 use Premanager\NotImplementedException;
-use Premanager\QueryList\ModelDescriptor;
-use Premanager\QueryList\QueryList;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\QueryList;
 use Premanager\Module;
 use Premanager\Model;
 use Premanager\Types;
@@ -18,9 +18,9 @@ use Premanager\Models\StructureNode;
 use Premanager\Debug\AssertionFailedException;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\IO\CorruptDataException;
-use Premanager\QueryList\MemberInfo;
-use Premanager\QueryList\MemberKind;
-use Premanager\QueryList\DataType;
+use Premanager\Modeling\MemberInfo;
+use Premanager\Modeling\MemberKind;
+use Premanager\Modeling\DataType;
 
 /**
  * A plugin
@@ -187,7 +187,7 @@ final class Plugin extends Model {
 	/**
 	 * Gets a list of plugins
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getPlugins() {
 		if (!self::$_queryList)
@@ -215,7 +215,7 @@ final class Plugin extends Model {
 	/**
 	 * Gets a boulde of information about this model
 	 *
-	 * @return Premanager\QueryList\ModelDescriptor
+	 * @return Premanager\Modeling\ModelDescriptor
 	 */
 	public static function getDescriptor() {
 		if (self::$_descriptor === null) {

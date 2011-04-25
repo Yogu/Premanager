@@ -1,11 +1,11 @@
 <?php
-namespace Premanager\QueryList;
+namespace Premanager\Modeling;
 
 use Premanager\Types;
 use Premanager\Execution\Template;
 use Premanager\Model;
-use Premanager\QueryList\QueryOperation;
-use Premanager\QueryList\QueryExpression;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;
@@ -18,14 +18,14 @@ use Premanager\IO\DataBase\DataBase;
  */
 abstract class QueryListStrategy extends Module  {
 	/**
-	 * @var Premanager\QueryList\QueryList
+	 * @var Premanager\Modeling\QueryList
 	 */
 	private $_queryList;
 
 	// ===========================================================================
 	
 	/**
-	 * Creates a new Premanager\QueryList\QueryListStrategy
+	 * Creates a new Premanager\Modeling\QueryListStrategy
 	 * 
 	 * @param Premanage\QueryList\QueryList $queryList the query list this
 	 *   strategy is linked to
@@ -41,7 +41,7 @@ abstract class QueryListStrategy extends Module  {
 	/**
 	 * Gets the query list this strategy is linked to
 	 * 
-	 * @return Premanager\QueryList\QueryList
+	 * @return Premanager\Modeling\QueryList
 	 */
 	public function getQueryList() {
 		return $this->_queryList;
