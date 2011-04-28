@@ -7,7 +7,7 @@ use Premanager\Models\TreeClass;
 use Premanager\Models\Plugin;
 use Premanager\Strings;
 use Premanager\Models\Project;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\Modeling\QueryList;
 use Premanager\DateTime;
 use Premanager\Debug\Debug;

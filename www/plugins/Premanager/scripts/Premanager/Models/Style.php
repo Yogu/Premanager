@@ -9,7 +9,7 @@ use Premanager\IO\Config;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;
 use Premanager\InvalidOperationException;

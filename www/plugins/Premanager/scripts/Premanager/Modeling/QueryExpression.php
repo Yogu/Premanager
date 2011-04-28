@@ -8,7 +8,7 @@ use Premanager\DateTime;
 use Premanager\InvalidOperationException;
 use Premanager\Module;
 use Premanager\Types;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\Modeling\DataType;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;

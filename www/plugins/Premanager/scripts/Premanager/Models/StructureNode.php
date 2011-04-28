@@ -6,7 +6,7 @@ use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\Modeling\QueryOperation;
 use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\DateTime;
 use Premanager\Types;
 use Premanager\Strings;

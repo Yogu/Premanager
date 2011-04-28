@@ -2,15 +2,11 @@
 namespace Premanager\Modeling;
 
 use Premanager\IO\DataBase\QueryBuilder;
-
 use Premanager\IO\DataBase\DataBase;
-
 use Premanager\Module;
-
 use Premanager\Models\User;
-
 use Premanager\NotSupportedException;
-use Premanager\Moddeling\ModelFlags;
+use Premanager\Modeling\ModelFlags;
 use Premanager\DateTime;
 use Premanager\Execution\Environment;
 use Premanager\NotImplementedException;
@@ -337,7 +333,7 @@ abstract class Model extends Module {
 		
 		$query = '';
 		foreach ($fields as $name => $sql) {
-			if (strpos($sql, '.'))
+			if (strpos($sql, '.') === false)
 				$sql = 'item.'.$sql;
 			if (!is_int($name))
 				$sql .= " AS $name";
@@ -349,7 +345,7 @@ abstract class Model extends Module {
 		if ($m->getFlags() & ModelFlags::HAS_TRANSLATION) {
 			$result = DataBase::query(
 				"SELECT $query ".
-				"FROM ".$m->getItemTableName()." AS item ".
+				"FROM ".$m->getItemTableName()." AS item ",
 				/* translating */
 				"WHERE item.id = '$this->_id'");
 		} else {
@@ -362,11 +358,13 @@ abstract class Model extends Module {
 			$values = $result->getRow();
 			
 			$this->_name = $values['model_name'];
-			$this->_creatorID = $fields['model_creatorID'];
-			$this->_createTime = new DateTime($fields['model_createTime']);
-			$this->_editorID = $fields['model_editorID'];
-			$this->_editTime = new DateTime($fields['model_editTime']);
-			$this->_editTimes = $fields['model_editTimes'];
+			$this->_creatorID = $values['model_creatorID'];
+			if ($m->getFlags() & ModelFlags::CREATOR_FIELDS)
+				$this->_createTime = new DateTime($values['model_createTime']);
+			$this->_editorID = $values['model_editorID'];
+			if ($m->getFlags() & ModelFlags::EDITOR_FIELDS)
+				$this->_editTime = new DateTime($values['model_editTime']);
+			$this->_editTimes = $values['model_editTimes'];
 			
 			return $values;
 		} else

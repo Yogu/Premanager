@@ -7,7 +7,7 @@ use Premanager\Execution\Environment;
 use Premanager\IO\Request;
 use Premanager\IO\Config;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\ArgumentException;
 use Premanager\ArgumentNullException;
 use Premanager\InvalidOperationException;

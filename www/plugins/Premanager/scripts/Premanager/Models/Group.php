@@ -554,15 +554,13 @@ final class Group extends Model {
 	 *   model does not exist in data base
 	 */
 	public function load(array $fields = array()) {
-		$fields = array(
-			'name' => 'translation.name',
-			'title' => 'translation.title',
-			'color' => 'item.color',
-			'priority' => 'item.priority',
-			'autoJoin' => 'item.autoJoin',
-			'projectID' => 'item.projectID',
-			'loginConfirmationRequired' => 'item.loginConfirmationRequired'
-		);
+		$fields[] = 'translation.name';
+		$fields[] = 'translation.title';
+		$fields[] = 'color';
+		$fields[] = 'priority';
+		$fields[] = 'autoJoin';
+		$fields[] = 'projectID';
+		$fields[] = 'loginConfirmationRequired';
 		
 		if ($values = parent::load($fields)) {
 			$this->_title = $values['title'];

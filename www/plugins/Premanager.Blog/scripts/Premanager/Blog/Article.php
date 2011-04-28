@@ -5,7 +5,7 @@ use Premanager\Execution\Environment;
 use Premanager\NameConflictException;
 use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\DateTime;
 use Premanager\Types;
 use Premanager\Strings;

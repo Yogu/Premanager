@@ -1330,24 +1330,22 @@ final class User extends Model {
 	 *   model does not exist in data base
 	 */
 	public function load(array $fields = array()) {
-		$fields = array(
-			'color',
-			'translation.title',
-			'hasAvatar',
-			'avatarMIME',
-			'status',
-			'styleID',
-			'email',
-			'unconfirmedEmail',
-			'registrationTime',
-			'registrationIP',
-			'lastLoginTime',
-			'lastLoginIP',
-			'lastVisibleLoginTime',
-			'resetPasswordKey',
-			'resetPasswordIP',
-			'resetPasswordStartTime'
-		);
+		$fields[] = 'color';
+		$fields[] = 'translation.title';
+		$fields[] = 'hasAvatar';
+		$fields[] = 'avatarMIME';
+		$fields[] = 'status';
+		$fields[] = 'styleID';
+		$fields[] = 'email';
+		$fields[] = 'unconfirmedEmail';
+		$fields[] = 'registrationTime';
+		$fields[] = 'registrationIP';
+		$fields[] = 'lastLoginTime';
+		$fields[] = 'lastLoginIP';
+		$fields[] = 'lastVisibleLoginTime';
+		$fields[] = 'resetPasswordKey';
+		$fields[] = 'resetPasswordIP';
+		$fields[] = 'resetPasswordStartTime';
 		
 		if ($values = parent::load($fields)) {
 			$this->_color = $values['color'];

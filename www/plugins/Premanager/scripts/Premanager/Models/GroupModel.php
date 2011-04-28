@@ -18,9 +18,12 @@ class GroupModel extends ModelDescriptor {
 	
 	// ===========================================================================
 	
-	protected function __construct() {
-		parent::__construct();
-		
+	/**
+	 * Loads the members calling addProperty()
+	 */
+	protected function loadMembers() {
+		parent::loadMembers();
+	
 		$this->addProperty('project', Project::getDescriptor(), 'getProject',
 			'projectID');
 		$this->addProperty('title', DataType::STRING, 'getTitle', '*title');

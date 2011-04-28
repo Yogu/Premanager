@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Modeling;
 
+use Premanager\Strings;
 use Premanager\IO\DataBase\QueryBuilder;
 use Premanager\NotSupportedException;
 use Premanager\IO\DataBase\DataBase;
@@ -10,34 +11,13 @@ use Premanager\Modeling\ModelFlags;
 use Premanager\InvalidOperationException;
 use Premanager\ArgumentException;
 use Premanager\Module;
+use Premanager\Types;
 
 abstract class ModelDescriptor extends Module {
-	/**
-	 * @var string
-	 */
-	private $_className;
 	/**
 	 * @var array
 	 */
 	private $_members;
-	/**
-	 * @var string
-	 */
-	private $_pluginName;
-	/**
-	 * @var string
-	 */
-	private $_table;
-	/**
-	 * Constants of Premanager\Model are possible values
-	 * 
-	 * @var in
-	 */
-	private $_flags;
-	/**
-	 * @var callback
-	 */
-	private $_getByIDCallback;
 	/**
 	 * @var array
 	 */
@@ -63,27 +43,6 @@ abstract class ModelDescriptor extends Module {
 	 */
 	protected function __construct() {
 		parent::__construct();
-		
-		// Add fields by flags
-		$this->addProperty('id', DataType::NUMBER, 'getID', 'id');
-		if ($this->getFlags() && ModelFlags::UNTRANSLATED_NAME)
-			$this->addProperty('name', DataType::STRING, 'getName', 'name');
-		else if ($this->getFlags() && ModelFlags::TRANSLATED_NAME)
-			$this->addProperty('name', DataType::STRING, 'getName', '*name');
-		if ($this->getFlags() && ModelFlags::CREATOR_FIELDS) {
-			$this->addProperty('creator', User::getDescriptor(), 'getCreator',
-				'creatorID');
-			$this->addProperty('createTime', DataType::DATE_TIME, 'getCreateTime',
-				'createTime');
-		}
-		if ($this->getFlags() && ModelFlags::EDITOR_FIELDS) {
-			$this->addProperty('editor', User::getDescriptor(), 'getEditor',
-				'editorID');
-			$this->addProperty('editTime', DataType::DATE_TIME, 'getEditTime',
-				'editTime');
-			$this->addProperty('editTimes', DataType::NUMBER, 'getEditTimes',
-				'editTimes');
-		}
 	}
 	
 	// ===========================================================================
@@ -96,6 +55,9 @@ abstract class ModelDescriptor extends Module {
 	 * @return Premanager\Modeling\MemberInfo information about the member
 	 */
 	public function getMemberInfo($name) {
+		if ($this->_members === null)
+			$this->loadMembers();
+		
 		if (array_key_exists($name, $this->_members))
 			return $this->_members[$name];
 	}
@@ -156,6 +118,9 @@ abstract class ModelDescriptor extends Module {
 	 */
 	public function getByID($id) {
 		$id = (int)$id;
+		
+		if (!$this->_instances)
+			$this->_instances = array();
 			
 		if (!Types::isInteger($id) || $id < 0)
 			return null;
@@ -320,13 +285,45 @@ abstract class ModelDescriptor extends Module {
 			$type, $getterName, $fieldName);
 	}
 	
+	/**
+	 * Loads the members calling addProperty()
+	 */
+	protected function loadMembers() {
+		$this->_members = array();
+	
+		// Add fields by flags
+		$this->addProperty('id', DataType::NUMBER, 'getID', 'id');
+		if ($this->getFlags() && ModelFlags::UNTRANSLATED_NAME)
+			$this->addProperty('name', DataType::STRING, 'getName', 'name');
+		else if ($this->getFlags() && ModelFlags::TRANSLATED_NAME)
+			$this->addProperty('name', DataType::STRING, 'getName', '*name');
+		if ($this->getFlags() && ModelFlags::CREATOR_FIELDS) {
+			$this->addProperty('creator', User::getDescriptor(), 'getCreator',
+				'creatorID');
+			$this->addProperty('createTime', DataType::DATE_TIME, 'getCreateTime',
+				'createTime');
+		}
+		if ($this->getFlags() && ModelFlags::EDITOR_FIELDS) {
+			$this->addProperty('editor', User::getDescriptor(), 'getEditor',
+				'editorID');
+			$this->addProperty('editTime', DataType::DATE_TIME, 'getEditTime',
+				'editTime');
+			$this->addProperty('editTimes', DataType::NUMBER, 'getEditTimes',
+				'editTimes');
+		}
+	}
+	
 	// ===========================================================================
 	
-	private static function createFromID($id, $validateID = false) {
+	private function createFromID($id, $validateID = false) {
+		if (!$this->_instances)
+			$this->_instances = array();
+			
 		if (array_key_exists($id, $this->_instances))
 			return self::$_instances[$id];
 			
-		$instance = new $this->_className($id);
+		$className = $this->getClassName();
+		$instance = new $className($id, false);
 		if ($instance->load()) {
 			$this->_instances[$id] = $instance;
 			return $instance;

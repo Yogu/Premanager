@@ -13,7 +13,7 @@ use Premanager\Execution\PageNode;
 use Premanager\Execution\StructurePageNode;
 use Premanager\IO\CorruptDataException;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\Types;
 use Premanager\Strings;
 use Premanager\ArgumentException;

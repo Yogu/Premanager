@@ -7,7 +7,7 @@ use Premanager\IO\DataBase\DataBaseHelper;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\NameConflictException;
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\DateTime;
 use Premanager\Strings;
 use Premanager\Types;
@@ -24,8 +24,6 @@ use Premanager\Modeling\DataType;
  * A project
  */
 final class Project extends Model {
-	private $_id;
-	private $_name;
 	private $_title;
 	private $_subTitle;
 	private $_author;
@@ -33,233 +31,74 @@ final class Project extends Model {
 	private $_description;
 	private $_keywords;
 	private $_rootNode;
-	private $_creator;
-	private $_creatorID;
-	private $_createTime;
-	private $_editor;
-	private $_editorID;
-	private $_editTime;
 	
+	/**
+	 * @var Premanager\Models\Project
+	 */
 	private static $_organization;
-	private static $_instances = array();
-	private static $_count;
-	private static $_descriptor;
-	private static $_queryList;          
+	/**
+	 * @var Premanage\Models\ProjectModel
+	 */
+	private static $_descriptor;     
 	
 	const NAME_REGEXP = '/^[0-9a-z](?:[0-9a-z-]*[0-9a-z])?$/';
-
-	// ===========================================================================  
-	
-	protected function __construct() {
-		parent::__construct();	
-	}
-	
-	private static function createFromID($id, $name = null, $title = null,
-		$subTitle = null, $author = null, $copyright = null, $description = null,
-		$keywords = null) {
-		if ($name !== null)
-			$name = \trim($name);
-		if ($title !== null)
-			$title = \trim($title);
-		if ($subTitle !== null)
-			$subTitle = \trim($subTitle);
-		if ($author !== null)
-			$author = \trim($author);    
-		if ($copyright !== null)
-			$copyright = \trim($copyright);
-		if ($description !== null)
-			$description = \trim($description);
-		if ($keywords !== null)
-			$keywords = \trim($keywords);        
-			 
-		if (\array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id];
-			
-			if ($name !== null)
-				$instance->_name = $name;
-			if ($title !== null)
-				$instance->_title = $title;
-			if ($subTitle !== null)
-				$instance->_subTitle = $subTitle;     
-			if ($author !== null)
-				$instance->_author = $author; 
-			if ($copyright !== null)
-				$instance->_copyright = $copyright;   
-			if ($description !== null)
-				$instance->_description = $description;       
-			if ($keywords !== null)
-				$instance->_keywords = $keywords;
-			
-			return $instance;
-		} 
-		
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
-		
-		$instance = new self();
-		$instance->_id = $id;
-		$instance->_name = $name;
-		$instance->_title = $title;	
-		$instance->_subTitle = $subTitle;    
-		$instance->_author = $author;	
-		$instance->_copyright = $copyright;
-		$instance->_description = $description;
-		$instance->_keywords = $keywords;	    
-		self::$_instances[$id] = $instance;
-		return $instance;
-	}
 	
 	// ===========================================================================
+
+	/**
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Models\ProjectModel
+	 */
+	public static function getDescriptor() {
+		return ProjectModel::getInstance();
+	}
 	
 	/**
 	 * Gets a project using its id
-	 *
-	 * Returns null if $id is not found.
 	 * 
-	 * @param int $id the id of the project
+	 * @param int $id
 	 * @return Premanager\Models\Project
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getDescriptor()->getByID($id);
 	}
                                
 	/**
-	 * Creates a project that exists already in data base, using its name
+	 * Gets a project using its name
 	 *
 	 * Returns null if $name is not found
 	 *
-	 * @param string $name name of project
-	 * @return Premanager\Models\Project  
+	 * @param string $name name of the project
+	 * @return Premanager\Models\Project
 	 */
 	public static function getByName($name) {
-		$result = DataBase::query(
-			"SELECT name.id ".            
-			"FROM ".DataBase::formTableName('Premanager', 'ProjectsName')." AS name ".
-			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."'");
-		if ($result->next()) {
-			$project = self::createFromID($result->get('id'));
-			return $project;
-		}
-		return null;
+		return self::getDescriptor()->getByName($name);
 	}
 	
 	/**
-	 * Creates a new project and inserts it into data base
+	 * Creates a new group and inserts it into data base
 	 *
-	 * @param string $name projects's name
-	 * @param string $title project's title
-	 * @param string $subTitle project's subtitle (optional)  
-	 * @param string $author the main author(s) of the project
-	 * @param string $copyright copyright notice
-	 * @param string $description a short description in a few sentences
-	 * @param string $keywords a list of keywords (optional)
-	 * @return Project
+	 * @param string $name group name
+	 * @param string $title user title
+	 * @param string $color hexadecimal RRGGBB 
+	 * @param string $text description
+	 * @param int $priority the priority
+	 * @param Premanager\Models\Project $project the project that contains the
+	 *   group
+	 * @param bool $autoJoin specifies wheater new users automatically join this
+	 *   group
+	 * @param bool $loginConfirmationRequired specifies whether users have to
+	 *   re-enter their password if a right of this group is needed 
+	 * @return Premanager\Models\Group
 	 */
-	public static function createNew($name, $title, $subTitle, $author, 
-		$copyright, $description, $keywords) {
-		$name = Strings::normalize($name);
-		$title = \trim($title);
-		$subTitle = \trim($subTitle);
-		$author = \trim($author);
-		$copyright = \trim($copyright);
-		$description = \trim($description);
-		$keywords = \trim($keywords);
-
-		if (!$name)
-			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');
-		if (!self::isValidName($name))
-			throw new ArgumentException('$name is not a valid project name', 'name');
-		if (!self::isNameAvailable($name))
-			throw new NameConflictException('This name is already in use', $name);
-		if (!$title)
-			throw new ArgumentException(
-				'$title is an empty string or contains only whitespaces', 'title');
-		if (!$author)
-			throw new ArgumentException(
-				'$author is an empty string or contains only whitespaces', 'author');  
-		if (!$copyright)
-			throw new ArgumentException('$copyright is an empty string or contains '.
-				'only whitespaces', 'copyright');  
-		if (!$description)
-			throw new ArgumentException('$description is an empty string or '.
-				'contains only whitespaces', 'description');
+	public static function createNew($name, $title, $color, $text, $priority,
+		Project $project, $autoJoin = false, $loginConfirmationRequired = false)
+	{
+		return self::getDescriptor()->createNew($name, $title, $color, $text,
+			$priority, $project, $autoJoin, $loginConfirmationRequired);
+	}   
 	
-		$id = DataBaseHelper::insert('Premanager', 'Projects',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::UNTRANSLATED_NAME, $name,
-			array(), 
-			array(
-				'title' => $title,
-				'subTitle' => $subTitle,
-				'author' => $author,    
-				'copyright' => $copyright,    
-				'description' => $description,    
-				'keywords' => $keywords)
-		);        
-		
-		// Insert root node (we can't use StructureNode because that class does not
-		// provide a createNew method (it does not because one can use createChild
-		// instead for common node creation)
-		$rootNodeID = DataBaseHelper::insert('Premanager', 'Nodes',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, '',
-			array(
-				'noAccessRestriction' => true,
-				'parentID' => 0,
-				'hasPanel' => 0,
-				'projectID' => $id,
-				'treeID' => 0),
-			array(
-				'title' => Translation::defaultGet('Premanager', 'home'))
-		);
-		$rootNode = StructureNode::getByID($rootNodeID);
-		
-		// Insert nodes for trees with the scope 'projects' or 'both'
-		$list = TreeClass::getTreeClasses();
-		$list = $list->filter(
-			$list->exprUnEqual(
-				$list->exprMember('scope'),
-				Scope::ORGANIZATION));
-					
-		foreach ($list as $treeClass) {
-			$nodeTitle = $treeClass->getPlugin()->getName() . '-' . 
-				preg_replace('/[^A-Za-z0-9]+/', '-', $treeClass->getClassName());
-			$nodeName = DataBaseHelper::getAvailableName(
-				array($rootNode, 'isNameAvailable'), Strings::toLower($nodeTitle));
-			
-			// Now we can't use createChild because we want to create a TREE node
-			DataBaseHelper::insert('Premanager', 'Nodes',
-				DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS,
-				$nodeName,
-				array(
-					'noAccessRestriction' => true,
-					'parentID' => $rootNodeID,
-					'projectID' => $id,
-					'hasPanel' => 0,
-					'treeID' => $treeClass->getID()),
-				array(
-					'title' => $nodeTitle)
-			);
-		}
-		
-		return Project::createFromID($id, $name, $title, $subTitle, $author,
-			$copyright, $description, $keywords);
-	}      
-			 
 	/**
 	 * Gets a Project representing the organization
 	 *
@@ -267,63 +106,9 @@ final class Project extends Model {
 	 */
 	public static function getOrganization() {
 		if (self::$_organization === null)
-			self::$_organization = Project::createFromID(0);
+			self::$_organization = self::getByID(0);
 		return self::$_organization;
-	}          
-	    
-	/**
-	 * Gets the count of projects (including organization project)
-	 *
-	 * @return int
-	 */
-	public static function getCount() {
-		if (self::_count === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(project.projectID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Projects').
-					" AS project");
-			self::$_count = $result->get('count');
-		}
-		return self::$_count;
-	}  
-
-	/**
-	 * Gets a list of projects
-	 * 
-	 * @return Premanager\Modeling\QueryList
-	 */
-	public static function getProjects() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
-	}          
-
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\Modeling\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'name' => array(DataType::STRING, 'getName', 'name'),
-				'title' => array(DataType::STRING, 'getTitle', '*title'),
-				'subTitle' => array(DataType::STRING, 'getSubTitle', '*subTitle'),
-				'author' => array(DataType::STRING, 'getAuthor', '*author'),
-				'copyright' => array(DataType::STRING, 'getCopyright', '*copyright'),
-				'description' => array(DataType::STRING, 'getDescription', '*description'),
-				'keywords' => array(DataType::STRING, 'getKeywords', '*keywords'),
-				'rootNode' => array(StructureNode::getDescriptor(), 'getRootNode'),
-				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
-				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
-					'createTime'),
-				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
-				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
-				'Premanager', 'Projects', array(__CLASS__, 'getByID'));
-		}
-		return self::$_descriptor;
-	}            
+	}                  
 
 	/**
 	 * Checks whether the name is a valid project name
@@ -349,36 +134,51 @@ final class Project extends Model {
 	 *   the name; it is excluded
 	 * @return bool true, if $name is available
 	 */
-	public static function isNameAvailable($name, $ignoreThis = null) {
-		return DataBaseHelper::isNameAvailable('Premanager', 'Projects', 0, $name,
-			($ignoreThis instanceof Project ? $ignoreThis->_id : null));
+	public static function isNameAvailable($name, Project $ignoreThis = null)
+	{
+		return $this->getDescriptor()->isNameAvailable($name, $ignoreThis);
 	}
+	    
+	/**
+	 * Gets the count of project
+	 *
+	 * @return int
+	 */
+	public static function getCount() {
+		$result = DataBase::query(
+			"SELECT COUNT(project.id) AS count ".
+			"FROM ".DataBase::formTableName('Premanager', 'Projects')." AS project");
+		return $result->get('count');
+	}
+
+	/**
+	 * Gets a list of projects
+	 * 
+	 * @return Premanager\Modeling\QueryList
+	 */
+	public static function getProjects() {
+		return self::getDescriptor()->getQueryList();
+	}     
 
 	// ===========================================================================
 	
 	/**
-	 * Gets the id of this project
-	 *
-	 * @return int
+	 * Gets the Project model descriptor
+	 * 
+	 * @return Premanager\Models\ProjectModel the Project model descriptor
 	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
-	}
+	public function getModelDescriptor() {
+		return self::getDescriptor();
+	}  
 
 	/**
-	 * Gets the name of this project
+	 * Gets the name of this group
 	 *
 	 * @return string
 	 */
 	public function getName() {
-		$this->checkDisposed();
-			
-		if ($this->_name === null)
-			$this->load();
-		return $this->_name;	
-	}      
+		return parent::getName();	
+	}  
 
 	/**
 	 * Gets the title of this project
@@ -477,73 +277,58 @@ final class Project extends Model {
 			$this->_rootNode = StructureNode::getByID($result->get('id'));
 		}
 		return $this->_rootNode;
-	}                   
+	}             
 
 	/**
-	 * Gets the user that has created this project
+	 * Gets the user that has created this group
 	 *
 	 * @return Premanager\Models\User
 	 */
 	public function getCreator() {
-		$this->checkDisposed();
-			
-		if ($this->_creator === null) {
-			if (!$this->_creatorID)
-				$this->load();
-			$this->_creator = User::getByID($this->_creatorID);
-		}
-		return $this->_creator;	
+		return parent::getCreator();
 	}                        
 
 	/**
-	 * Gets the time when this project has been created
+	 * Gets the time when this group has been created
 	 *
 	 * @return Premanager\DateTime
 	 */
 	public function getCreateTime() {
-		$this->checkDisposed();
-			
-		if ($this->_createTime === null)
-			$this->load();
-		return $this->_createTime;	
+		return parent::getCreateTime();
 	}                               
 
 	/**
-	 * Gets the user that has edited this project the last time
+	 * Gets the user that has edited this group the last time
 	 *
 	 * @return Premanager\Models\User
 	 */
 	public function getEditor() {
-		$this->checkDisposed();
-			
-		if ($this->_editor === null) {
-			if (!$this->_editorID)
-				$this->load();
-			$this->_editor = User::getByID($this->_editorID);
-		}
-		return $this->_editor;	
+		return parent::getEditor();
 	}                        
 
 	/**
-	 * Gets the time when this project has been edited the last time
+	 * Gets the time when this group has been edited the last time
 	 *
 	 * @return Premanager\DateTime
 	 */
 	public function getEditTime() {
-		$this->checkDisposed();
-			
-		if ($this->_editTime === null)
-			$this->load();
-		return $this->_editTime;	
+		return parent::getEditTime();
 	}      
+	
+	/**
+	 * Gets the count of times this group has been edited
+	 * 
+	 * @return Premanager\DateTime the count of edit times
+	 */
+	protected function getEditTimes() {
+		return parent::getEditTimes();
+	}
 	
 	/**
 	 * Deletes and disposes this project
 	 */
 	public function delete() {         
 		$this->checkDisposed();
-			
-		DataBaseHelper::delete('Premanager', 'Projects', 0, $this->_id);
 			    
 		// Delete project-specified options
 		DataBase::query(
@@ -576,12 +361,8 @@ final class Project extends Model {
 		foreach ($list as $group) {
 			$group->delete();
 		}
-
-		unset(self::$_instances[$this->_id]);
-		if (self::$_count !== null)
-			self::$_count--;	
 			
-		$this->dispose();
+		parent::delete();
 	}
 	
 	/**
@@ -633,9 +414,7 @@ final class Project extends Model {
 			throw new ArgumentException('$description is an empty string or '.
 				'contains only whitespaces', 'description');
 			
-		DataBaseHelper::update('Premanager', 'Projects', 
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::UNTRANSLATED_NAME, $this->_id, $name,
+		$this->update(
 			array(),
 			array(
 				'title' => $title,
@@ -643,8 +422,9 @@ final class Project extends Model {
 				'author' => $author,
 				'copyright' => $copyright,
 				'description' => $description,
-				'keywords' => $keywords)
-		);           
+				'keywords' => $keywords),
+			$name
+		);
 		
 		$this->_name = $name;
 		$this->_title = $title;	
@@ -653,39 +433,36 @@ final class Project extends Model {
 		$this->_copyright = $copyright;
 		$this->_description = $description;
 		$this->_keywords = $keywords;
-		$this->_editor = Environment::getCurrent()->getuser();
-		$this->_editorID = $this->_editor->getid();
-		$this->_editTime = new DateTime();
 	}     
 
 	// ===========================================================================
 	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT project.name, translation.title, translation.subTitle, ".
-				"translation.author, translation.copyright, translation.description, ".
-				"translation.keywords, project.createTime, project.creatorID, ".
-				"project.editorID, project.editTime, project.editTimes ".
-			"FROM ".DataBase::formTableName('Premanager', 'Projects')." AS project ",
-			/* translating */
-			"WHERE project.id = '$this->_id'");
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields[] = 'translation.title';
+		$fields[] = 'translation.subTitle';
+		$fields[] = 'translation.author';
+		$fields[] = 'translation.copyright';
+		$fields[] = 'translation.description';
+		$fields[] = 'translation.keywords';
 		
-		if (!$result->next())
-			return false;
+		if ($values = parent::load($fields)) {
+			$this->_title = $fields['title'];
+			$this->_subTitle = $fields['subTitle'];
+			$this->_author = $fields['author'];
+			$this->_copyright = $fields['copyright'];
+			$this->_description = $fields['description'];
+			$this->_keywords = $fields['keywords'];
+		}
 		
-		$this->_name = $result->get('name');   
-		$this->_title = $result->get('title');
-		$this->_subTitle = $result->get('subTitle');
-		$this->_author = $result->get('author');
-		$this->_copyright = $result->get('copyright');
-		$this->_description = $result->get('description');
-		$this->_keywords = $result->get('keywords');
-		$this->_createTime = new DateTime($result->get('createTime'));
-		$this->_creatorID = $result->get('creatorID');
-		$this->_editTime = new DateTime($result->get('editTime'));
-		$this->_editorID = $result->get('editorID');
-		
-		return true;
+		return $values;
 	}
 }
 

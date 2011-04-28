@@ -18,9 +18,12 @@ class UserModel extends ModelDescriptor {
 	
 	// ===========================================================================
 	
-	protected function __construct() {
-		parent::__construct();
-		
+	/**
+	 * Loads the members calling addProperty()
+	 */
+	protected function loadMembers() {
+		parent::loadMembers();
+	
 		$this->addProperty('title', DataType::STRING, 'getTitle', '*title');
 		$this->addProperty('color', DataType::STRING, 'getColor', 'color');
 		$this->addProperty('hasAvatar', DataType::BOOLEAN, 'hasAvatar', 'hasAvatar');

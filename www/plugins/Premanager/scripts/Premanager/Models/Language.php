@@ -2,7 +2,7 @@
 namespace Premanager\Models;
 
 use Premanager\Module;
-use Premanager\Model;
+use Premanager\Modeling\Model;
 use Premanager\DateTime;
 use Premanager\Strings;
 use Premanager\Types;
@@ -22,7 +22,6 @@ use Premanager\Modeling\DataType;
  * A language
  */
 final class Language extends Model {
-	private $_id;
 	private $_name;
 	private $_title;
 	private $_englishTitle;
@@ -31,119 +30,43 @@ final class Language extends Model {
 	private $_longDateFormat;
 	private $_longTimeFormat;
 	private $_dateTimePhraseFormat;
-	private $_creatorID;
-	private $_createTime;
-	private $_editor;
-	private $_editorID;
-	private $_editTime;
 	
 	private static $_default;
 	private static $_internationalLanguage;
-	private static $_instances = array();
-	private static $_count;   
 	private static $_descriptor;   
-	private static $_queryList;
 	
 	// ===========================================================================
-	
-	protected function __construct() {
-		parent::__construct();
-	}
-	
+
 	/**
-	 * Creates a language that exists already in data base
-	 * 
-	 * @param int $id
-	 * @param string|null $name
-	 * @param string|null $title
-	 * @param string|null $englishTitle
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Models\LanguageModel
 	 */
-	private static function createFromID($id, $name = null, $title = null,
-		$englishTitle = null) {
-		
-		if ($name !== null)
-			$name = \trim($name);
-		if ($title !== null)
-			$title = \trim($title);
-		if ($englishTitle !== null)
-			$englishTitle = \trim($englishTitle);    
-		
-		if (\array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id]; 
-			if ($instance->_name === null)
-				$instance->_name = $name;         
-			if ($instance->_title === null)
-				$instance->_title = $title;       
-			if ($instance->_englishTitle === null)
-				$instance->_englishTitle = $englishTitle;
-
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value', 'id');
-		
-		$instance = new self();
-		$instance->_id = $id;
-		$instance->_name = $name;
-		$instance->_title = $title;
-		$instance->_englishTitle = $englishTitle;    
-		self::$_instances[$id] = $instance;
-		if (self::$_count !== null)
-			self::$_count++;
-		return $instance;
-	}    
-	
-	// ===========================================================================  
+	public static function getDescriptor() {
+		return LanguageModel::getInstance();
+	}
 	
 	/**
 	 * Gets a language using its id
-	 *
-	 * Returns null if $id is not found
 	 * 
-	 * @param int $id the id of the language
+	 * @param int $id
 	 * @return Premanager\Models\Language
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getDescriptor()->getByID($id);
 	}
                                
 	/**
-	 * Gets a language using its name
+	 * Gets a language using its name (the language code)
 	 *
 	 * Returns null if $name is not found
 	 *
-	 * @param string $name language name
-	 * @return Premanager\Models\Language  
+	 * @param string $name name of the language
+	 * @return Premanager\Models\Language
 	 */
 	public static function getByName($name) {
-		$result = DataBase::query(
-			"SELECT language.id, language.name, language.title, ".
-				"language.englishTitle ".            
-			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
-			"WHERE language.name = '".DataBase::escape(Strings::unitize($name))."'");
-		if ($result->next()) {
-			$language = Language::createFromID($result->get('id',
-				$result->get('name'), $result->get('title'),
-				$result->get('englishTitle')));
-			return $language;
-		}
-		return null;
-	} 
+		return self::getDescriptor()->getByName($name);
+	}
 	
 	/**
 	 * Creates a new language and inserts it into data base.
@@ -158,32 +81,7 @@ final class Language extends Model {
 	 * @return Premanage\Objects\Language
 	 */
 	public static function createNew($name, $title, $englishTitle) {
-		$name = Strings::toLower(Strings::normalize($name));
-		$title = \trim($title);
-		$englishTitle = \trim($englishTitle);   
-                                                                    
-		if (!$name)   
-			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');         
-		if (Strings::indexOf($name, '/') !== false)
-			throw new ArgumentException('$name must not contain slashes', 'name');                 
-		if (!self::isNameAvailable($name))
-			throw new NameConflictException('There is already a language with this '.
-				'name', $name);
-		if (!$title)
-			throw new ArgumentException(
-				'$title is an empty string or contains only whitespaces', 'title');
-		if (!$englishTitle)
-			throw new ArgumentException('$englishTitle is an empty string or '.
-				'contains only whitespaces', 'englishTitle');  
-	
-		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager', 'Languages')." ".
-			"(name, title, englishTitle) ".
-			"VALUES ('".DataBase::escape($name)."', '".DataBase::escape($title)."', ".
-				"'".DataBase::escape($englishTitle)."')");
-		
-		return Language::createFromID($id, $name, $title, $englishTitle);
+		return self::getDescriptor()->createNew($name, $title, $englishTitle);
 	}           
 	    
 	/**
@@ -236,14 +134,11 @@ final class Language extends Model {
 	public static function getDefault() {
 		if (!self::$_default) {
 			$result = DataBase::query(
-				"SELECT language.id, language.name, language.title, ".
-					"language.englishTitle ".            
+				"SELECT language.id ".            
 				"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 				"WHERE language.isDefault = '1'");
 			if ($result->next()) {
-				self::$_default = Language::createFromID($result->get('id',
-					$result->get('name'), $result->get('title'),
-					$result->get('englishTitle')));
+				self::$_default = self::getByID($result->get('id'));
 			} else
 				throw new CorruptDataException('No default language specified');
 		}
@@ -285,15 +180,11 @@ final class Language extends Model {
 	public static function getInternationalLanguage() {
 		if (!self::$_internationalLanguage) {
 			$result = DataBase::query(
-				"SELECT language.id, language.name, language.title, ".
-					"language.englishTitle ".            
+				"SELECT language.id ".            
 				"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
 				"WHERE language.isInternational = '1'");
 			if ($result->next()) {
-				self::$_internationalLanguage =
-					Language::createFromID($result->get('id',
-						$result->get('name'), $result->get('title'),
-						$result->get('englishTitle')));
+				self::$_internationalLanguage = self::getByID($result->get('id'));
 			} else
 				throw new CorruptDataException('No international language specified');
 		}
@@ -327,56 +218,17 @@ final class Language extends Model {
 		self::$_internationalLanguage = $language;
 	}
 
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\Modeling\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'name' => array(DataType::STRING, 'getName', 'name'),
-				'title' => array(DataType::STRING, 'getTitle', 'title'),
-				'englishTitle' => array(DataType::STRING, 'getEnglishTitle',
-					'englishTitle'),
-				'shortDateTimeFormat' => array(DataType::STRING,
-					'getShortDateTimeFormat'),
-				'shortDateFormat' => array(DataType::STRING, 'getShortDateFormat',
-					'shortDateFormat'),
-				'shortTimeFormat' => array(DataType::STRING, 'getShortTimeFormat',
-					'shortTimeFormat'),
-				'longDateTimeFormat' => array(DataType::STRING,
-					'getLongDateTimeFormat'),
-				'longDateFormat' => array(DataType::STRING, 'getLongDateFormat',
-					'longDateFormat'),
-				'longTimeFormat' => array(DataType::STRING, 'getLongTimeFormat',
-					'longTimeFormat'),
-				'dateTimePhraseFormat' => array(DataType::STRING,
-					'getDateTimePhraseFormat', 'dateTimePhraseFormat'),
-				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
-				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
-					'createTime'),
-				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
-				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
-				'Premanager', 'Languages', array(__CLASS__, 'getByID'));
-		}
-		return self::$_descriptor;
-	}
-
 	// ===========================================================================
-	
-	/**
-	 * Gets the id of this language
-	 *
-	 * @return int
-	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
-	}
 
+	/**
+	 * Gets a boulde of information about the Language model
+	 *
+	 * @return Premanager\Models\LanguageModel
+	 */
+	public function getModelDescriptor() {
+		return LanguageModel::getInstance();
+	}
+	
 	/**
 	 * Gets the language code of this language
 	 *
@@ -513,14 +365,7 @@ final class Language extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public function getCreator() {
-		$this->checkDisposed();
-			
-		if ($this->_creator === null) {
-			if (!$this->_creatorID)
-				$this->load();
-			$this->_creator = User::getByID($this->_creatorID);
-		}
-		return $this->_creator;	
+		return parent::getCreator();
 	}                        
 
 	/**
@@ -529,11 +374,7 @@ final class Language extends Model {
 	 * @return Premanager\DateTime
 	 */
 	public function getCreateTime() {
-		$this->checkDisposed();
-			
-		if ($this->_createTime === null)
-			$this->load();
-		return $this->_createTime;	
+		return parent::getCreateTime();
 	}                               
 
 	/**
@@ -542,14 +383,7 @@ final class Language extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public function getEditor() {
-		$this->checkDisposed();
-			
-		if ($this->_editor === null) {
-			if (!$this->_editorID)
-				$this->load();
-			$this->_editor = User::getByID($this->_editorID);
-		}
-		return $this->_editor;	
+		return parent::getEditor();
 	}                        
 
 	/**
@@ -558,12 +392,17 @@ final class Language extends Model {
 	 * @return Premanager\DateTime
 	 */
 	public function getEditTime() {
-		$this->checkDisposed();
-			
-		if ($this->_editTime === null)
-			$this->load();
-		return $this->_editTime;	
+		return parent::getEditTime();
 	}   
+	
+	/**
+	 * Gets the count of times this language has been edited
+	 * 
+	 * @return Premanager\DateTime the count of edit times
+	 */
+	protected function getEditTimes() {
+		return parent::getEditTimes();
+	}
 	
 	/**
 	 * Deletes and disposes this language
@@ -573,7 +412,7 @@ final class Language extends Model {
 	 * 
 	 * Throws Premanager\InvalidOperationException if this is the last language
 	 *
-	 * The strings DataBase::formTableName will not be modified.
+	 * The strings table will not be modified.
 	 */
 	public function delete() {
 		$this->checkDisposed();
@@ -584,21 +423,15 @@ final class Language extends Model {
 			
 		// If this was the default langauge, select another default language
 		if (self::getDefault() == $this) {
-			$arr = self::getLanguages(0, 1);
-			self::setDefault($arr[0]);
+			self::setDefault(self::getLanguages()->get(0));
 		}
 			
 		// If this was international langauge, select another international language
 		if (self::getInternationalLanguage() == $this) {
-			$arr = self::getLanguages(0, 1);
-			self::setInternationalLanguage($arr[0]);
+			self::setInternationalLanguage(self::getLanguages()->get(0));
 		}
-
-		DataBaseHelper::delete('Premanager', 'Languages', 0, $this->_id);
-			
-		unset(self::$_instances[$this->_id]);
-		self::$_count = 0;
-		$this->dispose();
+		
+		parent::delete();
 	}
 	
 	/**
@@ -631,23 +464,20 @@ final class Language extends Model {
 				'$title is an empty string or contains only whitespaces', 'title');   
 		if (!$englishTitle)
 			throw new ArgumentException('$englishTitle is an empty string or '.
-				'contains only whitespaces', 'englishTitle');  
-		
-		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." ".
-			"SET name = '".DataBase::escape($name)."', ".
-				"title = '".DataBase::escape($title)."', ".
-				"englishTitle = '".DataBase::escape($englishTitle)."' ".
-			"WHERE id = '$this->_id'");
+				'contains only whitespaces', 'englishTitle');
+			
+		$this->update(
+			array(
+				'name' => $name,
+				'title' => $title,
+				'englishTitle' => $englishTitle
+			)
+		);
 		
 		$this->_name = $name;
-		$this->_title = $title;	
+		$this->_title = $title;
 		$this->_englishTitle = $englishTitle;
-		
-		$this->_editor = Environment::getCurrent()->getuser();
-		$this->_editorID = $this->_editor->getid();
-		$this->_editTime = new DateTime();
-	}           
+	}
 	
 	/**
 	 * Changes date / time format strings
@@ -658,15 +488,17 @@ final class Language extends Model {
 	 * @param string $shortTimeFormat a datetime format string    
 	 * @param string $longDateeFormat a datetime format string
 	 * @param string $longTimeFormat a datetime format string
+	 * @param string $dataTimePhraseFormat a datetime format string
 	 */
 	public function setFormatStrings($shortDateFormat, $shortTimeFormat,
-		$longDateFormat, $longTimeFormat) {
+		$longDateFormat, $longTimeFormat, $dateTimePhraseFormat) {
 		$this->checkDisposed(); 
 			  
 		$shortDateFormat = \trim($shortDateFormat);
 		$shortTimeFormat = \trim($shortTimeFormat);    
 		$longDateFormat = \trim($longDateFormat);
 		$longTimeFormat = \trim($longTimeFormat);  
+		$dateTimePhraseFormat = \trim($dateTimePhraseFormat);  
 		                       
 		if (!$shortDateFormat)
 			throw new ArgumentException('$shortDateFormat is an empty string or '.
@@ -679,75 +511,61 @@ final class Language extends Model {
 				'contains only whitespaces', 'longDateFormat');            
 		if (!$longTimeFormat)
 			throw new ArgumentException('$longTimeFormat is an empty string or '.
-				'contains only whitespaces', 'longTimeFormat');         
+				'contains only whitespaces', 'longTimeFormat');            
+		if (!$dateTimePhraseFormat)
+			throw new ArgumentException('$$dateTimePhraseFormat is an empty string '.
+				'or contains only whitespaces', 'longTimeFormat');   
 			
-		DataBase::query(
-			"UPDATE ".DataBase::formTableName('Premanager', 'Languages')." ".
-			"SET shortDateFormat = '".DataBase::escape($shortDateFormat)."', ".
-				"shortTimeFormat = '".DataBase::escape($shortTimeFormat)."', ".
-				"longDateFormat = '".DataBase::escape($longDateFormat)."', ".   
-				"longTimeFormat = '".DataBase::escape($longTimeFormat)."' ".
-			"WHERE id = '$this->_id'");
+		$this->update(
+			array(
+				'shortDateFormat' => $shortDateFormat,
+				'shortTimeFormat' => $title,
+				'longDateFormat' => $longDateFormat,
+				'longTimeFormat' => $longTimeFormat,
+				'dateTimePhraseFormat' => $dateTimePhraseFormat
+			),
+			array()
+		);    
 		
 		$this->_shortDateFormat = $shortDateFormat;
 		$this->_shortTimeFormat = $shortTimeFormat;
 		$this->_longDateFormat = $longDateFormat;
 		$this->_longTimeFormat = $longTimeFormat;
-		
-		$this->_editor = Environment::getCurrent()->getuser();
-		$this->_editorID = $this->_editor->getid();
-		$this->_editTime = new DateTime();
-	}   
-
-	/**
-	 * Checks if a name is available
-	 *
-	 * Checks, if $name is not already assigned to a language. This language's
-	 * names are excluded, they are available.
-	 *
-	 * @param $name name to check 
-	 * @return bool true, if $name is available
-	 */
-	public function isNameAvailable($title) {   
-		if ($this->_id === null)
-			 	
-		$result = DataBase::query(
-			"SELECT language.id ".
-			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
-			"WHERE language.name = '".DataBase::escape(Strings::unitize($name)."' ").
-				"AND language.id != '$this->_id'");
-		return !$result->next();
+		$this->_dateTimePhraseFormat = $dateTimePhraseFormat;
 	}   
 
 	// ===========================================================================
 	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT language.name, language.title, language.englishTitle, ".
-				"language.longDateFormat, language.longTimeFormat, ".
-				"language.shortDateFormat, language.shortTimeFormat, ".
-				"language.dateTimePhraseFormat, language.createTime, ".
-				"language.editTime, language.creatorID, language.editorID ".
-			"FROM ".DataBase::formTableName('Premanager', 'Languages')." AS language ".
-			"WHERE language.id = '$this->_id'");
-
-		if (!$result->next())
-			return false;
-
-		$this->_name = $result->get('name');
-		$this->_title = $result->get('title');
-		$this->_longDateFormat = $result->get('longDateFormat');
-		$this->_longTimeFormat = $result->get('longTimeFormat');
-		$this->_shortDateFormat = $result->get('shortDateFormat');
-		$this->_shortTimeFormat = $result->get('shortTimeFormat');
-		$this->_dateTimePhraseFormat = $result->get('dateTimePhraseFormat');
-		$this->_englishTitle = $result->get('englishTitle');       
-		$this->_createTime = new DateTime($result->get('createTime'));
-		$this->_creatorID = $result->get('creatorID');
-		$this->_editTime = new DateTime($result->get('editTime'));
-		$this->_editorID = $result->get('editorID');   	
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields[] = 'name';
+		$fields[] = 'title';
+		$fields[] = 'englishTitle';
+		$fields[] = 'longDateFormat';
+		$fields[] = 'longTimeFormat';
+		$fields[] = 'shortDateFormat';
+		$fields[] = 'shortTimeFormat';
+		$fields[] = 'dateTimePhraseFormat';
 		
-		return true;
+		if ($values = parent::load($fields)) {
+			$this->_name = $fields['name'];
+			$this->_title = $fields['title'];
+			$this->_englishTitle = $fields['englishTitle'];
+			$this->_longDateFormat = $fields['longDateFormat'];
+			$this->_longTimeFormat = $fields['longTimeFormat'];
+			$this->_shortDateFormat = $fields['shortDateFormat'];
+			$this->_shortTimeFormat = $fields['shortTimeFormat'];
+			$this->_dateTimePhraseFormat = $fields['dateTimePhraseFormat'];
+		}
+		
+		return $values;
 	}
 }
 

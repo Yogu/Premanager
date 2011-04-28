@@ -4,7 +4,6 @@ namespace Premanager\Modeling;
 use Premanager\Debug\Debug;
 use Premanager\Types;
 use Premanager\Execution\Template;
-use Premanager\Model;
 use Premanager\Modeling\QueryOperation;
 use Premanager\Modeling\QueryExpression;
 use Premanager\Module;
