@@ -9,7 +9,6 @@ use Premanager\Execution\Template;
 use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
-use Premanager\Models\StructureNodeType;
 use Premanager\Models\Project;
 use Premanager\Module;
 
@@ -51,14 +50,14 @@ class StructurePageNode extends PageNode {
 			if (!($structureNode instanceof StructureNode))
 				throw new ArgumentException('$structureNode must be an a '.
 					'Premanager\Models\StructureNode', 'structureNode');
-			if ($structureNode->gettype() == StructureNodeType::TREE)
+			if ($structureNode->getTreeClass())
 				throw new ArgumentException('$structureNode must not be a TREE node',
 					'structureNode');
 			$this->_structureNode = $structureNode;
 			
 			// If the parent is the organization node, this must be a project node
 			$this->_isProjectNode =
-				$structureNode->getProject()->getRootNode() == $structureNode;
+				$structureNode->getProject()->getRootNode() === $structureNode;
 			$this->_isRootNode = $this->_isProjectNode &&
 				$structureNode->getProject()->getID() == 0;
 		}
@@ -95,7 +94,7 @@ class StructurePageNode extends PageNode {
 				return $this->getChildByStructureNode($project->getRootNode());
 		}
 		
-		$structureNode = $this->_structureNode->getChild($name);
+		$structureNode = $this->_structureNode->getChildByName($name);
 		if ($structureNode &&
 			($structureNode->canAccess(Environment::getCurrent()->getUser()) ||
 			Rights::hasRight(Right::getByName('Premanager', 'structureAdmin'))))
@@ -141,14 +140,14 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\PageNode the page node
 	 */
 	public function getChildByStructureNode(StructureNode $structureNode) {
-		if ($this->_structureNode != $structureNode->getParent() && 
+		if ($this->_structureNode !== $structureNode->getParent() && 
 			!($this->_isRootNode && $structureNode->getParent() == null))
 			throw new ArgumentException('The passed structure node is not a child '.
 				'of the structure node this page node represents', 'structureNode');
 		
 		// If the child is a TREE node, the embedded node is used, not the
 		// structure page node
-		if ($structureNode->getType() == StructureNodeType::TREE)
+		if ($structureNode->getTreeClass())
 			return $structureNode->getTreeClass()->createInstance($this,
 				$structureNode);
 		else
@@ -186,29 +185,22 @@ class StructurePageNode extends PageNode {
 	 * @return Premanager\Execution\Response the response object to send
 	 */
 	public function getResponse() {
-		switch ($this->_structureNode->gettype()) {
-			case StructureNodeType::PANEL:
-				//TODO: create a panel page
-				throw new NotImplementedException();
-				
-			default:
-				$subNodes = array();
-				$right =
-					Rights::hasRight(Right::getByName('Premanager', 'structureAdmin'));
-				foreach ($this->getList() as $structureNode) {
-					if ($right ||
-						$structureNode->canAccess(Environment::getCurrent()->getUser()))
-							$subNodes[] = $this->getChildByStructureNode($structureNode);
-				}
-				
-				// create list of sub-page-nodes
-				$template = new Template('Premanager', 'subPagesList');
-				$template->set('list', $subNodes);
-				
-				$page = new Page($this);
-				$page->createMainBlock($template->get());
-				return $page;
+		$subNodes = array();
+		$right =
+			Rights::hasRight(Right::getByName('Premanager', 'structureAdmin'));
+		foreach ($this->getList() as $structureNode) {
+			if ($right ||
+				$structureNode->canAccess(Environment::getCurrent()->getUser()))
+					$subNodes[] = $this->getChildByStructureNode($structureNode);
 		}
+		
+		// create list of sub-page-nodes
+		$template = new Template('Premanager', 'subPagesList');
+		$template->set('list', $subNodes);
+		
+		$page = new Page($this);
+		$page->createMainBlock($template->get());
+		return $page;
 	}
 	
 	/**
@@ -218,7 +210,7 @@ class StructurePageNode extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof StructurePageNode &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	    
 	
 	/**

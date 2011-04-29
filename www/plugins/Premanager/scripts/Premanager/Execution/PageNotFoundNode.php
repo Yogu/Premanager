@@ -2,15 +2,12 @@
 namespace Premanager\Execution;
 
 use Premanager\Debug\Debug;
-
 use Premanager\IO\Request;
-
 use Premanager\IO\StatusCode;
 use Premanager\Execution\Template;
 use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
-use Premanager\Models\StructureNodeType;
 use Premanager\IO\Output;
 
 class PageNotFoundNode extends PageNode {

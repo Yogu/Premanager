@@ -6,7 +6,6 @@ use Premanager\Debug\Debug;
 use Premanager\Types;
 use Premanager\Models\Group;
 use Premanager\Execution\FormPageNode;
-use Premanager\Models\StructureNodeType;
 use Premanager\Modeling\SortRule;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
@@ -78,7 +77,7 @@ class StructureNodePermissionsPage extends FormPageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof StructureNodePermissionsPage &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	    
 	
 	/**

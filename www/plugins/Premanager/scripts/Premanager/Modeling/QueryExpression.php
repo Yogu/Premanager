@@ -636,13 +636,21 @@ class QueryExpression extends Module {
 				}
 					
 			case QueryOperation::EQUAL:
+				// == operator compares objects property-by-property
+				if ($this->_operand0->_type instanceof ModelDescriptor)
+					return $this->_operand0->evaluate($object, $queryEvaluated) ===
+					  $this->_operand1->evaluate($object, $queryEvaluated);
+						  
 				switch ($this->_operand0->_type) {
 					case DataType::DATE_TIME:
 					case DataType::TIME_SPAN:
 						return $this->_operand0->evaluate($object, $queryEvaluated)->equals(
 						  $this->_operand1->evaluate($object, $queryEvaluated),
 						  $queryEvaluated);
+						  
 					default:
+						// == operator compares objects property-by-property
+						// but does this work on DataType::NUMBER?
 						return $this->_operand0->evaluate($object, $queryEvaluated) ==
 						  $this->_operand1->evaluate($object, $queryEvaluated);
 				}

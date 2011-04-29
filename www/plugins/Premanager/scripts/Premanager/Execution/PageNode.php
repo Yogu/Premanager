@@ -146,7 +146,7 @@ abstract class PageNode extends Module {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $this == $other;
+		return $this === $other;
 	}	     
 	
 	/**

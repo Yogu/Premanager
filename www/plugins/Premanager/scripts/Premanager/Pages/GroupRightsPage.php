@@ -76,7 +76,7 @@ class GroupRightsPage extends FormPageNode {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof GroupRightsPage && $other->_group == $this->_group;
+		return $other instanceof GroupRightsPage && $other->_group === $this->_group;
 	}	    
 
 	// ===========================================================================

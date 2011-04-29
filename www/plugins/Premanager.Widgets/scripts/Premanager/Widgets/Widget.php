@@ -23,19 +23,15 @@ use Premanager\Debug\Debug;
 use Premanager\Processing\TreeNode;
 use Premanager\Models\User;
 use Premanager\Models\StructureNode;
-use Premanager\Modelling\ModelDescriptor;
-use Premanager\Modelling\QueryList;
-use Premanager\Modelling\DataType;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\DataType;
 use Premanager\IO\DataBase\DataBase;
 
 /**
  * An abstract base class for widgets
  */
 abstract class Widget extends Model {
-	/**
-	 * @var int
-	 */
-	private $_id;
 	/**
 	 * @var int
 	 */
@@ -66,87 +62,29 @@ abstract class Widget extends Model {
 	private $_order;
 	
 	/**
-	 * @var array
-	 */
-	private static $_instances = array();
-	/**
-	 * @var int
-	 */
-	private static $_count;
-	/**
 	 * @var Premanager\QueryList\ModelDescriptor
 	 */
 	private static $_descriptor;
-	/**
-	 * @var Premanager\QueryList\QueryList
-	 */
-	private static $_queryList;
-
-	// ===========================================================================    
-	
-	protected function __construct() {
-		parent::__construct();	
-	}
-	
-	private static function createFromID($id, $widgetClassID = null,
-		$userID = null, $structureNodeID = null)
-	{
-		if (\array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id]; 
-			if ($instance->_widgetClassID === null)
-				$instance->_widgetClassID = $widgetClassID;
-			if ($instance->_userID === null)
-				$instance->_userID = $userID;
-			if ($instance->_structureNodeID === null)
-				$instance->_structureNodeID = $structureNodeID;
-				
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException('$id must be a nonnegative integer value',
-				'id');
-			
-		// Get widget class
-		$result = DataBase::query(
-			"SELECT widgetClass.class ".
-			"FROM ".DataBase::formTableName('Premanager.Widgets', 'WidgetClasses').
-				" AS widgetClass ".
-			"INNER JOIN ".DataBase::formTableName('Premanager.Widgets', 'Widgets').
-				" AS widget ON widget.widgetClassID = widgetClass.id ".
-			"WHERE widget.id = '$id'");
-		if (!$result->next())
-			return null;
-		$class = $result->get('class');
-				
-		$instance = new $class();
-		$instance->_id = $id;
-		$instance->_widgetClassID = $widgetClassID;
-		$instance->_userID = $userID;
-		$instance->_structureNodeID = $structureNodeID;
-		self::$_instances[$id] = $instance;
-		return $instance;
-	} 
 
 	// ===========================================================================
+
+	/**
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Widgets\WidgetModel
+	 */
+	public static function getDescriptor() {
+		return WidgetModel::getInstance();
+	}
 	
 	/**
 	 * Gets a widget using its id
 	 * 
-	 * @param int $id the id of the widget
+	 * @param int $id
 	 * @return Premanager\Widgets\Widget
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			// This method already checks if the model exists
-			return self::createFromID($id);
-		}
+		return self::getDescriptor()->getByID($id);
 	}
 	    
 	/**
@@ -172,42 +110,18 @@ abstract class Widget extends Model {
 	 * @return Premanager\QueryList\QueryList
 	 */
 	public static function getWidgets() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
-	}          
-
-	/**
-	 * Gets a boundle of information about this model
-	 *
-	 * @return Premanager\QueryList\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'widgetClass' => array(WidgetClass::getDescriptor(), 'getWidgetClass',
-					'widgetClassID'),
-				'structureNode' => array(StructureNode::getDescriptor(),
-					'getStructureNode', 'nodeID'),
-				'user' => array(User::getDescriptor(), 'getUser', 'userID'),
-				'order' => array(DataType::NUMBER, 'getOrder', 'order')),
-				'Premanager.Widgets', 'Widgets', array(__CLASS__, 'getByID'), false);
-		}
-		return self::$_descriptor;
-	}                                           
+		return self::getDescriptor()->getQueryList();
+	}                                          
 
 	// ===========================================================================
-	
+
 	/**
-	 * Gets the id of this widget
+	 * Gets a boulde of information about the Widget model
 	 *
-	 * @return int
+	 * @return Premanager\Widgets\WidgetModel
 	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
+	public function getModelDescriptor() {
+		return WidgetModel::getInstance();
 	}
 	
 	/**
@@ -331,13 +245,7 @@ abstract class Widget extends Model {
 	}
 	
 	public function internalDelete() {
-		DataBaseHelper::delete('Premanager.Widgets', 'Widgets',
-			DataBaseHelper::NO_TRANSLATION | DataBaseHelper::NO_NAME, $this->_id);
-			
-		//TODO: Delete options
-		
-		$this->_id = 0;
-		$this->dispose();
+		$this->delete();
 	}
 
 	// ===========================================================================
@@ -356,25 +264,30 @@ abstract class Widget extends Model {
 	}
 
 	// ===========================================================================
-	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT widget.widgetClassID, widget.nodeID, widget.userID, ".
-				"widget.order ".
-			"FROM ".DataBase::formTableName('Premanager.Widgets', 'Widgets').
-				" AS widget ".
-			"WHERE widget.id = '$this->_id'");
+	  
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields[] = 'widgetClassID';
+		$fields[] = 'nodeID';
+		$fields[] = 'userID';
+		$fields[] = 'order';
 		
-		if (!$result->next())
-			return false;
+		if ($values = parent::load($fields)) {
+			$this->_widgetClassID = $values['widgetClassID'];
+			$this->_structureNodeID = $values['nodeID'];
+			$this->_userID = $values['userID'];
+			$this->_order = $values['order'];
+		}
 		
-		$this->_widgetClassID = $result->get('widgetClassID');
-		$this->_structureNodeID = $result->get('nodeID');
-		$this->_userID = $result->get('userID');
-		$this->_order = $result->get('order');
-		
-		return true;
-	}      
+		return $values;
+	}   
 }
 
 ?>

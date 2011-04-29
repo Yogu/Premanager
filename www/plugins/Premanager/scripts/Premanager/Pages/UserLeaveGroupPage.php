@@ -79,7 +79,7 @@ class UserLeaveGroupPage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof UserLeaveGroupPage &&
-			$other->_user == $this->_user;
+			$other->_user === $this->_user;
 	}	    
 
 	/**

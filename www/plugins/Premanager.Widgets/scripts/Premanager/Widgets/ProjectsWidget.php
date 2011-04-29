@@ -1,8 +1,8 @@
 <?php
 namespace Premanager\Widgets;
 
-use Premanager\Modelling\SortDirection;
-use Premanager\Modelling\SortRule;
+use Premanager\Modeling\SortDirection;
+use Premanager\Modeling\SortRule;
 use Premanager\Models\Project;
 use Premanager\Execution\PageNode;
 use Premanager\Execution\Template;

@@ -18,9 +18,9 @@ use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Debug\Debug;
-use Premanager\Modelling\SortDirection;
-use Premanager\Modelling\QueryOperation;
-use Premanager\Modelling\SortRule;
+use Premanager\Modeling\SortDirection;
+use Premanager\Modeling\QueryOperation;
+use Premanager\Modeling\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;
@@ -162,7 +162,7 @@ class SidebarAdminPage extends SidebarPage {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof SidebarAdminPage &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	 
 }
 

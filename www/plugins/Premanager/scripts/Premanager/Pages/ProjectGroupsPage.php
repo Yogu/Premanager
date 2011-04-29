@@ -173,7 +173,7 @@ class ProjectGroupsPage extends ListPageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof ProjectGroupsPage &&
-			$other->_project == $this->_project; 
+			$other->_project === $this->_project; 
 	}	   
 
 	// ===========================================================================

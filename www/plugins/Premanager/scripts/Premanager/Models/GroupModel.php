@@ -188,7 +188,7 @@ class GroupModel extends ModelDescriptor {
 		Group $ignoreThis = null)
 	{
 		$model = $this->getByNameBase($name, $project->getID(), $inUse);
-		return !$model || !$inUse || $model == $ignoreThis;
+		return !$model || !$inUse || $model === $ignoreThis;
 	}
 }
 

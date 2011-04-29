@@ -1,8 +1,6 @@
 <?php
 namespace Premanager\Pages;
 
-use Premanager\Models\StructureNodeType;
-
 use Premanager\Modeling\SortRule;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
@@ -102,7 +100,7 @@ class EditStructureNodePage extends StructureNodeFormPage {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof EditStructureNodePage &&
-			$other->getStructureNode() == $this->getStructureNode(); 
+			$other->getStructureNode() === $this->getStructureNode(); 
 	}	      
 	
 	/**
@@ -127,7 +125,7 @@ class EditStructureNodePage extends StructureNodeFormPage {
 	 * @return Premanager\Pages\StructureNodePage
 	 */
 	private function getChildList(){
-		if ($this->_childList == null) {
+		if ($this->_childList === null) {
 			$this->_childList = $this->getStructureNode()->getChildren();
 			$this->_childList = $this->_childList->sort(array(
 				new SortRule($this->_childList->exprMember('title'))));

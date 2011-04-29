@@ -9,7 +9,6 @@ use Premanager\Execution\Template;
 use Premanager\NotImplementedException;
 use Premanager\ArgumentException;
 use Premanager\Models\StructureNode;
-use Premanager\Models\StructureNodeType;
 use Premanager\IO\Output;
 use Premanager\Module;
 

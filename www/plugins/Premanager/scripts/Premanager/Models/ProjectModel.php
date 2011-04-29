@@ -229,7 +229,7 @@ class ProjectModel extends ModelDescriptor {
 	public function isNameAvailable($name, Project $ignoreThis = null)
 	{
 		$model = $this->getByNameBase($name, '', $inUse);
-		return !$model || !$inUse || $model == $ignoreThis;
+		return !$model || !$inUse || $model === $ignoreThis;
 	}
 }
 

@@ -115,7 +115,7 @@ class EditGroupPage extends GroupFormPage {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof EditGroupPage &&
-			$other->_group == $this->_group; 
+			$other->_group === $this->_group; 
 	}	    
 }
 

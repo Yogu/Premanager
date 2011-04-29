@@ -68,7 +68,7 @@ abstract class TreeFormPageNode extends FormPageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof TreeFormPageNode &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	   
 	
 }

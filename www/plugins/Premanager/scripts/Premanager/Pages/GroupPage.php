@@ -150,7 +150,7 @@ class GroupPage extends ListPageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof GroupPage &&
-			$other->_group == $this->_group; 
+			$other->_group === $this->_group; 
 	}	    
 	
 	/**

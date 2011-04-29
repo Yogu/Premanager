@@ -59,7 +59,7 @@ final class Group extends Model {
 	 * @return Premanager\Models\Group
 	 */
 	public static function getByID($id) {
-		return self::getModelDescriptor()->getByID($id);
+		return self::getDescriptor()->getByID($id);
 	}
                                
 	/**
@@ -73,7 +73,7 @@ final class Group extends Model {
 	 * @return Premanager\Models\Group  
 	 */
 	public static function getByName(Project $project, $name) {
-		return self::getModelDescriptor()->getByName($project, $name);
+		return self::getDescriptor()->getByName($project, $name);
 	}
 	
 	/**
@@ -554,7 +554,6 @@ final class Group extends Model {
 	 *   model does not exist in data base
 	 */
 	public function load(array $fields = array()) {
-		$fields[] = 'translation.name';
 		$fields[] = 'translation.title';
 		$fields[] = 'color';
 		$fields[] = 'priority';

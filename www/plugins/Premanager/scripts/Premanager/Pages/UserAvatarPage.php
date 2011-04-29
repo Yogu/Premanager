@@ -78,7 +78,7 @@ class UserAvatarPage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof UserAvatarPage &&
-			$other->_user == $this->_user;
+			$other->_user === $this->_user;
 	}
 
 	/**

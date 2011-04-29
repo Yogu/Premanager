@@ -94,7 +94,7 @@ class UserJoinGroupPage extends FormPageNode {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof UserJoinGroupPage && $other->_user == $this->_user;
+		return $other instanceof UserJoinGroupPage && $other->_user === $this->_user;
 	}	    
 
 	// ===========================================================================

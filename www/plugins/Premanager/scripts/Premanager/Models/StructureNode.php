@@ -30,8 +30,6 @@ use Premanager\IO\DataBase\DataBase;
  * A structure node
  */
 final class StructureNode extends Model {
-	private $_id;
-	private $_name;
 	private $_title;  
 	private $_parent = false;
 	private $_parentID;
@@ -40,106 +38,31 @@ final class StructureNode extends Model {
 	private $_treeClass = false;
 	private $_treeID;
 	private $_noAccessRestriction;
-	private $_hasPanel;
-	private $_creator;
-	private $_creatorID;
-	private $_createTime;
-	private $_editor;    
-	private $_editorID;
-	private $_editTime; 
 	private $_url;
 	private $_authorizedGroups;
 	private $_children;
 	
-	private static $_instances = array();
-	private static $_descriptor;
-	private static $_queryList;                 
+	private static $_descriptor;          
 
-	// ===========================================================================  
-	
-	protected function __construct() {
-		parent::__construct();	
-	}
-	
+	// =========================================================================== 
+
 	/**
-	 * @param int $id
-	 * @param Premanager\Models\StructureNode $parent
-	 * @param string $name
-	 * @param string $title
-	 * @param bool $noAccessRestriction
-	 * @param Premanager\Models\TreeClass $treeClass
-	 * @param bool $hasPanel
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Models\StructureNodeModel
 	 */
-	private static function createFromID($id, $parent = false, $name = null,
-		$title = null, $noAccessRestriction = null, $treeClass = false,
-		$hasPanel = null) {
-		if ($name !== null)
-			$name = \trim($name);
-		if ($title !== null)
-			$title = \trim($title);
-		$hasPanel = !!$hasPanel;
-		if ($hasPanel && $tree)
-			throw new ArgumentException('A node can not have both a tree and a '.
-				'panel');
-
-		if (\array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id];
-
-			if ($instance->_parent === false)
-				$instance->_parent = $parent;
-			if ($instance->_name === null)
-				$instance->_name = $name;
-			if ($instance->_title === null)
-				$instance->_title = $title;
-			if ($instance->_noAccessRestriction === null)
-				$instance->_noAccessRestriction = $noAccessRestriction;
-			if ($instance->_treeClass === false)
-				$instance->_treeClass = $tree;
-			if ($instance->_hasPanel === null)
-				$instance->_hasPanel = $hasPanel;
-
-			return $instance;	
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a positive integer value', 'id'); 
-
-		$instance = new self();
-		$instance->_id = (int) $id;
-		$instance->_parent = $parent;
-		$instance->_name = $name;
-		$instance->_title = $title;
-		$instance->_noAccessRestriction = $noAccessRestriction;
-		$instance->_treeClass = $treeClass;
-		$instance->_hasPanel = $hasPanel;
-		self::$_instances[$id] = $instance;
-		return $instance;
+	public static function getDescriptor() {
+		return StructureNodeModel::getInstance();
 	}
 	
 	/**
 	 * Gets a structure node using its id
 	 * 
-	 * @param int $id the id of the session
+	 * @param int $id
 	 * @return Premanager\Models\StructureNode
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-		
-		// This switch allows not to call load() on models that have already been
-		// created
-		if (!Types::isInteger($id) || $id <= 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getDescriptor()->getByID($id);
 	}
 
 	/**
@@ -148,33 +71,8 @@ final class StructureNode extends Model {
 	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getStructureNodes() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
-	}          
-
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\Modeling\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'name' => array(DataType::STRING, 'getName', '*name'),
-				'title' => array(DataType::STRING, 'getTitle', '*title'),
-				'parent' => array('this', 'getParent', 'parentID'),
-				'tree' => array(TreeClass::getDescriptor(), 'getTree', 'treeID'),
-				'creator' => array(User::getDescriptor(), 'getCreator', 'creatorID'),
-				'createTime' => array(DataType::DATE_TIME, 'getCreateTime',
-					'createTime'),
-				'editor' => array(User::getDescriptor(), 'getEditor', 'editorID'),
-				'editTime' => array(DataType::DATE_TIME, 'getEditTime', 'editTime')),
-				'Premanager', 'Nodes', array(__CLASS__, 'getByID'), true);
-		}
-		return self::$_descriptor;
-	}
+		return self::getDescriptor()->getQueryList();
+	} 
 
 	/**
 	 * Checks whether the name is a valid structure node name
@@ -190,16 +88,14 @@ final class StructureNode extends Model {
 	}
 
 	// ===========================================================================
-	
+
 	/**
-	 * Gets the id of this structure node
+	 * Gets a boulde of information about the StructureNode model
 	 *
-	 * @return int
+	 * @return Premanager\Models\StructureNodeModel
 	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
+	public function getModelDescriptor() {
+		return StructureNodeModel::getInstance();
 	}
 
 	/**
@@ -208,11 +104,7 @@ final class StructureNode extends Model {
 	 * @return string
 	 */
 	public function getName() {
-		$this->checkDisposed();
-			
-		if ($this->_name === null)
-			$this->load();
-		return $this->_name;	
+		return parent::getName();
 	}    
 
 	/**
@@ -240,7 +132,7 @@ final class StructureNode extends Model {
 			if ($this->_parentID === null)
 				$this->load();
 			if ($this->_parentID)
-				$this->_parent = StructureNode::createFromID($this->_parentID);
+				$this->_parent = StructureNode::getByID($this->_parentID, false);
 			else
 				$this->_parent = null;
 		}
@@ -279,38 +171,12 @@ final class StructureNode extends Model {
 		if ($this->_noAccessRestriction === null)
 			$this->load();
 		return $this->_noAccessRestriction;	
-	}          
+	} 
 
 	/**
-	 * Gets a the content type (enum Premanager\Models\StructureNodeType)
-	 * 
-	 * SIMPLE means that this node only shows a list of its subpages
-	 * PANEL means that this page has  a user-defined panel
-	 * TREE means that this node is assigned to a TreeNode which specifies
-	 * the contents and subpages
+	 * Gets the tree node class of this node
 	 *
-	 * @return int (enum Premanager\Models\StructureNodeType)
-	 */
-	public function getType() {
-		$this->checkDisposed();
-			
-		if ($this->_hasPanel === null || $this->_treeID === null)
-			$this->load();
-		
-		if ($this->_hasPanel)
-			return StructureNodeType::PANEL;
-		else if ($this->_treeID)
-			return StructureNodeType::TREE;
-		else
-			return StructureNodeType::SIMPLE;
-	}
-
-	/**
-	 * Gets the tree node class of this node, if $type is TREE
-	 * 
-	 * If $type is not TREE, returns null
-	 *
-	 * @return Premanager\Models\TreeClass
+	 * @return Premanager\Models\TreeClass the tree class or null
 	 */
 	public function getTreeClass() {
 		$this->checkDisposed();
@@ -334,14 +200,7 @@ final class StructureNode extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public function getCreator() {
-		$this->checkDisposed();
-			
-		if ($this->_creator === null) {
-			if (!$this->_creatorID)
-				$this->load();
-			$this->_creator = User::getByID($this->_creatorID);
-		}
-		return $this->_creator;	
+		return parent::getCreator();
 	}                        
 
 	/**
@@ -350,11 +209,7 @@ final class StructureNode extends Model {
 	 * @return Premanager\DateTime
 	 */
 	public function getCreateTime() {
-		$this->checkDisposed();
-			
-		if ($this->_createTime === null)
-			$this->load();
-		return $this->_createTime;	
+		return parent::getCreateTime();
 	}                               
 
 	/**
@@ -363,14 +218,7 @@ final class StructureNode extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public function getEditor() {
-		$this->checkDisposed();
-			
-		if ($this->_editor === null) {
-			if (!$this->_editorID)
-				$this->load();
-			$this->_editor = User::getByID($this->_editorID);
-		}
-		return $this->_editor;	
+		return parent::getEditor();
 	}                        
 
 	/**
@@ -379,12 +227,17 @@ final class StructureNode extends Model {
 	 * @return Premanager\DateTime
 	 */
 	public function getEditTime() {
-		$this->checkDisposed();
-			
-		if ($this->_editTime === null)
-			$this->load();
-		return $this->_editTime;	
-	}             
+		return parent::getEditTime();
+	}
+
+	/**
+	 * Gets the count this structure node has been edited
+	 *
+	 * @return int the count of edits
+	 */
+	public function getEditTimes() {
+		return parent::getEditTimes();
+	}
 
 	/**
 	 * Creates a structure node that exists already in data base, using its name
@@ -394,21 +247,8 @@ final class StructureNode extends Model {
 	 * @param string $name name of structure node
 	 * @return Premanager\Models\StructureNode  
 	 */
-	public function getChild($name) {	
-		$this->checkDisposed();
-				
-		$result = DataBase::query(
-			"SELECT name.id ".            
-			"FROM ".DataBase::formTableName('Premanager', 'NodesName')." AS name ".
-			"INNER JOIN ".DataBase::formTableName('Premanager', 'Nodes')." AS node ".
-				"ON name.id = node.id ".
-			"WHERE node.parentID = '$this->_id' ". 
-				"AND name.name = '".DataBase::escape(Strings::unitize($name))."'");
-		if ($result->next()) {
-			$user = self::createFromID($result->get('id'), $this);
-			return $user;
-		}
-		return null;
+	public function getChildByName($name) {	
+		return self::getDescriptor()->getByName($this, $name);
 	}      
 	
 	/**
@@ -434,16 +274,15 @@ final class StructureNode extends Model {
 	public function getURL() {
 		$this->checkDisposed();
 		
-		if (!$this->_url) {
-			if ($this->getParent()) {
-				$parentURL = $this->getParent()->getURL();
-				if ($parentURL)
-					$this->_url = $parentURL . '/';
-				$this->_url .= htmlspecialchars($this->getName());
-			} else
-				$this->_url = htmlspecialchars($this->getProject()->getName());
-		}
-		return $this->_url;
+		if ($this->getParent()) {
+			$parentURL = $this->getParent()->getURL();
+			if ($parentURL)
+				$url = $parentURL . '/';
+			$url .= htmlspecialchars($this->getName());
+		} else
+			$url = htmlspecialchars($this->getProject()->getName());
+			
+		return $url;
 	}
 	
 	/**
@@ -527,11 +366,9 @@ final class StructureNode extends Model {
 	 * @param string $title the title of this node
 	 * @param bool $noAccessRestriction speicifies if all users can access this
 	 *   node   
-	 * @param int $type TYPE_SIMPLE, TYPE_PANEL or TYPE_TREE
 	 * @throws Premanager\NameConflictException $name is not available
 	 */
-	public function setValues($name, $title, $noAccessRestriction = null,
-		$type = null) {
+	public function setValues($name, $title, $noAccessRestriction = null) {
 		$this->checkDisposed();
 			
 		$name = Strings::normalize($name);
@@ -540,6 +377,9 @@ final class StructureNode extends Model {
 			$noAccessRestriction = $this->getnoAccessRestriction();
 		else
 			$noAccessRestriction = !!$noAccessRestriction;
+			
+		if (!$this->getParent())
+			$name = '';
 		
 		if (!$name)
 			throw new ArgumentException(
@@ -555,57 +395,23 @@ final class StructureNode extends Model {
 				'$title is an empty string or contains only whitespaces', 'title');
 			
 		$nameChanged = $name != $this->getName();
-			
-		if ($type !== null) {
-			switch ($type)  {
-				case StructureNodeType::SIMPLE:
-					if ($this->gettree())
-						throw new InvalidOperationException('The type of a node with type '.
-							'TREE can not be changed');
-					$hasPanel = false;
-					break;
-				case StructureNodeType::PANEL:
-					if ($this->gettree())
-						throw new InvalidOperationException('The type of a node with type '.
-							'TREE can not be changed');
-					$hasPanel = true;
-					break;
-				case StructureNodeType::TREE:
-					if (!$this->gettree())
-						throw new InvalidOperationException('The type of a node can not '.
-							'be changed to TREE');
-					$hasPanel = false;
-					break;
-				default:
-					throw new InvalidEnumArgumentException('type', $type,
-						'Premanage\Models\StructureNodeType'); 
-			}
-		} else
-			$hasPanel = $this->getType() == StructureNodeType::PANEL;
-			
-		DataBaseHelper::update('Premanager', 'Nodes',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::IS_TREE,
-			$this->_id, $name,
+		
+		$this->update(
 			array(
 				'noAccessRestriction' => $noAccessRestriction,
 				'hasPanel' => $hasPanel),
 			array(
-				'name' => $name,
 				'title' => $title),
+			$nameChanged ? $name : null,
 			$this->getParent() ? $this->getParent()->getID() : 0
 		);
 		
 		if ($nameChanged)
 			$this->_url = null;
 		
-		$this->_name = $name;
 		$this->_title = $title;	
 		$this->_noAccessRestriction = $noAccessRestriction;
 		$this->_hasPanel = $hasPanel;
-		
-		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getUser();
 	}     
 	
 	/**
@@ -622,14 +428,14 @@ final class StructureNode extends Model {
 	public function setParent(StructureNode $parent) {
 		$this->checkDisposed();
 			
-		if ($parent == $this->getParent())
+		if ($parent === $this->getParent())
 			return;
 			
 		if (!$this->getParent())
 			throw new InvalidOperationException('Root node can not be moved');
 		if (!$parent)
 			throw new ArgumentNullException('parent');
-		if ($parent == $this)
+		if ($parent === $this)
 			throw new ArgumentException('A node can not become its own parent',
 				'parent');
 		if ($parent->isChildOf($this))
@@ -637,39 +443,27 @@ final class StructureNode extends Model {
 		if ($parent->getproject() != $this->_project)
 			throw new ArgumentException('$parent\'s project must be the same '.
 				'project like this node\'s project', 'parent');
-		if ($parent->gettype() == StructureNodeType::TREE)
+		if ($parent->getTreeClass())
 			throw new ArgumentException('$parent\'s type is TREE, so it '.
 				'can not contain children', 'parent');
 		if (!$parent->areNamesAvailable($this))
 			throw new NameConflictException('Can not move this node into $parent '.
 				'because some of the names of this node are not available in $parent.');
 			
-		// All names have to be deleted because otherwise they would be moved to the
-		// new parent, too
-		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodesName')." ".
-			"WHERE id = '$this->_id'");
-			
-		// Re-insert up-to-date names
-		DataBaseHelper::rebuildNameTable('Premanager', 'Nodes',
-			DataBaseHelper::IS_TREE, $this->_id);
-			
 		// Now update parent id
-		DataBaseHelper::update('Premanager', 'Nodes',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::IS_TREE , $this->_id, null,
+		$this->update(
 			array(
-				'parentID' => $parent->getid()),
-			array()
-		);           
+				'parentID' => $parent->getID()
+			)
+		);
+		
+		// Old names have to be removed because we don't know whether they are
+		// available in the new parent - and old urls will be invalid, anyway
+		$this->deleteUnusedNames();
 		
 		$this->_parentID = $parent->getID();
 		$this->_parent = $parent;
 		
-		self::clearURLCache();
-		
-		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getUser();
 	}
 	
 	/**
@@ -684,138 +478,28 @@ final class StructureNode extends Model {
 		$this->checkDisposed();
 			
 		$noAccessRestriction = !!$noAccessRestriction;
-			
-		DataBaseHelper::update('Premanager', 'Nodes',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::IS_TREE,
-			$this->_id, null,
+		
+		$this->update(
 			array(
 				'noAccessRestriction' => $noAccessRestriction),
 			array()
 		);
 		
 		$this->_noAccessRestriction = $noAccessRestriction;
-		
-		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getuser();
-	}   
-	
-	/**
-	 * Changes type property
-	 * 
-	 * This value will be changed in data base and in this object. 
-	 *
-	 * @param int $type StructureNodeType::SIMPLE or StructureNodeType::PANEL
-	 */
-	public function setType($type) {
-		$this->checkDisposed();
-			
-		switch ($type)  {
-			case StructureNodeType::SIMPLE:
-				if ($this->gettree())
-					throw new InvalidOperationException('The type of a node with type '.
-						'TREE can not be changed');
-				$hasPanel = false;
-				break;
-			case StructureNodeType::TYPE_PANEL:
-				if ($this->gettree())
-					throw new InvalidOperationException('The type of a node with type '.
-						'TREE can not be changed');
-				$hasPanel = true;
-				break;
-			case StructureNodeType::TYPE_TREE:
-				if (!$this->gettree())
-					throw new InvalidOperationException('The type of a node can not '.
-						'be changed to TREE');
-				$hasPanel = false;
-				break;
-			default:
-				throw new InvalidEnumArgumentException('type', $type,
-					'Premanager\Models\StructureNodeType');
-		}
-		
-		if ($hasPanel == $this->gethasPanel())
-			return;
-			
-		DataBaseHelper::update('Premanager', 'StructureNodes', 'nodeID',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS |
-			DataBaseHelper::IS_TREE,
-			$this->_id, null,
-			array(
-				'hasPanel' => $hasPanel),
-			array()
-		);
-			
-		$this->_hasPanel = $hasPanel;
-		
-		$this->_editTime = new DateTime();
-		$this->_editor = Environment::getCurrent()->getuser();
-	}     
+	} 
 
 	/**
 	 * Creates a new structure node and inserts it into data base
-	 * 
-	 * The type StructureNodeType::TREE is not allowed here because those nodes
-	 * are created automatically.
 	 *
 	 * @param string $name group name
 	 * @param string $title user title
-	 * @param int $type content type (StructureNodeType::SIMPLE or ~::PANEL) 
-	 * @param StructureTree $tree if $type is TYPE_TREE, the structure tree
-	 * @return StructureNode
+	 * @return Premanager\Models\StructureNode
 	 * @throws Premanager\NameConflictException $name is not available
 	 */
-	public function createChild($name, $title, $type) {
-		$name = Strings::normalize($name);
-		$title = trim($title);
+	public function createChild($name, $title) {   
+		$this->checkDisposed();
 		
-		if (!$name)
-			throw new ArgumentException(
-				'$name is an empty string or contains only whitespaces', 'name');
-		if (!self::isValidName($name))
-			throw new ArgumentException('$name must not contain slashes and must '.
-				'not begin with a plus sign', 'name');
-		if (!$this->isNameAvailable($name))
-			throw new NameConflictException('There is already a child node with the '.
-				'same name', $name);
-		if (!$title)
-			throw new ArgumentException(
-				'$title is an empty string or contains only whitespaces', 'title');  
-		
-		switch ($type) {
-			case StructureNodeType::SIMPLE:
-			case StructureNodeType::PANEL:
-				break;
-				
-			case StructureNodeType::TREE:
-				throw new ArgumentException('Nodes with type TREE can not be created '.
-					'manually', 'type');
-				break;
-			
-			default:
-				throw new InvalidEnumArgumentException('type', $type,
-					'Premanager\Models\StructureNodeType');
-		}
-	
-		$id = DataBaseHelper::insert('Premanager', 'Nodes',
-			DataBaseHelper::CREATOR_FIELDS | DataBaseHelper::EDITOR_FIELDS, $name,
-			array(
-				'noAccessRestriction' => true,
-				'parentID' => $this->_id,
-				'projectiD' => $this->getProject()->getID(),
-				'hasPanel' => $type == StructureNodeType::PANEL,
-				'treeID' => 0),
-			array(
-				'title' => $title)
-		);
-		
-		$instance = self::createFromID($id, $parent, $name, $title, true);
-		$instance->_creator = Environment::getCurrent()->getuser();
-		$instance->_createTime = new DateTime();
-		$instance->_editor = Environment::getCurrent()->getuser();
-		$instance->_editTime = new DateTime();
-		
-		return $instance;
+		return self::getDescriptor()->createNew($this, $name, $title);
 	}  
 	
 	/**
@@ -824,41 +508,37 @@ final class StructureNode extends Model {
 	public function delete() {         
 		$this->checkDisposed();
 			
-		// First check if there are any children with TYPE_TREE type, because they
-		// can not be deleted
+		// First check if there are any children linked to tree classes, because
+		// they can not be deleted
 		if (!$this->canDelete())
-			throw new InvalidOperationException('This node can not be deleted');
+			throw new InvalidOperationException('This node can not be deleted '.
+				'because itself or one of its descendants is linked to a tree class');
 			
 		// Delete children
 		foreach ($this->getChildren() as $child) {
 			$child->delete();
-		}
-
-		// Delete this node
-		DataBaseHelper::delete('Premanager', 'Nodes',
-			DataBaseHelper::IS_TREE,
-			$this->_id);      
+		}      
 			    
 		// Delete group permissions
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'NodeGroup')." ".
 			"WHERE nodeID = '$this->_id'");
-		
-		if ($this->getparent() && $this->getparent()->_childCount !== null)
-			$this->getparent()->_childCount--;
 
-		$this->dispose();
+		// Delete this node
+		$this->delete();
 	}
 	
 	/**
 	 * Checks if this node can be deleted.
 	 * 
-	 * Nodes with TREE type can not be deleted, as well as nodes with a child
-	 * that can not be deleted 
+	 * Nodes linked to tree classes can not be deleted, as well as nodes with a
+	 * child that can not be deleted 
 	 * 
 	 * @return bool true, if this node can be deleted
 	 */
-	public function canDelete() {
+	public function canDelete() {   
+		$this->checkDisposed();
+		
 		if ($this->getTreeClass())
 			return false;
 		else
@@ -881,11 +561,8 @@ final class StructureNode extends Model {
 	 */
 	public function isNameAvailable($name, $ignoreThis = null) {   
 		$this->checkDisposed();
-
-		return DataBaseHelper::isNameAvailable('Premanager', 'Nodes',
-			DataBaseHelper::IS_TREE, $name,
-			($ignoreThis instanceof StructureNode ? $ignoreThis->_id : null),
-			$this->_id);
+		
+		return self::getDescriptor()->isNameAvailable($name, $this, $ignoreThis);
 	}  
 
 	/**
@@ -904,10 +581,8 @@ final class StructureNode extends Model {
 			"WHERE name.id = '$node->_id' ".
 				"AND name.inUse = '1'");
 		while ($result->next()) {
-			if (!DataBaseHelper::isNameAvailable('Premanager', 'Nodes',
-				DataBaseHelper::IS_TREE,
-				$result->get('name'), null, $this->_id))
-					return false;
+			if (!$this->isNameAvailable($name))
+				return false;
 		}
 		return true;
 	}
@@ -921,45 +596,34 @@ final class StructureNode extends Model {
 	 */
 	public function isChildOf(StructureNode $node) {
 		return $this->getParent() && 
-			($this->getParent() == $node || $this->getParent()->isChildOf($node));
+			($this->getParent() === $node || $this->getParent()->isChildOf($node));
 	}
 
-	// ===========================================================================       
-	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT node.parentID, node.projectID, node.noAccessRestriction, ".
-				"node.hasPanel, node.treeID, translation.name, translation.title, ". 
-				"node.creatorID, node.editorID, node.createTime, node.editTime ".    
-			"FROM ".DataBase::formTableName('Premanager', 'Nodes')." AS node ",
-			/* translating */
-			"WHERE node.id = '$this->_id'");
-		
-		if (!$result->next())
-			return false;
-		
-		$this->_name = $result->get('name');
-		$this->_title = $result->get('title');
-		$this->_parentID = (int) $result->get('parentID');
-		$this->_projectID = (int) $result->get('projectID');
-		$this->_noAccessRestriction = !!$result->get('noAccessRestriction');
-		$this->_hasPanel = (bool) $result->get('hasPanel');
-		$this->_treeID = (int) $result->get('treeID');
-		$this->_creatorID = (int) $result->get('creatorID');
-		$this->_editorID = (int) $result->get('editorID');
-		$this->_createTime = new DateTime($result->get('createTime'));
-		$this->_editTime = new DateTime($result->get('editTime'));
-		
-		return true;
-	}
-
+	// ===========================================================================      
 	/**
-	 * Deletes the value of $_url properties of all instances
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
 	 */
-	private static function clearURLCache() {
-		foreach (self::$_instances as $instance) {
-			$instance->_url = null;
+	public function load(array $fields = array()) {
+		$fields[] = 'parentID';
+		$fields[] = 'projectID';
+		$fields[] = 'noAccessRestriction';
+		$fields[] = 'treeID';
+		$fields[] = 'translation.title';
+		
+		if ($values = parent::load($fields)) {
+			$this->_parentID = $values['parentID'];
+			$this->_projectID = $values['projectID'];
+			$this->_noAccessRestriction = $values['noAccessRestriction'];
+			$this->_treeID = $values['treeID'];
+			$this->_title = $values['title'];
 		}
+		
+		return $values;
 	}
 }
 

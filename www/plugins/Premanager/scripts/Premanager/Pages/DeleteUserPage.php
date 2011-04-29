@@ -74,7 +74,7 @@ class DeleteUserPage extends PageNode {
 	 */
 	public function getResponse() {
 		// Don't delete yourself!
-		if ($this->_user == Environment::getCurrent()->getUser()) {
+		if ($this->_user === Environment::getCurrent()->getUser()) {
 			return Page::createMessagePage($this->_node,
 				Translation::defaultGet('Premanager', 'deleteOwnUserError'));
 		}
@@ -106,7 +106,7 @@ class DeleteUserPage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof DeleteUserPage &&
-			$other->_user == $this->_user; 
+			$other->_user === $this->_user; 
 	}	    
 }
 

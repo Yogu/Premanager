@@ -49,7 +49,7 @@ class Event extends Module {
 		// $this->_listeners[x][1]: an array with event listeners
 		$found = false;
 		foreach ($this->_listeners as &$tmp) {
-			if ($tmp[0] == $instance) {
+			if ($tmp[0] === $instance) {
 				if (!in_array($listener, $tmp[1]))
 					$tmp[1][] = $listener;
 				$found = true;
@@ -82,7 +82,7 @@ class Event extends Module {
 		}
 			
 		foreach ($this->_listeners as &$tmp) {
-			if ($tmp[0] == $sender || $tmp[0] == null) {
+			if ($tmp[0] === $sender || $tmp[0] == null) {
 				foreach ($tmp[1] as $listener) { 
 					call_user_func($listener, $sender, $args);
 				}

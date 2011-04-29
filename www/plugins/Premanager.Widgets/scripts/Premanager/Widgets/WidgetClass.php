@@ -17,87 +17,45 @@ use Premanager\Debug\Debug;
 use Premanager\Processing\TreeNode;
 use Premanager\Models\Plugin;
 use Premanager\Models\StructureNode;
-use Premanager\Modelling\ModelDescriptor;
-use Premanager\Modelling\QueryList;
-use Premanager\Modelling\DataType;
+use Premanager\Modeling\ModelDescriptor;
+use Premanager\Modeling\QueryList;
+use Premanager\Modeling\DataType;
 use Premanager\IO\DataBase\DataBase;
 
 /**
  * A class for widget
  */
 final class WidgetClass extends Model {
-	private $_id;
 	private $_pluginID;
 	private $_plugin;
 	private $_className;
 	private $_title;
 	private $_description;
 	
-	private static $_instances = array();
-	private static $_count;
 	/**
-	 * @var Premanager\QueryList\ModelDescriptor
+	 * @var Premanager\Widgets\WidgetClassDescriptor
 	 */
 	private static $_descriptor;
-	/**
-	 * @var Premanager\QueryList\QueryList
-	 */
-	private static $_queryList;
-
-	// ===========================================================================    
-	
-	protected function __construct() {
-		parent::__construct();	
-	}
-	
-	private static function createFromID($id, $pluginID = null,
-		$className = null) {
-		
-		if (\array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id]; 
-			if ($instance->_pluginID === null)
-				$instance->_pluginID = $pluginID;
-			if ($instance->_className === null)
-				$instance->_className = $className;
-				
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException('$id must be a nonnegative integer value',
-				'id');
-				
-		$instance = new self();
-		$instance->_id = $id;
-		$instance->_pluginID = $pluginID;
-		$instance->_className = $className;
-		self::$_instances[$id] = $instance;
-		return $instance;
-	} 
 
 	// ===========================================================================
+
+	/**
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Widgets\WidgetClassModel
+	 */
+	public static function getDescriptor() {
+		return WidgetClassModel::getInstance();
+	}
 	
 	/**
 	 * Gets a widget class using its id
 	 * 
-	 * @param int $id the id of the tree class
+	 * @param int $id
 	 * @return Premanager\Widgets\WidgetClass
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getDescriptor()->getByID($id);
 	}
 	
 	/**
@@ -113,36 +71,8 @@ final class WidgetClass extends Model {
 	public static function createNew(Plugin $plugin, $className, $title,
 		$description)
 	{
-		$className = trim($className);
-			
-		if (!\class_exists($className))
-			throw new ArgumentException('$className does not refer to an '.
-				'existing class', 'className');
-		
-		// Check if the class extends WidgetClass
-		$class = $className;
-		while ($class != 'Premanager\Widgets\WidgetClass') {
-			$class = get_parent_class($class);
-			if (!$class)
-				throw new ArgumentException('The class specified by $className '.
-					'does not inherit from Premanager\Widgets\WidgetClass',
-					'className');
-		}
-		
-		$id = DataBaseHelper::insert('Premanager.Widgets', 'WidgetClasses', 0, null,
-			array(
-				'pluginID' => $plugin->getID(),
-				'class' => $className),
-			array(
-				'title' => $title,
-				'description' => $description));
-		
-		$instance = self::createFromID($id, $plugin);
-
-		if (self::$_count !== null)
-			self::$_count++;
-		
-		return $instance;
+		return self::getDescriptor()->createNew($plugin, $className, $title,
+			$description);
 	}        
 	    
 	/**
@@ -151,14 +81,11 @@ final class WidgetClass extends Model {
 	 * @return int
 	 */
 	public static function getCount() {
-		if (self::$_count === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(widgetClass.treeID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager.Widgets', 'WidgetClasses').
-					" AS widgetClass");
-			self::$_count = $result->get('count');
-		}
-		return self::$_count;
+		$result = DataBase::query(
+			"SELECT COUNT(widgetClass.treeID) AS count ".
+			"FROM ".DataBase::formTableName('Premanager.Widgets', 'WidgetClasses').
+				" AS widgetClass");
+		return $result->get('count');
 	}  
 
 	/**
@@ -167,41 +94,18 @@ final class WidgetClass extends Model {
 	 * @return Premanager\QueryList\QueryList
 	 */
 	public static function getWidgetClasses() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
-	}          
-
-	/**
-	 * Gets a boundle of information about this model
-	 *
-	 * @return Premanager\QueryList\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'plugin' => array(Plugin::getDescriptor(), 'getPlugin', 'pluginID'),
-				'className' => array(DataType::STRING, 'getClassName', 'class'),
-				'title' => array(DataType::NUMBER, 'getTitle', '*title'),
-				'description' => array(DataType::NUMBER, 'getDescription',
-					'*description')),
-				'Premanager.Widgets', 'WidgetClasses', array(__CLASS__, 'getByID'));
-		}
-		return self::$_descriptor;
-	}                                           
+		return self::getDescriptor()->getQueryList();
+	}                                                  
 
 	// ===========================================================================
-	
+
 	/**
-	 * Gets the id of this widget class
+	 * Gets a boulde of information about the WidgetClass model
 	 *
-	 * @return int
+	 * @return Premanager\Widgets\WidgetClassModel
 	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
+	public function getModelDescriptor() {
+		return WidgetClassModel::getInstance();
 	}
 
 	/**
@@ -264,16 +168,10 @@ final class WidgetClass extends Model {
 	 */
 	public function delete() {         
 		$this->checkDisposed();
-		
-		DataBaseHelper::delete('Premanager.Widgets', 'WidgetClasses', 0,
-			$this->_id);
 			
 		//TODO: Delete options
-			
-		if (self::$_count !== null)
-			self::$_count--;	
-	
-		$this->_id = null;
+		
+		parent::delete();
 	}       
 
 	public function getSampleContent() {
@@ -281,26 +179,30 @@ final class WidgetClass extends Model {
 	}
 
 	// ===========================================================================   
-	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT widgetClass.pluginID, widgetClass.class, translation.title, ".
-				"translation.description ".
-			"FROM ".DataBase::formTableName('Premanager.Widgets', 'WidgetClasses').
-				" AS widgetClass ",
-			/* translating */
-			"WHERE widgetClass.id = '$this->_id'");
+	  
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields[] = 'pluginID';
+		$fields[] = 'class';
+		$fields[] = 'translation.title';
+		$fields[] = 'translation.description';
 		
-		if (!$result->next())
-			return false;
+		if ($values = parent::load($fields)) {
+			$this->_pluginID = $values['pluginID'];
+			$this->_className = $values['class'];
+			$this->_title = $values['title'];
+			$this->_description = $values['description'];
+		}
 		
-		$this->_pluginID = $result->get('pluginID');
-		$this->_className = $result->get('class');
-		$this->_title = $result->get('title');
-		$this->_description = $result->get('description');
-		
-		return true;
-	}      
+		return $values;
+	}         
 }
 
 ?>

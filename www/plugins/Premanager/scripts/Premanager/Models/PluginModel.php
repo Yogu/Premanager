@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Models;
 
+use Premanager\IO\Config;
 use Premanager\Modeling\ModelDescriptor;
 use Premanager\Modeling\DataType;
 use Premanager\IO\DataBase\QueryBuilder;

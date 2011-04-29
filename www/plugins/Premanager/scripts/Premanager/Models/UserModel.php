@@ -204,7 +204,7 @@ class UserModel extends ModelDescriptor {
 	public function isNameAvailable($name, User $ignoreThis = null)
 	{
 		$model = $this->getByNameBase($name, '', $inUse);
-		return !$model || !$inUse || $model == $ignoreThis;
+		return !$model || !$inUse || $model === $ignoreThis;
 	}
 }
 

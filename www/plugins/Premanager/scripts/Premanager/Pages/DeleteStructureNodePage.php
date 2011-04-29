@@ -97,7 +97,7 @@ class DeleteStructureNodePage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof DeleteStructureNodePage &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	    
 }
 

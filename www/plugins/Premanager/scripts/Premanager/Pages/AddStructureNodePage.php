@@ -1,8 +1,6 @@
 <?php
 namespace Premanager\Pages;
 
-use Premanager\Models\StructureNodeType;
-
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
 use Premanager\Debug\Debug;
@@ -74,7 +72,7 @@ class AddStructureNodePage extends StructureNodeFormPage {
 			return $errorResponse;
 		
 		$structureNode = $this->getStructureNode()->createChild($values['name'],
-			$values['title'], StructureNodeType::SIMPLE);
+			$values['title']);
 		return new Redirection(
 			$this->getParent()->getURL() . '/' . $structureNode->getName());
 	}

@@ -454,12 +454,12 @@ final class Project extends Model {
 		$fields[] = 'translation.keywords';
 		
 		if ($values = parent::load($fields)) {
-			$this->_title = $fields['title'];
-			$this->_subTitle = $fields['subTitle'];
-			$this->_author = $fields['author'];
-			$this->_copyright = $fields['copyright'];
-			$this->_description = $fields['description'];
-			$this->_keywords = $fields['keywords'];
+			$this->_title = $values['title'];
+			$this->_subTitle = $values['subTitle'];
+			$this->_author = $values['author'];
+			$this->_copyright = $values['copyright'];
+			$this->_description = $values['description'];
+			$this->_keywords = $values['keywords'];
 		}
 		
 		return $values;

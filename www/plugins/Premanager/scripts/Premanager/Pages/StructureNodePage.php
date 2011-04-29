@@ -1,7 +1,6 @@
 <?php
 namespace Premanager\Pages;
 
-use Premanager\Models\StructureNodeType;
 use Premanager\Execution\FormPageNode;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
@@ -81,7 +80,7 @@ class StructureNodePage extends PageNode {
 				return new StructureNodePermissionsPage($this,
 					$this->getStructureNode());
 			default:
-				$model = $this->_structureNode->getChild($name);
+				$model = $this->_structureNode->getChildByName($name);
 				if ($model)
 					return new StructureNodePage($this, $model);
 		}
@@ -165,7 +164,7 @@ class StructureNodePage extends PageNode {
 					'moveNodeDescription'),
 				'Premanager/images/tools/move.png');
 		
-		$canAdd = $this->_structureNode->getType() != StructureNodeType::TREE;
+		$canAdd = !$this->_structureNode->getTreeClass();
 			$page->toolbar[] = new ToolBarItem($this->getURL().'/+add',
 				Translation::defaultGet('Premanager', 'addNode'), 
 				Translation::defaultGet('Premanager',
@@ -218,7 +217,7 @@ class StructureNodePage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof StructureNodePage &&
-			$other->_structureNode  == $this->_structureNode; 
+			$other->_structureNode  === $this->_structureNode; 
 	}	    
 	
 	/**

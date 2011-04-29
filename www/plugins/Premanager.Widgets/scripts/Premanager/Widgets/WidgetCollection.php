@@ -4,8 +4,8 @@ namespace Premanager\Widgets;
 use Premanager\ArgumentException;
 
 use Premanager\IO\DataBase\DataBaseHelper;
-use Premanager\Modelling\SortRule;
-use Premanager\Modelling\QueryOperation;
+use Premanager\Modeling\SortRule;
+use Premanager\Modeling\QueryOperation;
 use Premanager\Module;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Models\User;

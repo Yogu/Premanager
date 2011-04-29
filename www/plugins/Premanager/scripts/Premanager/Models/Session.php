@@ -26,7 +26,6 @@ use Premanager\Modeling\DataType;
  * A session of a logged-in user
  */
 final class Session extends Model {
-	private $_id;
 	private $_user;
 	private $_userID;
 	private $_key;
@@ -41,99 +40,37 @@ final class Session extends Model {
 	private $_confirmationExpirationTime;
 	private $_isConfirmed;
 	
-	private static $_instances = array();
-	private static $_count;
 	private static $_descriptor;
-	private static $_queryList;
 
-	// ===========================================================================  
+	// ===========================================================================
 	
-	protected function __construct() {
-		parent::__construct();	
-	}
-	
-	public static function __init() { 
+	public static function __init() {
 		// Remove outdated sessions
 		DataBase::query(
 			"DELETE FROM ".DataBase::formTableName('Premanager', 'Sessions')." ".
 			"WHERE lastRequestTime < DATE_SUB(NOW(), INTERVAL ".
-				Options::defaultGet('Premanager', 'session.length')." SECOND)");
-	}
-	
-	private static function createFromID($id, $userID = null, $key = null, 
-		$startTime = null, $lastRequestTime = null, $ip = null, $userAgent = null,
-		$hidden = null, $isFirstRequest = null, $projectID = null,
-		$isConfirmed = null) {
-		
-		if (array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id]; 
-			if ($instance->_userID === null)
-				$instance->_userID = $userID;
-			if ($instance->_lastRequestTime === null)
-				$instance->_lastRequestTime = $lastRequestTime;
-			if ($instance->_startTime === null)
-				$instance->_startTime = $startTime;
-			if ($instance->_lastRequestTime === null)
-				$instance->_lastRequestTime = $lastRequestTime;
-			if ($instance->_ip === null)
-				$instance->_ip = $ip;
-			if ($instance->_userAgent === null)
-				$instance->_userAgent = $userAgent;
-			if ($instance->_hidden === null)
-				$instance->_hidden = $hidden;
-			if ($instance->_isFirstRequest === null)
-				$instance->_isFirstRequest = $isFirstRequest;
-			if ($instance->_projectID === null)
-				$instance->_projectID = $projectID;
-			if ($instance->_isConfirmed === null)
-				$instance->_isConfirmed = $isConfirmed;
-				
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException('$id must be a nonnegative integer value',
-				'id');
-				
-		$instance = new self();
-		$instance->_id = $id;
-		$instance->_userID = $userID;
-		$instance->_key = $key;
-		$instance->_startTime = $startTime;
-		$instance->_lastRequestTime = $lastRequestTime;
-		$instance->_ip = $ip;
-		$instance->_userAgent = $userAgent;
-		$instance->_hidden = $hidden;
-		$instance->_isFirstRequest = $isFirstRequest;
-		$instance->_projectID = $projectID;
-		$instance->_isConfirmed = $isConfirmed;
-		self::$_instances[$id] = $instance;
-		return $instance;
-	}
+			Options::defaultGet('Premanager', 'session.length')." SECOND)");
+	}	
 
 	// ===========================================================================
+
+	/**
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Models\SessionModel
+	 */
+	public static function getDescriptor() {
+		return SessionModel::getInstance();
+	}
 	
 	/**
-	 * Gets a session using its id
+	 * Gets a plugin using its id
 	 * 
-	 * @param int $id the id of the session
+	 * @param int $id
 	 * @return Premanager\Models\Session
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getDescriptor()->getByID($id);
 	}
 	
 	/**
@@ -151,7 +88,7 @@ final class Session extends Model {
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.userID = '".$user->getID()."'");
 		if ($result->next()) {
-			return self::createFromID($result->get('id'));
+			return self::getByID($result->get('id'));
 		}
 		return null;
 	}
@@ -168,7 +105,7 @@ final class Session extends Model {
 			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
 			"WHERE session.key = '".DataBase::escape($key)."'");
 		if ($result->next()) {
-			return self::createFromID($result->get('id'));
+			return self::getByID($result->get('id'));
 		}
 		return null;
 	}
@@ -182,39 +119,8 @@ final class Session extends Model {
 	 * @return Premanager\Models\Session
 	 */
 	public static function createNew(User $user, $hidden = false) {
-		if (!$user)
-			throw new ArgumentNullException('user');
-		if ($user->getid() == 0)
-			throw new ArgumentException('Cannot create a session for the guest',
-				'user');
-			
-		$hidden = !!$hidden;
-	
-		$key = self::formKey($user);
-		$ip = Request::getIP();
-		$userAgent = Request::getUserAgent();
-		$projectID = Environment::getCurrent()->getProject()->getID();
-		$_hidden = $hidden ? '1' : '0';
-		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager', 'Sessions')." ".
-			"(userID, startTime, lastRequestTime, `key`, ip, userAgent, ".
-				"hidden, projectID, isFirstRequest) ".
-			"VALUES ('".$user->getID()."', NOW(), NOW(), ".
-				"'".DataBase::escape($key)."', '".DataBase::escape($ip)."', ".
-				"'".DataBase::escape($userAgent)."', '$_hidden', '$projectID', '1')");
-		$id = DataBase::getInsertID();
-		
-		$instance = self::createFromID($id, $user->getid(), $key, new DateTime(), 
-			new DateTime(), $ip, $userAgent, $hidden, true,
-			$projectID);
-		$instance->_confirmationExpirationTime = null;
-		$instance->_isConfirmed = false;
-
-		if (self::$_count !== null)
-			self::$_count++;	
-		
-		return $instance;
-	}        
+		return self::getDescriptor()->createNew($user, $hidden);
+	}
 	    
 	/**
 	 * Gets the count of sessions
@@ -222,13 +128,10 @@ final class Session extends Model {
 	 * @return int
 	 */
 	public static function getCount() {
-		if (self::$_count === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(session.sessionID) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session");
-			self::$_count = $result->get('count');
-		}
-		return self::$_count;
+		$result = DataBase::query(
+			"SELECT COUNT(session.sessionID) AS count ".
+			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session");
+		return $result->get('count');
 	}
 
 	/**
@@ -237,51 +140,18 @@ final class Session extends Model {
 	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getSessions() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
-	}          
-
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\Modeling\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'user' => array(User::getDescriptor(), 'getUser', 'user'),
-				'key' => array(DataType::STRING, 'getKey', 'key'),
-				'startTime' => array(DataType::DATE_TIME, 'getStartTime', 'startTime'),
-				'lastRequestTime' => array(DataType::DATE_TIME, 'getLastRequestTime',
-					'lastRequestTime'),
-				'ip' => array(DataType::STRING, 'getip', 'ip'),
-				'userAgent' => array(DataType::STRING, 'getUserAgent', 'userAgent'),
-				'hidden' => array(DataType::BOOLEAN, 'getHidden', 'hidden'),
-				'isFirstRequest' => array(DataType::BOOLEAN, 'getIsFirstRequest',
-					'isFirstRequest'),
-				'project' => array(Project::getDescriptor(), 'getProject', 'project'),
-				'isConfirmed' => array(Project::getDescriptor(), 'isConfirmed',
-					'!confirmationExpirationTime! > NOW()'),
-				'confirmationExpirationTime' => array(Project::getDescriptor(),
-					'getConfirmationExpirationTime', 'confirmationExpirationTime')),
-				'Premanager', 'Sessions', array(__CLASS__, 'getByID'), false);
-		}
-		return self::$_descriptor;
-	}                                            
+		return self::getDescriptor()->getQueryList();
+	}                                         
 
 	// ===========================================================================
-	
+
 	/**
-	 * Gets the id of this session
+	 * Gets a boulde of information about the Session model
 	 *
-	 * @return int
+	 * @return Premanager\Models\SessionModel
 	 */
-	public function getID() {
-		$this->checkDisposed();
-		
-		return $this->_id;
+	public function getModelDescriptor() {
+		return SessionModel::getInstance();
 	}
 
 	/**
@@ -383,7 +253,7 @@ final class Session extends Model {
 	 * 
 	 * @return bool
 	 */
-	public function getIsFirstRequest() {
+	public function isFirstRequest() {
 		$this->checkDisposed();
 			
 		if ($this->_isFirstRequest === null)
@@ -437,18 +307,8 @@ final class Session extends Model {
 	/**
 	 * Deletes and disposes this session
 	 */
-	public function delete() {         
-		$this->checkDisposed();
-		
-		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager', 'Sessions')." ".
-			"WHERE id = '$this->_id'");
-
-		if (self::$_count !== null)
-			self::$_count--;
-		unset(self::$_instances[$this->_id]);
-			
-		$this->dispose();
+	public function delete() {   
+		parent::delete();
 	}
 	
 	/**
@@ -498,56 +358,50 @@ final class Session extends Model {
 	}
 
 	// ===========================================================================
-	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT session.userID, session.key, session.startTime, ".
-				"session.lastRequestTime, session.ip, session.userAgent, ".
-				"session.hidden, session.isFirstRequest, session.projectID, ".
-				"session.confirmationExpirationTime ".
-			"FROM ".DataBase::formTableName('Premanager', 'Sessions')." AS session ".
-			"WHERE session.id = '$this->_id'");
+
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields[] = 'userID';
+		$fields[] = 'key';
+		$fields[] = 'startTime';
+		$fields[] = 'lastRequestTime';
+		$fields[] = 'ip';
+		$fields[] = 'userAgent';
+		$fields[] = 'hidden';
+		$fields[] = 'isFirstRequest';
+		$fields[] = 'projectID';
+		$fields[] = 'confirmationExpirationTime';
 		
-		if (!$result->next())
-			return false;
+		if ($values = parent::load($fields)) {
+			$this->_userID = $values['userID'];
+			$this->_key = $values['key'];
+			$this->_startTime = new DateTime($values['startTime']);
+			$this->_lastRequestTime = new DateTime($values['lastRequestTime']);
+			$this->_ip = $values['ip'];
+			$this->_userAgent = $values['userAgent'];
+			$this->_hidden = $values['hidden'];
+			$this->_isFirstRequest = $values['isFirstRequest'];
+			$this->_projectID = $values['projectID'];
+			if ($values['confirmationExpirationTime'] != '0000-00-00 00:00:00') {
+				$this->_confirmationExpirationTime = new DateTime(
+					$values['confirmationExpirationTime']);
+				$this->_isConfirmed =
+					$this->_confirmationExpirationTime->compareTo(DateTime::getNow()) > 0;
+			} else {
+				$this->_confirmationExpirationTime = null;
+				$this->_isConfirmed = false;
+			} 
+		}
 		
-		$this->_userID = $result->get('userID');
-		$this->_key = $result->get('key');
-		$this->_startTime = new DateTime($result->get('startTime'));
-		$this->_lastRequestTime = new DateTime($result->get('lastRequestTime'));
-		$this->_ip = $result->get('ip');
-		$this->_userAgent = $result->get('userAgent');
-		$this->_hidden = $result->get('hidden');
-		$this->_isFirstRequest = $result->get('isFirstRequest');
-		$this->_projectID = $result->get('projectID');
-		if ($result->get('confirmationExpirationTime') != '0000-00-00 00:00:00') {
-			$this->_confirmationExpirationTime = new DateTime(
-				$result->get('confirmationExpirationTime'));
-			$this->_isConfirmed =
-				$this->_confirmationExpirationTime->compareTo(DateTime::getNow()) > 0;
-		} else {
-			$this->_confirmationExpirationTime = null;
-			$this->_isConfirmed = false;
-		} 
-		
-		return true;
+		return $values;
 	}
-
-	// Returns the cookie value
-	private static function formKey(User $user)  {
-		if (!$user)
-			throw new ArgumentNullException('user');
-		if ($user->getid() == 0)
-			throw new ArgumentException('$user is a guest', 'user'); 
-
-		return hash('sha256',
-			'ffa919513b2481678d3b3f54976d5f26f4785577a67fd1e5a2efa688c043c007'.
-			Config::getSecurityCode().
-			hash('sha256',
-				'758e75425237cebe36a282b543a14567de6bb5ae80203c77d6d1bdaf19e675a7'.
-				$user->getname().Config::getSecurityCode().$user->getid()).Request::getIP().
-			time()); 
-	}       
 }
 
 Session::__init();

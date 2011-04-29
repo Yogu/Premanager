@@ -54,7 +54,7 @@ final class Plugin extends Model {
 	 * @return Premanager\Models\Plugin
 	 */
 	public static function getByID($id) {
-		return self::getModelDescriptor()->getByID($id);
+		return self::getDescriptor()->getByID($id);
 	}
                                
 	/**
@@ -66,7 +66,7 @@ final class Plugin extends Model {
 	 * @return Premanager\Models\Plugin
 	 */
 	public static function getByName($name) {
-		return self::getModelDescriptor()->getByName($name);
+		return self::getDescriptor()->getByName($name);
 	}
 	    
 	/**
@@ -253,16 +253,14 @@ final class Plugin extends Model {
 	 *   model does not exist in data base
 	 */
 	public function load(array $fields = array()) {
-		$fields = array(
-			'name',
-			'initializerClass',
-			'backendTreeClass',
-		);
+		$fields[] = 'name';
+		$fields[] = 'initializerClass';
+		$fields[] = 'backendTreeClass';
 		
 		if ($values = parent::load($fields)) {
-			$this->_name = $fields['name'];
-			$this->_initializerClassName = $fields['initializerClass'];
-			$this->_backendTreeClassName = $fields['backendTreeClass'];
+			$this->_name = $values['name'];
+			$this->_initializerClassName = $values['initializerClass'];
+			$this->_backendTreeClassName = $values['backendTreeClass'];
 		}
 		
 		return $values;

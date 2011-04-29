@@ -68,7 +68,7 @@ abstract class TreeListPageNode extends ListPageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof TreeListPageNode &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	   
 	
 }

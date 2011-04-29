@@ -8,7 +8,7 @@ use Premanager\Execution\Rights;
 use Premanager\Execution\ToolBarItem;
 use Premanager\Models\Project;
 use Premanager\Debug\Debug;
-use Premanager\Modelling\SortRule;
+use Premanager\Modeling\SortRule;
 use Premanager\Execution\TreeListPageNode;
 use Premanager\Models\StructureNode;
 use Premanager\Execution\ListPageNode;

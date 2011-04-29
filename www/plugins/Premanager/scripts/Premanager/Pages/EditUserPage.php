@@ -117,7 +117,7 @@ class EditUserPage extends UserFormPage {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof EditUserPage &&
-			$other->_user == $this->_user; 
+			$other->_user === $this->_user; 
 	}	    
 }
 

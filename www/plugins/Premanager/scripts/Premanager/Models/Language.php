@@ -422,7 +422,7 @@ final class Language extends Model {
 			throw new InvalidOperationException('Last language can not be deleted');
 			
 		// If this was the default langauge, select another default language
-		if (self::getDefault() == $this) {
+		if (self::getDefault() === $this) {
 			self::setDefault(self::getLanguages()->get(0));
 		}
 			
@@ -555,14 +555,14 @@ final class Language extends Model {
 		$fields[] = 'dateTimePhraseFormat';
 		
 		if ($values = parent::load($fields)) {
-			$this->_name = $fields['name'];
-			$this->_title = $fields['title'];
-			$this->_englishTitle = $fields['englishTitle'];
-			$this->_longDateFormat = $fields['longDateFormat'];
-			$this->_longTimeFormat = $fields['longTimeFormat'];
-			$this->_shortDateFormat = $fields['shortDateFormat'];
-			$this->_shortTimeFormat = $fields['shortTimeFormat'];
-			$this->_dateTimePhraseFormat = $fields['dateTimePhraseFormat'];
+			$this->_name = $values['name'];
+			$this->_title = $values['title'];
+			$this->_englishTitle = $values['englishTitle'];
+			$this->_longDateFormat = $values['longDateFormat'];
+			$this->_longTimeFormat = $values['longTimeFormat'];
+			$this->_shortDateFormat = $values['shortDateFormat'];
+			$this->_shortTimeFormat = $values['shortTimeFormat'];
+			$this->_dateTimePhraseFormat = $values['dateTimePhraseFormat'];
 		}
 		
 		return $values;

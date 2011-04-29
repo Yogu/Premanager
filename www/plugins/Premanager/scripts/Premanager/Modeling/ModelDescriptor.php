@@ -1,6 +1,7 @@
 <?php
 namespace Premanager\Modeling;
 
+use Premanager\Execution\Environment;
 use Premanager\Strings;
 use Premanager\IO\DataBase\QueryBuilder;
 use Premanager\NotSupportedException;
@@ -112,11 +113,13 @@ abstract class ModelDescriptor extends Module {
 	 * Gets an instance of the model class this descriptor describes using its id
 	 * 
 	 * @param int $id the model's id
-	 * @return mixed
+	 * @param bool $checkIfExisting if true, the $id is validated. Specify false
+	 *   if you are sure that the id exists
+	 * @return Premanager\Modeling\Model the model or null
 	 * @throws Premanager\InvalidOperationException the method getByID is not
 	 *   available on this object. See canGetByID().
 	 */
-	public function getByID($id) {
+	public function getByID($id, $checkIfExisting = true) {
 		$id = (int)$id;
 		
 		if (!$this->_instances)
@@ -126,8 +129,14 @@ abstract class ModelDescriptor extends Module {
 			return null;
 		else if (array_key_exists($id, $this->_instances))
 			return $this->_instances[$id];
-		else
-			return $this->createFromID($id, true);
+		else {
+			$instance = $this->createFromID($id);
+			if (!$checkIfExisting || $instance->load()) {
+				$this->_instances[$id] = $instance;
+				return $instance;
+			} else
+				return null;
+		}
 	}
 	
 	/**
@@ -161,9 +170,9 @@ abstract class ModelDescriptor extends Module {
 		}
 			
 		if ($name !== null) {
-			if ($this->flags & ModelFlags::UNTRANSLATED_NAME)
+			if ($this->getFlags() & ModelFlags::UNTRANSLATED_NAME)
 				$values['name'] = $name;
-			else if ($this->flags & ModelFlags::TRANSLATED_NAME)
+			else if ($this->getFlags() & ModelFlags::TRANSLATED_NAME)
 				$translatedValues['name'] = $name;
 		}
 		   
@@ -185,7 +194,7 @@ abstract class ModelDescriptor extends Module {
 				$translatedValues));
 		}
 		
-		$model = $this->createFromID($id, false);
+		$model = $this->getByID($id, false);
 
 		// -------------- Name ------------
 		
@@ -214,13 +223,13 @@ abstract class ModelDescriptor extends Module {
 		$result = DataBase::query(
 			"SELECT name.id, name.inUse ".
 			"FROM ".$this->getNameTableName()." name ".
-			"INNER JOIN ".$this->getNameTableName()." item ON name.id = item.id ".
+			"INNER JOIN ".$this->getItemTableName()." item ON name.id = item.id ".
 			"WHERE name.name = '".DataBase::escape(Strings::unitize($name))."' ".
 				$nameGroupSQL.
-				($ignoreThis ? "AND item.id != '".$ignoreThis->getID()."'" : ''));
+				($ignoreThis ? "AND name.id != '".$ignoreThis->getID()."'" : ''));
 		if ($result->next()) {
 			$isNameInUse = $result->get('inUse');
-			return $this->createFromID($id, false);
+			return $this->getByID($result->get('id'), false);
 		} else
 			return null;
 	}
@@ -293,17 +302,17 @@ abstract class ModelDescriptor extends Module {
 	
 		// Add fields by flags
 		$this->addProperty('id', DataType::NUMBER, 'getID', 'id');
-		if ($this->getFlags() && ModelFlags::UNTRANSLATED_NAME)
+		if ($this->getFlags() & ModelFlags::UNTRANSLATED_NAME)
 			$this->addProperty('name', DataType::STRING, 'getName', 'name');
-		else if ($this->getFlags() && ModelFlags::TRANSLATED_NAME)
+		else if ($this->getFlags() & ModelFlags::TRANSLATED_NAME)
 			$this->addProperty('name', DataType::STRING, 'getName', '*name');
-		if ($this->getFlags() && ModelFlags::CREATOR_FIELDS) {
+		if ($this->getFlags() & ModelFlags::CREATOR_FIELDS) {
 			$this->addProperty('creator', User::getDescriptor(), 'getCreator',
 				'creatorID');
 			$this->addProperty('createTime', DataType::DATE_TIME, 'getCreateTime',
 				'createTime');
 		}
-		if ($this->getFlags() && ModelFlags::EDITOR_FIELDS) {
+		if ($this->getFlags() & ModelFlags::EDITOR_FIELDS) {
 			$this->addProperty('editor', User::getDescriptor(), 'getEditor',
 				'editorID');
 			$this->addProperty('editTime', DataType::DATE_TIME, 'getEditTime',
@@ -313,22 +322,15 @@ abstract class ModelDescriptor extends Module {
 		}
 	}
 	
-	// ===========================================================================
-	
-	private function createFromID($id, $validateID = false) {
-		if (!$this->_instances)
-			$this->_instances = array();
-			
-		if (array_key_exists($id, $this->_instances))
-			return self::$_instances[$id];
-			
+	/**
+	 * Instanciates the model class and assigns the id
+	 * 
+	 * @param $id the id to assign
+	 * @return Premanager\Modeling\Model the created instance
+	 */
+	protected function createFromID($id) {
 		$className = $this->getClassName();
-		$instance = new $className($id, false);
-		if ($instance->load()) {
-			$this->_instances[$id] = $instance;
-			return $instance;
-		} else
-			return null;
+		return new $className($id, false);
 	} 
 }
 

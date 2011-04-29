@@ -26,7 +26,6 @@ use Premanager\Modeling\ModelDescriptor;
  * A style
  */
 final class Style extends Model {
-	private $_id;
 	private $_pluginID;
 	private $_plugin;
 	private $_path;
@@ -37,66 +36,28 @@ final class Style extends Model {
 	private $_stylesheets;
 	private $_instance;
 	
-	private static $_instances = array();
-	private static $_count;
 	private static $_default;
 	private static $_descriptor;
-	private static $_queryList;
-
-	// ===========================================================================  
-	
-	protected function __construct() {
-		parent::__construct();	
-	}
-	
-	private static function createFromID($id, $pluginID = null,
-		$path = null) {
-		
-		if (array_key_exists($id, self::$_instances)) {
-			$instance = self::$_instances[$id]; 
-			if ($instance->_pluginID === null)
-				$instance->_pluginID = $pluginID;
-			if ($instance->_path === null)
-				$instance->_path = $path;
-				
-			return $instance;
-		}
-
-		if (!Types::isInteger($id) || $id < 0)
-			throw new ArgumentException(
-				'$id must be a nonnegative integer value');
-				
-		$instance = new self();
-		$instance->_id = $id;
-		$instance->_pluginID = $pluginID;
-		$instance->_path = $path;
-		self::$_instances[$id] = $instance;
-		return $instance;
-	} 
 
 	// ===========================================================================
+
+	/**
+	 * Gets a boulde of information about this model
+	 *
+	 * @return Premanager\Models\StyleModel
+	 */
+	public static function getDescriptor() {
+		return StyleModel::getInstance();
+	}
 	
 	/**
-	 * Gets a style class using its id
+	 * Gets a widget using its id
 	 * 
-	 * @param int $id the id of the style class
+	 * @param int $id
 	 * @return Premanager\Models\Style
 	 */
 	public static function getByID($id) {
-		$id = (int)$id;
-			
-		if (!Types::isInteger($id) || $id < 0)
-			return null;
-		else if (\array_key_exists($id, self::$_instances)) {
-			return self::$_instances[$id];
-		} else {
-			$instance = self::createFromID($id);
-			// Check if id is correct
-			if ($instance->load())
-				return $instance;
-			else
-				return null;
-		}
+		return self::getDescriptor()->getByID($id);
 	}
 	
 	/**
@@ -113,32 +74,8 @@ final class Style extends Model {
 	public static function createNew(Plugin $plugin, $path, $title, $description,
 		$author)
 	{
-		$path = trim($path);
-		
-		$fileName = Config::getStaticPath() . '/' . $plugin->getName() . '/'.$path;
-		if (!File::exists($fileName))
-			throw new FileNotFoundException('The style file does not exist (file '.
-				'name: '.$fileName);
-	
-		DataBase::query(
-			"INSERT INTO ".DataBase::formTableName('Premanager', 'Styles')." ".
-			"(pluginID, path, author) ".
-			"VALUES ('".$plugin->getID()."', '".DataBase::escape($path)."', ".
-				"'".DataBase::escape($author)."'");
-		$id = DataBase::insertID();
-		
-		DataBaseHelper::update('Premanager', 'Styles', 0, $id, null, array(),
-			array('title' => $title, 'description' => $description));	
-		
-		$instance = self::createFromID($id, $plugin, $path);
-		$instance->_title = $title;
-		$instance->_description = $description;
-		$instance->_author = $author;
-
-		if (self::$_count !== null)
-			self::$_count++;		
-		
-		return $instance;
+		return self::getDescriptor()->createNew($plugin, $path, $title,
+			$description, $author);
 	}        
 	    
 	/**
@@ -147,13 +84,10 @@ final class Style extends Model {
 	 * @return int
 	 */
 	public static function getCount() {
-		if (self::$_count === null) {
-			$result = DataBase::query(
-				"SELECT COUNT(style.id) AS count ".
-				"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style");
-			self::$_count = $result->get('count');
-		}
-		return self::$_count;
+		$result = DataBase::query(
+			"SELECT COUNT(style.id) AS count ".
+			"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style");
+		return $result->get('count');
 	}  
 
 	/**
@@ -168,7 +102,7 @@ final class Style extends Model {
 				"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ".
 				"WHERE style.isDefault = '1'");
 			if ($result->next()) {
-				self::$_default = self::createFromID($result->get('id'),
+				self::$_default = self::getByID($result->get('id'),
 					$result->get('pluginID'), $result->get('path'));
 			} else
 				throw new CorruptDataException('No default style found');
@@ -210,44 +144,18 @@ final class Style extends Model {
 	 * @return Premanager\Modeling\QueryList
 	 */
 	public static function getStyles() {
-		if (!self::$_queryList)
-			self::$_queryList = new QueryList(self::getDescriptor());
-		return self::$_queryList;
-	}          
-
-	/**
-	 * Gets a boulde of information about this model
-	 *
-	 * @return Premanager\Modeling\ModelDescriptor
-	 */
-	public static function getDescriptor() {
-		if (self::$_descriptor === null) {
-			self::$_descriptor = new ModelDescriptor(__CLASS__, array(
-				'id' => array(DataType::NUMBER, 'getID', 'id'),
-				'plugin' => array(Plugin::getDescriptor(), 'getPlugin', 'pluginID'),
-				'path' => array(DataType::STRING, 'getPath', 'path'),
-				'title' => array(DataType::STRING, 'getTitle', '*title'),
-				'description' => array(DataType::STRING, 'getDescription',
-					'*description'),
-				'author' => array(DataType::STRING, 'getAuthor', '*author'),
-				'isEnabled' => array(DataType::BOOLEAN, 'isEnabled', 'isEnabled'),
-				'isDefault' => array(DataType::BOOLEAN, 'isEnabled', 'isDefault')),
-				'Premanager', 'Styles', array(__CLASS__, 'getByID'), true);
-		}
-		return self::$_descriptor;
-	}      
+		return self::getDescriptor()->getStyles();
+	}           
 
 	// ===========================================================================
-	
+
 	/**
-	 * Gets the id of this style class
+	 * Gets a boulde of information about the Style model
 	 *
-	 * @return int
+	 * @return Premanager\Models\StyleModel
 	 */
-	public function getID() {
-		$this->checkDisposed();
-	
-		return $this->_id;
+	public function getModelDescriptor() {
+		return StyleModel::getInstance();
 	}
 
 	/**
@@ -374,7 +282,7 @@ final class Style extends Model {
 	 * @return bool true, if this style is the default style
 	 */
 	public function isDefault() {
-		return $this == self::getDefault();
+		return $this === self::getDefault();
 	}
 
 	/**
@@ -425,8 +333,7 @@ final class Style extends Model {
 	 * If this style was the default style, any other style will get the new
 	 * default style.
 	 * 
-	 * Throws a Premanager\InvalidOperationException if this is the last style
-	 * because there must be at least one style
+	 * @throws Premanager\InvalidOperationException this is the last style
 	 */
 	public function delete() {         
 		$this->checkDisposed();
@@ -436,7 +343,7 @@ final class Style extends Model {
 			throw new InvalidOperationException('Last style can not be deleted');
 			
 		// If this was the default style, select another default style
-		if (self::getDefault() == $this) {
+		if (self::getDefault() === $this) {
 			$l = self::getStyles();
 			$l = $l->filter($l->exprMember('isEnabled'));
 			if ($l->getCount())
@@ -448,39 +355,39 @@ final class Style extends Model {
 				self::setDefault($style);
 			}
 		}
-			
-		DataBase::query(
-			"DELETE FROM ".DataBase::formTableName('Premanager', 'Styles')." ".
-			"WHERE style.id = '$this->_id'");
-			
-		unset(self::$_instances[$this->_id]);
-		if (self::$_count !== null)
-			self::$_count--;			
-	
-		$this->dispose();
+		
+		$this->delete();
 	}      
 	
-	// ===========================================================================        
-	
-	private function load() {
-		$result = DataBase::query(
-			"SELECT style.pluginID, style.path, style.author, translation.title, ".
-				"translation.description, style.isEnabled ".    
-			"FROM ".DataBase::formTableName('Premanager', 'Styles')." AS style ",
-			/* translating */
-			"WHERE style.id = '$this->_id'");
-		if (!$result->next())
-			return false;
+	// ===========================================================================
+	  
+	/**
+	 * Fills the fields from data base
+	 * 
+	 * @param array $fields an array($name => $sql) where $sql is a SQL statement
+	 *   to store under the alias $name
+	 * @return array ($name => $value) the values for the fields - or false if the
+	 *   model does not exist in data base
+	 */
+	public function load(array $fields = array()) {
+		$fields[] = 'pluginID';
+		$fields[] = 'path';
+		$fields[] = 'author';
+		$fields[] = 'isEnabled';
+		$fields[] = 'translation.title';
+		$fields[] = 'translation.description';
 		
-		$this->_pluginID = $result->get('pluginID');
-		$this->_path = $result->get('path');
-		$this->_isEnabled = $result->get('isEnabled');
-		$this->_title = $result->get('title');
-		$this->_description = $result->get('description');
-		$this->_author = $result->get('author');
+		if ($values = parent::load($fields)) {
+			$this->_pluginID = $values['pluginID'];
+			$this->_path = $values['path'];
+			$this->_isEnabled = $values['isEnabled'];
+			$this->_title = $values['title'];
+			$this->_description = $values['description'];
+			$this->_author = $values['author'];
+		}
 		
-		return true;
-	}
+		return $values;
+	}       
 }
 
 ?>

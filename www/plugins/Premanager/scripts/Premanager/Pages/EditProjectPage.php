@@ -115,7 +115,7 @@ class EditProjectPage extends ProjectFormPage {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof EditProjectPage &&
-			$other->_project == $this->_project; 
+			$other->_project === $this->_project; 
 	}	    
 }
 

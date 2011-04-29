@@ -34,19 +34,19 @@ class LanguageModel extends ModelDescriptor {
 		$this->addProperty('englishTitle', DataType::STRING, 'getEnglishTitle',
 			'englishTitle');
 		
-		$this->adProperty('shortDateTimeFormat', DataType::STRING,
+		$this->addProperty('shortDateTimeFormat', DataType::STRING,
 			'getShortDateTimeFormat');
-		$this->adProperty('shortDateFormat', DataType::STRING, 'getShortDateFormat',
+		$this->addProperty('shortDateFormat', DataType::STRING, 'getShortDateFormat',
 			'shortDateFormat');
-		$this->adProperty('shortTimeFormat', DataType::STRING, 'getShortTimeFormat',
+		$this->addProperty('shortTimeFormat', DataType::STRING, 'getShortTimeFormat',
 			'shortTimeFormat');
-		$this->adProperty('longDateTimeFormat', DataType::STRING,
+		$this->addProperty('longDateTimeFormat', DataType::STRING,
 			'getLongDateTimeFormat');
-		$this->adProperty('longDateFormat', DataType::STRING, 'getLongDateFormat',
+		$this->addProperty('longDateFormat', DataType::STRING, 'getLongDateFormat',
 			'longDateFormat');
-		$this->adProperty('longTimeFormat', DataType::STRING, 'getLongTimeFormat',
+		$this->addProperty('longTimeFormat', DataType::STRING, 'getLongTimeFormat',
 			'longTimeFormat');
-		$this->adProperty('dateTimePhraseFormat', DataType::STRING,
+		$this->addProperty('dateTimePhraseFormat', DataType::STRING,
 			'getDateTimePhraseFormat', 'dateTimePhraseFormat');
 	}
 	
@@ -181,7 +181,7 @@ class LanguageModel extends ModelDescriptor {
 	 */
 	public function isNameAvailable($name, Language $ignoreThis = null) {
 		$model = $this->getByName($name);
-		return !$model || $model == $ignoreThis;
+		return !$model || $model === $ignoreThis;
 	}
 }
 

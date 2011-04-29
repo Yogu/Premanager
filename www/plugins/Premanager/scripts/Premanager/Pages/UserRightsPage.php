@@ -77,7 +77,7 @@ class UserRightsPage extends PageNode {
 	 * @param Premanager\Execution\PageNode $other
 	 */
 	public function equals(PageNode $other) {
-		return $other instanceof UserRightsPage && $other->_user == $this->_user;
+		return $other instanceof UserRightsPage && $other->_user === $this->_user;
 	}
 
 	/**

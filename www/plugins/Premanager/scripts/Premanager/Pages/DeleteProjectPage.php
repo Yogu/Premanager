@@ -96,7 +96,7 @@ class DeleteProjectPage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof DeleteProjectPage &&
-			$other->_project == $this->_project; 
+			$other->_project === $this->_project; 
 	}	    
 }
 

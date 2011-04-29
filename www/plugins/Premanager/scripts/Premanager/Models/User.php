@@ -95,7 +95,7 @@ final class User extends Model {
 	 * @return Premanager\Models\User
 	 */
 	public static function getByID($id) {
-		return self::getModelDescriptor()->getByID($id);
+		return self::getDescriptor()->getByID($id);
 	}
                                
 	/**
@@ -107,7 +107,7 @@ final class User extends Model {
 	 * @return Premanager\Models\User 
 	 */
 	public static function getByName($name) {
-		return self::getModelDescriptor()->getByName($name);
+		return self::getDescriptor()->getByName($name);
 	}
 	
 	/**
@@ -646,7 +646,7 @@ final class User extends Model {
 			"INNER JOIN ".DataBase::formTableName('Premanager', 'Groups')." AS grp ".
 				"ON userGroup.groupID = grp.id ".
 			"WHERE userGroup.userID = $this->_id ".
-				"AND grp.parentID = ".$project->getID());
+				"AND grp.ProjectID = ".$project->getID());
 		return $result->next();
 	}
 
@@ -1133,7 +1133,7 @@ final class User extends Model {
 				"ON userGroup.groupID = grp.id ",
 			/* translating */
 			"WHERE userGroup.userID = '$this->_id' ".
-				"AND grp.parentID = 0 ". // only chose groups of organization
+				"AND grp.projectID = 0 ". // only chose groups of organization
 				"AND grp.priority > 0 ".
 			"ORDER BY grp.priority DESC ".
 			"LIMIT 0,1");
@@ -1321,6 +1321,7 @@ final class User extends Model {
 				'9e4d3431361375e515abd82e261ceb04b14cf517426a8ce74ffbdde9239da356'.
 				Config::getSecurityCode().$password));
 	}
+	
 	/**
 	 * Fills the fields from data base
 	 * 
@@ -1398,7 +1399,7 @@ final class User extends Model {
 
 		if ($project)
 			$where =
-				"WHERE (grp.parentID = 0 OR grp.parentID = ".$project->getID().")";
+				"WHERE (grp.projectID = 0 OR grp.projectID = ".$project->getID().")";
 		if (!$loginConfirmed) {
 			if ($where)
 				$where .= " AND ";

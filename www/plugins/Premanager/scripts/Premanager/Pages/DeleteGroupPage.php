@@ -95,7 +95,7 @@ class DeleteGroupPage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof DeleteGroupPage &&
-			$other->_group == $this->_group; 
+			$other->_group === $this->_group; 
 	}	    
 }
 

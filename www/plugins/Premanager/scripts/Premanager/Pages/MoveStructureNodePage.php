@@ -1,7 +1,6 @@
 <?php
 namespace Premanager\Pages;
 
-use Premanager\Models\StructureNodeType;
 use Premanager\Types;
 use Premanager\Models\Right;
 use Premanager\Execution\Rights;
@@ -83,14 +82,14 @@ class MoveStructureNodePage extends PageNode {
 		if (Types::isInteger($id) && $id > 0)
 			$selectedNode = StructureNode::getByID($id);
 		if ($selectedNode) {
-			if ($selectedNode == $this->_structureNode->getParent())
+			if ($selectedNode === $this->_structureNode->getParent())
 				$error = Translation::defaultGet('Premanager',
 					'moveTargetNotChangedError');
-			else if ($selectedNode == $this->_structureNode ||
+			else if ($selectedNode === $this->_structureNode ||
 				$selectedNode->isChildOf($this->_structureNode))
 				$error = Translation::defaultGet('Premanager',
 					'moveTargetIsChildError');
-			else if ($selectedNode->getType() == StructureNodeType::TREE)
+			else if ($selectedNode->getTreeClass())
 				$error = Translation::defaultGet('Premanager', 'moveIntoTreeNodeError');
 			else if (!$selectedNode->areNamesAvailable($this->_structureNode))
 				$error = Translation::defaultGet('Premanager',
@@ -135,7 +134,7 @@ class MoveStructureNodePage extends PageNode {
 	 */
 	public function equals(PageNode $other) {
 		return $other instanceof MoveStructureNodePage &&
-			$other->_structureNode == $this->_structureNode; 
+			$other->_structureNode === $this->_structureNode; 
 	}	    
 }
 

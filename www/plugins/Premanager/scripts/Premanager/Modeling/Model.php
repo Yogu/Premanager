@@ -4,6 +4,7 @@ namespace Premanager\Modeling;
 use Premanager\IO\DataBase\QueryBuilder;
 use Premanager\IO\DataBase\DataBase;
 use Premanager\Module;
+use Premanager\Strings;
 use Premanager\Models\User;
 use Premanager\NotSupportedException;
 use Premanager\Modeling\ModelFlags;
@@ -110,17 +111,17 @@ abstract class Model extends Module {
 				"UPDATE $nameTable ".
 				"SET inUse = '1', ".
 					"languageID = '$languageID', ".
-					"id = '$id' ".
+					"id = '$this->_id' ".
 				"WHERE nameID = '".$result->get('nameID')."'");
 		} else {
 			DataBase::query(
 				"INSERT INTO $nameTable ".
 				"(id, name, languageID, inUse) ".
-				"VALUES ('$id', '$name', '$languageID', '1')");           	
+				"VALUES ('$this->_id', '$name', '$languageID', '1')");           	
 		}
 	}
 	
-	protected function update(array $values, array $translatedValues,
+	protected function update(array $values, array $translatedValues = null,
 		$name = null, $nameGroup = '')
 	{
 		$this->checkDisposed();
@@ -139,7 +140,7 @@ abstract class Model extends Module {
 		if ($name !== null) {
 			if ($m->getFlags() & ModelFlags::UNTRANSLATED_NAME)
 				$values['name'] = $name;
-			else if ($m->getFlags() & ModelFlags::TRANSLATED_NAME)
+			else if ($translatedValues && $m->getFlags() & ModelFlags::TRANSLATED_NAME)
 				$translatedValues['name'] = $name;
 		}
 
@@ -147,13 +148,16 @@ abstract class Model extends Module {
 		DataBase::query(QueryBuilder::buildUpdateQuery(
 			DataBase::formTableName($m->getPluginName(), $m->getTable()),
 			$values,
-			"id = '$id'"));
+			"id = '$this->_id'"));
 			
 		// Update language table
-		if ($m->getFlags() & ModelFlags::HAS_TRANSLATION) {
-			$translatedValues['id'] = $id;
+		if ($translatedValues && $m->getFlags() & ModelFlags::HAS_TRANSLATION) {
+			$translatedValues['id'] = $this_id;
 			$translatedValues['languageID'] = $lang;
-			DataBase::query(QueryBuilder::buildReplaceQuery(
+			if ($name === null && $m->getFlags() & ModelFlags::TRANSLATED_NAME)
+				$translatedValues['name'] = $this->getName();
+				
+			DataBase::query(QueryBuilder::buildInsertOrUpdateQuery(
 				DataBase::formTableName($m->getPluginName(), $m->getTable().'Translation'),
 				$translatedValues));
 		}
@@ -193,7 +197,7 @@ abstract class Model extends Module {
 		if (!($m->getFlags() & ModelFlags::NO_NAME))
 			DataBase::query(
 				"DELETE FROM ".$m->getNameTableName()." ".
-				"WHERE id = '$id'");
+				"WHERE id = '$this->_id'");
 
 		$m->internalOnModelDeleted($this->_id);
 	
@@ -201,10 +205,9 @@ abstract class Model extends Module {
 	}
 	         
 	/**
-	 * Re-inserts all names-in-use of this item into name table and deletes the
-	 * other ones
+	 * Deletes all names that are no more in use
 	 */
-	protected function rebuildNameTable() {
+	protected function deleteUnusedNames() {
 		$this->checkDisposed();
 		$m = $this->getModelDescriptor();
 		if ($m->getFlags() & ModelFlags::NO_NAME)
@@ -212,11 +215,8 @@ abstract class Model extends Module {
 			
 		DataBase::query(
 			"DELETE FROM ".$m->getNameTableName()." ".
-			"WHERE id = '$id'");
-		
-		$names = $this->getNamesInUse();
-		foreach ($names as $name => $tmp)
-			$this->insertName($name, $tmp['nameGroup'], $tmp['languageID']);
+			"WHERE id = '$this->_id' ".
+				"AND NOT inUse");
 	}  
 	
 	/**
@@ -239,13 +239,13 @@ abstract class Model extends Module {
 				"SELECT $nameGroupSQL item.name ".
 				"FROM ".DataBase::formTableName($m->getPluginName(), $m->getTable()).
 					" AS item ".   
-				"WHERE item.id = '$id'");
+				"WHERE item.id = '$this->_id'");
 		} else {
 			$result = DataBase::query(
 				"SELECT $nameGroupSQL translation.name, translation.languageID ".
 				"FROM ".DataBase::formTableName(
 					$m->getPluginName(), $m->getTable().'Translation')." AS translation ".
-				"WHERE translation.id = '$id'");
+				"WHERE translation.id = '$this->_id'");
 		}
 		$names = array();
 		while ($result->next()) {
@@ -254,7 +254,7 @@ abstract class Model extends Module {
 				'nameGroup' => $result->get('nameGroup'));
 		}
 		return $names;
-	}
+	} 
 	
 	/**
 	 * Checks whether the inUse flags and languageID fields of names of this model
@@ -273,7 +273,7 @@ abstract class Model extends Module {
 		$result = DataBase::query(
 			"SELECT name.nameID, name.name, name.languageID ".
 			"FROM ".$m->getNameTableName()." AS name ".
-			"WHERE name.id = '$id' ".
+			"WHERE name.id = '$this->_id' ".
 				"AND name.inUse = '1'");
 		while ($result->next()) {
 			$name = DataBase::escape($result->get('name'));
@@ -402,7 +402,7 @@ abstract class Model extends Module {
 	protected function getName() {
 		$this->checkDisposed();
 		
-		if (!($this->flags &
+		if (!($this->getModelDescriptor()->getFlags() &
 			(ModelFlags::TRANSLATED_NAME | ModelFlags::UNTRANSLATED_NAME)))
 			throw new NotSupportedException('This model does not have a name');
 			
@@ -421,7 +421,7 @@ abstract class Model extends Module {
 	protected function getCreator() {
 		$this->checkDisposed();
 		
-		if (!($this->flags & ModelFlags::CREATOR_FIELDS))
+		if (!($this->getModelDescriptor()->getFlags() & ModelFlags::CREATOR_FIELDS))
 			throw new NotSupportedException('This model does not have creator fields');
 			
 		if ($this->_creator === false) {
@@ -442,7 +442,7 @@ abstract class Model extends Module {
 	protected function getCreateTime() {
 		$this->checkDisposed();
 		
-		if (!($this->flags & ModelFlags::CREATOR_FIELDS))
+		if (!($this->getModelDescriptor()->getFlags() & ModelFlags::CREATOR_FIELDS))
 			throw new NotSupportedException('This model does not have creator fields');
 			
 		if ($this->_createTime === false)
@@ -461,7 +461,7 @@ abstract class Model extends Module {
 	protected function getEditor() {
 		$this->checkDisposed();
 		
-		if (!($this->flags & ModelFlags::EDITOR_FIELDS))
+		if (!($this->getModelDescriptor()->getFlags() & ModelFlags::EDITOR_FIELDS))
 			throw new NotSupportedException('This model does not have editor fields');
 			
 		if ($this->_editor === false) {
@@ -484,7 +484,7 @@ abstract class Model extends Module {
 	protected function getEditTime() {
 		$this->checkDisposed();
 		
-		if (!($this->flags & ModelFlags::EDITOR_FIELDS))
+		if (!($this->getModelDescriptor()->getFlags() & ModelFlags::EDITOR_FIELDS))
 			throw new NotSupportedException('This model does not have editor fields');
 			
 		if ($this->_editTime === false)
@@ -502,7 +502,7 @@ abstract class Model extends Module {
 	protected function getEditTimes() {
 		$this->checkDisposed();
 		
-		if (!($this->flags & ModelFlags::EDITOR_FIELDS))
+		if (!($this->getModelDescriptor()->getFlags() & ModelFlags::EDITOR_FIELDS))
 			throw new NotSupportedException('This model does not have editor fields');
 			
 		if ($this->_editTimes === null)
